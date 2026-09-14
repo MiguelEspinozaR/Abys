@@ -12,7 +12,7 @@ Lista de funcionalidades, su estado actual y el plan a futuro.
 | Splits | Distribución de un pago entre cuentas: 3 modos de cálculo (redondeado, enteros, preciso), snapshot de tasas, recalcular pendientes y marcar transacciones realizadas (modal con QR) | Completado |
 | Configuración | CRUD de fuentes (alias, color, logo) y cuentas (alias, número, banco, QR), tasas con historial y opción "aplicar a pendientes" | Completado |
 | Health checker | Estado de la conexión a la base de datos, latencia, versión de PostgreSQL, tamaño y conteo por tabla. Reemplaza al antiguo "SQL tab" (sin ejecución arbitraria de SQL) | Completado |
-| Sidebar colapsable | Estilo OpenCode: 3 zonas (logo, secciones Finanzas/Sistema, tema + configuración), dark/light mode | Completado |
+| Sidebar colapsable | Estilo IDE: 3 zonas (logo, secciones Finanzas/Sistema, tema + configuración), dark/light mode | Completado |
 
 ## Datos
 
