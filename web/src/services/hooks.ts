@@ -81,7 +81,7 @@ export function usePagos(filtros: PagosFiltros = {}) {
   return useQuery({
     queryKey: [queryKeys.pagos, params.toString()],
     queryFn: () =>
-      api.get<{ data: Pago[]; meta: PagosMeta }>(`/pagos?${params.toString()}`),
+      api.getRaw<{ data: Pago[]; meta: PagosMeta }>(`/pagos?${params.toString()}`),
     staleTime: 30_000,
   })
 }

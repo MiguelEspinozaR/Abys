@@ -30,10 +30,12 @@ interface RequestOptions {
   formData?: FormData
   signal?: AbortSignal
   headers?: HeadersInit
+  /** si es true, devuelve el body completo (sin desempaquetar { data: T }) */
+  raw?: boolean
 }
 
 async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body, formData, signal, headers } = opts
+  const { method = "GET", body, formData, signal, headers, raw = false } = opts
 
   const isForm = formData instanceof FormData
   const init: RequestInit = {
@@ -73,8 +75,8 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
     )
   }
 
-  // Desempaqueta { data: T }; si no hay wrapper, devuelve el body tal cual.
-  if (json && typeof json === "object" && "data" in json) {
+  // Desempaqueta { data: T } por defecto; con raw=true se devuelve el body tal cual.
+  if (!raw && json && typeof json === "object" && "data" in json) {
     return (json as { data: T }).data
   }
   return json as T
@@ -82,6 +84,7 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
 
 export const api = {
   get: <T>(path: string, signal?: AbortSignal) => request<T>(path, { signal }),
+  getRaw: <T>(path: string, signal?: AbortSignal) => request<T>(path, { signal, raw: true }),
   post: <T>(path: string, body?: unknown) => request<T>(path, { method: "POST", body }),
   put: <T>(path: string, body?: unknown) => request<T>(path, { method: "PUT", body }),
   delete: <T>(path: string) => request<T>(path, { method: "DELETE" }),
