@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Loader2, Save } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { useCrearPago, useFuentes, useSubirComprobante } from "@/services/hooks"
+import { useCrearPago, useFuentes, usePagos, useSubirComprobante } from "@/services/hooks"
 import { bsToCents, METODOS_PAGO, toISODate } from "@/lib/format"
 import type { MetodoPago } from "@/services/types"
 import { CalendarioDias, type Herramienta } from "./CalendarioDias"
@@ -25,6 +25,18 @@ export default function RegistrarPage() {
   const { data: fuentes, isLoading: fuentesLoading } = useFuentes()
   const crearPago = useCrearPago()
   const subirComprobante = useSubirComprobante()
+
+  // Pagos ya guardados: solo como referencia visual en el calendario.
+  const { data: pagosGuardados } = usePagos({ page_size: 200 })
+  const { yaTrabajados, yaFechasPago } = useMemo(() => {
+    const yaTrabajados = new Set<string>()
+    const yaFechasPago = new Set<string>()
+    for (const p of pagosGuardados?.data ?? []) {
+      if (p.fecha_pago) yaFechasPago.add(p.fecha_pago)
+      for (const d of p.dias_trabajados ?? []) yaTrabajados.add(d.fecha)
+    }
+    return { yaTrabajados, yaFechasPago }
+  }, [pagosGuardados])
 
   const [herramienta, setHerramienta] = useState<Herramienta>("trabajo")
   const [diasTrabajados, setDiasTrabajados] = useState<Set<string>>(new Set())
@@ -105,6 +117,8 @@ export default function RegistrarPage() {
             <CalendarioDias
               diasTrabajados={diasTrabajados}
               fechaPago={fechaPago}
+              yaTrabajados={yaTrabajados}
+              yaFechasPago={yaFechasPago}
               herramienta={herramienta}
               setHerramienta={setHerramienta}
               onMarcarDia={marcarDia}

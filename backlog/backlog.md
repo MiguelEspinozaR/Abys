@@ -7,7 +7,7 @@ Lista de funcionalidades, su estado actual y el plan a futuro.
 | Feature | Descripción | Estado |
 |---|---|---|
 | Dashboard | 4 vistas: semanal, mensual, anual e histórico con tendencia (Recharts) | Completado |
-| Registrar pago | Calendario de días trabajados, fecha, monto, fuente, método (efectivo/QR/transacción), notas y comprobante con drag & drop + OCR opcional (Tesseract.js) | Completado |
+| Registrar pago | Calendario de días trabajados, fecha, monto, fuente, método (efectivo/QR/transacción), notas y comprobante con drag & drop + OCR opcional (Tesseract.js). Muestra como referencia visual los días trabajados y fechas de pago ya registrados | Completado |
 | Ingresos | Listado de pagos agrupado por año, filtros (fecha, fuente, método), editar y eliminar (restringido si hay transacciones realizadas) | Completado |
 | Splits | Distribución de un pago entre cuentas: 3 modos de cálculo (redondeado, enteros, preciso), snapshot de tasas, recalcular pendientes y marcar transacciones realizadas (modal con QR) | Completado |
 | Configuración | CRUD de fuentes (alias, color, logo) y cuentas (alias, número, banco, QR), tasas con historial y opción "aplicar a pendientes" | Completado |
