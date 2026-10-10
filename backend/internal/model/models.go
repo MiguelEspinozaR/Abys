@@ -4,13 +4,15 @@ import "time"
 
 // Fuente es la entidad independiente de origen de ingresos (BR-020).
 type Fuente struct {
-	ID        int64      `json:"id"`
-	Alias     string     `json:"alias"`
-	Color     string     `json:"color"`
-	LogoRuta  *string    `json:"logo_ruta"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	ID            int64      `json:"id"`
+	Alias         string     `json:"alias"`
+	Color         string     `json:"color"`
+	LogoRuta      *string    `json:"logo_ruta"`
+	SplitAuto     bool       `json:"split_auto"`
+	SplitAutoModo *string    `json:"split_auto_modo"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+	DeletedAt     *time.Time `json:"deleted_at,omitempty"`
 }
 
 // Pago es un ingreso laboral con sus días trabajados (BR-001..BR-007).

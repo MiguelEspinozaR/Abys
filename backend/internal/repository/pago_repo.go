@@ -227,8 +227,8 @@ func (r *PagoRepo) Listar(ctx context.Context, f FiltroPagos) ([]PagoDetallado, 
 	if pageSize < 1 {
 		pageSize = 20
 	}
-	if pageSize > 100 {
-		pageSize = 100
+	if pageSize > 500 {
+		pageSize = 500
 	}
 	args = append(args, pageSize, (page-1)*pageSize)
 	rows, err := r.pool.Query(ctx, `

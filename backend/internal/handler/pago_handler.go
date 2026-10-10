@@ -61,12 +61,21 @@ func (h *PagoHandler) Crear(c *gin.Context) {
 		responderError(c, err)
 		return
 	}
+	splitID, warning := h.svc.AutoSplit(c, id, req.FuenteID)
 	detalle, err := h.svc.Detalle(c, id)
 	if err != nil {
 		responderError(c, err)
 		return
 	}
-	c.JSON(201, gin.H{"data": detalle})
+	resp := gin.H{"data": detalle}
+	if splitID != nil {
+		resp["split_auto"] = true
+		resp["split_id"] = *splitID
+	}
+	if warning != "" {
+		resp["split_warning"] = warning
+	}
+	c.JSON(201, resp)
 }
 
 // @Summary Listar pagos

@@ -19,11 +19,12 @@ type FuenteRepo struct {
 
 func NewFuenteRepo(pool *pgxpool.Pool) *FuenteRepo { return &FuenteRepo{pool: pool} }
 
-const colFuentes = `id, alias, color, logo_ruta, created_at, updated_at, deleted_at`
+const colFuentes = `id, alias, color, logo_ruta, split_auto, split_auto_modo, created_at, updated_at, deleted_at`
 
 func scanFuente(row pgx.Row) (*model.Fuente, error) {
 	var f model.Fuente
-	err := row.Scan(&f.ID, &f.Alias, &f.Color, &f.LogoRuta, &f.CreatedAt, &f.UpdatedAt, &f.DeletedAt)
+	err := row.Scan(&f.ID, &f.Alias, &f.Color, &f.LogoRuta, &f.SplitAuto, &f.SplitAutoModo,
+		&f.CreatedAt, &f.UpdatedAt, &f.DeletedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -34,8 +35,9 @@ func scanFuente(row pgx.Row) (*model.Fuente, error) {
 func (r *FuenteRepo) Crear(ctx context.Context, f model.Fuente) (int64, error) {
 	var id int64
 	err := r.pool.QueryRow(ctx, `
-		INSERT INTO fuentes (alias, color, logo_ruta) VALUES ($1, $2, $3) RETURNING id`,
-		f.Alias, f.Color, f.LogoRuta).Scan(&id)
+		INSERT INTO fuentes (alias, color, logo_ruta, split_auto, split_auto_modo)
+		VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+		f.Alias, f.Color, f.LogoRuta, f.SplitAuto, f.SplitAutoModo).Scan(&id)
 	if err != nil {
 		return 0, apperr.NewValidation("no se pudo crear la fuente: " + err.Error())
 	}
@@ -77,14 +79,41 @@ func (r *FuenteRepo) Listar(ctx context.Context) ([]model.Fuente, error) {
 // Actualizar modifica una fuente activa.
 func (r *FuenteRepo) Actualizar(ctx context.Context, f model.Fuente) error {
 	tag, err := r.pool.Exec(ctx,
-		`UPDATE fuentes SET alias=$1, color=$2, logo_ruta=$3, updated_at=NOW()
-		 WHERE id=$4 AND deleted_at IS NULL`,
-		f.Alias, f.Color, f.LogoRuta, f.ID)
+		`UPDATE fuentes SET alias=$1, color=$2, logo_ruta=$3, split_auto=$4, split_auto_modo=$5, updated_at=NOW()
+		 WHERE id=$6 AND deleted_at IS NULL`,
+		f.Alias, f.Color, f.LogoRuta, f.SplitAuto, f.SplitAutoModo, f.ID)
 	if err != nil {
 		return err
 	}
 	if tag.RowsAffected() == 0 {
 		return apperr.NewNotFound(fmt.Sprintf("fuente %d no encontrada", f.ID))
+	}
+	return nil
+}
+
+// SetLogo actualiza la ruta del logo de una fuente activa.
+func (r *FuenteRepo) SetLogo(ctx context.Context, id int64, ruta string) error {
+	tag, err := r.pool.Exec(ctx,
+		`UPDATE fuentes SET logo_ruta=$1, updated_at=NOW() WHERE id=$2 AND deleted_at IS NULL`,
+		ruta, id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return apperr.NewNotFound(fmt.Sprintf("fuente %d no encontrada", id))
+	}
+	return nil
+}
+
+// ClearLogo quita el logo de una fuente activa.
+func (r *FuenteRepo) ClearLogo(ctx context.Context, id int64) error {
+	tag, err := r.pool.Exec(ctx,
+		`UPDATE fuentes SET logo_ruta=NULL, updated_at=NOW() WHERE id=$1 AND deleted_at IS NULL`, id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return apperr.NewNotFound(fmt.Sprintf("fuente %d no encontrada", id))
 	}
 	return nil
 }

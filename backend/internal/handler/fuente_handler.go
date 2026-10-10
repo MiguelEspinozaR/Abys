@@ -10,15 +10,20 @@ import (
 // FuenteHandler expone el CRUD de fuentes.
 type FuenteHandler struct {
 	svc *service.FuenteService
+	up  *Uploader
 }
 
-func NewFuenteHandler(svc *service.FuenteService) *FuenteHandler { return &FuenteHandler{svc: svc} }
+func NewFuenteHandler(svc *service.FuenteService, up *Uploader) *FuenteHandler {
+	return &FuenteHandler{svc: svc, up: up}
+}
 
 // FuenteRequest es el body de crear/actualizar fuente.
 type FuenteRequest struct {
-	Alias    string  `json:"alias" binding:"required"`
-	Color    string  `json:"color"`
-	LogoRuta *string `json:"logo_ruta"`
+	Alias         string  `json:"alias" binding:"required"`
+	Color         string  `json:"color"`
+	LogoRuta      *string `json:"logo_ruta"`
+	SplitAuto     bool    `json:"split_auto"`
+	SplitAutoModo *string `json:"split_auto_modo"`
 }
 
 // @Summary Crear fuente
@@ -39,7 +44,10 @@ func (h *FuenteHandler) Crear(c *gin.Context) {
 	if color == "" {
 		color = "#3b82f6"
 	}
-	id, err := h.svc.Crear(c, model.Fuente{Alias: req.Alias, Color: color, LogoRuta: req.LogoRuta})
+	id, err := h.svc.Crear(c, model.Fuente{
+		Alias: req.Alias, Color: color, LogoRuta: req.LogoRuta,
+		SplitAuto: req.SplitAuto, SplitAutoModo: req.SplitAutoModo,
+	})
 	if err != nil {
 		responderError(c, err)
 		return
@@ -86,7 +94,10 @@ func (h *FuenteHandler) Actualizar(c *gin.Context) {
 		badRequest(c, "body inválido: "+err.Error())
 		return
 	}
-	if err := h.svc.Actualizar(c, model.Fuente{ID: id, Alias: req.Alias, Color: req.Color, LogoRuta: req.LogoRuta}); err != nil {
+	if err := h.svc.Actualizar(c, model.Fuente{
+		ID: id, Alias: req.Alias, Color: req.Color, LogoRuta: req.LogoRuta,
+		SplitAuto: req.SplitAuto, SplitAutoModo: req.SplitAutoModo,
+	}); err != nil {
 		responderError(c, err)
 		return
 	}
@@ -109,4 +120,52 @@ func (h *FuenteHandler) Eliminar(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{"data": gin.H{"eliminado": true, "id": id}})
+}
+
+// @Summary Subir logo de fuente
+// @Tags fuentes
+// @Accept multipart/form-data
+// @Param id path int true "ID"
+// @Param archivo formData file true "Imagen del logo"
+// @Success 200 {object} map[string]any
+// @Failure 400 {object} map[string]any
+// @Failure 404 {object} map[string]any
+// @Router /fuentes/{id}/logo [post]
+func (h *FuenteHandler) SubirLogo(c *gin.Context) {
+	id, ok := pathID(c)
+	if !ok {
+		return
+	}
+	if _, err := h.svc.Detalle(c, id); err != nil {
+		responderError(c, err)
+		return
+	}
+	ruta, err := h.up.Guardar(c, "logo")
+	if err != nil {
+		responderError(c, err)
+		return
+	}
+	if err := h.svc.SubirLogo(c, id, ruta); err != nil {
+		responderError(c, err)
+		return
+	}
+	c.JSON(200, gin.H{"data": gin.H{"id": id, "logo_ruta": ruta}})
+}
+
+// @Summary Eliminar logo de fuente
+// @Tags fuentes
+// @Param id path int true "ID"
+// @Success 200 {object} map[string]any
+// @Failure 404 {object} map[string]any
+// @Router /fuentes/{id}/logo [delete]
+func (h *FuenteHandler) EliminarLogo(c *gin.Context) {
+	id, ok := pathID(c)
+	if !ok {
+		return
+	}
+	if err := h.svc.EliminarLogo(c, id); err != nil {
+		responderError(c, err)
+		return
+	}
+	c.JSON(200, gin.H{"data": gin.H{"id": id, "logo_ruta": nil}})
 }

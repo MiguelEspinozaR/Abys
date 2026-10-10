@@ -5,14 +5,21 @@ import (
 
 	"abys/internal/apperr"
 	"abys/internal/repository"
+	"abys/internal/splitcalc"
 )
 
 // PagoService orquesta CRUD de pagos con validaciones BR-001..BR-007.
 type PagoService struct {
-	repo *repository.PagoRepo
+	repo     *repository.PagoRepo
+	fuentes  *repository.FuenteRepo
+	settings *repository.SettingsRepo
+	split    *SplitService
 }
 
-func NewPagoService(repo *repository.PagoRepo) *PagoService { return &PagoService{repo: repo} }
+func NewPagoService(repo *repository.PagoRepo, fuentes *repository.FuenteRepo,
+	settings *repository.SettingsRepo, split *SplitService) *PagoService {
+	return &PagoService{repo: repo, fuentes: fuentes, settings: settings, split: split}
+}
 
 // CrearPago valida y persiste un pago con sus días trabajados.
 func (s *PagoService) CrearPago(ctx context.Context, pagoID *int64, fuenteID int64, fechaPago string,
@@ -37,6 +44,37 @@ func (s *PagoService) CrearPago(ctx context.Context, pagoID *int64, fuenteID int
 		return 0, apperr.NewValidation("la fuente indicada no existe")
 	}
 	return s.repo.Crear(ctx, pagoID, fuenteID, fechaPago, monto, metodo, notas, dias)
+}
+
+// AutoSplit genera un split automático tras crear un pago cuando la fuente
+// tiene la opción activa. Devuelve el id del split (nil si no aplica) y una
+// advertencia si estaba configurado pero no pudo generarse (p. ej. sin cuenta
+// General o tasas inválidas), sin impedir la creación del pago.
+func (s *PagoService) AutoSplit(ctx context.Context, pagoID, fuenteID int64) (*int64, string) {
+	if s.fuentes == nil || s.split == nil {
+		return nil, ""
+	}
+	f, err := s.fuentes.GetPorID(ctx, fuenteID)
+	if err != nil || f == nil || !f.SplitAuto {
+		return nil, ""
+	}
+	modo := ""
+	if f.SplitAutoModo != nil {
+		modo = *f.SplitAutoModo
+	}
+	if modo == "" && s.settings != nil {
+		if v, ok, err := s.settings.Get(ctx, repository.SettingSplitModoDefault); err == nil && ok {
+			modo = v
+		}
+	}
+	if modo == "" {
+		modo = splitcalc.ModoPreciso
+	}
+	id, err := s.split.Generar(ctx, pagoID, modo)
+	if err != nil {
+		return nil, "el pago se guardó pero no se pudo generar el split automático: " + err.Error()
+	}
+	return &id, ""
 }
 
 // ActualizarPago valida y actualiza un pago. No permite cambiar el monto si el

@@ -24,6 +24,7 @@ type Repos struct {
 	Split     *repository.SplitRepo
 	Dashboard *repository.DashboardRepo
 	Health    *repository.HealthRepo
+	Settings  *repository.SettingsRepo
 }
 
 // Services agrupa los servicios construidos en Setup.
@@ -45,13 +46,14 @@ func Setup(cfg *config.Config, pool *pgxpool.Pool) *gin.Engine {
 		Split:     repository.NewSplitRepo(pool),
 		Dashboard: repository.NewDashboardRepo(pool),
 		Health:    repository.NewHealthRepo(pool),
+		Settings:  repository.NewSettingsRepo(pool),
 	}
 	services := &Services{
-		Pago:   service.NewPagoService(repos.Pago),
 		Fuente: service.NewFuenteService(repos.Fuente),
 		Cuenta: service.NewCuentaService(repos.Cuenta),
 		Split:  service.NewSplitService(repos.Split, repos.Pago, repos.Cuenta),
 	}
+	services.Pago = service.NewPagoService(repos.Pago, repos.Fuente, repos.Settings, services.Split)
 	services.Tasa = service.NewTasaService(repos.Cuenta, services.Split)
 	services.Dashboard = service.NewDashboardService(repos.Dashboard)
 
@@ -72,11 +74,12 @@ func Setup(cfg *config.Config, pool *pgxpool.Pool) *gin.Engine {
 
 	// Registro de handlers.
 	pagoH := handler.NewPagoHandler(services.Pago, up)
-	fuenteH := handler.NewFuenteHandler(services.Fuente)
+	fuenteH := handler.NewFuenteHandler(services.Fuente, up)
 	cuentaH := handler.NewCuentaHandler(services.Cuenta, services.Tasa, repos.Cuenta, up)
 	splitH := handler.NewSplitHandler(services.Split, repos.Split)
 	dashH := handler.NewDashboardHandler(services.Dashboard)
 	healthH := handler.NewHealthHandler(repos.Health)
+	settingsH := handler.NewSettingsHandler(repos.Settings)
 
 	// Health.
 	api.GET("/health", healthH.Ping)
@@ -98,6 +101,8 @@ func Setup(cfg *config.Config, pool *pgxpool.Pool) *gin.Engine {
 	api.GET("/fuentes", fuenteH.Listar)
 	api.PUT("/fuentes/:id", fuenteH.Actualizar)
 	api.DELETE("/fuentes/:id", fuenteH.Eliminar)
+	api.POST("/fuentes/:id/logo", fuenteH.SubirLogo)
+	api.DELETE("/fuentes/:id/logo", fuenteH.EliminarLogo)
 
 	// Cuentas + QR + historial + tasa.
 	api.POST("/cuentas", cuentaH.Crear)
@@ -118,6 +123,10 @@ func Setup(cfg *config.Config, pool *pgxpool.Pool) *gin.Engine {
 	api.DELETE("/splits/:id", splitH.Eliminar)
 	api.GET("/transacciones", splitH.ListarTransacciones)
 	api.PUT("/transacciones/:id/realizar", splitH.MarcarRealizada)
+
+	// Configuración global.
+	api.GET("/settings/split", settingsH.GetSplit)
+	api.PUT("/settings/split", settingsH.SetSplit)
 
 	// Dashboard.
 	api.GET("/dashboard/summary", dashH.Summary)

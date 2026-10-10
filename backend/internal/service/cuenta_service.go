@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"slices"
 
 	"abys/internal/apperr"
 	"abys/internal/model"
 	"abys/internal/repository"
+	"abys/internal/splitcalc"
 )
 
 // FuenteService orquesta el CRUD de fuentes (BR-020, BR-084).
@@ -15,9 +17,20 @@ type FuenteService struct {
 
 func NewFuenteService(repo *repository.FuenteRepo) *FuenteService { return &FuenteService{repo: repo} }
 
+// validarSplitAuto valida el modo de split automático cuando está presente.
+func validarSplitAuto(modo *string) error {
+	if modo != nil && *modo != "" && !slices.Contains(splitcalc.ModosValidos, *modo) {
+		return apperr.NewValidation("modo de split automático inválido: " + *modo)
+	}
+	return nil
+}
+
 func (s *FuenteService) Crear(ctx context.Context, f model.Fuente) (int64, error) {
 	if f.Alias == "" {
 		return 0, apperr.NewValidation("el alias de la fuente es obligatorio")
+	}
+	if err := validarSplitAuto(f.SplitAutoModo); err != nil {
+		return 0, err
 	}
 	return s.repo.Crear(ctx, f)
 }
@@ -30,11 +43,24 @@ func (s *FuenteService) Actualizar(ctx context.Context, f model.Fuente) error {
 	if f.Alias == "" {
 		return apperr.NewValidation("el alias de la fuente es obligatorio")
 	}
+	if err := validarSplitAuto(f.SplitAutoModo); err != nil {
+		return err
+	}
 	return s.repo.Actualizar(ctx, f)
 }
 
 func (s *FuenteService) Eliminar(ctx context.Context, id int64) error {
 	return s.repo.SoftDelete(ctx, id)
+}
+
+// SubirLogo actualiza la ruta del logo de la fuente.
+func (s *FuenteService) SubirLogo(ctx context.Context, id int64, ruta string) error {
+	return s.repo.SetLogo(ctx, id, ruta)
+}
+
+// EliminarLogo quita el logo de la fuente.
+func (s *FuenteService) EliminarLogo(ctx context.Context, id int64) error {
+	return s.repo.ClearLogo(ctx, id)
 }
 
 func (s *FuenteService) Detalle(ctx context.Context, id int64) (*model.Fuente, error) {
