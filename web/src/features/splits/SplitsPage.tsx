@@ -13,13 +13,14 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { formatearFechaEs, formatBs, formatTasaBps } from "@/lib/format"
 import { useCuentas, useEliminarSplit, usePagos, useSplits } from "@/services/hooks"
-import type { Pago, Split, Transaccion } from "@/services/types"
+import type { Cuenta, Pago, Split, Transaccion } from "@/services/types"
+import { CuentaDetalleDialog } from "./CuentaDetalleDialog"
 import { RealizarTxDialog } from "./RealizarTxDialog"
 
 function BadgeTx({ tx }: { tx: Transaccion }) {
@@ -207,6 +208,7 @@ function FilaPago({ pago, split }: { pago: Pago; split: Split }) {
 export default function SplitsPage() {
   const { data: pagosRes, isLoading: pagosLoading } = usePagos({ page_size: 500 })
   const { data: splits, isLoading: splitsLoading } = useSplits()
+  const { data: cuentas } = useCuentas()
 
   if (pagosLoading || splitsLoading) {
     return (
@@ -230,6 +232,16 @@ export default function SplitsPage() {
   const splitsPorPago = new Map((splits ?? []).map((s) => [s.pago_id, s]))
   const pagosConSplit = pagos.filter((p) => splitsPorPago.has(p.id))
 
+  const pendientePorCuenta = new Map<number, number>()
+  for (const s of splits ?? []) {
+    for (const tx of s.transacciones) {
+      if (!tx.realizado) {
+        pendientePorCuenta.set(tx.cuenta_id, (pendientePorCuenta.get(tx.cuenta_id) ?? 0) + tx.monto_enteros)
+      }
+    }
+  }
+  const pendienteTotal = [...pendientePorCuenta.values()].reduce((a, b) => a + b, 0)
+
   return (
     <div className="mx-auto max-w-6xl space-y-5">
       <header>
@@ -252,6 +264,12 @@ export default function SplitsPage() {
         />
       </div>
 
+      <PendientePorCuentaCard
+        cuentas={cuentas ?? []}
+        pendientePorCuenta={pendientePorCuenta}
+        pendienteTotal={pendienteTotal}
+      />
+
       {pagosConSplit.length === 0 ? (
         <p className="py-10 text-center text-sm text-muted-foreground">
           No hay splits generados.
@@ -266,6 +284,71 @@ export default function SplitsPage() {
         </Card>
       )}
     </div>
+  )
+}
+
+function PendientePorCuentaCard({
+  cuentas,
+  pendientePorCuenta,
+  pendienteTotal,
+}: {
+  cuentas: Cuenta[]
+  pendientePorCuenta: Map<number, number>
+  pendienteTotal: number
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm font-medium">Pendiente por cuenta</CardTitle>
+        <CardDescription>
+          Total por transferir agrupado por cuenta de destino. Usa "Ver datos" para el QR y el
+          número de cuenta.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {cuentas.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No hay cuentas configuradas.</p>
+        ) : (
+          cuentas.map((c) => {
+            const pendiente = pendientePorCuenta.get(c.id) ?? 0
+            return (
+              <div
+                key={c.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">
+                    {c.alias}
+                    {c.es_general && (
+                      <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                        · reserva
+                      </span>
+                    )}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {c.banco ?? "—"} · {c.numero ?? "—"}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold tabular-nums">{formatBs(pendiente)}</p>
+                  <CuentaDetalleDialog cuenta={c} pendiente={pendiente}>
+                    <Button size="sm" variant="outline">
+                      Ver datos
+                    </Button>
+                  </CuentaDetalleDialog>
+                </div>
+              </div>
+            )
+          })
+        )}
+        {cuentas.length > 0 && (
+          <div className="flex items-center justify-between border-t pt-2 text-sm">
+            <span className="text-muted-foreground">Total pendiente</span>
+            <span className="font-semibold tabular-nums">{formatBs(pendienteTotal)}</span>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
 
