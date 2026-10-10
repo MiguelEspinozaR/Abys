@@ -30,6 +30,8 @@ export interface Fuente {
   alias: string
   color: string
   logo_ruta: string | null
+  split_auto: boolean
+  split_auto_modo: "redondeado" | "enteros" | "preciso" | null
   created_at: string
   updated_at: string
 }
@@ -187,6 +189,12 @@ export interface FuentePayload {
   alias: string
   color: string
   logo_ruta?: string | null
+  split_auto: boolean
+  split_auto_modo?: "redondeado" | "enteros" | "preciso" | null
+}
+
+export interface SplitSettings {
+  modo_default: "redondeado" | "enteros" | "preciso"
 }
 
 export interface CuentaPayload {

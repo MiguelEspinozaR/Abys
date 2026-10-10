@@ -24,10 +24,12 @@ Estados usados: 400 (validación), 404 (no encontrado), 409 (conflicto/regla de 
 
 ## Fuentes
 
-| Método | Ruta |
-|---|---|
-| POST / GET | `/fuentes` |
-| PUT / DELETE | `/fuentes/:id` |
+| Método | Ruta | Descripción |
+|---|---|---|
+| POST / GET | `/fuentes` | Crear/listar (incluye `split_auto` y `split_auto_modo`) |
+| PUT / DELETE | `/fuentes/:id` | Actualizar/eliminar (soft delete) |
+| POST | `/fuentes/:id/logo` | Subir logo (multipart `archivo`) |
+| DELETE | `/fuentes/:id/logo` | Eliminar logo |
 
 ## Cuentas y tasas
 
@@ -68,6 +70,13 @@ Estados usados: 400 (validación), 404 (no encontrado), 409 (conflicto/regla de 
 |---|---|---|
 | GET | `/health` | Ping |
 | GET | `/health/db` | Conexión, latencia, versión PostgreSQL, tamaño DB, tablas con conteos |
+
+## Configuración
+
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/settings/split` | Modo de split por defecto |
+| PUT | `/settings/split` | Cambiar modo por defecto — body `{ modo_default }` |
 
 ## Convenciones
 

@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Loader2, Save } from "lucide-react"
+import { Loader2, Save, ScanText, X } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { useCrearPago, useFuentes, usePagos, useSubirComprobante } from "@/services/hooks"
-import { bsToCents, METODOS_PAGO, toISODate } from "@/lib/format"
+import { bsToCents, formatBs, formatearFechaEs, METODOS_PAGO, toISODate } from "@/lib/format"
 import type { MetodoPago } from "@/services/types"
 import { CalendarioDias, type Herramienta } from "./CalendarioDias"
 import { ComprobanteDropzone } from "./ComprobanteDropzone"
@@ -27,7 +27,7 @@ export default function RegistrarPage() {
   const subirComprobante = useSubirComprobante()
 
   // Pagos ya guardados: solo como referencia visual en el calendario.
-  const { data: pagosGuardados } = usePagos({ page_size: 200 })
+  const { data: pagosGuardados } = usePagos({ page_size: 500 })
   const { yaTrabajados, yaFechasPago } = useMemo(() => {
     const yaTrabajados = new Set<string>()
     const yaFechasPago = new Set<string>()
@@ -46,6 +46,14 @@ export default function RegistrarPage() {
   const [montoStr, setMontoStr] = useState("")
   const [notas, setNotas] = useState("")
   const [comprobante, setComprobante] = useState<File | null>(null)
+  const [ocrResumen, setOcrResumen] = useState<{
+    monto?: number
+    fecha?: string
+    descripcion?: string
+  } | null>(null)
+
+  const montoInputRef = useRef<HTMLInputElement>(null)
+  const calendarioRef = useRef<HTMLDivElement>(null)
 
   const montoCents = bsToCents(montoStr)
 
@@ -75,7 +83,7 @@ export default function RegistrarPage() {
 
   const guardar = async () => {
     if (!puedeGuardar || montoCents == null || !fuenteValida) return
-    const pago = await crearPago.mutateAsync({
+    const res = await crearPago.mutateAsync({
       fuente_id: Number(fuenteId),
       fecha_pago: fechaPago,
       monto_enteros: montoCents,
@@ -84,18 +92,50 @@ export default function RegistrarPage() {
       dias_trabajados: [...diasTrabajados].sort(),
     })
     if (comprobante) {
-      await subirComprobante.mutateAsync({ id: pago.id, archivo: comprobante })
+      await subirComprobante.mutateAsync({ id: res.data.id, archivo: comprobante })
     }
     navigate("/ingresos")
   }
 
-  const aplicarOcr = (r: { monto_enteros?: number; fecha?: string; referencia?: string }) => {
-    if (r.monto_enteros != null) setMontoStr((r.monto_enteros / 100).toLocaleString("es-BO", { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-    if (r.fecha) {
-      setFechaPago(r.fecha)
-      setDiasTrabajados((prev) => new Set([...prev, r.fecha!]))
+  const aplicarOcr = (r: {
+    monto_enteros?: number
+    fecha?: string
+    referencia?: string
+    descripcion?: string
+  }) => {
+    if (r.monto_enteros != null) {
+      setMontoStr(
+        (r.monto_enteros / 100).toLocaleString("es-BO", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }),
+      )
     }
-    if (r.referencia) setNotas((prev) => (prev ? `${prev}\n${r.referencia}` : r.referencia!))
+    if (r.fecha) setFechaPago(r.fecha)
+
+    const textoNotas = [r.referencia, r.descripcion].filter(Boolean).join(" — ")
+    if (textoNotas) {
+      setNotas((prev) => {
+        if (prev.split("\n").includes(textoNotas)) return prev
+        return prev ? `${prev}\n${textoNotas}` : textoNotas
+      })
+    }
+
+    setOcrResumen({
+      monto: r.monto_enteros,
+      fecha: r.fecha,
+      descripcion: [r.referencia, r.descripcion].filter(Boolean).join(" — ") || undefined,
+    })
+
+    // Lleva la vista al primer campo autocompletado (antes quedaba fuera de pantalla).
+    if (r.monto_enteros != null) {
+      setTimeout(() => montoInputRef.current?.focus(), 0)
+    } else if (r.fecha) {
+      setTimeout(
+        () => calendarioRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }),
+        0,
+      )
+    }
   }
 
   return (
@@ -109,22 +149,24 @@ export default function RegistrarPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Calendario */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Calendario</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CalendarioDias
-              diasTrabajados={diasTrabajados}
-              fechaPago={fechaPago}
-              yaTrabajados={yaTrabajados}
-              yaFechasPago={yaFechasPago}
-              herramienta={herramienta}
-              setHerramienta={setHerramienta}
-              onMarcarDia={marcarDia}
-            />
-          </CardContent>
-        </Card>
+        <div ref={calendarioRef}>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium">Calendario</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CalendarioDias
+                diasTrabajados={diasTrabajados}
+                fechaPago={fechaPago}
+                yaTrabajados={yaTrabajados}
+                yaFechasPago={yaFechasPago}
+                herramienta={herramienta}
+                setHerramienta={setHerramienta}
+                onMarcarDia={marcarDia}
+              />
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Datos del pago */}
         <div className="space-y-6">
@@ -197,6 +239,7 @@ export default function RegistrarPage() {
                 <Label htmlFor="monto">Monto (Bs)</Label>
                 <Input
                   id="monto"
+                  ref={montoInputRef}
                   inputMode="decimal"
                   placeholder="Ej: 1.234,56"
                   value={montoStr}
@@ -234,6 +277,76 @@ export default function RegistrarPage() {
               />
             </CardContent>
           </Card>
+
+          {ocrResumen && (
+            <Card className="border-primary/40 bg-primary/5">
+              <CardContent className="space-y-3 pt-4">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="flex items-center gap-1.5 text-sm font-medium">
+                    <ScanText className="size-4 text-primary" aria-hidden />
+                    Detectado en el comprobante
+                  </p>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-7"
+                    aria-label="Ocultar resumen del comprobante"
+                    onClick={() => setOcrResumen(null)}
+                  >
+                    <X className="size-4" aria-hidden />
+                  </Button>
+                </div>
+                <dl className="grid grid-cols-1 gap-1.5 text-sm sm:grid-cols-2">
+                  <div className="flex items-center justify-between gap-2 sm:justify-start">
+                    <dt className="text-muted-foreground">Monto:</dt>
+                    <dd className="font-medium">
+                      {ocrResumen.monto != null ? formatBs(ocrResumen.monto) : "no detectado"}
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 sm:justify-start">
+                    <dt className="text-muted-foreground">Fecha:</dt>
+                    <dd className="font-medium">
+                      {ocrResumen.fecha ? formatearFechaEs(ocrResumen.fecha) : "no detectada"}
+                    </dd>
+                  </div>
+                  {ocrResumen.descripcion && (
+                    <div className="flex items-start justify-between gap-2 sm:col-span-2 sm:justify-start">
+                      <dt className="text-muted-foreground">Descripción:</dt>
+                      <dd className="min-w-0 flex-1 break-words">{ocrResumen.descripcion}</dd>
+                    </div>
+                  )}
+                </dl>
+                <div className="flex flex-wrap gap-2">
+                  {ocrResumen.monto != null && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => montoInputRef.current?.focus()}
+                    >
+                      Editar monto
+                    </Button>
+                  )}
+                  {ocrResumen.fecha && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      onClick={() =>
+                        calendarioRef.current?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "center",
+                        })
+                      }
+                    >
+                      Ver fecha en el calendario
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <Button
             type="button"

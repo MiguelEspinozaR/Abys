@@ -47,10 +47,6 @@ const GRUPOS: { titulo: string; items: NavItemDef[] }[] = [
   },
 ]
 
-const ACCESOS_INFERIORES: NavItemDef[] = [
-  { to: "/configuracion", label: "Configuración", icon: Settings },
-]
-
 function BotonNav({ item, colapsado }: { item: NavItemDef; colapsado: boolean }) {
   const boton = (
     <NavLink
@@ -133,10 +129,8 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* ===== Zona inferior: tema + colapso + configuración ===== */}
+      {/* ===== Zona inferior: tema + colapso ===== */}
       <div className="shrink-0 space-y-0.5 border-t border-sidebar-border px-2 py-2.5">
-        <BotonNav item={ACCESOS_INFERIORES[0]} colapsado={sidebarColapsado} />
-
         <Tooltip>
           <TooltipTrigger asChild>
             <button

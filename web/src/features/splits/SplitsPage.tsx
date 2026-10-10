@@ -216,7 +216,7 @@ function FilaPago({ pago, split }: { pago: Pago; split: Split | undefined }) {
 }
 
 export default function SplitsPage() {
-  const { data: pagosRes, isLoading: pagosLoading } = usePagos({ page_size: 100 })
+  const { data: pagosRes, isLoading: pagosLoading } = usePagos({ page_size: 500 })
   const { data: splits, isLoading: splitsLoading } = useSplits()
 
   if (pagosLoading || splitsLoading) {

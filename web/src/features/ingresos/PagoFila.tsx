@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { CalendarDays, ChevronDown, Pencil, Trash2 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { CalendarDays, ChevronDown, ImageOff, Pencil, Receipt, SplitSquareHorizontal, Trash2, X } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,14 +15,27 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { formatearFechaEs, formatBs, labelMetodo } from "@/lib/format"
+import { assetUrl } from "@/services/api"
 import { useEliminarPago } from "@/services/hooks"
 import type { Pago } from "@/services/types"
 import { ListarDias } from "./ListarDias"
 import { EditarPagoDialog } from "./EditarPagoDialog"
+import { GenerarSplitDialog } from "../splits/GenerarSplitDialog"
 
 export function PagoFila({ pago }: { pago: Pago }) {
   const [expandido, setExpandido] = useState(false)
+  const [zoom, setZoom] = useState(false)
   const eliminar = useEliminarPago()
+  const comprobanteUrl = assetUrl(pago.imagen_ruta)
+
+  useEffect(() => {
+    if (!zoom) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setZoom(false)
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [zoom])
 
   return (
     <div>
@@ -65,7 +78,42 @@ export function PagoFila({ pago }: { pago: Pago }) {
           {formatBs(pago.monto_enteros)}
         </p>
 
+        {comprobanteUrl && (
+          <button
+            type="button"
+            onClick={() => setZoom(true)}
+            className="hidden shrink-0 overflow-hidden rounded-md border transition-opacity hover:opacity-80 sm:block"
+            aria-label="Ver comprobante"
+          >
+            <img
+              src={comprobanteUrl}
+              alt="Comprobante adjunto"
+              loading="lazy"
+              className="size-10 object-cover"
+            />
+          </button>
+        )}
+
         <div className="flex shrink-0 items-center gap-1">
+          {pago.split_id ? (
+            <Badge variant="outline" className="hidden gap-1 md:inline-flex" title="Este pago ya tiene split">
+              <SplitSquareHorizontal className="size-3.5" aria-hidden />
+              {pago.split_modo ?? "split"}
+            </Badge>
+          ) : (
+            <GenerarSplitDialog pago={pago}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                aria-label="Generar split"
+                title="Generar split"
+              >
+                <SplitSquareHorizontal className="size-4" />
+              </Button>
+            </GenerarSplitDialog>
+          )}
+
           <EditarPagoDialog pago={pago}>
             <Button variant="ghost" size="icon" className="size-8" aria-label="Editar pago">
               <Pencil className="size-4" />
@@ -117,16 +165,62 @@ export function PagoFila({ pago }: { pago: Pago }) {
               </p>
               <ListarDias dias={pago.dias_trabajados.map((d) => d.fecha)} />
             </div>
-            <div className="text-xs text-muted-foreground sm:text-right">
-              <p>ID #{pago.id}</p>
-              {pago.split_id && (
-                <p>
-                  Split: {pago.split_modo ?? "generado"} (#{pago.split_id})
+            <div className="space-y-2">
+              <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <Receipt className="size-3.5" aria-hidden />
+                Comprobante
+              </p>
+              {comprobanteUrl ? (
+                <button
+                  type="button"
+                  onClick={() => setZoom(true)}
+                  className="block overflow-hidden rounded-lg border transition-opacity hover:opacity-80"
+                  aria-label="Ampliar comprobante"
+                >
+                  <img
+                    src={comprobanteUrl}
+                    alt="Comprobante del pago"
+                    loading="lazy"
+                    className="max-h-48 object-contain"
+                  />
+                </button>
+              ) : (
+                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <ImageOff className="size-3.5" aria-hidden />
+                  Sin comprobante
                 </p>
               )}
-              {pago.imagen_ruta && <p>Con comprobante adjunto</p>}
+              <p className="text-xs text-muted-foreground">
+                ID #{pago.id}
+                {pago.split_id ? ` · Split: ${pago.split_modo ?? "generado"} (#${pago.split_id})` : ""}
+              </p>
             </div>
           </div>
+        </div>
+      )}
+
+      {zoom && comprobanteUrl && (
+        <div
+          className="fixed inset-0 z-50 flex cursor-zoom-out items-center justify-center bg-black/80 p-4"
+          onClick={() => setZoom(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Comprobante ampliado"
+        >
+          <button
+            type="button"
+            className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
+            onClick={() => setZoom(false)}
+            aria-label="Cerrar"
+          >
+            <X className="size-5" aria-hidden />
+          </button>
+          <img
+            src={comprobanteUrl}
+            alt="Comprobante ampliado"
+            className="max-h-[90vh] max-w-[90vw] cursor-default rounded-lg object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
       )}
     </div>

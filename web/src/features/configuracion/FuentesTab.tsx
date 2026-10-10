@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { Loader2, Pencil, Plus, Trash2 } from "lucide-react"
+import { useRef, useState } from "react"
+import { ImageOff, Loader2, Pencil, Plus, Trash2, Upload, X } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +25,14 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import {
   Table,
   TableBody,
   TableCell,
@@ -33,13 +41,26 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useActualizarFuente, useCrearFuente, useEliminarFuente, useFuentes } from "@/services/hooks"
-import type { Fuente } from "@/services/types"
+import {
+  useActualizarFuente,
+  useCrearFuente,
+  useEliminarFuente,
+  useEliminarLogoFuente,
+  useFuentes,
+  useSubirLogoFuente,
+} from "@/services/hooks"
+import { assetUrl } from "@/services/api"
+import type { Fuente, FuentePayload } from "@/services/types"
+
+const MODOS = ["preciso", "redondeado", "enteros"] as const
+type Modo = (typeof MODOS)[number]
+const DEFAULT_MODO = ""
 
 interface FormFuente {
   alias: string
   color: string
-  logo_ruta: string
+  split_auto: boolean
+  split_auto_modo: string
 }
 
 function FuenteDialog({
@@ -54,7 +75,8 @@ function FuenteDialog({
   const [form, setForm] = useState<FormFuente>({
     alias: fuente?.alias ?? "",
     color: fuente?.color ?? "#3b82f6",
-    logo_ruta: fuente?.logo_ruta ?? "",
+    split_auto: fuente?.split_auto ?? false,
+    split_auto_modo: fuente?.split_auto_modo ?? DEFAULT_MODO,
   })
 
   const isPending = crear.isPending || actualizar.isPending
@@ -62,10 +84,13 @@ function FuenteDialog({
 
   const guardar = async () => {
     if (!valido) return
-    const payload = {
+    const payload: FuentePayload = {
       alias: form.alias.trim(),
       color: form.color,
-      logo_ruta: form.logo_ruta.trim() ? form.logo_ruta.trim() : null,
+      logo_ruta: fuente?.logo_ruta ?? null,
+      split_auto: form.split_auto,
+      split_auto_modo:
+        form.split_auto && form.split_auto_modo ? (form.split_auto_modo as Modo) : null,
     }
     if (fuente) await actualizar.mutateAsync({ id: fuente.id, payload })
     else await crear.mutateAsync(payload)
@@ -109,14 +134,44 @@ function FuenteDialog({
               />
             </div>
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="fuente-logo">Logo (ruta URL)</Label>
-            <Input
-              id="fuente-logo"
-              value={form.logo_ruta}
-              onChange={(e) => setForm((f) => ({ ...f, logo_ruta: e.target.value }))}
-              placeholder="/uploads/logo.png (opcional)"
-            />
+
+          <div className="space-y-3 rounded-lg border p-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="space-y-0.5">
+                <Label htmlFor="fuente-split-auto">Split automático</Label>
+                <p className="text-xs text-muted-foreground">
+                  Genera el split al registrar un pago de esta fuente.
+                </p>
+              </div>
+              <Switch
+                id="fuente-split-auto"
+                checked={form.split_auto}
+                onCheckedChange={(v) => setForm((f) => ({ ...f, split_auto: v }))}
+              />
+            </div>
+            {form.split_auto && (
+              <div className="space-y-1.5">
+                <Label htmlFor="fuente-split-modo">Modo de cálculo</Label>
+                <Select
+                  value={form.split_auto_modo || "default"}
+                  onValueChange={(v) =>
+                    setForm((f) => ({ ...f, split_auto_modo: v === "default" ? "" : v }))
+                  }
+                >
+                  <SelectTrigger id="fuente-split-modo">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Usar el modo por defecto</SelectItem>
+                    {MODOS.map((m) => (
+                      <SelectItem key={m} value={m}>
+                        {m}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
         </div>
         <DialogFooter>
@@ -130,6 +185,67 @@ function FuenteDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+function LogoCell({ fuente }: { fuente: Fuente }) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const subir = useSubirLogoFuente()
+  const eliminar = useEliminarLogoFuente()
+  const logoUrl = assetUrl(fuente.logo_ruta)
+
+  return (
+    <div className="flex items-center gap-2">
+      {logoUrl ? (
+        <img
+          src={logoUrl}
+          alt={`Logo de ${fuente.alias}`}
+          className="size-9 rounded border object-contain"
+        />
+      ) : (
+        <div className="grid size-9 place-items-center rounded border border-dashed text-muted-foreground">
+          <ImageOff className="size-4" aria-hidden />
+        </div>
+      )}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0]
+          if (f) subir.mutate({ id: fuente.id, archivo: f })
+          e.target.value = ""
+        }}
+      />
+      <div className="flex gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-7"
+          onClick={() => inputRef.current?.click()}
+          disabled={subir.isPending}
+          aria-label={`Subir logo de ${fuente.alias}`}
+        >
+          {subir.isPending ? (
+            <Loader2 className="size-3.5 animate-spin" aria-hidden />
+          ) : (
+            <Upload className="size-3.5" aria-hidden />
+          )}
+        </Button>
+        {logoUrl && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-7 text-muted-foreground hover:text-destructive"
+            onClick={() => eliminar.mutate(fuente.id)}
+            aria-label={`Quitar logo de ${fuente.alias}`}
+          >
+            <X className="size-3.5" aria-hidden />
+          </Button>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -163,6 +279,7 @@ export function FuentesTab() {
                 <TableHead>Alias</TableHead>
                 <TableHead>Color</TableHead>
                 <TableHead>Logo</TableHead>
+                <TableHead>Split</TableHead>
                 <TableHead className="w-24 text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
@@ -184,8 +301,17 @@ export function FuentesTab() {
                       {f.color}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-xs text-muted-foreground">
-                    {f.logo_ruta ?? "—"}
+                  <TableCell>
+                    <LogoCell fuente={f} />
+                  </TableCell>
+                  <TableCell>
+                    {f.split_auto ? (
+                      <Badge variant="secondary" className="gap-1">
+                        Auto · {f.split_auto_modo ?? "por defecto"}
+                      </Badge>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">Manual</span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <div className="flex justify-end gap-1">

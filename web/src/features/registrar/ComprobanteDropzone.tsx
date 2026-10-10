@@ -1,14 +1,22 @@
-import { useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Loader2, ScanSearch, UploadCloud, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { leerComprobante } from "@/services/ocr"
 import { Button } from "@/components/ui/button"
+import { formatBs, formatearFechaEs } from "@/lib/format"
 import { toast } from "sonner"
+
+interface ResultadoOcr {
+  monto_enteros?: number
+  fecha?: string
+  referencia?: string
+  descripcion?: string
+}
 
 interface Props {
   comprobante: File | null
   onChange: (f: File | null) => void
-  onResultadoOcr: (r: { monto_enteros?: number; fecha?: string; referencia?: string }) => void
+  onResultadoOcr: (r: ResultadoOcr) => void
 }
 
 export function ComprobanteDropzone({ comprobante, onChange, onResultadoOcr }: Props) {
@@ -16,6 +24,16 @@ export function ComprobanteDropzone({ comprobante, onChange, onResultadoOcr }: P
   const [drag, setDrag] = useState(false)
   const [leyendo, setLeyendo] = useState(false)
   const [progreso, setProgreso] = useState(0)
+
+  const previewUrl = useMemo(
+    () => (comprobante ? URL.createObjectURL(comprobante) : null),
+    [comprobante],
+  )
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+    }
+  }, [previewUrl])
 
   const aceptar = (f: File | undefined | null) => {
     if (!f) return
@@ -36,11 +54,17 @@ export function ComprobanteDropzone({ comprobante, onChange, onResultadoOcr }: P
         monto_enteros: res.monto_enteros,
         fecha: res.fecha,
         referencia: res.referencia,
+        descripcion: res.descripcion,
       })
-      if (!res.monto_enteros && !res.fecha && !res.referencia) {
-        toast.info("No se detectaron datos claros. Completa los campos manualmente.")
+      const partes: string[] = []
+      if (res.monto_enteros != null) partes.push(`Monto ${formatBs(res.monto_enteros)}`)
+      if (res.fecha) partes.push(`Fecha ${formatearFechaEs(res.fecha)}`)
+      if (partes.length > 0) {
+        toast.success(`Comprobante leído: ${partes.join(" · ")}`)
+      } else if (res.descripcion || res.referencia) {
+        toast.info("Se detectó texto del comprobante, pero no el monto ni la fecha. Revísalo abajo.")
       } else {
-        toast.success("Comprobante leído: montos y/o fechas autocompletados")
+        toast.info("No se detectaron datos claros. Completa los campos manualmente.")
       }
     } catch {
       toast.error("No se pudo procesar el comprobante. Revisa la conexión o la imagen.")
@@ -63,7 +87,7 @@ export function ComprobanteDropzone({ comprobante, onChange, onResultadoOcr }: P
         <div className="rounded-lg border p-3">
           <div className="flex items-start gap-3">
             <img
-              src={URL.createObjectURL(comprobante)}
+              src={previewUrl ?? undefined}
               alt="Vista previa del comprobante"
               className="h-20 w-20 rounded-md border object-cover"
             />
@@ -135,7 +159,7 @@ export function ComprobanteDropzone({ comprobante, onChange, onResultadoOcr }: P
         >
           <UploadCloud className="size-6" aria-hidden />
           <span className="font-medium">Arrastra o haz clic para subir el comprobante</span>
-          <span className="text-xs">PNG, JPG o WEBP · opcional · con OCR automático</span>
+          <span className="text-xs">PNG, JPG o WEBP · opcional · lectura con OCR</span>
         </button>
       )}
     </div>

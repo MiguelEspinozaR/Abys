@@ -18,6 +18,7 @@ import type {
   PagoPayload,
   PagosMeta,
   Split,
+  SplitSettings,
   Transaccion,
   WeeklyData,
   YearlyData,
@@ -30,6 +31,7 @@ export const queryKeys = {
   pago: (id: number) => ["pagos", id] as const,
   split: (pagoId: number) => ["split", pagoId] as const,
   splits: ["splits"] as const,
+  splitSettings: ["settings", "split"] as const,
   summary: (mes: number, anio: number) => ["dashboard", "summary", mes, anio] as const,
   history: ["dashboard", "history"] as const,
   weekly: (fecha: string) => ["dashboard", "weekly", fecha] as const,
@@ -112,6 +114,14 @@ export function useSplits() {
   })
 }
 
+export function useSplitSettings() {
+  return useQuery({
+    queryKey: queryKeys.splitSettings,
+    queryFn: () => api.get<SplitSettings>("/settings/split"),
+    staleTime: 60_000,
+  })
+}
+
 export function useSummary(mes: number, anio: number) {
   return useQuery({
     queryKey: queryKeys.summary(mes, anio),
@@ -183,12 +193,25 @@ function invalidarPagosYDashboard(qc: ReturnType<typeof useQueryClient>) {
 export function useCrearPago() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (payload: PagoPayload) => api.post<Pago>("/pagos", payload),
-    onSuccess: (pago) => {
-      toast.success("Pago registrado", {
-        description: `Pago #${pago.id} creado correctamente.`,
-      })
+    mutationFn: (payload: PagoPayload) =>
+      api.postRaw<{ data: Pago; split_auto?: boolean; split_warning?: string }>("/pagos", payload),
+    onSuccess: (res) => {
+      const pago = res.data
+      if (res.split_warning) {
+        toast.warning(`Pago #${pago.id} registrado sin split automático`, {
+          description: res.split_warning,
+        })
+      } else if (res.split_auto) {
+        toast.success("Pago registrado", {
+          description: `Pago #${pago.id} creado con split automático.`,
+        })
+      } else {
+        toast.success("Pago registrado", {
+          description: `Pago #${pago.id} creado correctamente.`,
+        })
+      }
       invalidarPagosYDashboard(qc)
+      qc.invalidateQueries({ queryKey: queryKeys.splits })
     },
     onError: (e: Error) => toast.error(e.message),
   })
@@ -409,6 +432,48 @@ export function useEliminarQR() {
     onSuccess: () => {
       toast.success("QR eliminado")
       qc.invalidateQueries({ queryKey: queryKeys.cuentas })
+    },
+    onError: (e: Error) => toast.error(e.message),
+  })
+}
+
+export function useSubirLogoFuente() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, archivo }: { id: number; archivo: File }) => {
+      const fd = new FormData()
+      fd.append("archivo", archivo)
+      return api.postForm<{ id: number; logo_ruta: string }>(`/fuentes/${id}/logo`, fd)
+    },
+    onSuccess: () => {
+      toast.success("Logo actualizado")
+      qc.invalidateQueries({ queryKey: queryKeys.fuentes })
+    },
+    onError: (e: Error) => toast.error(e.message),
+  })
+}
+
+export function useEliminarLogoFuente() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) =>
+      api.delete<{ id: number; logo_ruta: null }>(`/fuentes/${id}/logo`),
+    onSuccess: () => {
+      toast.success("Logo eliminado")
+      qc.invalidateQueries({ queryKey: queryKeys.fuentes })
+    },
+    onError: (e: Error) => toast.error(e.message),
+  })
+}
+
+export function useActualizarSplitSettings() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (payload: SplitSettings) =>
+      api.put<SplitSettings>("/settings/split", payload),
+    onSuccess: (res) => {
+      toast.success(`Modo por defecto: ${res.modo_default}`)
+      qc.invalidateQueries({ queryKey: queryKeys.splitSettings })
     },
     onError: (e: Error) => toast.error(e.message),
   })
