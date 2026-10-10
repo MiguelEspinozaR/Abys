@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { ChevronDown, SplitSquareHorizontal, Trash2, TriangleAlert } from "lucide-react"
+import { ChevronDown, Trash2, TriangleAlert } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,7 +20,6 @@ import { cn } from "@/lib/utils"
 import { formatearFechaEs, formatBs, formatTasaBps } from "@/lib/format"
 import { useCuentas, useEliminarSplit, usePagos, useSplits } from "@/services/hooks"
 import type { Pago, Split, Transaccion } from "@/services/types"
-import { GenerarSplitDialog } from "./GenerarSplitDialog"
 import { RealizarTxDialog } from "./RealizarTxDialog"
 
 function BadgeTx({ tx }: { tx: Transaccion }) {
@@ -148,7 +147,7 @@ function DetalleSplit({ split, pago }: { split: Split; pago: Pago }) {
   )
 }
 
-function FilaPago({ pago, split }: { pago: Pago; split: Split | undefined }) {
+function FilaPago({ pago, split }: { pago: Pago; split: Split }) {
   const [expandido, setExpandido] = useState(false)
 
   return (
@@ -156,13 +155,12 @@ function FilaPago({ pago, split }: { pago: Pago; split: Split | undefined }) {
       <div className="flex items-center gap-3 px-4 py-3 hover:bg-accent/40">
         <button
           type="button"
-          onClick={() => split && setExpandido((v) => !v)}
+          onClick={() => setExpandido((v) => !v)}
           aria-expanded={expandido}
-          aria-label={split ? "Ver split" : "Sin split"}
-          disabled={!split}
+          aria-label="Ver split"
           className={cn(
             "grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground",
-            split ? "hover:bg-accent hover:text-foreground" : "opacity-30",
+            "hover:bg-accent hover:text-foreground",
           )}
         >
           <ChevronDown
@@ -189,28 +187,19 @@ function FilaPago({ pago, split }: { pago: Pago; split: Split | undefined }) {
           {formatBs(pago.monto_enteros)}
         </p>
 
-        {split ? (
-          <div className="flex shrink-0 items-center gap-2">
-            {split.total_pendiente === 0 ? (
-              <Badge className="border-transparent bg-emerald-500/15 text-emerald-700 dark:text-emerald-400">
-                Completo
-              </Badge>
-            ) : (
-              <Badge variant="outline">{formatBs(split.total_pendiente)} pend.</Badge>
-            )}
-          </div>
-        ) : (
-          <GenerarSplitDialog pago={pago}>
-            <Button size="sm" variant="outline" className="shrink-0">
-              <SplitSquareHorizontal className="mr-1.5 size-3.5" aria-hidden />
-              Generar split
-            </Button>
-          </GenerarSplitDialog>
-        )}
+        <div className="flex shrink-0 items-center gap-2">
+          {split.total_pendiente === 0 ? (
+            <Badge className="border-transparent bg-emerald-500/15 text-emerald-700 dark:text-emerald-400">
+              Completo
+            </Badge>
+          ) : (
+            <Badge variant="outline">{formatBs(split.total_pendiente)} pend.</Badge>
+          )}
+        </div>
       </div>
 
-      {split && expandido && <DetalleSplit split={split} pago={pago} />}
-      {split && expandido && <Separator />}
+      {expandido && <DetalleSplit split={split} pago={pago} />}
+      {expandido && <Separator />}
     </div>
   )
 }
@@ -238,6 +227,8 @@ export default function SplitsPage() {
   }
 
   const pagos = pagosRes?.data ?? []
+  const splitsPorPago = new Map((splits ?? []).map((s) => [s.pago_id, s]))
+  const pagosConSplit = pagos.filter((p) => splitsPorPago.has(p.id))
 
   return (
     <div className="mx-auto max-w-6xl space-y-5">
@@ -250,27 +241,26 @@ export default function SplitsPage() {
       </header>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <StatCard label="Pagos" valor={pagos.length} />
         <StatCard label="Splits generados" valor={splits?.length ?? 0} />
         <StatCard
           label="Pendiente total"
           valor={formatBs(splits?.reduce((a, s) => a + s.total_pendiente, 0) ?? 0)}
         />
+        <StatCard
+          label="Realizado total"
+          valor={formatBs(splits?.reduce((a, s) => a + s.total_realizado, 0) ?? 0)}
+        />
       </div>
 
-      {pagos.length === 0 ? (
+      {pagosConSplit.length === 0 ? (
         <p className="py-10 text-center text-sm text-muted-foreground">
-          No hay pagos registrados todavía.
+          No hay splits generados.
         </p>
       ) : (
         <Card className="overflow-hidden">
           <div className="divide-y divide-border">
-            {pagos.map((pago) => (
-              <FilaPago
-                key={pago.id}
-                pago={pago}
-                split={splits?.find((s) => s.pago_id === pago.id)}
-              />
+            {pagosConSplit.map((pago) => (
+              <FilaPago key={pago.id} pago={pago} split={splitsPorPago.get(pago.id)!} />
             ))}
           </div>
         </Card>

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 import { formatearFechaEs, formatBs, labelMetodo } from "@/lib/format"
 import { assetUrl } from "@/services/api"
@@ -102,15 +103,21 @@ export function PagoFila({ pago }: { pago: Pago }) {
             </Badge>
           ) : (
             <GenerarSplitDialog pago={pago}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8"
-                aria-label="Generar split"
-                title="Generar split"
-              >
-                <SplitSquareHorizontal className="size-4" />
-              </Button>
+              <div className="inline-flex">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8"
+                      aria-label="Generar split"
+                    >
+                      <SplitSquareHorizontal className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Generar split</TooltipContent>
+                </Tooltip>
+              </div>
             </GenerarSplitDialog>
           )}
 
