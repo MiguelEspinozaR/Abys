@@ -1,17 +1,9 @@
-import { NavLink } from "react-router-dom"
 import {
-  CalendarPlus,
   CircleDollarSign,
-  HeartPulse,
-  LayoutDashboard,
-  List,
   Moon,
   PanelLeftClose,
   PanelLeftOpen,
-  PieChart,
-  Settings,
   Sun,
-  type LucideIcon,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useUiStore } from "@/store/uiStore"
@@ -20,66 +12,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-
-interface NavItemDef {
-  to: string
-  label: string
-  icon: LucideIcon
-  end?: boolean
-}
-
-const GRUPOS: { titulo: string; items: NavItemDef[] }[] = [
-  {
-    titulo: "Finanzas",
-    items: [
-      { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
-      { to: "/registrar", label: "Registrar", icon: CalendarPlus },
-      { to: "/ingresos", label: "Ingresos", icon: List },
-      { to: "/splits", label: "Splits", icon: PieChart },
-    ],
-  },
-  {
-    titulo: "Sistema",
-    items: [
-      { to: "/configuracion", label: "Configuración", icon: Settings },
-      { to: "/health", label: "Health", icon: HeartPulse },
-    ],
-  },
-]
-
-function BotonNav({ item, colapsado }: { item: NavItemDef; colapsado: boolean }) {
-  const boton = (
-    <NavLink
-      to={item.to}
-      end={item.end}
-      aria-label={item.label}
-      className={({ isActive }) =>
-        cn(
-          "group/nav flex h-9 items-center gap-3 rounded-md px-2.5 text-sm font-medium transition-colors",
-          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-          colapsado && "justify-center px-0",
-          isActive
-            ? "bg-sidebar-accent text-sidebar-accent-foreground"
-            : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
-        )
-      }
-    >
-      <item.icon className="size-[18px] shrink-0" aria-hidden />
-      {!colapsado && <span className="truncate">{item.label}</span>}
-    </NavLink>
-  )
-
-  if (!colapsado) return boton
-
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>{boton}</TooltipTrigger>
-      <TooltipContent side="right" align="center">
-        {item.label}
-      </TooltipContent>
-    </Tooltip>
-  )
-}
+import { NavContenido } from "./NavContenido"
 
 export function Sidebar() {
   const { sidebarColapsado, toggleSidebar, tema, toggleTema } = useUiStore()
@@ -112,22 +45,7 @@ export function Sidebar() {
       </div>
 
       {/* ===== Zona media: navegación ===== */}
-      <nav className="flex-1 space-y-5 overflow-y-auto px-2 py-4" aria-label="Secciones">
-        {GRUPOS.map((grupo) => (
-          <div key={grupo.titulo}>
-            {!sidebarColapsado && (
-              <p className="mb-1.5 px-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
-                {grupo.titulo}
-              </p>
-            )}
-            <div className="space-y-0.5">
-              {grupo.items.map((item) => (
-                <BotonNav key={item.to} item={item} colapsado={sidebarColapsado} />
-              ))}
-            </div>
-          </div>
-        ))}
-      </nav>
+      <NavContenido colapsado={sidebarColapsado} />
 
       {/* ===== Zona inferior: tema + colapso ===== */}
       <div className="shrink-0 space-y-0.5 border-t border-sidebar-border px-2 py-2.5">

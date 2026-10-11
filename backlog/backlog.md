@@ -13,6 +13,7 @@ Lista de funcionalidades, su estado actual y el plan a futuro.
 | Configuración | CRUD de fuentes (alias, color, logo con subida de archivo), modo de split por defecto y split automático por fuente; CRUD de cuentas (alias, número, banco, QR), tasas con historial y opción "aplicar a pendientes" | Completado |
 | Health checker | Estado de la conexión a la base de datos, latencia, versión de PostgreSQL, tamaño y conteo por tabla. Reemplaza al antiguo "SQL tab" (sin ejecución arbitraria de SQL) | Completado |
 | Sidebar colapsable | Estilo IDE: 3 zonas (logo, secciones Finanzas/Sistema, tema + colapso), dark/light mode. "Configuración" aparece una sola vez, en el grupo Sistema | Completado |
+| Navegación móvil | En pantallas pequeñas el sidebar se oculta; una top bar muestra el logo Abys (título de la sección y toggle de tema) y al tocar el logo se despliega un panel anclado arriba-izquierda con toda la navegación, fondo oscurecido y cierre al navegar/Escape | Completado |
 
 ## Datos
 
