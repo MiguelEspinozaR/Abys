@@ -173,12 +173,10 @@ export default function IngresosPage() {
                   {grupos.get(anio)!.length}
                 </span>
               </h2>
-              <Card className="overflow-hidden">
-                <div className="divide-y divide-border">
-                  {grupos.get(anio)!.map((pago) => (
-                    <PagoFila key={pago.id} pago={pago} />
-                  ))}
-                </div>
+              <Card className="gap-2 overflow-hidden md:gap-0 md:divide-y md:divide-border">
+                {grupos.get(anio)!.map((pago) => (
+                  <PagoFila key={pago.id} pago={pago} />
+                ))}
               </Card>
             </section>
           ))}

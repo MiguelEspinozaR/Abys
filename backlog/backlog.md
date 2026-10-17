@@ -14,6 +14,7 @@ Lista de funcionalidades, su estado actual y el plan a futuro.
 | Health checker | Estado de la conexión a la base de datos, latencia, versión de PostgreSQL, tamaño y conteo por tabla. Reemplaza al antiguo "SQL tab" (sin ejecución arbitraria de SQL) | Completado |
 | Sidebar colapsable | Estilo IDE: 3 zonas (logo, secciones Finanzas/Sistema, tema + colapso), dark/light mode. "Configuración" aparece una sola vez, en el grupo Sistema | Completado |
 | Navegación móvil | En pantallas pequeñas el sidebar se oculta; una top bar muestra el logo Abys (título de la sección y toggle de tema) y al tocar el logo se despliega un panel anclado arriba-izquierda con toda la navegación, fondo oscurecido y cierre al navegar/Escape | Completado |
+| Listas responsive | En móvil, las listas de Ingresos y Splits se muestran como tarjetas apiladas: el texto se envuelve en vez de cortarse con elipsis, y el monto, el badge de método, el comprobante y las acciones quedan siempre visibles. En `md+` la vista no cambia | Completado |
 
 ## Datos
 

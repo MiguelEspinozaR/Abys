@@ -49,7 +49,7 @@ function FilaTransaccion({ tx, esGeneral }: { tx: Transaccion; esGeneral: boolea
       )}
     >
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{tx.alias_snapshot}</p>
+        <p className="break-words text-sm font-medium md:truncate">{tx.alias_snapshot}</p>
         <p className="text-xs text-muted-foreground">
           {formatTasaBps(tx.tasa_bps)}
           {esGeneral ? " · reserva" : ""}
@@ -88,7 +88,7 @@ function DetalleSplit({ split, pago }: { split: Split; pago: Pago }) {
   const tieneRealizadas = split.transacciones.some((t) => t.realizado)
 
   return (
-    <div className="space-y-2.5 px-4 py-3 pl-14">
+    <div className="space-y-2.5 px-3 py-3 md:px-4 md:pl-14">
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <Badge variant="outline">modo {split.modo_calculo}</Badge>
@@ -148,20 +148,31 @@ function DetalleSplit({ split, pago }: { split: Split; pago: Pago }) {
   )
 }
 
+function BadgePendiente({ split }: { split: Split }) {
+  if (split.total_pendiente === 0) {
+    return (
+      <Badge className="border-transparent bg-emerald-500/15 text-emerald-700 dark:text-emerald-400">
+        Completo
+      </Badge>
+    )
+  }
+  return <Badge variant="outline">{formatBs(split.total_pendiente)} pend.</Badge>
+}
+
 function FilaPago({ pago, split }: { pago: Pago; split: Split }) {
   const [expandido, setExpandido] = useState(false)
 
   return (
-    <div>
-      <div className="flex items-center gap-3 px-4 py-3 hover:bg-accent/40">
+    <div className="rounded-lg border md:rounded-none md:border-0">
+      <div className="flex items-start gap-3 px-3 py-2.5 hover:bg-accent/40 md:items-center md:px-4 md:py-3">
         <button
           type="button"
           onClick={() => setExpandido((v) => !v)}
           aria-expanded={expandido}
           aria-label="Ver split"
           className={cn(
-            "grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground",
-            "hover:bg-accent hover:text-foreground",
+            "mt-0.5 grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground",
+            "hover:bg-accent hover:text-foreground md:mt-0",
           )}
         >
           <ChevronDown
@@ -170,37 +181,41 @@ function FilaPago({ pago, split }: { pago: Pago; split: Split }) {
           />
         </button>
 
-        <div className="flex min-w-0 flex-1 items-center gap-3">
-          <span
-            className="inline-block size-2.5 shrink-0 rounded-full"
-            style={{ backgroundColor: pago.fuente_color ?? "#888" }}
-            aria-hidden
-          />
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium">Pago #{pago.id} · {pago.fuente_alias ?? `Fuente ${pago.fuente_id}`}</p>
-            <p className="truncate text-xs text-muted-foreground">
-              {formatearFechaEs(pago.fecha_pago)} · {pago.dias_trabajados.length} día(s)
-            </p>
+        <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 items-center gap-2">
+            <span
+              className="size-2.5 shrink-0 rounded-full"
+              style={{ backgroundColor: pago.fuente_color ?? "#888" }}
+              aria-hidden
+            />
+            <div className="min-w-0 flex-1">
+              <p className="break-words text-sm font-medium md:truncate">
+                Pago #{pago.id} · {pago.fuente_alias ?? `Fuente ${pago.fuente_id}`}
+              </p>
+              <p className="break-words text-xs text-muted-foreground md:truncate">
+                {formatearFechaEs(pago.fecha_pago)} · {pago.dias_trabajados.length} día(s)
+              </p>
+            </div>
+          </div>
+
+          {/* Móvil: estado del split en su propia línea */}
+          <div className="mt-1.5 md:hidden">
+            <BadgePendiente split={split} />
           </div>
         </div>
 
-        <p className="w-28 shrink-0 text-right text-sm font-semibold tabular-nums">
+        <p className="shrink-0 text-sm font-semibold tabular-nums md:w-28 md:text-right">
           {formatBs(pago.monto_enteros)}
         </p>
 
-        <div className="flex shrink-0 items-center gap-2">
-          {split.total_pendiente === 0 ? (
-            <Badge className="border-transparent bg-emerald-500/15 text-emerald-700 dark:text-emerald-400">
-              Completo
-            </Badge>
-          ) : (
-            <Badge variant="outline">{formatBs(split.total_pendiente)} pend.</Badge>
-          )}
+        {/* Desktop: badge inline tras el monto */}
+        <div className="hidden shrink-0 items-center gap-2 md:flex">
+          <BadgePendiente split={split} />
         </div>
       </div>
 
       {expandido && <DetalleSplit split={split} pago={pago} />}
-      {expandido && <Separator />}
+      {expandido && <Separator className="hidden md:block" />}
     </div>
   )
 }
@@ -275,12 +290,10 @@ export default function SplitsPage() {
           No hay splits generados.
         </p>
       ) : (
-        <Card className="overflow-hidden">
-          <div className="divide-y divide-border">
-            {pagosConSplit.map((pago) => (
-              <FilaPago key={pago.id} pago={pago} split={splitsPorPago.get(pago.id)!} />
-            ))}
-          </div>
+        <Card className="gap-2 overflow-hidden md:gap-0 md:divide-y md:divide-border">
+          {pagosConSplit.map((pago) => (
+            <FilaPago key={pago.id} pago={pago} split={splitsPorPago.get(pago.id)!} />
+          ))}
         </Card>
       )}
     </div>
@@ -317,7 +330,7 @@ function PendientePorCuentaCard({
                 className="flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2"
               >
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">
+                  <p className="break-words text-sm font-medium md:truncate">
                     {c.alias}
                     {c.es_general && (
                       <span className="ml-1.5 text-xs font-normal text-muted-foreground">
@@ -325,7 +338,7 @@ function PendientePorCuentaCard({
                       </span>
                     )}
                   </p>
-                  <p className="truncate text-xs text-muted-foreground">
+                  <p className="break-words text-xs text-muted-foreground md:truncate">
                     {c.banco ?? "—"} · {c.numero ?? "—"}
                   </p>
                 </div>

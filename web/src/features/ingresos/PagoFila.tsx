@@ -23,10 +23,111 @@ import { ListarDias } from "./ListarDias"
 import { EditarPagoDialog } from "./EditarPagoDialog"
 import { GenerarSplitDialog } from "../splits/GenerarSplitDialog"
 
+function MetodoBadge({ metodo }: { metodo: string }) {
+  return <Badge variant="secondary">{labelMetodo(metodo)}</Badge>
+}
+
+function ThumbComprobante({ url, onZoom }: { url: string; onZoom: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onZoom}
+      className="block shrink-0 overflow-hidden rounded-md border transition-opacity hover:opacity-80"
+      aria-label="Ver comprobante"
+    >
+      <img
+        src={url}
+        alt="Comprobante adjunto"
+        loading="lazy"
+        className="size-10 object-cover"
+      />
+    </button>
+  )
+}
+
+function MontoPago({ monto }: { monto: number }) {
+  return (
+    <p className="shrink-0 text-sm font-semibold tabular-nums md:w-28 md:text-right">
+      {formatBs(monto)}
+    </p>
+  )
+}
+
+function AccionesPago({ pago }: { pago: Pago }) {
+  const eliminar = useEliminarPago()
+
+  return (
+    <div className="flex shrink-0 items-center gap-1">
+      {pago.split_id ? (
+        <Badge variant="outline" className="gap-1" title="Este pago ya tiene split">
+          <SplitSquareHorizontal className="size-3.5" aria-hidden />
+          {pago.split_modo ?? "split"}
+        </Badge>
+      ) : (
+        <GenerarSplitDialog pago={pago}>
+          <div className="inline-flex">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                  aria-label="Generar split"
+                >
+                  <SplitSquareHorizontal className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Generar split</TooltipContent>
+            </Tooltip>
+          </div>
+        </GenerarSplitDialog>
+      )}
+
+      <EditarPagoDialog pago={pago}>
+        <Button variant="ghost" size="icon" className="size-8" aria-label="Editar pago">
+          <Pencil className="size-4" />
+        </Button>
+      </EditarPagoDialog>
+
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 text-destructive hover:text-destructive"
+            aria-label="Eliminar pago"
+          >
+            <Trash2 className="size-4" />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar pago #{pago.id}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Se eliminará el pago de {formatBs(pago.monto_enteros)} de{" "}
+              {pago.fuente_alias ?? "su fuente"} del {formatearFechaEs(pago.fecha_pago)}.
+              {pago.split_id ? " También se eliminará su split pendiente." : ""} Esta acción no se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => eliminar.mutate(pago.id)}
+              disabled={eliminar.isPending}
+            >
+              {eliminar.isPending ? "Eliminando…" : "Eliminar"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  )
+}
+
 export function PagoFila({ pago }: { pago: Pago }) {
   const [expandido, setExpandido] = useState(false)
   const [zoom, setZoom] = useState(false)
-  const eliminar = useEliminarPago()
   const comprobanteUrl = assetUrl(pago.imagen_ruta)
 
   useEffect(() => {
@@ -39,14 +140,14 @@ export function PagoFila({ pago }: { pago: Pago }) {
   }, [zoom])
 
   return (
-    <div>
-      <div className="flex items-center gap-3 px-4 py-3 hover:bg-accent/40">
+    <div className="rounded-lg border md:rounded-none md:border-0">
+      <div className="flex items-start gap-3 px-3 py-2.5 hover:bg-accent/40 md:items-center md:px-4 md:py-3">
         <button
           type="button"
           onClick={() => setExpandido((v) => !v)}
           aria-expanded={expandido}
           aria-label={expandido ? "Ocultar detalle" : "Ver detalle"}
-          className="grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+          className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground md:mt-0"
         >
           <ChevronDown
             className={cn("size-4 transition-transform", expandido && "rotate-180")}
@@ -54,116 +155,50 @@ export function PagoFila({ pago }: { pago: Pago }) {
           />
         </button>
 
-        <div className="flex min-w-0 flex-1 items-center gap-3">
-          <span
-            className="inline-block size-2.5 shrink-0 rounded-full"
-            style={{ backgroundColor: pago.fuente_color ?? "#888" }}
-            aria-hidden
-          />
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium">
-              {pago.fuente_alias ?? `Fuente ${pago.fuente_id}`}
-            </p>
-            <p className="truncate text-xs text-muted-foreground">
-              {formatearFechaEs(pago.fecha_pago)}
-              {pago.notas ? ` · ${pago.notas}` : ""}
-            </p>
+        <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 items-center gap-2">
+            <span
+              className="size-2.5 shrink-0 rounded-full"
+              style={{ backgroundColor: pago.fuente_color ?? "#888" }}
+              aria-hidden
+            />
+            <div className="min-w-0 flex-1">
+              <p className="break-words text-sm font-medium md:truncate">
+                {pago.fuente_alias ?? `Fuente ${pago.fuente_id}`}
+              </p>
+              <p className="break-words text-xs text-muted-foreground md:truncate">
+                {formatearFechaEs(pago.fecha_pago)}
+                {pago.notas ? ` · ${pago.notas}` : ""}
+              </p>
+            </div>
+          </div>
+
+          {/* Móvil: monto a la izquierda, badge/comprobante/acciones a la derecha */}
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 md:hidden">
+            <span className="mr-auto">
+              <MontoPago monto={pago.monto_enteros} />
+            </span>
+            <MetodoBadge metodo={pago.metodo_pago} />
+            {comprobanteUrl && (
+              <ThumbComprobante url={comprobanteUrl} onZoom={() => setZoom(true)} />
+            )}
+            <AccionesPago pago={pago} />
           </div>
         </div>
 
-        <Badge variant="secondary" className="hidden sm:inline-flex">
-          {labelMetodo(pago.metodo_pago)}
-        </Badge>
-
-        <p className="w-28 shrink-0 text-right text-sm font-semibold tabular-nums">
-          {formatBs(pago.monto_enteros)}
-        </p>
-
-        {comprobanteUrl && (
-          <button
-            type="button"
-            onClick={() => setZoom(true)}
-            className="hidden shrink-0 overflow-hidden rounded-md border transition-opacity hover:opacity-80 sm:block"
-            aria-label="Ver comprobante"
-          >
-            <img
-              src={comprobanteUrl}
-              alt="Comprobante adjunto"
-              loading="lazy"
-              className="size-10 object-cover"
-            />
-          </button>
-        )}
-
-        <div className="flex shrink-0 items-center gap-1">
-          {pago.split_id ? (
-            <Badge variant="outline" className="hidden gap-1 md:inline-flex" title="Este pago ya tiene split">
-              <SplitSquareHorizontal className="size-3.5" aria-hidden />
-              {pago.split_modo ?? "split"}
-            </Badge>
-          ) : (
-            <GenerarSplitDialog pago={pago}>
-              <div className="inline-flex">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-8"
-                      aria-label="Generar split"
-                    >
-                      <SplitSquareHorizontal className="size-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Generar split</TooltipContent>
-                </Tooltip>
-              </div>
-            </GenerarSplitDialog>
+        {/* Desktop: todo inline a la derecha */}
+        <div className="hidden items-center gap-3 md:flex">
+          <MetodoBadge metodo={pago.metodo_pago} />
+          <MontoPago monto={pago.monto_enteros} />
+          {comprobanteUrl && (
+            <ThumbComprobante url={comprobanteUrl} onZoom={() => setZoom(true)} />
           )}
-
-          <EditarPagoDialog pago={pago}>
-            <Button variant="ghost" size="icon" className="size-8" aria-label="Editar pago">
-              <Pencil className="size-4" />
-            </Button>
-          </EditarPagoDialog>
-
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8 text-destructive hover:text-destructive"
-                aria-label="Eliminar pago"
-              >
-                <Trash2 className="size-4" />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>¿Eliminar pago #{pago.id}?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Se eliminará el pago de {formatBs(pago.monto_enteros)} de{" "}
-                  {pago.fuente_alias ?? "su fuente"} del {formatearFechaEs(pago.fecha_pago)}.
-                  {pago.split_id ? " También se eliminará su split pendiente." : ""} Esta acción no se puede deshacer.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  onClick={() => eliminar.mutate(pago.id)}
-                  disabled={eliminar.isPending}
-                >
-                  {eliminar.isPending ? "Eliminando…" : "Eliminar"}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <AccionesPago pago={pago} />
         </div>
       </div>
 
       {expandido && (
-        <div className="border-t border-border/60 bg-muted/25 px-4 py-3 pl-14">
+        <div className="border-t border-border/60 bg-muted/25 px-3 py-3 md:px-4 md:pl-14">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="space-y-1.5">
               <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
