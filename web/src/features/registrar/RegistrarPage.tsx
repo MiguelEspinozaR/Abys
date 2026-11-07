@@ -290,7 +290,7 @@ export default function RegistrarPage() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="size-7"
+                    className="size-7 max-md:min-h-11 max-md:min-w-11"
                     aria-label="Ocultar resumen del comprobante"
                     onClick={() => setOcrResumen(null)}
                   >

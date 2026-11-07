@@ -32,7 +32,7 @@ function ThumbComprobante({ url, onZoom }: { url: string; onZoom: () => void }) 
     <button
       type="button"
       onClick={onZoom}
-      className="block shrink-0 overflow-hidden rounded-md border transition-opacity hover:opacity-80"
+      className="block shrink-0 overflow-hidden rounded-md border transition-opacity max-md:min-h-11 max-md:min-w-11 hover:opacity-80"
       aria-label="Ver comprobante"
     >
       <img
@@ -147,7 +147,7 @@ export function PagoFila({ pago }: { pago: Pago }) {
           onClick={() => setExpandido((v) => !v)}
           aria-expanded={expandido}
           aria-label={expandido ? "Ocultar detalle" : "Ver detalle"}
-          className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground md:mt-0"
+          className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground max-md:min-h-11 max-md:min-w-11 hover:bg-accent hover:text-foreground md:mt-0"
         >
           <ChevronDown
             className={cn("size-4 transition-transform", expandido && "rotate-180")}
@@ -216,7 +216,7 @@ export function PagoFila({ pago }: { pago: Pago }) {
                 <button
                   type="button"
                   onClick={() => setZoom(true)}
-                  className="block overflow-hidden rounded-lg border transition-opacity hover:opacity-80"
+                  className="block overflow-hidden rounded-lg border transition-opacity max-md:min-h-11 max-md:min-w-11 hover:opacity-80"
                   aria-label="Ampliar comprobante"
                 >
                   <img
@@ -251,7 +251,7 @@ export function PagoFila({ pago }: { pago: Pago }) {
         >
           <button
             type="button"
-            className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
+            className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white max-md:min-h-11 max-md:min-w-11 hover:bg-black/70"
             onClick={() => setZoom(false)}
             aria-label="Cerrar"
           >

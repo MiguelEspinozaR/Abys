@@ -37,7 +37,7 @@ export function ChartCard({
             <Button
               variant="ghost"
               size="icon"
-              className="size-7"
+              className="size-7 max-md:min-h-11 max-md:min-w-11"
               onClick={onPrev}
               disabled={!canPrev}
               aria-label={`Anterior: ${titulo}`}
@@ -47,7 +47,7 @@ export function ChartCard({
             <Button
               variant="ghost"
               size="icon"
-              className="size-7"
+              className="size-7 max-md:min-h-11 max-md:min-w-11"
               onClick={onNext}
               disabled={!canNext}
               aria-label={`Siguiente: ${titulo}`}

@@ -143,6 +143,12 @@
 .react-calendar__navigation button {
   @apply rounded-md px-2 py-1 text-sm font-medium hover:bg-accent;
 }
+@media (max-width: 767px) {
+  .react-calendar__navigation button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+}
 .react-calendar__month-view__weekdays {
   @apply text-xs font-medium uppercase text-muted-foreground;
 }

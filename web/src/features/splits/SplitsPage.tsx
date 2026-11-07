@@ -171,7 +171,7 @@ function FilaPago({ pago, split }: { pago: Pago; split: Split }) {
           aria-expanded={expandido}
           aria-label="Ver split"
           className={cn(
-            "mt-0.5 grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground",
+            "mt-0.5 grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground max-md:min-h-11 max-md:min-w-11",
             "hover:bg-accent hover:text-foreground md:mt-0",
           )}
         >

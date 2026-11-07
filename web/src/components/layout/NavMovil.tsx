@@ -27,7 +27,7 @@ export function TopBarMovil() {
             type="button"
             aria-label="Abrir navegación"
             className={cn(
-              "grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground transition-transform",
+              "grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground transition-transform max-md:min-h-11 max-md:min-w-11",
               "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95",
             )}
           >
@@ -61,7 +61,7 @@ export function TopBarMovil() {
                 <button
                   type="button"
                   aria-label="Cerrar navegación"
-                  className="ml-auto grid size-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  className="ml-auto grid size-8 place-items-center rounded-md text-muted-foreground transition-colors max-md:min-h-11 max-md:min-w-11 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 >
                   <X className="size-[18px]" aria-hidden />
                 </button>
@@ -75,7 +75,7 @@ export function TopBarMovil() {
                 type="button"
                 onClick={toggleTema}
                 aria-label={tema === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-                className="flex h-9 w-full items-center gap-3 rounded-md px-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                className="flex h-9 w-full items-center gap-3 rounded-md px-2.5 text-sm font-medium text-muted-foreground transition-colors max-md:min-h-11 max-md:min-w-11 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
                 {tema === "dark" ? (
                   <Sun className="size-[18px] shrink-0" aria-hidden />
@@ -100,7 +100,7 @@ export function TopBarMovil() {
         type="button"
         onClick={toggleTema}
         aria-label={tema === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-        className="ml-auto grid size-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        className="ml-auto grid size-8 place-items-center rounded-md text-muted-foreground transition-colors max-md:min-h-11 max-md:min-w-11 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         {tema === "dark" ? (
           <Sun className="size-[18px]" aria-hidden />

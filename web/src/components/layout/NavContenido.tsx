@@ -25,7 +25,7 @@ function BotonNav({
       onClick={onNavegar}
       className={({ isActive }) =>
         cn(
-          "group/nav flex h-9 items-center gap-3 rounded-md px-2.5 text-sm font-medium transition-colors",
+          "group/nav flex h-9 items-center gap-3 rounded-md px-2.5 text-sm font-medium transition-colors max-md:min-h-11",
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
           colapsado && "justify-center px-0",
           isActive
