@@ -33,3 +33,7 @@ nohup.out
 # Cloudflared
 cloudflared
 cloudflared-*
+
+# Infraestructura AI / artefactos de auditoría
+.ai/
+web/.playwright-cli/
