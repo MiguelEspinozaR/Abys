@@ -16,6 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { useCrearPago, useFuentes, usePagos, useSubirComprobante } from "@/services/hooks"
 import { bsToCents, formatBs, formatearFechaEs, METODOS_PAGO, toISODate } from "@/lib/format"
+import { motionBehavior } from "@/lib/a11y"
 import type { MetodoPago } from "@/services/types"
 import { CalendarioDias, type Herramienta } from "./CalendarioDias"
 import { ComprobanteDropzone } from "./ComprobanteDropzone"
@@ -132,7 +133,7 @@ export default function RegistrarPage() {
       setTimeout(() => montoInputRef.current?.focus(), 0)
     } else if (r.fecha) {
       setTimeout(
-        () => calendarioRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }),
+        () => calendarioRef.current?.scrollIntoView({ behavior: motionBehavior(), block: "center" }),
         0,
       )
     }
@@ -335,7 +336,7 @@ export default function RegistrarPage() {
                       variant="secondary"
                       onClick={() =>
                         calendarioRef.current?.scrollIntoView({
-                          behavior: "smooth",
+                          behavior: motionBehavior(),
                           block: "center",
                         })
                       }

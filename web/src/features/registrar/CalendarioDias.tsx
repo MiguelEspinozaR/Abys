@@ -94,7 +94,7 @@ export function CalendarioDias({ diasTrabajados, fechaPago, yaTrabajados, yaFech
             </span>
           )
         }}
-        className="rounded-xl border bg-card p-2"
+        className="rounded-xl border bg-card p-2 max-md:-mx-4 max-md:rounded-none max-md:border-x-0 max-md:p-0"
       />
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
