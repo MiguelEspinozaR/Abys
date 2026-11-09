@@ -66,7 +66,7 @@ export function NavContenido({
       {GRUPOS.map((grupo) => (
         <div key={grupo.titulo}>
           {!colapsado && (
-            <p className="mb-1.5 px-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+            <p className="mb-1.5 px-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               {grupo.titulo}
             </p>
           )}

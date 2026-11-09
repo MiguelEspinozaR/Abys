@@ -161,7 +161,7 @@ export default function IngresosPage() {
       ) : grupos.size === 0 ? (
         <div className="py-16 text-center">
           <p className="text-sm text-muted-foreground">No hay pagos que coincidan con los criterios.</p>
-          <p className="text-xs text-muted-foreground/70">Ajusta los filtros o registra un nuevo pago.</p>
+          <p className="text-xs text-muted-foreground">Ajusta los filtros o registra un nuevo pago.</p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -169,7 +169,7 @@ export default function IngresosPage() {
             <section key={anio} aria-label={`Pagos de ${anio}`}>
               <h2 className="mb-2 flex items-center gap-2 text-lg font-semibold tracking-tight">
                 {anio}
-                <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-foreground/80">
                   {grupos.get(anio)!.length}
                 </span>
               </h2>

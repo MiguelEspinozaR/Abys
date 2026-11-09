@@ -166,7 +166,7 @@
   @apply aspect-square rounded-md p-0 text-sm hover:bg-accent;
 }
 .react-calendar__month-view__days__day--neighboringMonth {
-  @apply text-muted-foreground/50;
+  @apply text-muted-foreground;
 }
 .react-calendar__tile {
   @apply rounded-md;
