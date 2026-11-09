@@ -1,0 +1,9 @@
+
+ RUN  v5.0.0 /home/miky/Documentos/finanzasMikyGoRef/web
+
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  20:48:46
+   Duration  9.41s (import 81%, transform 15%, tests 3%, worker 1%)
+

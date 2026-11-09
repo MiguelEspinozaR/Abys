@@ -1,0 +1,44 @@
+
+> abys-web@0.1.0 build
+> tsc -b && vite build
+
+vite v6.4.3 building for production...
+transforming...
+✓ 3278 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                              0.60 kB │ gzip:   0.38 kB
+dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2     10.25 kB
+dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2      11.23 kB
+dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2       18.75 kB
+dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2          19.00 kB
+dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2   25.96 kB
+dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2          48.26 kB
+dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2      85.07 kB
+dist/assets/index-CC4YOoc9.css                              83.22 kB │ gzip:  14.04 kB
+dist/assets/skeleton-DeWFPPCm.js                             0.20 kB │ gzip:   0.17 kB
+dist/assets/chevron-down-BG3Lpprj.js                         0.30 kB │ gzip:   0.24 kB
+dist/assets/layers-4ASbvM_-.js                               0.59 kB │ gzip:   0.34 kB
+dist/assets/calendar-days-BSgBcQqd.js                        0.67 kB │ gzip:   0.37 kB
+dist/assets/table-QsIqOH4Q.js                                1.14 kB │ gzip:   0.46 kB
+dist/assets/badge-B75Kl0na.js                                1.38 kB │ gzip:   0.65 kB
+dist/assets/format-CG3DNV94.js                               1.80 kB │ gzip:   0.86 kB
+dist/assets/alert-BYpv4IVr.js                                2.07 kB │ gzip:   0.95 kB
+dist/assets/HealthPage-C9thOBlU.js                           4.76 kB │ gzip:   1.83 kB
+dist/assets/dialog-BB1ZqurN.js                               7.97 kB │ gzip:   2.32 kB
+dist/assets/SplitsPage-DtAJEzhr.js                          13.61 kB │ gzip:   3.97 kB
+dist/assets/index-DgvX7Flt.js                               15.83 kB │ gzip:   6.76 kB
+dist/assets/RegistrarPage-DBleGfKt.js                       16.20 kB │ gzip:   5.85 kB
+dist/assets/IngresosPage-Bap1cW-r.js                        16.20 kB │ gzip:   5.12 kB
+dist/assets/button-BnhJ7xMl.js                              26.61 kB │ gzip:   8.06 kB
+dist/assets/select-Co6yhGbX.js                              32.89 kB │ gzip:  11.08 kB
+dist/assets/ConfiguracionPage-8IGTt3i9.js                   39.86 kB │ gzip:  10.61 kB
+dist/assets/CalendarioDias-949Vqrfy.js                      41.12 kB │ gzip:  11.88 kB
+dist/assets/DashboardPage-D4AHl1GU.js                      423.66 kB │ gzip: 122.37 kB
+dist/assets/index-tewiSFwx.js                              511.93 kB │ gzip: 163.86 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 20.79s

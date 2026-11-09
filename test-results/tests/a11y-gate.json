@@ -1,0 +1,435 @@
+{
+  "task_id": "a11y-gate",
+  "feature": "a11y-gate",
+  "title": "Gate de accesibilidad UI (bloque A)",
+  "lifecycle_state": "TEST",
+  "branch": "feat/a11y-gate",
+  "commit": "07e957e21f852c3fa88c28761b84fbbe4e1adc2f",
+  "base_commit": "78ca19a",
+  "generated_at": "2026-11-09T01:04:43Z",
+  "status": "pass",
+  "status_reason": "Todas las AC ejecutables pasan en 07e957e. AC3 mantiene 26/26 componentes y añade TabsContent 2/2 con inset-ring; AC4 mantiene 20/20 walks e incluye el tabpanel de /configuracion como foco visible. AC7 sigue en 0 violaciones, 0 overflow, 0 truncados y 0 consola. AC11 no se ejecutó por diseño.",
+  "environment": {
+    "os": "linux",
+    "node": "v22.22.1",
+    "go": "go1.26.8 linux/amd64",
+    "browser": "Chrome 156.0.8078.79 via Playwright",
+    "backend_url": "http://localhost:18082",
+    "frontend_preview_url": "http://localhost:5178",
+    "staging_note": "Se usó :18082 en lugar de :8082 porque :8082 está ocupado por una aplicación ajena. El build se hizo con VITE_API_URL=http://localhost:18082/api/v1. No se hicieron escrituras API."
+  },
+  "configured_suites": [
+    {
+      "name": "web-unit",
+      "command": "npm test",
+      "cwd": "web",
+      "runner": "vitest 5.0.0",
+      "status": "pass",
+      "exit_code": 0,
+      "test_files": 3,
+      "tests": 24,
+      "duration_seconds": 4.69,
+      "log": "test-results/a11y-gate/logs/npm-test.log"
+    },
+    {
+      "name": "backend-unit",
+      "command": "go test -count=1 -cover ./...",
+      "cwd": "backend",
+      "status": "pass",
+      "exit_code": 0,
+      "packages_tested": 2,
+      "packages_without_tests": 10,
+      "log": "test-results/a11y-gate/logs/go-cover.log"
+    }
+  ],
+  "targeted_tests": [
+    {
+      "name": "web-a11y-adjacent-unit",
+      "command": "npx vitest run src/lib/nav.test.ts src/services/ocr.test.ts",
+      "cwd": "web",
+      "status": "pass",
+      "exit_code": 0,
+      "test_files": 2,
+      "tests": 13,
+      "duration_seconds": 9.41,
+      "log": "test-results/a11y-gate/logs/targeted-web.log"
+    },
+    {
+      "name": "a11y-acceptance-harness",
+      "command": "node test-results/a11y-gate/harness/audit.cjs",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "El harness sale con 0 después de escribir métricas; el veredicto se deriva de AC1-AC10. AC1-AC10 pasan.",
+      "evidence": "test-results/a11y-gate/metrics-after.json"
+    },
+    {
+      "name": "tabpanel-focus-evidence",
+      "command": "node /tmp/opencode/probe-tabpanel.cjs",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "TabsContent es focusable con Tab, focus-visible=true e inset-ring de 2 px en light/dark.",
+      "log": "test-results/a11y-gate/logs/tabpanel-focus.json"
+    },
+    {
+      "name": "fixed-contrast-ratio-probe",
+      "command": "node /tmp/opencode/measure-nav.cjs",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "Verificación puntual de ratios de los tres grupos corregidos.",
+      "log": "test-results/a11y-gate/logs/fixed-contrast-ratios.json"
+    }
+  ],
+  "acceptance_criteria": {
+    "AC1": {
+      "status": "pass",
+      "summary": "Touch targets >=44x44 con hit-test en 360x800 y 390x844, light y dark.",
+      "failure_count": 0,
+      "cases": 20,
+      "secondary_cases": 104,
+      "targets_per_case": {
+        "360x800": {
+          "/": 14,
+          "/ingresos": 413,
+          "/splits": 22,
+          "/registrar": 52,
+          "/configuracion": 22
+        },
+        "390x844": {
+          "/": 14,
+          "/ingresos": 413,
+          "/splits": 22,
+          "/registrar": 52,
+          "/configuracion": 22
+        }
+      },
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac1"
+    },
+    "AC2": {
+      "status": "pass",
+      "summary": "Desktop 1440x900 sin cambios en los 10 casos ruta/tema, comparando targets del baseline por texto o geometría.",
+      "cases": 10,
+      "matched": 10,
+      "note": "El baseline tiene conjuntos limitados (p. ej. /ingresos 40 y /registrar 22); los targets extra del build nuevo son informativos y no cuentan como diff de layout.",
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac2"
+    },
+    "AC3": {
+      "status": "pass",
+      "summary": "Contraste del indicador de foco >=3:1 en 13 componentes, light y dark (26/26), más TabsContent 2/2 con inset-ring.",
+      "cases": 26,
+      "failures": 0,
+      "minimum_ratio": 3.19,
+      "ratios": {
+        "Button default": {
+          "light": 4.73,
+          "dark": 3.79
+        },
+        "Button ghost": {
+          "light": 4.73,
+          "dark": 3.79
+        },
+        "Button destructive": {
+          "light": 4.53,
+          "dark": 3.5
+        },
+        "Input": {
+          "light": 4.73,
+          "dark": 3.79
+        },
+        "Textarea": {
+          "light": 4.73,
+          "dark": 3.79
+        },
+        "Select trigger": {
+          "light": 4.73,
+          "dark": 3.79
+        },
+        "SelectItem": {
+          "light": 4.34,
+          "dark": 3.19
+        },
+        "Tabs trigger": {
+          "light": 4.34,
+          "dark": 3.19
+        },
+        "Nav link": {
+          "light": 4.53,
+          "dark": 3.79
+        },
+        "Switch": {
+          "light": 4.73,
+          "dark": 3.79
+        },
+        "Checkbox": {
+          "light": 4.73,
+          "dark": 3.79
+        },
+        "DropdownMenuItem": {
+          "light": 4.34,
+          "dark": 3.19
+        },
+        "DropdownMenuItem destructive": {
+          "light": 3.96,
+          "dark": 3.78
+        }
+      },
+      "tabpanel": [
+        {
+          "theme": "light",
+          "pass": true,
+          "focus_visible": true,
+          "ratio": 4.73,
+          "best_type": "inset-ring",
+          "inset_ring_shadow": "inset 0 0 0 2px oklch(55.6% 0 0)",
+          "evidence": "test-results/a11y-gate/logs/tabpanel-focus.json"
+        },
+        {
+          "theme": "dark",
+          "pass": true,
+          "focus_visible": true,
+          "ratio": 4.18,
+          "best_type": "inset-ring",
+          "inset_ring_shadow": "inset 0 0 0 2px oklch(55.6% 0 0)",
+          "evidence": "test-results/a11y-gate/logs/tabpanel-focus.json"
+        }
+      ],
+      "static_css": {
+        "has_focus_visible_inset_ring_2": true,
+        "has_focus_visible_inset_ring_ring": true,
+        "tabs_has_utilities": true,
+        "css_file": "index-CC4YOoc9.css"
+      },
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac3"
+    },
+    "AC4": {
+      "status": "pass",
+      "summary": "Keyboard walk: 20/20 casos ruta/viewport/tema visitaron todos los focusables esperados en orden, con foco visible y todos los interactivos con indicador. El tabpanel de /configuracion es foco visible en 4/4 walks.",
+      "walks": 20,
+      "failures": 0,
+      "visited": {
+        "390x844": {
+          "/": 15,
+          "/ingresos": 414,
+          "/splits": 23,
+          "/registrar": 53,
+          "/configuracion": 20
+        },
+        "1440x900": {
+          "/": 21,
+          "/ingresos": 420,
+          "/splits": 29,
+          "/registrar": 59,
+          "/configuracion": 26
+        }
+      },
+      "tabpanel": {
+        "walks": 4,
+        "focus_visible": 4,
+        "indicator": 4,
+        "selector": "#radix-_r_5_-content-cuentas",
+        "slot": "tabs-content",
+        "role": "tabpanel",
+        "tabindex": "0",
+        "inset_ring_shadow": "inset 0 0 0 2px oklch(55.6% 0 0)",
+        "failures": 0
+      },
+      "evidence": "test-results/a11y-gate/logs/tabpanel-focus.json"
+    },
+    "AC5": {
+      "status": "pass",
+      "summary": "Reduced motion: panel/dialog/alert y scroll OCR usan auto; máximo animation/transition 0.01ms; sin animaciones infinitas; visibles y opacity 1. En movimiento normal el scroll sigue siendo smooth y las transiciones finitas.",
+      "ocr": {
+        "reduce_pass": true,
+        "normal_pass": true
+      },
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac5"
+    },
+    "AC6": {
+      "status": "pass",
+      "summary": "El skip link es el primer Tab, se ve con outline, mueve el foco a main#contenido con Enter y el siguiente Tab entra en main en ambos temas.",
+      "cases": 2,
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac6"
+    },
+    "AC7": {
+      "status": "pass",
+      "summary": "Sin regresiones: 0 violaciones de contraste de texto, 0 overflow horizontal, 0 truncados y 0 errores de consola/requests fallidos en 134 casos.",
+      "cases": 134,
+      "overflow_failures": 0,
+      "truncation_failures": 0,
+      "console_failures": 0,
+      "contrast_cases": 0,
+      "contrast_violations": 0,
+      "before": {
+        "commit": "dc8cc63bcdf23507744a312bfda59c061f64480a",
+        "contrast_cases": 48,
+        "contrast_violations": 198,
+        "categories": {
+          "calendar-neighboring-month": 166,
+          "nav-section-label": 18,
+          "count-badge": 14
+        }
+      },
+      "after": {
+        "commit": "07e957e21f852c3fa88c28761b84fbbe4e1adc2f",
+        "contrast_violations": 0
+      },
+      "targeted_ratios": {
+        "nav-section-label": {
+          "light": 4.53,
+          "dark": 6.91
+        },
+        "calendar-neighboring-month": {
+          "light": 4.73,
+          "dark": 6.91
+        },
+        "count-badge": {
+          "light": 10.58,
+          "dark": 9.76
+        }
+      },
+      "classification": "resolved",
+      "policy_reference": ".ai/policies/project-policy.md §5",
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac7"
+    },
+    "AC8": {
+      "status": "pass",
+      "summary": "TypeScript, tests web, build web y tests Go salen con 0.",
+      "checks": {
+        "tsc": 0,
+        "npm_test": 0,
+        "npm_build": 0,
+        "go_test": 0
+      },
+      "details": {
+        "npm_test": "3 archivos / 24 tests",
+        "go_test": "router y splitcalc OK",
+        "build": "vite build OK con VITE_API_URL=http://localhost:18082/api/v1"
+      },
+      "evidence": "test-results/a11y-gate/logs/"
+    },
+    "AC9": {
+      "status": "pass",
+      "summary": "21 archivos cambiados en 78ca19a..HEAD; sin cambios prohibidos de infraestructura/API/migraciones ni dependencias.",
+      "changed_files": 21,
+      "forbidden": [],
+      "note": "La instrucción mencionaba 22 archivos, pero `git diff --name-only 78ca19a..HEAD` devuelve 21. El nuevo commit 07e957e modifica tabs.tsx, que ya estaba en el conjunto; no añade un archivo nuevo. No toca package.json, package-lock.json, go.mod ni migraciones.",
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac9"
+    },
+    "AC10": {
+      "status": "pass",
+      "summary": "HEAD local coincide con origin/feat/a11y-gate; 7 commits de feature; sin merges, tags ni force-push.",
+      "head": "07e957e21f852c3fa88c28761b84fbbe4e1adc2f",
+      "remote": "07e957e21f852c3fa88c28761b84fbbe4e1adc2f",
+      "feature_commits": 7,
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac10"
+    },
+    "AC11": {
+      "status": "not_executed",
+      "summary": "Deploy no ejecutado porque requiere aprobación humana después de TEST.",
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac11"
+    },
+    "AC12": {
+      "status": "pass",
+      "summary": "Reporte final y bundle de evidencia consolidados; 12 capturas clave, métricas compactas y consola sin fallos.",
+      "report": "test-results/a11y-gate/report.md",
+      "screenshots": 12,
+      "metrics_after_bytes": 270636,
+      "console_failure_cases": 0,
+      "evidence": "test-results/a11y-gate/report.md"
+    }
+  },
+  "coverage": {
+    "frontend": {
+      "available": false,
+      "reason": "No hay coverage provider ni script de cobertura configurado. @vitest/coverage-v8 no está en web/node_modules; no se asumió ningún threshold."
+    },
+    "backend": {
+      "available": true,
+      "command": "go test -count=1 -coverprofile=/tmp/opencode/go-cover.out ./... && go tool cover -func=/tmp/opencode/go-cover.out",
+      "total_statement_coverage_percent": 7.9,
+      "packages": {
+        "abys/internal/router": 100.0,
+        "abys/internal/splitcalc": 86.4,
+        "abys/cmd/server": 0.0,
+        "abys/docs": 0.0,
+        "abys/internal/apperr": 0.0,
+        "abys/internal/config": 0.0,
+        "abys/internal/database": 0.0,
+        "abys/internal/handler": 0.0,
+        "abys/internal/middleware": 0.0,
+        "abys/internal/repository": 0.0,
+        "abys/internal/service": 0.0,
+        "abys/internal/model": null
+      },
+      "note": "Los paquetes sin tests reportan 0% o sin cobertura. No se aplicó ni inventó un threshold de proyecto."
+    }
+  },
+  "findings": [
+    {
+      "id": "AC7-CONTRAST",
+      "severity": "high",
+      "classification": "pre_existing",
+      "status": "resolved",
+      "summary": "Las 198 violaciones de contraste preexistentes quedaron en 0 desde 399897d y siguen en 0 en 07e957e.",
+      "resolution": "Se retiró la opacidad del texto muted y se ajustó el badge a text-foreground/80; el harness real mide 0 violaciones.",
+      "policy_reference": ".ai/policies/project-policy.md §5",
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac7"
+    },
+    {
+      "id": "AC4-TABPANEL",
+      "severity": "medium",
+      "classification": "new_fix",
+      "status": "resolved",
+      "summary": "TabsContent usa outline-none y no mostraba indicador. 07e957e añade focus-visible:inset-ring-2 focus-visible:inset-ring-ring.",
+      "resolution": "El tabpanel es focusable, focus-visible=true y muestra inset-ring de 2 px en 4/4 walks; ratios 4.73 light / 4.18 dark.",
+      "evidence": "test-results/a11y-gate/logs/tabpanel-focus.json"
+    },
+    {
+      "id": "AC11-DEPLOY",
+      "severity": "info",
+      "classification": "not_run",
+      "status": "pending",
+      "summary": "Deployment no ejecutado intencionalmente; corresponde a DEPLOY tras aprobación humana.",
+      "evidence": "test-results/a11y-gate/metrics-after.json#ac11"
+    },
+    {
+      "id": "AC12-REPORT",
+      "severity": "info",
+      "classification": "deliverable",
+      "status": "resolved",
+      "summary": "report.md y el bundle de evidencia están escritos y enlazados.",
+      "evidence": "test-results/a11y-gate/report.md"
+    }
+  ],
+  "residual_risks": [
+    {
+      "id": "BASELINE-CAP",
+      "summary": "El baseline de desktop capturó subconjuntos de targets; AC2 compara los existentes por texto/geometría y reporta los extra como información, no como regresión.",
+      "classification": "accepted_documented"
+    },
+    {
+      "id": "PORT-8082-FOREIGN-APP",
+      "summary": "El puerto :8082 está ocupado por una aplicación ajena; la auditoría usó :18082 para evitar falsos negativos. :8081 no se tocó.",
+      "classification": "environment_constraint"
+    }
+  ],
+  "artifacts": {
+    "test_report": "test-results/tests/a11y-gate.json",
+    "report": "test-results/a11y-gate/report.md",
+    "metrics_before": "test-results/a11y-gate/metrics-before.json",
+    "metrics_after": "test-results/a11y-gate/metrics-after.json",
+    "console_log": "test-results/a11y-gate/console-log.json",
+    "contrast_ratios": "test-results/a11y-gate/logs/fixed-contrast-ratios.json",
+    "tabpanel_focus": "test-results/a11y-gate/logs/tabpanel-focus.json",
+    "harness": "test-results/a11y-gate/harness/audit.cjs",
+    "baseline_harness": "test-results/a11y-gate/harness/audit-baseline.cjs",
+    "logs": "test-results/a11y-gate/logs/",
+    "screenshots": "test-results/a11y-gate/screenshots/",
+    "security_report": "test-results/a11y-gate/security-report.md",
+    "review": "test-results/a11y-gate/review.md",
+    "review_2": "test-results/a11y-gate/review-2.md"
+  },
+  "git": {
+    "mutations_performed": false,
+    "working_tree_note": "Solo test-results/ está sin trackear; no se hizo commit, tag ni push."
+  }
+}

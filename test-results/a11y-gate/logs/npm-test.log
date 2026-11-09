@@ -1,0 +1,13 @@
+
+> abys-web@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.0 /home/miky/Documentos/finanzasMikyGoRef/web
+
+
+ Test Files  3 passed (3)
+      Tests  24 passed (24)
+   Start at  20:49:19
+   Duration  4.69s (import 69%, transform 24%, tests 4%, worker 3%)
+

@@ -1,0 +1,186 @@
+default / 360x800 light targets=14 failures=0
+default /ingresos 360x800 light targets=413 failures=0
+default /splits 360x800 light targets=22 failures=0
+default /registrar 360x800 light targets=52 failures=0
+default /configuracion 360x800 light targets=22 failures=0
+default / 360x800 dark targets=14 failures=0
+default /ingresos 360x800 dark targets=413 failures=0
+default /splits 360x800 dark targets=22 failures=0
+default /registrar 360x800 dark targets=52 failures=0
+default /configuracion 360x800 dark targets=22 failures=0
+default / 390x844 light targets=14 failures=0
+default /ingresos 390x844 light targets=413 failures=0
+default /splits 390x844 light targets=22 failures=0
+default /registrar 390x844 light targets=52 failures=0
+default /configuracion 390x844 light targets=22 failures=0
+default / 390x844 dark targets=14 failures=0
+default /ingresos 390x844 dark targets=413 failures=0
+default /splits 390x844 dark targets=22 failures=0
+default /registrar 390x844 dark targets=52 failures=0
+default /configuracion 390x844 dark targets=22 failures=0
+default / 1440x900 light targets=- failures=-
+default /ingresos 1440x900 light targets=- failures=-
+default /splits 1440x900 light targets=- failures=-
+default /registrar 1440x900 light targets=- failures=-
+default /configuracion 1440x900 light targets=- failures=-
+default / 1440x900 dark targets=- failures=-
+default /ingresos 1440x900 dark targets=- failures=-
+default /splits 1440x900 dark targets=- failures=-
+default /registrar 1440x900 dark targets=- failures=-
+default /configuracion 1440x900 dark targets=- failures=-
+state / panel-nav 360x800 light targets=8 failures=0
+state / panel-nav 360x800 dark targets=8 failures=0
+state / panel-nav 390x844 light targets=8 failures=0
+state / panel-nav 390x844 dark targets=8 failures=0
+state / toggle-tema 360x800 light targets=14 failures=0
+state / toggle-tema 360x800 dark targets=14 failures=0
+state / toggle-tema 390x844 light targets=14 failures=0
+state / toggle-tema 390x844 dark targets=14 failures=0
+state /ingresos lightbox 360x800 light targets=1 failures=0
+state /ingresos lightbox 360x800 dark targets=1 failures=0
+state /ingresos lightbox 390x844 light targets=1 failures=0
+state /ingresos lightbox 390x844 dark targets=1 failures=0
+state /ingresos editar-pago 360x800 light targets=51 failures=0
+state /ingresos editar-pago 360x800 dark targets=51 failures=0
+state /ingresos editar-pago 390x844 light targets=51 failures=0
+state /ingresos editar-pago 390x844 dark targets=51 failures=0
+state /ingresos eliminar-pago 360x800 light targets=2 failures=0
+state /ingresos eliminar-pago 360x800 dark targets=2 failures=0
+state /ingresos eliminar-pago 390x844 light targets=2 failures=0
+state /ingresos eliminar-pago 390x844 dark targets=2 failures=0
+state /ingresos generar-split 360x800 light targets=4 failures=0
+state /ingresos generar-split 360x800 dark targets=4 failures=0
+state /ingresos generar-split 390x844 light targets=4 failures=0
+state /ingresos generar-split 390x844 dark targets=4 failures=0
+state /ingresos select-fuente 360x800 light targets=3 failures=0
+state /ingresos select-fuente 360x800 dark targets=3 failures=0
+state /ingresos select-fuente 390x844 light targets=3 failures=0
+state /ingresos select-fuente 390x844 dark targets=3 failures=0
+state /ingresos select-metodo 360x800 light targets=3 failures=0
+state /ingresos select-metodo 360x800 dark targets=3 failures=0
+state /ingresos select-metodo 390x844 light targets=3 failures=0
+state /ingresos select-metodo 390x844 dark targets=3 failures=0
+state /ingresos ver-detalle 360x800 light targets=413 failures=0
+state /ingresos ver-detalle 360x800 dark targets=413 failures=0
+state /ingresos ver-detalle 390x844 light targets=413 failures=0
+state /ingresos ver-detalle 390x844 dark targets=413 failures=0
+state /splits ver-datos 360x800 light targets=1 failures=0
+state /splits ver-datos 360x800 dark targets=1 failures=0
+state /splits ver-datos 390x844 light targets=1 failures=0
+state /splits ver-datos 390x844 dark targets=1 failures=0
+state /splits ver-split-realizar 360x800 light targets=3 failures=0
+state /splits ver-split-realizar 360x800 dark targets=3 failures=0
+state /splits ver-split-realizar 390x844 light targets=3 failures=0
+state /splits ver-split-realizar 390x844 dark targets=3 failures=0
+state /registrar tab-trabajo 360x800 light targets=52 failures=0
+state /registrar tab-trabajo 360x800 dark targets=52 failures=0
+state /registrar tab-trabajo 390x844 light targets=52 failures=0
+state /registrar tab-trabajo 390x844 dark targets=52 failures=0
+state /registrar tab-pago 360x800 light targets=52 failures=0
+state /registrar tab-pago 360x800 dark targets=52 failures=0
+state /registrar tab-pago 390x844 light targets=52 failures=0
+state /registrar tab-pago 390x844 dark targets=52 failures=0
+state /registrar tab-quitar 360x800 light targets=52 failures=0
+state /registrar tab-quitar 360x800 dark targets=52 failures=0
+state /registrar tab-quitar 390x844 light targets=52 failures=0
+state /registrar tab-quitar 390x844 dark targets=52 failures=0
+state /registrar select-fuente 360x800 light targets=3 failures=0
+state /registrar select-fuente 360x800 dark targets=3 failures=0
+state /registrar select-fuente 390x844 light targets=3 failures=0
+state /registrar select-fuente 390x844 dark targets=3 failures=0
+state /registrar metodo-efectivo 360x800 light targets=52 failures=0
+state /registrar metodo-efectivo 360x800 dark targets=52 failures=0
+state /registrar metodo-efectivo 390x844 light targets=52 failures=0
+state /registrar metodo-efectivo 390x844 dark targets=52 failures=0
+state /registrar metodo-qr 360x800 light targets=52 failures=0
+state /registrar metodo-qr 360x800 dark targets=52 failures=0
+state /registrar metodo-qr 390x844 light targets=52 failures=0
+state /registrar metodo-qr 390x844 dark targets=52 failures=0
+state /registrar metodo-transacción 360x800 light targets=52 failures=0
+state /registrar metodo-transacción 360x800 dark targets=52 failures=0
+state /registrar metodo-transacción 390x844 light targets=52 failures=0
+state /registrar metodo-transacción 390x844 dark targets=52 failures=0
+state /configuracion tab-cuentas 360x800 light targets=22 failures=0
+state /configuracion tab-cuentas 360x800 dark targets=22 failures=0
+state /configuracion tab-cuentas 390x844 light targets=22 failures=0
+state /configuracion tab-cuentas 390x844 dark targets=22 failures=0
+state /configuracion tab-fuentes 360x800 light targets=20 failures=0
+state /configuracion tab-fuentes 360x800 dark targets=20 failures=0
+state /configuracion tab-fuentes 390x844 light targets=20 failures=0
+state /configuracion tab-fuentes 390x844 dark targets=20 failures=0
+state /configuracion tab-splits 360x800 light targets=8 failures=0
+state /configuracion tab-splits 360x800 dark targets=8 failures=0
+state /configuracion tab-splits 390x844 light targets=8 failures=0
+state /configuracion tab-splits 390x844 dark targets=8 failures=0
+state /configuracion nueva-cuenta 360x800 light targets=5 failures=0
+state /configuracion nueva-cuenta 360x800 dark targets=5 failures=0
+state /configuracion nueva-cuenta 390x844 light targets=5 failures=0
+state /configuracion nueva-cuenta 390x844 dark targets=5 failures=0
+state /configuracion editar-cuenta 360x800 light targets=5 failures=0
+state /configuracion editar-cuenta 360x800 dark targets=5 failures=0
+state /configuracion editar-cuenta 390x844 light targets=5 failures=0
+state /configuracion editar-cuenta 390x844 dark targets=5 failures=0
+state /configuracion historial-tasas 360x800 light targets=2 failures=0
+state /configuracion historial-tasas 360x800 dark targets=2 failures=0
+state /configuracion historial-tasas 390x844 light targets=2 failures=0
+state /configuracion historial-tasas 390x844 dark targets=2 failures=0
+state /configuracion fuente-switch 360x800 light targets=8 failures=0
+state /configuracion fuente-switch 360x800 dark targets=8 failures=0
+state /configuracion fuente-switch 390x844 light targets=8 failures=0
+state /configuracion fuente-switch 390x844 dark targets=8 failures=0
+state /configuracion panel-nav 360x800 light targets=8 failures=0
+state /configuracion panel-nav 360x800 dark targets=8 failures=0
+state /configuracion panel-nav 390x844 light targets=8 failures=0
+state /configuracion panel-nav 390x844 dark targets=8 failures=0
+focus Button default light ratio=4.73 pass=true
+focus Button default dark ratio=3.79 pass=true
+focus Button ghost light ratio=4.73 pass=true
+focus Button ghost dark ratio=3.79 pass=true
+focus Button destructive light ratio=4.53 pass=true
+focus Button destructive dark ratio=3.50 pass=true
+focus Input light ratio=4.73 pass=true
+focus Input dark ratio=3.79 pass=true
+focus Textarea light ratio=4.73 pass=true
+focus Textarea dark ratio=3.79 pass=true
+focus Select trigger light ratio=4.73 pass=true
+focus Select trigger dark ratio=3.79 pass=true
+focus SelectItem light ratio=4.34 pass=true
+focus SelectItem dark ratio=3.19 pass=true
+focus Tabs trigger light ratio=4.34 pass=true
+focus Tabs trigger dark ratio=3.19 pass=true
+focus Nav link light ratio=4.53 pass=true
+focus Nav link dark ratio=3.79 pass=true
+focus Switch light ratio=4.73 pass=true
+focus Switch dark ratio=3.79 pass=true
+focus Checkbox light ratio=4.73 pass=true
+focus Checkbox dark ratio=3.79 pass=true
+focus DropdownMenuItem light ratio=4.34 pass=true
+focus DropdownMenuItem dark ratio=3.19 pass=true
+focus DropdownMenuItem destructive light ratio=3.96 pass=true
+focus DropdownMenuItem destructive dark ratio=3.78 pass=true
+focus TabsContent light ratio=4.73 pass=true
+focus TabsContent dark ratio=4.18 pass=true
+walk / 390x844 light expected=15 visited=15 order=true noInd=0
+walk /ingresos 390x844 light expected=414 visited=414 order=true noInd=0
+walk /splits 390x844 light expected=23 visited=23 order=true noInd=0
+walk /registrar 390x844 light expected=53 visited=53 order=true noInd=0
+walk /configuracion 390x844 light expected=20 visited=20 order=true noInd=0
+walk / 390x844 dark expected=15 visited=15 order=true noInd=0
+walk /ingresos 390x844 dark expected=414 visited=414 order=true noInd=0
+walk /splits 390x844 dark expected=23 visited=23 order=true noInd=0
+walk /registrar 390x844 dark expected=53 visited=53 order=true noInd=0
+walk /configuracion 390x844 dark expected=20 visited=20 order=true noInd=0
+walk / 1440x900 light expected=21 visited=21 order=true noInd=0
+walk /ingresos 1440x900 light expected=420 visited=420 order=true noInd=0
+walk /splits 1440x900 light expected=29 visited=29 order=true noInd=0
+walk /registrar 1440x900 light expected=59 visited=59 order=true noInd=0
+walk /configuracion 1440x900 light expected=26 visited=26 order=true noInd=0
+walk / 1440x900 dark expected=21 visited=21 order=true noInd=0
+walk /ingresos 1440x900 dark expected=420 visited=420 order=true noInd=0
+walk /splits 1440x900 dark expected=29 visited=29 order=true noInd=0
+walk /registrar 1440x900 dark expected=59 visited=59 order=true noInd=0
+walk /configuracion 1440x900 dark expected=26 visited=26 order=true noInd=0
+skip light pass=true
+skip dark pass=true
+WROTE /home/miky/Documentos/finanzasMikyGoRef/test-results/a11y-gate/metrics-after.json bytes=270636
+FULL /tmp/opencode/metrics-after-full.json bytes=3599816

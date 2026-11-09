@@ -15,6 +15,7 @@ Lista de funcionalidades, su estado actual y el plan a futuro.
 | Sidebar colapsable | Estilo IDE: 3 zonas (logo, secciones Finanzas/Sistema, tema + colapso), dark/light mode. "Configuración" aparece una sola vez, en el grupo Sistema | Completado |
 | Navegación móvil | En pantallas pequeñas el sidebar se oculta; una top bar muestra el logo Abys (título de la sección y toggle de tema) y al tocar el logo se despliega un panel anclado arriba-izquierda con toda la navegación, fondo oscurecido y cierre al navegar/Escape | Completado |
 | Listas responsive | En móvil, las listas de Ingresos y Splits se muestran como tarjetas apiladas: el texto se envuelve en vez de cortarse con elipsis, y el monto, el badge de método, el comprobante y las acciones quedan siempre visibles. En `md+` la vista no cambia | Completado |
+| Accesibilidad UI (gate AA) | Gate duro de accesibilidad: touch targets ≥44×44 px en móvil, foco visible ≥3:1 en light/dark, `prefers-reduced-motion`, skip link y navegación por teclado. Evidencia en `test-results/a11y-gate/` | Completado |
 
 ## Datos
 
@@ -28,6 +29,7 @@ Lista de funcionalidades, su estado actual y el plan a futuro.
 - [x] Backend completo: modelo de datos, migraciones, API REST + Swagger, validaciones y reglas de negocio.
 - [x] Frontend completo: 6 vistas conectadas a la API, sidebar colapsable, dark/light.
 - [x] Despliegue: scripts `deploy.sh` / `status.sh` / `stop.sh`, túnel Cloudflare hacia `test3.mikylab.com`.
+- [x] Accesibilidad UI (gate AA): touch targets 44 px, foco ≥3:1, reduced-motion y skip link; AC1–AC12 verificados con evidencia.
 
 ### Pendiente (orden propuesto)
 - [ ] Seguridad del despliegue: login/autenticación (la app está pública sin login en v1, riesgo conocido).
@@ -37,6 +39,9 @@ Lista de funcionalidades, su estado actual y el plan a futuro.
 - [ ] Quitar el id de cuenta fijo como fallback (General) en el diálogo de transacción.
 - [ ] App móvil (Flutter) — fuera de alcance por ahora.
 - [ ] Multi-idioma — fuera de alcance por ahora (UI en español).
+- [ ] A5: menú de acciones secundarias en `/ingresos` para recuperar densidad móvil (requiere SPEC aparte).
+- [ ] Bloque B: accesibilidad de formularios (semántica, errores inline, guardia de cambios).
+- [ ] Bloque C: filtros/tabs en URL, `transition-all`, `theme-color`, a11y de gráficos y virtualización.
 
 ## Notas operativas
 

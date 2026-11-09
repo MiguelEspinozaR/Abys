@@ -1,0 +1,6 @@
+{
+  "note": "El 404 de favicon es baseline conocido y se excluye; solo se listan casos con mensajes de consola o requests fallidos.",
+  "checkedCases": 134,
+  "failureCases": 0,
+  "cases": []
+}

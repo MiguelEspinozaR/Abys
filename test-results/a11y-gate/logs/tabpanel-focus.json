@@ -1,0 +1,125 @@
+{
+  "head": "2026-11-09T00:51:20.376Z",
+  "tabpanel": [
+    {
+      "name": "TabsContent",
+      "theme": "light",
+      "viewport": "390x844",
+      "pass": true,
+      "selector": "#radix-_r_5_-content-cuentas",
+      "tag": "DIV",
+      "slot": "tabs-content",
+      "variant": null,
+      "focusVisible": true,
+      "ratio": 4.73,
+      "best": {
+        "type": "inset-ring",
+        "color": "oklch(0.556 0 0)",
+        "bg": "rgb(255,255,255)",
+        "ratio": 4.73
+      },
+      "indicators": [
+        {
+          "type": "inset-ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(255,255,255)",
+          "ratio": 4.73
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "TabsContent",
+      "theme": "dark",
+      "viewport": "390x844",
+      "pass": true,
+      "selector": "#radix-_r_5_-content-cuentas",
+      "tag": "DIV",
+      "slot": "tabs-content",
+      "variant": null,
+      "focusVisible": true,
+      "ratio": 4.18,
+      "best": {
+        "type": "inset-ring",
+        "color": "oklch(0.556 0 0)",
+        "bg": "rgb(10,10,10)",
+        "ratio": 4.18
+      },
+      "indicators": [
+        {
+          "type": "inset-ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(10,10,10)",
+          "ratio": 4.18
+        }
+      ],
+      "error": null
+    }
+  ],
+  "configWalks": [
+    {
+      "viewport": "390x844",
+      "theme": "light",
+      "pass": true,
+      "tabpanels": [
+        {
+          "selector": "#radix-_r_5_-content-cuentas",
+          "texto": "Cuentas (3) · suma otras: 50 %Nueva cuentaCuentaBanco / NúmeroQRTasaAccionesGeneralResidual (derivad",
+          "focusVisible": true,
+          "indicator": true,
+          "insetRingShadow": "inset 0 0 0 2px oklch(55.6% 0 0)"
+        }
+      ],
+      "tabpanelFocusVisible": true,
+      "tabpanelIndicator": true
+    },
+    {
+      "viewport": "390x844",
+      "theme": "dark",
+      "pass": true,
+      "tabpanels": [
+        {
+          "selector": "#radix-_r_5_-content-cuentas",
+          "texto": "Cuentas (3) · suma otras: 50 %Nueva cuentaCuentaBanco / NúmeroQRTasaAccionesGeneralResidual (derivad",
+          "focusVisible": true,
+          "indicator": true,
+          "insetRingShadow": "inset 0 0 0 2px oklch(55.6% 0 0)"
+        }
+      ],
+      "tabpanelFocusVisible": true,
+      "tabpanelIndicator": true
+    },
+    {
+      "viewport": "1440x900",
+      "theme": "light",
+      "pass": true,
+      "tabpanels": [
+        {
+          "selector": "#radix-_r_5_-content-cuentas",
+          "texto": "Cuentas (3) · suma otras: 50 %Nueva cuentaCuentaBanco / NúmeroQRTasaAccionesGeneralResidual (derivad",
+          "focusVisible": true,
+          "indicator": true,
+          "insetRingShadow": "inset 0 0 0 2px oklch(55.6% 0 0)"
+        }
+      ],
+      "tabpanelFocusVisible": true,
+      "tabpanelIndicator": true
+    },
+    {
+      "viewport": "1440x900",
+      "theme": "dark",
+      "pass": true,
+      "tabpanels": [
+        {
+          "selector": "#radix-_r_5_-content-cuentas",
+          "texto": "Cuentas (3) · suma otras: 50 %Nueva cuentaCuentaBanco / NúmeroQRTasaAccionesGeneralResidual (derivad",
+          "focusVisible": true,
+          "indicator": true,
+          "insetRingShadow": "inset 0 0 0 2px oklch(55.6% 0 0)"
+        }
+      ],
+      "tabpanelFocusVisible": true,
+      "tabpanelIndicator": true
+    }
+  ]
+}

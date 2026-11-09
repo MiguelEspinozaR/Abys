@@ -1,0 +1,12 @@
+	abys/cmd/server		coverage: 0.0% of statements
+	abys/docs		coverage: 0.0% of statements
+	abys/internal/apperr		coverage: 0.0% of statements
+	abys/internal/config		coverage: 0.0% of statements
+	abys/internal/database		coverage: 0.0% of statements
+	abys/internal/handler		coverage: 0.0% of statements
+	abys/internal/middleware		coverage: 0.0% of statements
+?   	abys/internal/model	[no test files]
+	abys/internal/repository		coverage: 0.0% of statements
+ok  	abys/internal/router	0.160s	coverage: 100.0% of statements
+	abys/internal/service		coverage: 0.0% of statements
+ok  	abys/internal/splitcalc	0.007s	coverage: 86.4% of statements
