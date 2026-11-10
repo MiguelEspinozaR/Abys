@@ -1,0 +1,1536 @@
+{
+  "schema_version": 1,
+  "task_id": "a11y-gate-live",
+  "url": "https://test3.mikylab.com",
+  "head": "7030e4c",
+  "head_source": "deploy handoff",
+  "generated_at": "2026-11-09T02:31:49.746Z",
+  "environment": {
+    "chrome": "156.0.8078.79",
+    "node": "v22.22.1",
+    "mobile_viewport": "390x844",
+    "desktop_viewport": "1440x900",
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "build": {
+    "expectedHead": "7030e4c",
+    "headSource": "deploy handoff",
+    "url": "https://test3.mikylab.com",
+    "checks": {
+      "htmlNoCache": true,
+      "hasJsAsset": true,
+      "cssHasFocusVisibleInsetRing": true,
+      "jsStatusOk": true,
+      "configChunkOk": true,
+      "cssOk": true
+    },
+    "html": {
+      "status": 200,
+      "cacheControl": "no-cache",
+      "cfCacheStatus": "DYNAMIC",
+      "etag": null,
+      "lastModified": null,
+      "jsAsset": "/assets/index-BvSt0T-A.js",
+      "cssAsset": "/assets/index-CC4YOoc9.css"
+    },
+    "js": {
+      "status": 200,
+      "bytes": 511934,
+      "etag": "W/\"511934-1794188816911\"",
+      "lastModified": "Mon, 09 Nov 2026 01:46:56 GMT"
+    },
+    "configChunk": {
+      "path": "assets/ConfiguracionPage-CBj9Phll.js",
+      "status": 200,
+      "hasTabsContent": true,
+      "hasFocusVisibleInsetRing": true
+    },
+    "css": {
+      "status": 200,
+      "bytes": 83217
+    },
+    "pass": true
+  },
+  "ac1": {
+    "pass": true,
+    "failureCount": 0,
+    "defaultCases": 20,
+    "secondaryCases": 104,
+    "targets": {
+      "/ 360x800 light": 14,
+      "/ingresos 360x800 light": 413,
+      "/splits 360x800 light": 22,
+      "/registrar 360x800 light": 52,
+      "/configuracion 360x800 light": 22,
+      "/ 360x800 dark": 14,
+      "/ingresos 360x800 dark": 413,
+      "/splits 360x800 dark": 22,
+      "/registrar 360x800 dark": 52,
+      "/configuracion 360x800 dark": 22,
+      "/ 390x844 light": 14,
+      "/ingresos 390x844 light": 413,
+      "/splits 390x844 light": 22,
+      "/registrar 390x844 light": 52,
+      "/configuracion 390x844 light": 22,
+      "/ 390x844 dark": 14,
+      "/ingresos 390x844 dark": 413,
+      "/splits 390x844 dark": 22,
+      "/registrar 390x844 dark": 52,
+      "/configuracion 390x844 dark": 22
+    },
+    "failures": []
+  },
+  "ac2": {
+    "pass": true,
+    "cases": 10,
+    "matched": 10,
+    "failures": []
+  },
+  "ac3": {
+    "pass": true,
+    "cases": 26,
+    "failures": 0,
+    "caseDetails": [
+      {
+        "name": "Button default",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "div[data-slot=\"card\"] > div[data-slot=\"card-content\"] > div.mt-3.flex > button[data-slot=\"button\"]",
+        "tag": "BUTTON",
+        "slot": "button",
+        "variant": "default",
+        "focusVisible": true,
+        "ratio": 4.73,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(255,255,255)",
+          "ratio": 4.73
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(255,255,255)",
+            "ratio": 4.73
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Button default",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "div[data-slot=\"card\"] > div[data-slot=\"card-content\"] > div.mt-3.flex > button[data-slot=\"button\"]",
+        "tag": "BUTTON",
+        "slot": "button",
+        "variant": "default",
+        "focusVisible": true,
+        "ratio": 3.79,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(23,23,23)",
+          "ratio": 3.79
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(23,23,23)",
+            "ratio": 3.79
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Button ghost",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "div.min-w-0.flex-1 > div.mt-1\\.5.flex > div.flex.shrink-0 > button[data-slot=\"dialog-trigger\"]",
+        "tag": "BUTTON",
+        "slot": "dialog-trigger",
+        "variant": "ghost",
+        "focusVisible": true,
+        "ratio": 4.73,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(255,255,255)",
+          "ratio": 4.73
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(255,255,255)",
+            "ratio": 4.73
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Button ghost",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "div.min-w-0.flex-1 > div.mt-1\\.5.flex > div.flex.shrink-0 > button[data-slot=\"dialog-trigger\"]",
+        "tag": "BUTTON",
+        "slot": "dialog-trigger",
+        "variant": "ghost",
+        "focusVisible": true,
+        "ratio": 3.79,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(23,23,23)",
+          "ratio": 3.79
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(23,23,23)",
+            "ratio": 3.79
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Button destructive",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "body > div[data-slot=\"alert-dialog-content\"] > div[data-slot=\"alert-dialog-footer\"] > button[data-slot=\"alert-dialog-action\"]",
+        "tag": "BUTTON",
+        "slot": "alert-dialog-action",
+        "variant": "default",
+        "focusVisible": true,
+        "ratio": 4.53,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(250,250,250)",
+          "ratio": 4.53
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(250,250,250)",
+            "ratio": 4.53
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Button destructive",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "body > div[data-slot=\"alert-dialog-content\"] > div[data-slot=\"alert-dialog-footer\"] > button[data-slot=\"alert-dialog-action\"]",
+        "tag": "BUTTON",
+        "slot": "alert-dialog-action",
+        "variant": "default",
+        "focusVisible": true,
+        "ratio": 3.5,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(31,31,31)",
+          "ratio": 3.5
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(31,31,31)",
+            "ratio": 3.5
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Input",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#fi",
+        "tag": "INPUT",
+        "slot": "input",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 4.73,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(255,255,255)",
+          "ratio": 4.73
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(255,255,255)",
+            "ratio": 4.73
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Input",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#fi",
+        "tag": "INPUT",
+        "slot": "input",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 3.79,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(23,23,23)",
+          "ratio": 3.79
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(23,23,23)",
+            "ratio": 3.79
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Textarea",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#notas",
+        "tag": "TEXTAREA",
+        "slot": "textarea",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 4.73,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(255,255,255)",
+          "ratio": 4.73
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(255,255,255)",
+            "ratio": 4.73
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Textarea",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#notas",
+        "tag": "TEXTAREA",
+        "slot": "textarea",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 3.79,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(23,23,23)",
+          "ratio": 3.79
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(23,23,23)",
+            "ratio": 3.79
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Select trigger",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#fuente",
+        "tag": "BUTTON",
+        "slot": "select-trigger",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 4.73,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(255,255,255)",
+          "ratio": 4.73
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(255,255,255)",
+            "ratio": 4.73
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Select trigger",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#fuente",
+        "tag": "BUTTON",
+        "slot": "select-trigger",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 3.79,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(23,23,23)",
+          "ratio": 3.79
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(23,23,23)",
+            "ratio": 3.79
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "SelectItem",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "div > div[data-slot=\"select-content\"] > div > div[data-slot=\"select-item\"]",
+        "tag": "DIV",
+        "slot": "select-item",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 4.34,
+        "best": {
+          "type": "inset-ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(245,245,245)",
+          "ratio": 4.34
+        },
+        "indicators": [
+          {
+            "type": "inset-ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(245,245,245)",
+            "ratio": 4.34
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "SelectItem",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "div > div[data-slot=\"select-content\"] > div > div[data-slot=\"select-item\"]",
+        "tag": "DIV",
+        "slot": "select-item",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 3.19,
+        "best": {
+          "type": "inset-ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(38,38,38)",
+          "ratio": 3.19
+        },
+        "indicators": [
+          {
+            "type": "inset-ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(38,38,38)",
+            "ratio": 3.19
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Tabs trigger",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#radix-_r_5_-trigger-cuentas",
+        "tag": "BUTTON",
+        "slot": "tabs-trigger",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 4.34,
+        "best": {
+          "type": "outline",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(245,245,245)",
+          "ratio": 4.34
+        },
+        "indicators": [
+          {
+            "type": "outline",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(245,245,245)",
+            "ratio": 4.34
+          },
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(245,245,245)",
+            "ratio": 4.34
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Tabs trigger",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#radix-_r_5_-trigger-cuentas",
+        "tag": "BUTTON",
+        "slot": "tabs-trigger",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 3.19,
+        "best": {
+          "type": "outline",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(38,38,38)",
+          "ratio": 3.19
+        },
+        "indicators": [
+          {
+            "type": "outline",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(38,38,38)",
+            "ratio": 3.19
+          },
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(38,38,38)",
+            "ratio": 3.19
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Nav link",
+        "theme": "light",
+        "viewport": "1440x900",
+        "pass": true,
+        "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+        "tag": "A",
+        "slot": null,
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 4.53,
+        "best": {
+          "type": "outline",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(250,250,250)",
+          "ratio": 4.53
+        },
+        "indicators": [
+          {
+            "type": "outline",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(250,250,250)",
+            "ratio": 4.53
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Nav link",
+        "theme": "dark",
+        "viewport": "1440x900",
+        "pass": true,
+        "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+        "tag": "A",
+        "slot": null,
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 3.79,
+        "best": {
+          "type": "outline",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(23,23,23)",
+          "ratio": 3.79
+        },
+        "indicators": [
+          {
+            "type": "outline",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(23,23,23)",
+            "ratio": 3.79
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Switch",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#fuente-split-auto",
+        "tag": "BUTTON",
+        "slot": "switch",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 4.73,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(255,255,255)",
+          "ratio": 4.73
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(255,255,255)",
+            "ratio": 4.73
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Switch",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#fuente-split-auto",
+        "tag": "BUTTON",
+        "slot": "switch",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 3.79,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(23,23,23)",
+          "ratio": 3.79
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(23,23,23)",
+            "ratio": 3.79
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Checkbox",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "div[data-slot=\"dialog-content\"] > div.space-y-4 > label.flex.items-start > button[data-slot=\"checkbox\"]",
+        "tag": "BUTTON",
+        "slot": "checkbox",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 4.73,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(255,255,255)",
+          "ratio": 4.73
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(255,255,255)",
+            "ratio": 4.73
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "Checkbox",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "div[data-slot=\"dialog-content\"] > div.space-y-4 > label.flex.items-start > button[data-slot=\"checkbox\"]",
+        "tag": "BUTTON",
+        "slot": "checkbox",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 3.79,
+        "best": {
+          "type": "ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(23,23,23)",
+          "ratio": 3.79
+        },
+        "indicators": [
+          {
+            "type": "ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(23,23,23)",
+            "ratio": 3.79
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "DropdownMenuItem",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#synthetic-dd-default",
+        "tag": "BUTTON",
+        "slot": "dropdown-menu-item",
+        "variant": "default",
+        "focusVisible": true,
+        "ratio": 4.34,
+        "best": {
+          "type": "inset-ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(245,245,245)",
+          "ratio": 4.34
+        },
+        "indicators": [
+          {
+            "type": "inset-ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(245,245,245)",
+            "ratio": 4.34
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "DropdownMenuItem",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#synthetic-dd-default",
+        "tag": "BUTTON",
+        "slot": "dropdown-menu-item",
+        "variant": "default",
+        "focusVisible": true,
+        "ratio": 3.19,
+        "best": {
+          "type": "inset-ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(38,38,38)",
+          "ratio": 3.19
+        },
+        "indicators": [
+          {
+            "type": "inset-ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(38,38,38)",
+            "ratio": 3.19
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "DropdownMenuItem destructive",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#synthetic-dd-destructive",
+        "tag": "BUTTON",
+        "slot": "dropdown-menu-item",
+        "variant": "destructive",
+        "focusVisible": true,
+        "ratio": 3.96,
+        "best": {
+          "type": "inset-ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(253,229,231)",
+          "ratio": 3.96
+        },
+        "indicators": [
+          {
+            "type": "inset-ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(253,229,231)",
+            "ratio": 3.96
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "DropdownMenuItem destructive",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#synthetic-dd-destructive",
+        "tag": "BUTTON",
+        "slot": "dropdown-menu-item",
+        "variant": "destructive",
+        "focusVisible": true,
+        "ratio": 3.78,
+        "best": {
+          "type": "inset-ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(35,19,19)",
+          "ratio": 3.78
+        },
+        "indicators": [
+          {
+            "type": "inset-ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(35,19,19)",
+            "ratio": 3.78
+          }
+        ],
+        "error": null
+      }
+    ],
+    "tabpanel": [
+      {
+        "name": "TabsContent",
+        "theme": "light",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#radix-_r_5_-content-cuentas",
+        "tag": "DIV",
+        "slot": "tabs-content",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 4.73,
+        "best": {
+          "type": "inset-ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(255,255,255)",
+          "ratio": 4.73
+        },
+        "indicators": [
+          {
+            "type": "inset-ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(255,255,255)",
+            "ratio": 4.73
+          }
+        ],
+        "error": null
+      },
+      {
+        "name": "TabsContent",
+        "theme": "dark",
+        "viewport": "390x844",
+        "pass": true,
+        "selector": "#radix-_r_5_-content-cuentas",
+        "tag": "DIV",
+        "slot": "tabs-content",
+        "variant": null,
+        "focusVisible": true,
+        "ratio": 4.18,
+        "best": {
+          "type": "inset-ring",
+          "color": "oklch(0.556 0 0)",
+          "bg": "rgb(10,10,10)",
+          "ratio": 4.18
+        },
+        "indicators": [
+          {
+            "type": "inset-ring",
+            "color": "oklch(0.556 0 0)",
+            "bg": "rgb(10,10,10)",
+            "ratio": 4.18
+          }
+        ],
+        "error": null
+      }
+    ]
+  },
+  "ac4": {
+    "pass": true,
+    "walks": 20,
+    "failures": 0,
+    "tabpanel": {
+      "walks": 4,
+      "focusVisible": 4,
+      "indicator": 4,
+      "selectors": [
+        "#radix-_r_5_-content-cuentas"
+      ],
+      "insetRingShadow": [
+        "inset 0 0 0 2px oklch(55.6% 0 0)"
+      ],
+      "failures": []
+    },
+    "visited": [
+      {
+        "route": "/",
+        "viewport": "390x844",
+        "theme": "light",
+        "expected": 15,
+        "visited": 15,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/ingresos",
+        "viewport": "390x844",
+        "theme": "light",
+        "expected": 414,
+        "visited": 414,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/splits",
+        "viewport": "390x844",
+        "theme": "light",
+        "expected": 23,
+        "visited": 23,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/registrar",
+        "viewport": "390x844",
+        "theme": "light",
+        "expected": 53,
+        "visited": 53,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/configuracion",
+        "viewport": "390x844",
+        "theme": "light",
+        "expected": 20,
+        "visited": 20,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/",
+        "viewport": "390x844",
+        "theme": "dark",
+        "expected": 15,
+        "visited": 15,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/ingresos",
+        "viewport": "390x844",
+        "theme": "dark",
+        "expected": 414,
+        "visited": 414,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/splits",
+        "viewport": "390x844",
+        "theme": "dark",
+        "expected": 23,
+        "visited": 23,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/registrar",
+        "viewport": "390x844",
+        "theme": "dark",
+        "expected": 53,
+        "visited": 53,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/configuracion",
+        "viewport": "390x844",
+        "theme": "dark",
+        "expected": 20,
+        "visited": 20,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/",
+        "viewport": "1440x900",
+        "theme": "light",
+        "expected": 21,
+        "visited": 21,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/ingresos",
+        "viewport": "1440x900",
+        "theme": "light",
+        "expected": 420,
+        "visited": 420,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/splits",
+        "viewport": "1440x900",
+        "theme": "light",
+        "expected": 29,
+        "visited": 29,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/registrar",
+        "viewport": "1440x900",
+        "theme": "light",
+        "expected": 59,
+        "visited": 59,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/configuracion",
+        "viewport": "1440x900",
+        "theme": "light",
+        "expected": 26,
+        "visited": 26,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/",
+        "viewport": "1440x900",
+        "theme": "dark",
+        "expected": 21,
+        "visited": 21,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/ingresos",
+        "viewport": "1440x900",
+        "theme": "dark",
+        "expected": 420,
+        "visited": 420,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/splits",
+        "viewport": "1440x900",
+        "theme": "dark",
+        "expected": 29,
+        "visited": 29,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/registrar",
+        "viewport": "1440x900",
+        "theme": "dark",
+        "expected": 59,
+        "visited": 59,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      },
+      {
+        "route": "/configuracion",
+        "viewport": "1440x900",
+        "theme": "dark",
+        "expected": 26,
+        "visited": 26,
+        "orderOk": true,
+        "focusVisibleAll": true,
+        "interactiveWithoutIndicator": 0
+      }
+    ],
+    "failureDetails": []
+  },
+  "ac5": {
+    "reduce": {
+      "panel": [
+        {
+          "kind": "panel",
+          "theme": "light",
+          "during": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 320,
+              "h": 492
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "after": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 320,
+              "h": 492
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "visible": true,
+          "console": []
+        },
+        {
+          "kind": "panel",
+          "theme": "dark",
+          "during": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 320,
+              "h": 492
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "after": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 320,
+              "h": 492
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "visible": true,
+          "console": []
+        }
+      ],
+      "dialog": [
+        {
+          "kind": "dialog",
+          "theme": "light",
+          "during": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 358,
+              "h": 759.59
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "after": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 358,
+              "h": 759.59
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "visible": true,
+          "console": []
+        },
+        {
+          "kind": "dialog",
+          "theme": "dark",
+          "during": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 358,
+              "h": 759.59
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "after": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 358,
+              "h": 759.59
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "visible": true,
+          "console": []
+        }
+      ],
+      "alert": [
+        {
+          "kind": "alert",
+          "theme": "light",
+          "during": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 320,
+              "h": 251
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "after": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 320,
+              "h": 251
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "visible": true,
+          "console": []
+        },
+        {
+          "kind": "alert",
+          "theme": "dark",
+          "during": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 320,
+              "h": 251
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "after": {
+            "maxAnimationMs": 0.01,
+            "maxTransitionMs": 0.01,
+            "infinite": [],
+            "rect": {
+              "w": 320,
+              "h": 251
+            },
+            "opacity": "1",
+            "visibility": "visible"
+          },
+          "visible": true,
+          "console": []
+        }
+      ],
+      "ocr-light": {
+        "theme": "light",
+        "reducedMotion": "reduce",
+        "callsAfterOcr": [
+          {
+            "behavior": "auto",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 3576
+          }
+        ],
+        "callsAfterButton": [
+          {
+            "behavior": "auto",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 3576
+          },
+          {
+            "behavior": "auto",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 4103
+          }
+        ],
+        "ocrCallBehavior": "auto",
+        "buttonCallBehavior": "auto",
+        "finalMotion": {
+          "maxAnimationMs": 0.01,
+          "maxTransitionMs": 0.01,
+          "infinite": [],
+          "rect": {
+            "w": 390,
+            "h": 844
+          },
+          "opacity": "1",
+          "visibility": "visible"
+        },
+        "console": [],
+        "failedRequests": []
+      },
+      "ocr-dark": {
+        "theme": "dark",
+        "reducedMotion": "reduce",
+        "callsAfterOcr": [
+          {
+            "behavior": "auto",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 3545
+          }
+        ],
+        "callsAfterButton": [
+          {
+            "behavior": "auto",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 3545
+          },
+          {
+            "behavior": "auto",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 4065
+          }
+        ],
+        "ocrCallBehavior": "auto",
+        "buttonCallBehavior": "auto",
+        "finalMotion": {
+          "maxAnimationMs": 0.01,
+          "maxTransitionMs": 0.01,
+          "infinite": [],
+          "rect": {
+            "w": 390,
+            "h": 844
+          },
+          "opacity": "1",
+          "visibility": "visible"
+        },
+        "console": [],
+        "failedRequests": []
+      }
+    },
+    "normal": {
+      "ocr-light": {
+        "theme": "light",
+        "reducedMotion": "no-preference",
+        "callsAfterOcr": [
+          {
+            "behavior": "smooth",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 3409
+          }
+        ],
+        "callsAfterButton": [
+          {
+            "behavior": "smooth",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 3409
+          },
+          {
+            "behavior": "smooth",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 3929
+          }
+        ],
+        "ocrCallBehavior": "smooth",
+        "buttonCallBehavior": "smooth",
+        "finalMotion": {
+          "maxAnimationMs": 0,
+          "maxTransitionMs": 400,
+          "infinite": [],
+          "rect": {
+            "w": 390,
+            "h": 844
+          },
+          "opacity": "1",
+          "visibility": "visible"
+        },
+        "console": [],
+        "failedRequests": []
+      },
+      "ocr-dark": {
+        "theme": "dark",
+        "reducedMotion": "no-preference",
+        "callsAfterOcr": [
+          {
+            "behavior": "smooth",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 3415
+          }
+        ],
+        "callsAfterButton": [
+          {
+            "behavior": "smooth",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 3415
+          },
+          {
+            "behavior": "smooth",
+            "block": "center",
+            "tag": "DIV",
+            "id": "",
+            "cls": "",
+            "t": 3957
+          }
+        ],
+        "ocrCallBehavior": "smooth",
+        "buttonCallBehavior": "smooth",
+        "finalMotion": {
+          "maxAnimationMs": 0,
+          "maxTransitionMs": 400,
+          "infinite": [],
+          "rect": {
+            "w": 390,
+            "h": 844
+          },
+          "opacity": "1",
+          "visibility": "visible"
+        },
+        "console": [],
+        "failedRequests": []
+      }
+    },
+    "pass": true,
+    "ocr": {
+      "reducePass": true,
+      "normalPass": true
+    }
+  },
+  "ac6": {
+    "cases": [
+      {
+        "theme": "light",
+        "first": {
+          "tag": "A",
+          "text": "Saltar al contenido",
+          "href": "#contenido",
+          "outline": "oklch(0.556 0 0) solid 2px",
+          "outlineStyle": "solid",
+          "rect": {
+            "w": 156.75,
+            "h": 36
+          }
+        },
+        "afterEnter": {
+          "tag": "MAIN",
+          "id": "contenido",
+          "outlineStyle": "none",
+          "outlineWidth": "1px",
+          "text": "DashboardResumen del mes de November 202"
+        },
+        "afterNextTab": {
+          "tag": "BUTTON",
+          "inMain": true,
+          "text": ""
+        },
+        "pass": true
+      },
+      {
+        "theme": "dark",
+        "first": {
+          "tag": "A",
+          "text": "Saltar al contenido",
+          "href": "#contenido",
+          "outline": "oklch(0.556 0 0) solid 2px",
+          "outlineStyle": "solid",
+          "rect": {
+            "w": 156.75,
+            "h": 36
+          }
+        },
+        "afterEnter": {
+          "tag": "MAIN",
+          "id": "contenido",
+          "outlineStyle": "none",
+          "outlineWidth": "1px",
+          "text": "DashboardResumen del mes de November 202"
+        },
+        "afterNextTab": {
+          "tag": "BUTTON",
+          "inMain": true,
+          "text": ""
+        },
+        "pass": true
+      }
+    ],
+    "pass": true
+  },
+  "ac7": {
+    "pass": true,
+    "counts": {
+      "cases": 134,
+      "contrastCases": 0,
+      "contrastViolations": 0,
+      "overflowCases": 0,
+      "truncationCases": 0,
+      "consoleCases": 0
+    },
+    "overflowFailures": [],
+    "contrastFailures": [],
+    "consoleFailures": []
+  },
+  "pass": true
+}

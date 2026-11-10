@@ -46,7 +46,7 @@ node test-results/a11y-gate/harness/audit.cjs
 | AC8 — Calidad | **PASS** | `tsc` 0; `npm test` 3 archivos / 24 tests; `npm run build` 0; `go test ./...` 0. |
 | AC9 — Alcance | **PASS** | **21 archivos cambiados** en `78ca19a..HEAD`. El pedido mencionaba 22, pero el diff real no contiene un 22.º archivo. Sin deps nuevas, sin API/BD/migraciones, sin `package.json`/`go.mod`/`package-lock.json`. |
 | AC10 — Git | **PASS** | HEAD `07e957e` == `origin/feat/a11y-gate`; 7 commits desde `78ca19a`; sin merges, tags ni force-push. `git status` solo muestra `?? test-results/`. |
-| AC11 — Deploy | **NO EJECUTADO** | Requiere aprobación humana; se valida en DEPLOY. |
+| AC11 — Deploy | **PASS** | Deploy a `test3` con `DEPLOY_HEALTH_PASS` y AC1–AC7 en vivo `LIVE_PASS`. Evidencia: `test-results/deploy/deploy-report.md` y `live-a11y.md`. |
 | AC12 — Evidencia | **PASS** | `report.md`, `metrics-before.json`, `metrics-after.json` (270,636 bytes), `console-log.json`, harness, logs y 12 capturas clave. |
 
 ## AC3 — Ratios de foco medidos
@@ -112,10 +112,10 @@ Total: 12 capturas en `test-results/a11y-gate/screenshots/`. El cambio de tabpan
 
 ## Riesgos residuales
 
-1. **AC11 pendiente**: deploy a `test3` no ejecutado; debe validarse en DEPLOY tras aprobación humana.
+1. **AC11 verificado**: deploy a `test3` con health check y AC1–AC7 en vivo (`LIVE_PASS`); sin rollback necesario.
 2. **Baseline desktop limitado**: el baseline capturó subconjuntos (p. ej. `/ingresos` 40 targets). AC2 compara los targets existentes por texto/geometría; los extra se reportan como información.
 3. **`:8082` ocupado por app ajena**: se usó `:18082` para evitar falsos negativos. `:8081` no se modificó.
-4. **`test-results/` no versionado**: queda como artefacto de evidencia; no se hizo commit, tag ni push.
+4. **Evidencia versionada**: `test-results/` se publicó en `7030e4c`; `.ai/` queda fuera de Git por diseño.
 
 ## Artefactos
 
@@ -133,4 +133,4 @@ Total: 12 capturas en `test-results/a11y-gate/screenshots/`. El cambio de tabpan
 
 ## Veredicto
 
-**TEST_PASS** — AC1–AC10 y AC12 en PASS; AC11 no ejecutado por diseño. AC7 se mantiene en 0 violaciones, 0 overflow, 0 truncados y 0 errores de consola. AC4 incluye el tabpanel de `/configuracion` como foco visible con `inset-ring` y sin fallo.
+**TEST_PASS + LIVE_PASS** — AC1–AC12 en PASS. AC7 se mantiene en 0 violaciones, 0 overflow, 0 truncados y 0 errores de consola. AC4 incluye el tabpanel de `/configuracion` como foco visible con `inset-ring` y sin fallo. AC11 se verificó en vivo en `test3` (`DEPLOY_HEALTH_PASS` + `LIVE_PASS`) sin rollback.

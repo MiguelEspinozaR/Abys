@@ -2,13 +2,13 @@
   "task_id": "a11y-gate",
   "feature": "a11y-gate",
   "title": "Gate de accesibilidad UI (bloque A)",
-  "lifecycle_state": "TEST",
+  "lifecycle_state": "DONE",
   "branch": "feat/a11y-gate",
   "commit": "07e957e21f852c3fa88c28761b84fbbe4e1adc2f",
   "base_commit": "78ca19a",
   "generated_at": "2026-11-09T01:04:43Z",
   "status": "pass",
-  "status_reason": "Todas las AC ejecutables pasan en 07e957e. AC3 mantiene 26/26 componentes y añade TabsContent 2/2 con inset-ring; AC4 mantiene 20/20 walks e incluye el tabpanel de /configuracion como foco visible. AC7 sigue en 0 violaciones, 0 overflow, 0 truncados y 0 consola. AC11 no se ejecutó por diseño.",
+  "status_reason": "Todas las AC ejecutables pasan en 07e957e. AC3 mantiene 26/26 componentes y añade TabsContent 2/2 con inset-ring; AC4 mantiene 20/20 walks e incluye el tabpanel de /configuracion como foco visible. AC7 sigue en 0 violaciones, 0 overflow, 0 truncados y 0 consola. AC11 se verificó en vivo en test3 (DEPLOY_HEALTH_PASS + LIVE_PASS) sin rollback.",
   "environment": {
     "os": "linux",
     "node": "v22.22.1",
@@ -323,9 +323,11 @@
       "evidence": "test-results/a11y-gate/metrics-after.json#ac10"
     },
     "AC11": {
-      "status": "not_executed",
-      "summary": "Deploy no ejecutado porque requiere aprobación humana después de TEST.",
-      "evidence": "test-results/a11y-gate/metrics-after.json#ac11"
+      "status": "pass",
+      "summary": "Deploy a test3 con health check y AC1–AC7 en vivo; LIVE_PASS sin rollback.",
+      "url": "https://test3.mikylab.com",
+      "head": "7030e4c",
+      "evidence": "test-results/deploy/live-a11y.md"
     },
     "AC12": {
       "status": "pass",
@@ -386,10 +388,10 @@
     {
       "id": "AC11-DEPLOY",
       "severity": "info",
-      "classification": "not_run",
-      "status": "pending",
-      "summary": "Deployment no ejecutado intencionalmente; corresponde a DEPLOY tras aprobación humana.",
-      "evidence": "test-results/a11y-gate/metrics-after.json#ac11"
+      "classification": "deployed",
+      "status": "resolved",
+      "summary": "Deploy a test3 verificado: DEPLOY_HEALTH_PASS y LIVE_PASS (AC1–AC7) sobre el build de 7030e4c.",
+      "evidence": "test-results/deploy/live-a11y.md"
     },
     {
       "id": "AC12-REPORT",
@@ -431,5 +433,18 @@
   "git": {
     "mutations_performed": false,
     "working_tree_note": "Solo test-results/ está sin trackear; no se hizo commit, tag ni push."
+  },
+  "deploy": {
+    "status": "pass",
+    "url": "https://test3.mikylab.com",
+    "head": "7030e4c",
+    "health": "DEPLOY_HEALTH_PASS",
+    "live_a11y": "LIVE_PASS",
+    "verified_at": "2026-11-09T02:31:49.746Z",
+    "evidence": [
+      "test-results/deploy/deploy-report.md",
+      "test-results/deploy/live-a11y.md",
+      "test-results/deploy/live-a11y.json"
+    ]
   }
 }

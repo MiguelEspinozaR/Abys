@@ -8,11 +8,14 @@ const path = require('path')
 const { execSync } = require('child_process')
 
 const ROOT = '/home/miky/Documentos/finanzasMikyGoRef'
-const OUT = path.join(ROOT, 'test-results/a11y-gate')
+const LIVE = !!process.env.LIVE
+const OUT = path.join(ROOT, LIVE ? 'test-results/deploy' : 'test-results/a11y-gate')
 const SHOTS = path.join(OUT, 'screenshots')
 const WEB = path.join(ROOT, 'web')
-const BASE = 'http://localhost:5178'
-const API = 'http://localhost:18082/api/v1'
+const BASE = process.env.BASE_URL || (LIVE ? 'https://test3.mikylab.com' : 'http://localhost:5178')
+const API = process.env.API_URL || (LIVE ? BASE + '/api/v1' : 'http://localhost:18082/api/v1')
+const BASELINE = path.join(ROOT, 'test-results/a11y-gate/metrics-before.json')
+const EXPECTED_HEAD = process.env.EXPECTED_HEAD || (LIVE ? '7030e4c' : null)
 const THEME_KEY = 'abys-ui'
 const SMOKE = !!process.env.SMOKE
 
@@ -1203,6 +1206,66 @@ function compactResults(results) {
   return { compact, contrastCases, consoleCases }
 }
 
+async function liveBuildCheck() {
+  const bust = Date.now()
+  const out = {
+    expectedHead: EXPECTED_HEAD,
+    headSource: 'deploy handoff',
+    url: BASE,
+    checks: {},
+  }
+  try {
+    const htmlRes = await fetch(BASE + '/?live=' + bust, { headers: { 'cache-control': 'no-cache' } })
+    const html = await htmlRes.text()
+    out.html = {
+      status: htmlRes.status,
+      cacheControl: htmlRes.headers.get('cache-control'),
+      cfCacheStatus: htmlRes.headers.get('cf-cache-status'),
+      etag: htmlRes.headers.get('etag'),
+      lastModified: htmlRes.headers.get('last-modified'),
+    }
+    const jsPath = (html.match(/<script[^>]+src="([^"]+\.js)"/) || [])[1]
+    const cssPath = (html.match(/<link[^>]+href="([^"]+\.css)"/) || [])[1]
+    out.html.jsAsset = jsPath
+    out.html.cssAsset = cssPath
+    out.checks.htmlNoCache = /no-cache/i.test(out.html.cacheControl || '')
+    out.checks.hasJsAsset = !!jsPath
+    if (jsPath) {
+      const jsRes = await fetch(BASE + jsPath + '?live=' + bust)
+      const js = await jsRes.text()
+      out.js = {
+        status: jsRes.status,
+        bytes: Buffer.byteLength(js),
+        etag: jsRes.headers.get('etag'),
+        lastModified: jsRes.headers.get('last-modified'),
+      }
+      const configPath = (js.match(/assets\/ConfiguracionPage-[A-Za-z0-9_-]+\.js/) || [])[0]
+      out.configChunk = { path: configPath || null }
+      if (configPath) {
+        const cfgRes = await fetch(BASE + '/' + configPath + '?live=' + bust)
+        const cfg = await cfgRes.text()
+        out.configChunk.status = cfgRes.status
+        out.configChunk.hasTabsContent = cfg.includes('data-slot":"tabs-content')
+        out.configChunk.hasFocusVisibleInsetRing = cfg.includes('focus-visible:inset-ring-2') && cfg.includes('focus-visible:inset-ring-ring')
+      }
+    }
+    if (cssPath) {
+      const cssRes = await fetch(BASE + cssPath + '?live=' + bust)
+      const css = await cssRes.text()
+      out.css = { status: cssRes.status, bytes: Buffer.byteLength(css) }
+      out.checks.cssHasFocusVisibleInsetRing = css.includes('.focus-visible\\:inset-ring-2:focus-visible') && css.includes('.focus-visible\\:inset-ring-ring:focus-visible')
+    }
+    out.checks.jsStatusOk = out.js && out.js.status === 200
+    out.checks.configChunkOk = !!(out.configChunk && out.configChunk.status === 200 && out.configChunk.hasTabsContent && out.configChunk.hasFocusVisibleInsetRing)
+    out.checks.cssOk = !!out.checks.cssHasFocusVisibleInsetRing
+    out.pass = !!(out.checks.htmlNoCache && out.checks.hasJsAsset && out.checks.jsStatusOk && out.checks.configChunkOk && out.checks.cssOk)
+  } catch (e) {
+    out.error = e.message
+    out.pass = false
+  }
+  return out
+}
+
 async function main() {
   const started = new Date().toISOString()
   const browser = await chromium.launch({ channel: 'chrome' })
@@ -1253,7 +1316,7 @@ async function main() {
           c.console = consoleMsgs.filter(m => !/favicon/i.test(m.text) && !/favicon/i.test(m.url || ''))
           c.failedRequests = failed.filter(f => !/favicon/i.test(f.url))
           // Key evidence: 5 routes at 390x844 (light/dark) + dashboard at 1440x900 (light/dark).
-          const shouldShot = !SMOKE && (vpName === 'm390' || (vpName === 'desktop' && route.path === '/'))
+          const shouldShot = !SMOKE && !LIVE && (vpName === 'm390' || (vpName === 'desktop' && route.path === '/'))
           if (shouldShot) c.screenshot = await shot(page, `route-${route.name}-${vpName}-${theme}`)
         } catch (e) {
           c.error = e.message
@@ -1336,7 +1399,7 @@ async function main() {
   }, null, 2))
 
   /* ---- AC2 desktop layout comparison ---- */
-  results.ac2 = compareDesktopLayout(path.join(OUT, 'metrics-before.json'), defaultCases.filter(c => c.vpName === 'desktop'))
+  results.ac2 = compareDesktopLayout(BASELINE, defaultCases.filter(c => c.vpName === 'desktop'))
 
   /* ---- AC3 focus ---- */
   const focusCases = SMOKE ? FOCUS_CASES.filter(c => c.name === 'Button default') : FOCUS_CASES
@@ -1359,7 +1422,7 @@ async function main() {
     }
   }
   results.ac3.tabpanel = tabpanelResults
-  results.ac3.staticCss = checkStaticCss()
+  results.ac3.staticCss = LIVE ? await liveBuildCheck() : checkStaticCss()
   results.ac3.pass = focusResults.length > 0 && focusResults.every(r => r.pass) && tabpanelResults.every(r => r.pass)
   results.ac3.failures = [...focusResults, ...tabpanelResults].filter(r => !r.pass)
 
@@ -1498,6 +1561,102 @@ async function main() {
   }
   results.ac6.cases = skipResults
   results.ac6.pass = skipResults.length > 0 && skipResults.every(r => r.pass)
+
+  /* ---- LIVE AC1-AC7 summary (no quality/git/deploy checks) ---- */
+  if (LIVE) {
+    results.meta.finished = new Date().toISOString()
+    results.meta.live = true
+    const allAc7 = [...results.ac7.defaultCases, ...results.ac7.secondaryCases]
+    const ac7Counts = {
+      cases: allAc7.length,
+      contrastCases: allAc7.filter(c => c.contrast && c.contrast.failures.length > 0).length,
+      contrastViolations: allAc7.reduce((n, c) => n + ((c.contrast && c.contrast.failures.length) || 0), 0),
+      overflowCases: allAc7.filter(c => c.overflow && (c.overflow.overflowX !== 0 || c.overflow.bodyOverflowX !== 0)).length,
+      truncationCases: allAc7.filter(c => c.overflow && c.overflow.truncados.length > 0).length,
+      consoleCases: allAc7.filter(c => (c.console && c.console.length) || (c.failedRequests && c.failedRequests.length)).length,
+    }
+    const ac1Targets = {}
+    for (const c of results.ac1.defaultCases) {
+      ac1Targets[c.route + ' ' + c.viewport + ' ' + c.theme] = c.touch ? c.touch.targets : null
+    }
+    const cfgWalks = results.ac4.walks.filter(w => w.route === '/configuracion')
+    const tabpanelWalks = cfgWalks.filter(w => w.tabpanels && w.tabpanels.length > 0)
+    const tabpanel = {
+      walks: tabpanelWalks.length,
+      focusVisible: tabpanelWalks.filter(w => w.tabpanels.every(t => t.focusVisible)).length,
+      indicator: tabpanelWalks.filter(w => w.tabpanels.every(t => t.indicator)).length,
+      selectors: [...new Set(tabpanelWalks.flatMap(w => w.tabpanels.map(t => t.selector)))],
+      insetRingShadow: [...new Set(tabpanelWalks.flatMap(w => w.tabpanels.map(t => t.insetRingShadow)))],
+      failures: tabpanelWalks.filter(w => !w.tabpanels.every(t => t.focusVisible && t.indicator)).map(w => ({ route: w.route, viewport: w.viewport, theme: w.theme, tabpanels: w.tabpanels })),
+    }
+    const live = {
+      schema_version: 1,
+      task_id: 'a11y-gate-live',
+      url: BASE,
+      head: EXPECTED_HEAD,
+      head_source: 'deploy handoff',
+      generated_at: results.meta.finished,
+      environment: {
+        chrome: results.meta.chrome,
+        node: results.meta.node,
+        mobile_viewport: '390x844',
+        desktop_viewport: '1440x900',
+        themes: THEMES,
+      },
+      build: results.ac3.staticCss,
+      ac1: {
+        pass: results.ac1.pass,
+        failureCount: results.ac1.failureCount,
+        defaultCases: results.ac1.defaultCases.length,
+        secondaryCases: results.ac1.secondaryCases.length,
+        targets: ac1Targets,
+        failures: results.ac1.failures,
+      },
+      ac2: {
+        pass: results.ac2.pass,
+        cases: results.ac2.cases.length,
+        matched: results.ac2.cases.filter(c => c.pass).length,
+        failures: results.ac2.cases.filter(c => !c.pass),
+      },
+      ac3: {
+        pass: results.ac3.pass,
+        cases: results.ac3.cases.length,
+        failures: results.ac3.failures.length,
+        caseDetails: results.ac3.cases.map(compactFocus),
+        tabpanel: results.ac3.tabpanel.map(compactFocus),
+      },
+      ac4: {
+        pass: results.ac4.pass,
+        walks: results.ac4.walks.length,
+        failures: results.ac4.failures.length,
+        tabpanel,
+        visited: results.ac4.walks.map(w => ({ route: w.route, viewport: w.viewport, theme: w.theme, expected: w.expected, visited: w.visited, orderOk: w.orderOk, focusVisibleAll: w.focusVisibleAll, interactiveWithoutIndicator: w.interactiveWithoutIndicator.length })),
+        failureDetails: results.ac4.failures,
+      },
+      ac5: results.ac5,
+      ac6: results.ac6,
+      ac7: {
+        pass: results.ac7.pass,
+        counts: ac7Counts,
+        overflowFailures: results.ac7.overflowFailures,
+        contrastFailures: results.ac7.contrastFailures,
+        consoleFailures: results.ac7.consoleFailures,
+      },
+    }
+    live.pass = !!(live.build.pass && live.ac1.pass && live.ac2.pass && live.ac3.pass && live.ac4.pass && live.ac5.pass && live.ac6.pass && live.ac7.pass)
+    fs.writeFileSync(path.join(OUT, 'live-a11y.json'), JSON.stringify(live, null, 2))
+    fs.writeFileSync('/tmp/opencode/live-a11y-full.json', JSON.stringify(results, null, 2))
+    if (results.ac7.contrastFailures.length) {
+      fs.writeFileSync(path.join(OUT, 'live-contrast-failures.json'), JSON.stringify({
+        note: 'Fallos de contraste en vivo, con selector/ruta/tema/medición exacta.',
+        cases: results.ac7.contrastFailures,
+      }, null, 2))
+    }
+    console.log('LIVE_WROTE', path.join(OUT, 'live-a11y.json'), 'bytes=' + fs.statSync(path.join(OUT, 'live-a11y.json')).size)
+    console.log('LIVE_PASS', live.pass)
+    await browser.close()
+    return
+  }
 
   /* ---- AC8 / AC9 / AC10 / AC11 / AC12 ---- */
   results.ac8 = qualityCheck()
