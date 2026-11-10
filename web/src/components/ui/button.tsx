@@ -40,10 +40,16 @@ const buttonVariants = cva(
   }
 )
 
+/**
+ * `type` por defecto en `button` (no `submit`): dentro de un `<form>`, los botones
+ * secundarios (Cancelar, X, acciones de fila) no deben disparar el submit. El botón
+ * principal lo sobrescribe explícito con `type="submit"`.
+ */
 function Button({
   className,
   variant = "default",
   size = "default",
+  type = "button",
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &
@@ -58,6 +64,7 @@ function Button({
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
+      type={type}
       {...props}
     />
   )

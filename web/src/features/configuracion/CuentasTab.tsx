@@ -1,4 +1,5 @@
 import { useRef, useState } from "react"
+import type { FormEvent } from "react"
 import {
   History,
   ImageOff,
@@ -45,6 +46,9 @@ import {
 } from "@/components/ui/table"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
+import { FieldError } from "@/components/form/FieldError"
+import { ErrorSummary } from "@/components/form/ErrorSummary"
+import { useFormErrors } from "@/hooks/useFormErrors"
 import { assetUrl } from "@/services/api"
 import {
   useActualizarCuenta,
@@ -57,7 +61,15 @@ import {
   useSubirQR,
 } from "@/services/hooks"
 import { bpsToPercentNum, formatTasaBps } from "@/lib/format"
+import { validarAlias, validarTasa } from "@/lib/validators"
 import type { Cuenta } from "@/services/types"
+
+/** Marca visual de campo obligatorio; la semántica va en `aria-required` (R2.3). */
+const Obligatorio = () => (
+  <span aria-hidden className="ml-0.5">
+    *
+  </span>
+)
 
 // ---------------------------------------------------------------------------
 // Dialog de tasa
@@ -67,12 +79,25 @@ function TasaDialog({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void }
   const cambiarTasa = useCambiarTasa()
   const [tasa, setTasa] = useState(String(bpsToPercentNum(cuenta.tasa_bps)))
   const [aplicarPendientes, setAplicarPendientes] = useState(false)
+  const validacion = useFormErrors<"tasa">()
 
   const tasaNum = Number(tasa.replace(",", "."))
-  const valido = Number.isFinite(tasaNum) && tasaNum >= 0 && tasaNum <= 100
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const valido = validacion.validarSubmit([
+      {
+        campo: "tasa",
+        validar: () => validarTasa(tasa),
+        enfocar: () => document.getElementById(`tasa-${cuenta.id}`)?.focus(),
+      },
+    ])
+    if (valido) void guardar()
+  }
 
   const guardar = async () => {
-    if (!valido) return
+    // Defensa interna: la validez la explica el formulario, no un botón gris (D2).
+    if (!Number.isFinite(tasaNum) || tasaNum < 0 || tasaNum > 100) return
     await cambiarTasa.mutateAsync({
       id: cuenta.id,
       payload: { tasa: tasaNum, aplicar_pendientes: aplicarPendientes },
@@ -84,47 +109,71 @@ function TasaDialog({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void }
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Tasa de {cuenta.alias}</DialogTitle>
+          <DialogTitle id="tasa-dialog-titulo">Tasa de {cuenta.alias}</DialogTitle>
           <DialogDescription>
             Actual: {formatTasaBps(cuenta.tasa_bps)}. La suma de tasas de cuentas ≠ General no
             puede superar 100% (lo valida el servidor).
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-1.5">
-            <Label htmlFor={`tasa-${cuenta.id}`}>
-              Tasa en % <span className="text-muted-foreground">(100% = 10000 bps)</span>
-            </Label>
-            <Input
-              id={`tasa-${cuenta.id}`}
-              inputMode="decimal"
-              value={tasa}
-              onChange={(e) => setTasa(e.target.value)}
-              placeholder="Ej: 25"
-            />
+        <form
+          noValidate
+          aria-labelledby="tasa-dialog-titulo"
+          aria-busy={cambiarTasa.isPending}
+          onSubmit={onSubmit}
+          className="space-y-4"
+        >
+          {validacion.resumenVisible && (
+            <ErrorSummary errores={validacion.listaErrores} onEnfocar={() => document.getElementById(`tasa-${cuenta.id}`)?.focus()} />
+          )}
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor={`tasa-${cuenta.id}`}>
+                Tasa en % <Obligatorio />{" "}
+                <span className="text-muted-foreground">(100% = 10000 bps)</span>
+              </Label>
+              <Input
+                id={`tasa-${cuenta.id}`}
+                inputMode="decimal"
+                value={tasa}
+                onChange={(e) => {
+                  setTasa(e.target.value)
+                  validacion.validarChange("tasa", () => validarTasa(e.target.value))
+                }}
+                onBlur={(e) => validacion.validarBlur("tasa", () => validarTasa(e.target.value))}
+                placeholder="Ej: 25"
+                aria-required="true"
+                aria-invalid={validacion.errores.tasa ? true : undefined}
+                aria-describedby={validacion.errores.tasa ? `tasa-${cuenta.id}-error` : undefined}
+              />
+              <FieldError id={`tasa-${cuenta.id}-error`} error={validacion.errores.tasa} />
+            </div>
+            <div className="flex items-start gap-2">
+              <Checkbox
+                id={`tasa-aplicar-${cuenta.id}`}
+                checked={aplicarPendientes}
+                onCheckedChange={(v) => setAplicarPendientes(v === true)}
+              />
+              <Label
+                htmlFor={`tasa-aplicar-${cuenta.id}`}
+                className="flex flex-col items-start gap-0 font-normal leading-snug"
+              >
+                <span>Aplicar a transacciones pendientes</span>
+                <span className="block text-xs text-muted-foreground">
+                  Recalcula los splits con transacciones pendientes usando esta nueva tasa.
+                </span>
+              </Label>
+            </div>
           </div>
-          <label className="flex items-start gap-2 text-sm">
-            <Checkbox
-              checked={aplicarPendientes}
-              onCheckedChange={(v) => setAplicarPendientes(v === true)}
-            />
-            <span>
-              Aplicar a transacciones pendientes
-              <span className="block text-xs text-muted-foreground">
-                Recalcula los splits con transacciones pendientes usando esta nueva tasa.
-              </span>
-            </span>
-          </label>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button onClick={guardar} disabled={!valido || cambiarTasa.isPending}>
-            {cambiarTasa.isPending && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />}
-            Guardar tasa
-          </Button>
-        </DialogFooter>
+          <DialogFooter>
+            <Button variant="outline" type="button" onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={cambiarTasa.isPending}>
+              {cambiarTasa.isPending && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />}
+              Guardar tasa
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )
@@ -199,11 +248,24 @@ function CuentaDialog({
     banco: cuenta?.banco ?? "",
     numero: cuenta?.numero ?? "",
   })
+  const validacion = useFormErrors<"alias">()
   const isPending = crear.isPending || actualizar.isPending
-  const valido = form.alias.trim() !== ""
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const valido = validacion.validarSubmit([
+      {
+        campo: "alias",
+        validar: () => validarAlias(form.alias),
+        enfocar: () => document.getElementById("cuenta-alias")?.focus(),
+      },
+    ])
+    if (valido) void guardar()
+  }
 
   const guardar = async () => {
-    if (!valido) return
+    // Defensa interna: la validez la explica el formulario, no un botón gris (D2).
+    if (form.alias.trim() === "") return
     const payload = {
       alias: form.alias.trim(),
       banco: form.banco.trim() ? form.banco.trim() : null,
@@ -218,49 +280,75 @@ function CuentaDialog({
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{cuenta ? `Editar cuenta "${cuenta.alias}"` : "Nueva cuenta"}</DialogTitle>
+          <DialogTitle id="cuenta-dialog-titulo">
+            {cuenta ? `Editar cuenta "${cuenta.alias}"` : "Nueva cuenta"}
+          </DialogTitle>
           <DialogDescription>
             Cuentas bancarias donde se distribuyen los pagos (la General se crea sola).
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="cuenta-alias">Alias</Label>
-            <Input
-              id="cuenta-alias"
-              value={form.alias}
-              onChange={(e) => setForm((f) => ({ ...f, alias: e.target.value }))}
-              placeholder="Ej: Box"
+        <form
+          noValidate
+          aria-labelledby="cuenta-dialog-titulo"
+          aria-busy={isPending}
+          onSubmit={onSubmit}
+          className="space-y-4"
+        >
+          {validacion.resumenVisible && (
+            <ErrorSummary
+              errores={validacion.listaErrores}
+              onEnfocar={() => document.getElementById("cuenta-alias")?.focus()}
             />
+          )}
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="cuenta-alias">
+                Alias <Obligatorio />
+              </Label>
+              <Input
+                id="cuenta-alias"
+                value={form.alias}
+                onChange={(e) => {
+                  setForm((f) => ({ ...f, alias: e.target.value }))
+                  validacion.validarChange("alias", () => validarAlias(e.target.value))
+                }}
+                onBlur={(e) => validacion.validarBlur("alias", () => validarAlias(e.target.value))}
+                placeholder="Ej: Box"
+                aria-required="true"
+                aria-invalid={validacion.errores.alias ? true : undefined}
+                aria-describedby={validacion.errores.alias ? "cuenta-alias-error" : undefined}
+              />
+              <FieldError id="cuenta-alias-error" error={validacion.errores.alias} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="cuenta-banco">Banco</Label>
+              <Input
+                id="cuenta-banco"
+                value={form.banco}
+                onChange={(e) => setForm((f) => ({ ...f, banco: e.target.value }))}
+                placeholder="Ej: BANCOMUNIDAD"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="cuenta-numero">Número</Label>
+              <Input
+                id="cuenta-numero"
+                value={form.numero}
+                onChange={(e) => setForm((f) => ({ ...f, numero: e.target.value }))}
+                placeholder="Número de cuenta"
+              />
+            </div>
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="cuenta-banco">Banco</Label>
-            <Input
-              id="cuenta-banco"
-              value={form.banco}
-              onChange={(e) => setForm((f) => ({ ...f, banco: e.target.value }))}
-              placeholder="Ej: BANCOMUNIDAD"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="cuenta-numero">Número</Label>
-            <Input
-              id="cuenta-numero"
-              value={form.numero}
-              onChange={(e) => setForm((f) => ({ ...f, numero: e.target.value }))}
-              placeholder="Número de cuenta"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button onClick={guardar} disabled={!valido || isPending}>
-            {isPending && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />}
-            {cuenta ? "Guardar cambios" : "Crear cuenta"}
-          </Button>
-        </DialogFooter>
+          <DialogFooter>
+            <Button variant="outline" type="button" onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />}
+              {cuenta ? "Guardar cambios" : "Crear cuenta"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )

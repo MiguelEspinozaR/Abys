@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import type { FormEvent } from "react"
 import {
   Dialog,
   DialogContent,
@@ -21,8 +22,20 @@ import {
 } from "@/components/ui/select"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Loader2, TriangleAlert } from "lucide-react"
+import { FieldError } from "@/components/form/FieldError"
+import { ErrorSummary } from "@/components/form/ErrorSummary"
+import { useFormErrors } from "@/hooks/useFormErrors"
 import { useActualizarPago, useFuentes } from "@/services/hooks"
 import { bsToCents, METODOS_PAGO } from "@/lib/format"
+import {
+  MAX_NOTAS,
+  validarDiasTrabajados,
+  validarFechaPago,
+  validarFuente,
+  validarMetodoPago,
+  validarMonto,
+  validarNotas,
+} from "@/lib/validators"
 import type { MetodoPago, Pago } from "@/services/types"
 import { CalendarioDias, type Herramienta } from "@/features/registrar/CalendarioDias"
 
@@ -30,6 +43,25 @@ interface Props {
   pago: Pago
   children: React.ReactNode
 }
+
+/** Campos con reglas de validación al editar un pago (R2). */
+type Campo = "dias" | "fuente" | "monto" | "metodo" | "fecha" | "notas"
+
+/** id del control (o fieldset) de cada campo, para foco programático (R2.5). */
+const IDS_Campos: Record<Campo, string> = {
+  dias: "edit-calendario",
+  fuente: "edit-fuente",
+  monto: "edit-monto",
+  metodo: "edit-metodo",
+  fecha: "edit-fecha",
+  notas: "edit-notas",
+}
+
+const Obligatorio = () => (
+  <span aria-hidden className="ml-0.5">
+    *
+  </span>
+)
 
 export function EditarPagoDialog({ pago, children }: Props) {
   const { data: fuentes } = useFuentes()
@@ -46,10 +78,79 @@ export function EditarPagoDialog({ pago, children }: Props) {
 
   const montoCents = bsToCents(montoStr)
   const conSplit = pago.split_id != null
-  const puedeGuardar = montoCents != null && montoCents > 0 && dias.size >= 1 && fechaPago !== ""
+  const validacion = useFormErrors<Campo>()
+
+  const idsFuentes = useMemo(
+    () => new Set((fuentes ?? []).map((f) => String(f.id))),
+    [fuentes],
+  )
+
+  const enfocarCampo = (campo: Campo) => {
+    document.getElementById(IDS_Campos[campo])?.focus()
+  }
+
+  const cerrar = () => {
+    setAbierto(false)
+    validacion.limpiar()
+  }
+
+  const marcarDia = (fecha: string) => {
+    if (herramienta === "trabajo") {
+      const next = new Set(dias)
+      if (next.has(fecha)) next.delete(fecha)
+      else next.add(fecha)
+      setDias(next)
+      validacion.validarChange("dias", () => validarDiasTrabajados(next))
+    } else if (herramienta === "pago") {
+      setFechaPago(fecha)
+      validacion.validarChange("fecha", () => validarFechaPago(fecha))
+    } else {
+      const next = new Set(dias)
+      next.delete(fecha)
+      setDias(next)
+      validacion.validarChange("dias", () => validarDiasTrabajados(next))
+    }
+  }
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const valido = validacion.validarSubmit([
+      {
+        campo: "dias",
+        validar: () => validarDiasTrabajados(dias),
+        enfocar: () => enfocarCampo("dias"),
+      },
+      {
+        campo: "fuente",
+        validar: () => validarFuente(fuenteId, idsFuentes),
+        enfocar: () => enfocarCampo("fuente"),
+      },
+      {
+        campo: "monto",
+        validar: () => validarMonto(montoStr),
+        enfocar: () => enfocarCampo("monto"),
+      },
+      {
+        campo: "metodo",
+        validar: () => validarMetodoPago(metodo),
+        enfocar: () => enfocarCampo("metodo"),
+      },
+      {
+        campo: "fecha",
+        validar: () => validarFechaPago(fechaPago),
+        enfocar: () => enfocarCampo("fecha"),
+      },
+      {
+        campo: "notas",
+        validar: () => validarNotas(notas),
+        enfocar: () => enfocarCampo("notas"),
+      },
+    ])
+    if (valido) void guardar()
+  }
 
   const guardar = async () => {
-    if (!puedeGuardar || montoCents == null) return
+    if (montoCents == null || montoCents <= 0 || dias.size < 1 || fechaPago === "") return
     await actualizar.mutateAsync({
       id: pago.id,
       payload: {
@@ -61,15 +162,15 @@ export function EditarPagoDialog({ pago, children }: Props) {
         dias_trabajados: [...dias].sort(),
       },
     })
-    setAbierto(false)
+    cerrar()
   }
 
   return (
-    <Dialog open={abierto} onOpenChange={setAbierto}>
+    <Dialog open={abierto} onOpenChange={(o) => (o ? setAbierto(true) : cerrar())}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Editar pago #{pago.id}</DialogTitle>
+          <DialogTitle id="edit-pago-titulo">Editar pago #{pago.id}</DialogTitle>
           <DialogDescription>
             Actualiza los datos del pago. Los días trabajados se reemplazan por los del calendario.
           </DialogDescription>
@@ -86,110 +187,183 @@ export function EditarPagoDialog({ pago, children }: Props) {
           </Alert>
         )}
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="space-y-3 md:col-span-2">
-            <CalendarioDias
-              diasTrabajados={dias}
-              fechaPago={fechaPago}
-              herramienta={herramienta}
-              setHerramienta={setHerramienta}
-              onMarcarDia={(fecha) => {
-                if (herramienta === "trabajo") {
-                  setDias((prev) => {
-                    const next = new Set(prev)
-                    if (next.has(fecha)) next.delete(fecha)
-                    else next.add(fecha)
-                    return next
-                  })
-                } else if (herramienta === "pago") {
-                  setFechaPago(fecha)
-                } else {
-                  setDias((prev) => {
-                    const next = new Set(prev)
-                    next.delete(fecha)
-                    return next
-                  })
+        <form
+          noValidate
+          aria-labelledby="edit-pago-titulo"
+          aria-busy={actualizar.isPending}
+          onSubmit={onSubmit}
+          className="space-y-4"
+        >
+          {validacion.resumenVisible && (
+            <ErrorSummary errores={validacion.listaErrores} onEnfocar={enfocarCampo} />
+          )}
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="space-y-3 md:col-span-2">
+              <CalendarioDias
+                id="edit-calendario"
+                legend={
+                  <>
+                    Días trabajados <Obligatorio />
+                  </>
                 }
-              }}
-            />
+                error={validacion.errores.dias ?? null}
+                errorId="edit-dias-error"
+                diasTrabajados={dias}
+                fechaPago={fechaPago}
+                herramienta={herramienta}
+                setHerramienta={setHerramienta}
+                onMarcarDia={marcarDia}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-fuente">
+                Fuente <Obligatorio />
+              </Label>
+              <Select
+                value={fuenteId}
+                onValueChange={(v) => {
+                  setFuenteId(v)
+                  validacion.validarChange("fuente", () => validarFuente(v, idsFuentes))
+                }}
+              >
+                <SelectTrigger
+                  id="edit-fuente"
+                  aria-required="true"
+                  aria-invalid={validacion.errores.fuente ? true : undefined}
+                  aria-describedby={
+                    validacion.errores.fuente ? "edit-fuente-error" : undefined
+                  }
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {fuentes?.map((f) => (
+                    <SelectItem key={f.id} value={String(f.id)}>
+                      {f.alias}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FieldError id="edit-fuente-error" error={validacion.errores.fuente} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-monto">
+                Monto (Bs) <Obligatorio />
+              </Label>
+              <Input
+                id="edit-monto"
+                inputMode="decimal"
+                value={montoStr}
+                disabled={conSplit}
+                aria-required="true"
+                aria-invalid={validacion.errores.monto ? true : undefined}
+                aria-describedby={validacion.errores.monto ? "edit-monto-error" : undefined}
+                onChange={(e) => {
+                  setMontoStr(e.target.value)
+                  validacion.validarChange("monto", () => validarMonto(e.target.value))
+                }}
+                onBlur={(e) =>
+                  validacion.validarBlur("monto", () => validarMonto(e.target.value))
+                }
+              />
+              <FieldError id="edit-monto-error" error={validacion.errores.monto} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-metodo">
+                Método <Obligatorio />
+              </Label>
+              <Select
+                value={metodo}
+                onValueChange={(v) => {
+                  setMetodo(v as MetodoPago)
+                  validacion.validarChange("metodo", () => validarMetodoPago(v))
+                }}
+              >
+                <SelectTrigger
+                  id="edit-metodo"
+                  aria-required="true"
+                  aria-invalid={validacion.errores.metodo ? true : undefined}
+                  aria-describedby={
+                    validacion.errores.metodo ? "edit-metodo-error" : undefined
+                  }
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {METODOS_PAGO.map((m) => (
+                    <SelectItem key={m.value} value={m.value}>
+                      {m.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FieldError id="edit-metodo-error" error={validacion.errores.metodo} />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-fecha">
+                Fecha de pago <Obligatorio />
+              </Label>
+              <Input
+                id="edit-fecha"
+                type="date"
+                value={fechaPago}
+                aria-required="true"
+                aria-invalid={validacion.errores.fecha ? true : undefined}
+                aria-describedby={validacion.errores.fecha ? "edit-fecha-error" : undefined}
+                onChange={(e) => {
+                  setFechaPago(e.target.value)
+                  validacion.validarChange("fecha", () => validarFechaPago(e.target.value))
+                }}
+                onBlur={(e) =>
+                  validacion.validarBlur("fecha", () => validarFechaPago(e.target.value))
+                }
+              />
+              <FieldError id="edit-fecha-error" error={validacion.errores.fecha} />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="edit-notas">Notas</Label>
+              <Textarea
+                id="edit-notas"
+                rows={2}
+                value={notas}
+                maxLength={MAX_NOTAS}
+                aria-invalid={validacion.errores.notas ? true : undefined}
+                aria-describedby={
+                  validacion.errores.notas
+                    ? "edit-notas-contador edit-notas-error"
+                    : "edit-notas-contador"
+                }
+                onChange={(e) => {
+                  setNotas(e.target.value)
+                  validacion.validarChange("notas", () => validarNotas(e.target.value))
+                }}
+                onBlur={(e) =>
+                  validacion.validarBlur("notas", () => validarNotas(e.target.value))
+                }
+              />
+              <p id="edit-notas-contador" className="text-right text-xs text-muted-foreground">
+                {notas.length}/{MAX_NOTAS}
+              </p>
+              <FieldError id="edit-notas-error" error={validacion.errores.notas} />
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="edit-fuente">Fuente</Label>
-            <Select value={fuenteId} onValueChange={setFuenteId}>
-              <SelectTrigger id="edit-fuente">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {fuentes?.map((f) => (
-                  <SelectItem key={f.id} value={String(f.id)}>
-                    {f.alias}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="edit-monto">Monto (Bs)</Label>
-            <Input
-              id="edit-monto"
-              inputMode="decimal"
-              value={montoStr}
-              disabled={conSplit}
-              onChange={(e) => setMontoStr(e.target.value)}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="edit-metodo">Método</Label>
-            <Select value={metodo} onValueChange={(v) => setMetodo(v as MetodoPago)}>
-              <SelectTrigger id="edit-metodo">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {METODOS_PAGO.map((m) => (
-                  <SelectItem key={m.value} value={m.value}>
-                    {m.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="edit-fecha">Fecha de pago</Label>
-            <Input
-              id="edit-fecha"
-              type="date"
-              value={fechaPago}
-              onChange={(e) => setFechaPago(e.target.value)}
-            />
-          </div>
-
-          <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="edit-notas">Notas</Label>
-            <Textarea
-              id="edit-notas"
-              rows={2}
-              value={notas}
-              onChange={(e) => setNotas(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setAbierto(false)}>
-            Cancelar
-          </Button>
-          <Button
-            onClick={guardar}
-            disabled={!puedeGuardar || actualizar.isPending}
-          >
-            {actualizar.isPending && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />}
-            Guardar cambios
-          </Button>
-        </DialogFooter>
+          <DialogFooter>
+            <Button variant="outline" type="button" onClick={cerrar}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={actualizar.isPending}>
+              {actualizar.isPending && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />}
+              Guardar cambios
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )

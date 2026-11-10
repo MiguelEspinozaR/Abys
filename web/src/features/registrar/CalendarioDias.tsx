@@ -3,10 +3,19 @@ import { Banknote, CalendarCheck, Eraser } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { fromISODate, toISODate } from "@/lib/format"
 import { Button } from "@/components/ui/button"
+import { FieldError } from "@/components/form/FieldError"
 
 export type Herramienta = "trabajo" | "pago" | "quitar"
 
 interface Props {
+  /** id del `fieldset` (para foco programático desde el resumen). */
+  id?: string
+  /**
+   * Texto visible del `<legend>`: nombra el grupo de días trabajados/fecha de pago
+   * (R1.5/D13). Registrar usa "Días trabajados y fecha de pago" y Editar
+   * "Días trabajados" para no duplicar semántica con su input de fecha.
+   */
+  legend: React.ReactNode
   diasTrabajados: Set<string>
   fechaPago: string | null
   /** días ya registrados en pagos guardados (referencia visual) */
@@ -16,6 +25,10 @@ interface Props {
   herramienta: Herramienta
   setHerramienta: (h: Herramienta) => void
   onMarcarDia: (fecha: string) => void
+  /** Error inline junto al calendario (R2.11); se asocia vía `aria-describedby`. */
+  error?: string | null
+  /** id del elemento de error (target del `aria-describedby` del fieldset). */
+  errorId?: string
 }
 
 const HERRAMIENTAS: { valor: Herramienta; label: string; icono: React.ElementType }[] = [
@@ -31,11 +44,29 @@ function valueToDate(value: unknown): Date | null {
   return null
 }
 
-export function CalendarioDias({ diasTrabajados, fechaPago, yaTrabajados, yaFechasPago, herramienta, setHerramienta, onMarcarDia }: Props) {
+export function CalendarioDias({
+  id,
+  legend,
+  diasTrabajados,
+  fechaPago,
+  yaTrabajados,
+  yaFechasPago,
+  herramienta,
+  setHerramienta,
+  onMarcarDia,
+  error,
+  errorId,
+}: Props) {
   const fechaSel = fechaPago ? fromISODate(fechaPago) : null
 
   return (
-    <div className="space-y-3">
+    <fieldset
+      id={id}
+      tabIndex={-1}
+      className="m-0 min-w-0 space-y-3 border-0 p-0"
+      aria-describedby={error ? errorId : undefined}
+    >
+      <legend className="px-0 text-sm leading-none font-medium">{legend}</legend>
       <div className="flex items-center gap-1 rounded-lg border bg-muted/40 p-1" role="toolbar" aria-label="Herramientas del calendario">
         {HERRAMIENTAS.map(({ valor, label, icono: Icono }) => (
           <Button
@@ -97,6 +128,8 @@ export function CalendarioDias({ diasTrabajados, fechaPago, yaTrabajados, yaFech
         className="rounded-xl border bg-card p-2 max-md:-mx-4 max-md:rounded-none max-md:border-x-0 max-md:p-0"
       />
 
+      {errorId && <FieldError id={errorId} error={error} />}
+
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
           <span className="inline-block size-2.5 rounded-full bg-emerald-500" aria-hidden /> día trabajado (nuevo)
@@ -109,6 +142,6 @@ export function CalendarioDias({ diasTrabajados, fechaPago, yaTrabajados, yaFech
         </span>
         <span className="ml-auto">{diasTrabajados.size} día(s) · {fechaPago ?? "sin fecha de pago"}</span>
       </div>
-    </div>
+    </fieldset>
   )
 }

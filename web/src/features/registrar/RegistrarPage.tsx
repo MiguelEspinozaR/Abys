@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react"
+import type { FormEvent } from "react"
 import { useNavigate } from "react-router-dom"
 import { Loader2, Save, ScanText, X } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,12 +15,44 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import { FieldError } from "@/components/form/FieldError"
+import { ErrorSummary } from "@/components/form/ErrorSummary"
+import { useFormErrors } from "@/hooks/useFormErrors"
 import { useCrearPago, useFuentes, usePagos, useSubirComprobante } from "@/services/hooks"
 import { bsToCents, formatBs, formatearFechaEs, METODOS_PAGO, toISODate } from "@/lib/format"
 import { motionBehavior } from "@/lib/a11y"
+import {
+  MAX_NOTAS,
+  validarDiasTrabajados,
+  validarFechaPago,
+  validarFuente,
+  validarMetodoPago,
+  validarMonto,
+  validarNotas,
+} from "@/lib/validators"
 import type { MetodoPago } from "@/services/types"
 import { CalendarioDias, type Herramienta } from "./CalendarioDias"
 import { ComprobanteDropzone } from "./ComprobanteDropzone"
+
+/** Campos con reglas de validación en /registrar (R2). */
+type Campo = "dias" | "fecha" | "fuente" | "metodo" | "monto" | "notas"
+
+/** id del control (o fieldset) de cada campo, para foco programático (R2.5). */
+const IDS_Campos: Record<Campo, string> = {
+  dias: "registrar-dias",
+  fecha: "registrar-dias",
+  fuente: "fuente",
+  metodo: "metodo",
+  monto: "monto",
+  notas: "notas",
+}
+
+/** Marca visual de obligatorio (D12): `*` aria-hidden; la semántica va en aria-required. */
+const Obligatorio = () => (
+  <span aria-hidden className="ml-0.5">
+    *
+  </span>
+)
 
 export default function RegistrarPage() {
   const navigate = useNavigate()
@@ -57,28 +90,80 @@ export default function RegistrarPage() {
   const calendarioRef = useRef<HTMLDivElement>(null)
 
   const montoCents = bsToCents(montoStr)
+  const validacion = useFormErrors<Campo>()
+
+  const idsFuentes = useMemo(
+    () => new Set((fuentes ?? []).map((f) => String(f.id))),
+    [fuentes],
+  )
+
+  /** Enfoca el control (o el fieldset con tabIndex={-1}) del campo indicado (R2.5). */
+  const enfocarCampo = (campo: Campo) => {
+    document.getElementById(IDS_Campos[campo])?.focus()
+  }
 
   const marcarDia = (fecha: string) => {
     if (herramienta === "trabajo") {
-      setDiasTrabajados((prev) => {
-        const next = new Set(prev)
-        if (next.has(fecha)) next.delete(fecha)
-        else next.add(fecha)
-        return next
-      })
+      const next = new Set(diasTrabajados)
+      if (next.has(fecha)) next.delete(fecha)
+      else next.add(fecha)
+      setDiasTrabajados(next)
+      validacion.validarChange("dias", () => validarDiasTrabajados(next))
     } else if (herramienta === "pago") {
       setFechaPago(fecha)
+      validacion.validarChange("fecha", () => validarFechaPago(fecha))
     } else {
-      setDiasTrabajados((prev) => {
-        const next = new Set(prev)
-        next.delete(fecha)
-        return next
-      })
-      if (fechaPago === fecha) setFechaPago("")
+      const next = new Set(diasTrabajados)
+      next.delete(fecha)
+      setDiasTrabajados(next)
+      validacion.validarChange("dias", () => validarDiasTrabajados(next))
+      if (fechaPago === fecha) {
+        setFechaPago("")
+        validacion.validarChange("fecha", () => validarFechaPago(""))
+      }
     }
   }
 
   const fuenteValida = fuentes?.some((f) => String(f.id) === fuenteId)
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const valido = validacion.validarSubmit([
+      {
+        campo: "dias",
+        validar: () => validarDiasTrabajados(diasTrabajados),
+        enfocar: () => enfocarCampo("dias"),
+      },
+      {
+        campo: "fecha",
+        validar: () => validarFechaPago(fechaPago),
+        enfocar: () => enfocarCampo("dias"),
+      },
+      {
+        campo: "fuente",
+        validar: () => validarFuente(fuenteId, idsFuentes),
+        enfocar: () => enfocarCampo("fuente"),
+      },
+      {
+        campo: "metodo",
+        validar: () => validarMetodoPago(metodo),
+        enfocar: () => enfocarCampo("metodo"),
+      },
+      {
+        campo: "monto",
+        validar: () => validarMonto(montoStr),
+        enfocar: () => enfocarCampo("monto"),
+      },
+      {
+        campo: "notas",
+        validar: () => validarNotas(notas),
+        enfocar: () => enfocarCampo("notas"),
+      },
+    ])
+    if (valido) void guardar()
+  }
+
+  // Defensa interna: la validez la explica el formulario, no un botón gris (D2).
   const puedeGuardar =
     fuenteValida && fechaPago !== "" && montoCents != null && montoCents > 0 && diasTrabajados.size >= 1
 
@@ -115,12 +200,17 @@ export default function RegistrarPage() {
     if (r.fecha) setFechaPago(r.fecha)
 
     const textoNotas = [r.referencia, r.descripcion].filter(Boolean).join(" — ")
+    let nuevasNotas = notas
     if (textoNotas) {
-      setNotas((prev) => {
-        if (prev.split("\n").includes(textoNotas)) return prev
-        return prev ? `${prev}\n${textoNotas}` : textoNotas
-      })
+      nuevasNotas = notas.split("\n").includes(textoNotas)
+        ? notas
+        : notas
+          ? `${notas}\n${textoNotas}`
+          : textoNotas
+      setNotas(nuevasNotas)
     }
+    // R2.8: valida programáticamente; el OCR puede dejar notas >500 sin pasar por maxLength.
+    validacion.validarBlur("notas", () => validarNotas(nuevasNotas))
 
     setOcrResumen({
       monto: r.monto_enteros,
@@ -139,232 +229,318 @@ export default function RegistrarPage() {
     }
   }
 
+  const enviando = crearPago.isPending || subirComprobante.isPending
+
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight">Registrar pago</h1>
+        <h1 id="registrar-pago-titulo" className="text-2xl font-semibold tracking-tight">
+          Registrar pago
+        </h1>
         <p className="text-sm text-muted-foreground">
           Marca los días trabajados en el calendario y completa el resto del formulario.
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Calendario */}
-        <div ref={calendarioRef}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium">Calendario</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CalendarioDias
-                diasTrabajados={diasTrabajados}
-                fechaPago={fechaPago}
-                yaTrabajados={yaTrabajados}
-                yaFechasPago={yaFechasPago}
-                herramienta={herramienta}
-                setHerramienta={setHerramienta}
-                onMarcarDia={marcarDia}
-              />
-            </CardContent>
-          </Card>
-        </div>
+      <form
+        noValidate
+        aria-labelledby="registrar-pago-titulo"
+        aria-busy={enviando}
+        onSubmit={onSubmit}
+        className="space-y-6"
+      >
+        {validacion.resumenVisible && (
+          <ErrorSummary errores={validacion.listaErrores} onEnfocar={enfocarCampo} />
+        )}
 
-        {/* Datos del pago */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium">Datos del pago</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="fuente">Fuente</Label>
-                <Select value={fuenteId} onValueChange={setFuenteId}>
-                  <SelectTrigger id="fuente" disabled={fuentesLoading}>
-                    <SelectValue placeholder="Selecciona la fuente" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {fuentes?.map((f) => (
-                      <SelectItem key={f.id} value={String(f.id)}>
-                        <span className="inline-flex items-center gap-2">
-                          <span
-                            className="inline-block size-2.5 rounded-full"
-                            style={{ backgroundColor: f.color }}
-                            aria-hidden
-                          />
-                          {f.alias}
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {fuenteValida && (
-                  <div className="pt-1">
-                    <Badge variant="outline" className="gap-1.5">
-                      <span
-                        className="inline-block size-2 rounded-full"
-                        style={{
-                          backgroundColor: fuentes?.find((f) => String(f.id) === fuenteId)?.color,
-                        }}
-                        aria-hidden
-                      />
-                      {fuentes?.find((f) => String(f.id) === fuenteId)?.alias}
-                    </Badge>
-                  </div>
-                )}
-              </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* Calendario */}
+          <div ref={calendarioRef}>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">Calendario</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CalendarioDias
+                  id="registrar-dias"
+                  legend={
+                    <>
+                      Días trabajados y fecha de pago <Obligatorio />
+                    </>
+                  }
+                  error={validacion.errores.dias ?? validacion.errores.fecha ?? null}
+                  errorId="registrar-dias-error"
+                  diasTrabajados={diasTrabajados}
+                  fechaPago={fechaPago}
+                  yaTrabajados={yaTrabajados}
+                  yaFechasPago={yaFechasPago}
+                  herramienta={herramienta}
+                  setHerramienta={setHerramienta}
+                  onMarcarDia={marcarDia}
+                />
+              </CardContent>
+            </Card>
+          </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="metodo">Método de pago</Label>
-                <div className="grid grid-cols-3 gap-1 rounded-lg border bg-muted/40 p-1" role="radiogroup" aria-label="Método de pago">
-                  {METODOS_PAGO.map((m) => (
-                    <Button
-                      key={m.value}
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setMetodo(m.value as MetodoPago)}
-                      aria-pressed={metodo === m.value}
-                      className={
-                        metodo === m.value
-                          ? "bg-background text-foreground shadow-sm"
-                          : "text-muted-foreground"
+          {/* Datos del pago */}
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">Datos del pago</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="fuente">
+                    Fuente <Obligatorio />
+                  </Label>
+                  <Select
+                    value={fuenteId}
+                    onValueChange={(v) => {
+                      setFuenteId(v)
+                      validacion.validarChange("fuente", () => validarFuente(v, idsFuentes))
+                    }}
+                  >
+                    <SelectTrigger
+                      id="fuente"
+                      disabled={fuentesLoading}
+                      aria-required="true"
+                      aria-invalid={validacion.errores.fuente ? true : undefined}
+                      aria-describedby={
+                        validacion.errores.fuente ? "fuente-error" : undefined
                       }
                     >
-                      {m.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="monto">Monto (Bs)</Label>
-                <Input
-                  id="monto"
-                  ref={montoInputRef}
-                  inputMode="decimal"
-                  placeholder="Ej: 1.234,56"
-                  value={montoStr}
-                  onChange={(e) => setMontoStr(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">
-                  {montoCents != null
-                    ? `= ${montoCents} centavos (${(montoCents / 100).toLocaleString("es-BO", { minimumFractionDigits: 2 })} Bs)`
-                    : "Ingresa un monto válido, p. ej. 265,00"}
-                </p>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="notas">Notas</Label>
-                <Textarea
-                  id="notas"
-                  rows={3}
-                  placeholder="Referencia, período pagado, observaciones…"
-                  value={notas}
-                  onChange={(e) => setNotas(e.target.value)}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium">Comprobante (opcional)</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ComprobanteDropzone
-                comprobante={comprobante}
-                onChange={setComprobante}
-                onResultadoOcr={aplicarOcr}
-              />
-            </CardContent>
-          </Card>
-
-          {ocrResumen && (
-            <Card className="border-primary/40 bg-primary/5">
-              <CardContent className="space-y-3 pt-4">
-                <div className="flex items-start justify-between gap-2">
-                  <p className="flex items-center gap-1.5 text-sm font-medium">
-                    <ScanText className="size-4 text-primary" aria-hidden />
-                    Detectado en el comprobante
-                  </p>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="size-7 max-md:min-h-11 max-md:min-w-11"
-                    aria-label="Ocultar resumen del comprobante"
-                    onClick={() => setOcrResumen(null)}
-                  >
-                    <X className="size-4" aria-hidden />
-                  </Button>
-                </div>
-                <dl className="grid grid-cols-1 gap-1.5 text-sm sm:grid-cols-2">
-                  <div className="flex items-center justify-between gap-2 sm:justify-start">
-                    <dt className="text-muted-foreground">Monto:</dt>
-                    <dd className="font-medium">
-                      {ocrResumen.monto != null ? formatBs(ocrResumen.monto) : "no detectado"}
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 sm:justify-start">
-                    <dt className="text-muted-foreground">Fecha:</dt>
-                    <dd className="font-medium">
-                      {ocrResumen.fecha ? formatearFechaEs(ocrResumen.fecha) : "no detectada"}
-                    </dd>
-                  </div>
-                  {ocrResumen.descripcion && (
-                    <div className="flex items-start justify-between gap-2 sm:col-span-2 sm:justify-start">
-                      <dt className="text-muted-foreground">Descripción:</dt>
-                      <dd className="min-w-0 flex-1 break-words">{ocrResumen.descripcion}</dd>
+                      <SelectValue placeholder="Selecciona la fuente" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {fuentes?.map((f) => (
+                        <SelectItem key={f.id} value={String(f.id)}>
+                          <span className="inline-flex items-center gap-2">
+                            <span
+                              className="inline-block size-2.5 rounded-full"
+                              style={{ backgroundColor: f.color }}
+                              aria-hidden
+                            />
+                            {f.alias}
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FieldError id="fuente-error" error={validacion.errores.fuente} />
+                  {fuenteValida && (
+                    <div className="pt-1">
+                      <Badge variant="outline" className="gap-1.5">
+                        <span
+                          className="inline-block size-2 rounded-full"
+                          style={{
+                            backgroundColor: fuentes?.find((f) => String(f.id) === fuenteId)?.color,
+                          }}
+                          aria-hidden
+                        />
+                        {fuentes?.find((f) => String(f.id) === fuenteId)?.alias}
+                      </Badge>
                     </div>
                   )}
-                </dl>
-                <div className="flex flex-wrap gap-2">
-                  {ocrResumen.monto != null && (
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => montoInputRef.current?.focus()}
-                    >
-                      Editar monto
-                    </Button>
-                  )}
-                  {ocrResumen.fecha && (
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="secondary"
-                      onClick={() =>
-                        calendarioRef.current?.scrollIntoView({
-                          behavior: motionBehavior(),
-                          block: "center",
-                        })
-                      }
-                    >
-                      Ver fecha en el calendario
-                    </Button>
-                  )}
+                </div>
+
+                <fieldset
+                  id="metodo"
+                  tabIndex={-1}
+                  className="m-0 min-w-0 space-y-1.5 border-0 p-0"
+                  aria-describedby={validacion.errores.metodo ? "metodo-error" : undefined}
+                >
+                  <legend className="px-0 text-sm leading-none font-medium">
+                    Método de pago <Obligatorio />
+                  </legend>
+                  <div
+                    className="grid grid-cols-3 gap-1 rounded-lg border bg-muted/40 p-1"
+                    role="radiogroup"
+                    aria-label="Método de pago"
+                  >
+                    {METODOS_PAGO.map((m) => (
+                      <Button
+                        key={m.value}
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setMetodo(m.value as MetodoPago)}
+                        aria-pressed={metodo === m.value}
+                        className={
+                          metodo === m.value
+                            ? "bg-background text-foreground shadow-sm"
+                            : "text-muted-foreground"
+                        }
+                      >
+                        {m.label}
+                      </Button>
+                    ))}
+                  </div>
+                  <FieldError id="metodo-error" error={validacion.errores.metodo} />
+                </fieldset>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="monto">
+                    Monto (Bs) <Obligatorio />
+                  </Label>
+                  <Input
+                    id="monto"
+                    ref={montoInputRef}
+                    inputMode="decimal"
+                    placeholder="Ej: 1.234,56"
+                    value={montoStr}
+                    aria-required="true"
+                    aria-invalid={validacion.errores.monto ? true : undefined}
+                    aria-describedby={
+                      validacion.errores.monto
+                        ? "monto-ayuda monto-separadores monto-error"
+                        : "monto-ayuda monto-separadores"
+                    }
+                    onChange={(e) => {
+                      setMontoStr(e.target.value)
+                      validacion.validarChange("monto", () => validarMonto(e.target.value))
+                    }}
+                    onBlur={(e) =>
+                      validacion.validarBlur("monto", () => validarMonto(e.target.value))
+                    }
+                  />
+                  <p id="monto-ayuda" className="text-xs text-muted-foreground">
+                    {montoCents != null
+                      ? `= ${montoCents} centavos (${(montoCents / 100).toLocaleString("es-BO", { minimumFractionDigits: 2 })} Bs)`
+                      : "Ingresa un monto válido, p. ej. 265,00"}
+                  </p>
+                  <p id="monto-separadores" className="text-xs text-muted-foreground">
+                    Usa coma decimal y punto para miles: 1.234,56.
+                  </p>
+                  <FieldError id="monto-error" error={validacion.errores.monto} />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="notas">Notas</Label>
+                  <Textarea
+                    id="notas"
+                    rows={3}
+                    placeholder="Referencia, período pagado, observaciones…"
+                    value={notas}
+                    maxLength={MAX_NOTAS}
+                    aria-invalid={validacion.errores.notas ? true : undefined}
+                    aria-describedby={
+                      validacion.errores.notas ? "notas-contador notas-error" : "notas-contador"
+                    }
+                    onChange={(e) => {
+                      setNotas(e.target.value)
+                      validacion.validarChange("notas", () => validarNotas(e.target.value))
+                    }}
+                    onBlur={(e) =>
+                      validacion.validarBlur("notas", () => validarNotas(e.target.value))
+                    }
+                  />
+                  <p id="notas-contador" className="text-right text-xs text-muted-foreground">
+                    {notas.length}/{MAX_NOTAS}
+                  </p>
+                  <FieldError id="notas-error" error={validacion.errores.notas} />
                 </div>
               </CardContent>
             </Card>
-          )}
 
-          <Button
-            type="button"
-            size="lg"
-            className="w-full"
-            onClick={guardar}
-            disabled={!puedeGuardar || crearPago.isPending || subirComprobante.isPending}
-          >
-            {(crearPago.isPending || subirComprobante.isPending) ? (
-              <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
-            ) : (
-              <Save className="mr-2 size-4" aria-hidden />
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">Comprobante (opcional)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ComprobanteDropzone
+                  comprobante={comprobante}
+                  onChange={setComprobante}
+                  onResultadoOcr={aplicarOcr}
+                />
+              </CardContent>
+            </Card>
+
+            {ocrResumen && (
+              <Card className="border-primary/40 bg-primary/5">
+                <CardContent className="space-y-3 pt-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="flex items-center gap-1.5 text-sm font-medium">
+                      <ScanText className="size-4 text-primary" aria-hidden />
+                      Detectado en el comprobante
+                    </p>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 max-md:min-h-11 max-md:min-w-11"
+                      aria-label="Ocultar resumen del comprobante"
+                      onClick={() => setOcrResumen(null)}
+                    >
+                      <X className="size-4" aria-hidden />
+                    </Button>
+                  </div>
+                  <dl className="grid grid-cols-1 gap-1.5 text-sm sm:grid-cols-2">
+                    <div className="flex items-center justify-between gap-2 sm:justify-start">
+                      <dt className="text-muted-foreground">Monto:</dt>
+                      <dd className="font-medium">
+                        {ocrResumen.monto != null ? formatBs(ocrResumen.monto) : "no detectado"}
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 sm:justify-start">
+                      <dt className="text-muted-foreground">Fecha:</dt>
+                      <dd className="font-medium">
+                        {ocrResumen.fecha ? formatearFechaEs(ocrResumen.fecha) : "no detectada"}
+                      </dd>
+                    </div>
+                    {ocrResumen.descripcion && (
+                      <div className="flex items-start justify-between gap-2 sm:col-span-2 sm:justify-start">
+                        <dt className="text-muted-foreground">Descripción:</dt>
+                        <dd className="min-w-0 flex-1 break-words">{ocrResumen.descripcion}</dd>
+                      </div>
+                    )}
+                  </dl>
+                  <div className="flex flex-wrap gap-2">
+                    {ocrResumen.monto != null && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => montoInputRef.current?.focus()}
+                      >
+                        Editar monto
+                      </Button>
+                    )}
+                    {ocrResumen.fecha && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
+                        onClick={() =>
+                          calendarioRef.current?.scrollIntoView({
+                            behavior: motionBehavior(),
+                            block: "center",
+                          })
+                        }
+                      >
+                        Ver fecha en el calendario
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             )}
-            Guardar pago
-          </Button>
+
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={enviando}
+            >
+              {enviando ? (
+                <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
+              ) : (
+                <Save className="mr-2 size-4" aria-hidden />
+              )}
+              Guardar pago
+            </Button>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   )
 }

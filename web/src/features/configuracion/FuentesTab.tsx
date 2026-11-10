@@ -1,4 +1,5 @@
 import { useRef, useState } from "react"
+import type { FormEvent } from "react"
 import { ImageOff, Loader2, Pencil, Plus, Trash2, Upload, X } from "lucide-react"
 import {
   AlertDialog,
@@ -41,6 +42,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
+import { FieldError } from "@/components/form/FieldError"
+import { ErrorSummary } from "@/components/form/ErrorSummary"
+import { useFormErrors } from "@/hooks/useFormErrors"
 import {
   useActualizarFuente,
   useCrearFuente,
@@ -50,6 +54,7 @@ import {
   useSubirLogoFuente,
 } from "@/services/hooks"
 import { assetUrl } from "@/services/api"
+import { validarAlias, validarColor, validarSplitAutoModo } from "@/lib/validators"
 import type { Fuente, FuentePayload } from "@/services/types"
 
 const MODOS = ["preciso", "redondeado", "enteros"] as const
@@ -62,6 +67,22 @@ interface FormFuente {
   split_auto: boolean
   split_auto_modo: string
 }
+
+/** Campos con reglas de validación del diálogo de fuente (R2). */
+type Campo = "alias" | "color" | "split_auto_modo"
+
+/** id del control de cada campo, para foco programático (R2.5). */
+const IDS_Campos: Record<Campo, string> = {
+  alias: "fuente-alias",
+  color: "fuente-color-hex",
+  split_auto_modo: "fuente-split-modo",
+}
+
+const Obligatorio = () => (
+  <span aria-hidden className="ml-0.5">
+    *
+  </span>
+)
 
 function FuenteDialog({
   fuente,
@@ -78,12 +99,38 @@ function FuenteDialog({
     split_auto: fuente?.split_auto ?? false,
     split_auto_modo: fuente?.split_auto_modo ?? DEFAULT_MODO,
   })
+  const validacion = useFormErrors<Campo>()
 
   const isPending = crear.isPending || actualizar.isPending
-  const valido = form.alias.trim() !== ""
+
+  const enfocarCampo = (campo: Campo) => {
+    document.getElementById(IDS_Campos[campo])?.focus()
+  }
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const valido = validacion.validarSubmit([
+      {
+        campo: "alias",
+        validar: () => validarAlias(form.alias),
+        enfocar: () => enfocarCampo("alias"),
+      },
+      {
+        campo: "color",
+        validar: () => validarColor(form.color),
+        enfocar: () => enfocarCampo("color"),
+      },
+      {
+        campo: "split_auto_modo",
+        // D14: vacío es válido (usa el modo por defecto).
+        validar: () => validarSplitAutoModo(form.split_auto_modo),
+        enfocar: () => enfocarCampo("split_auto_modo"),
+      },
+    ])
+    if (valido) void guardar()
+  }
 
   const guardar = async () => {
-    if (!valido) return
     const payload: FuentePayload = {
       alias: form.alias.trim(),
       color: form.color,
@@ -101,88 +148,146 @@ function FuenteDialog({
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{fuente ? `Editar fuente "${fuente.alias}"` : "Nueva fuente"}</DialogTitle>
+          <DialogTitle id="fuente-dialog-titulo">
+            {fuente ? `Editar fuente "${fuente.alias}"` : "Nueva fuente"}
+          </DialogTitle>
           <DialogDescription>
             Las fuentes identifican el origen de tus pagos (plataforma, cliente, etc.).
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="fuente-alias">Alias</Label>
-            <Input
-              id="fuente-alias"
-              value={form.alias}
-              onChange={(e) => setForm((f) => ({ ...f, alias: e.target.value }))}
-              placeholder="Ej: Athena"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="fuente-color">Color</Label>
-            <div className="flex items-center gap-2">
+        <form
+          noValidate
+          aria-labelledby="fuente-dialog-titulo"
+          aria-busy={isPending}
+          onSubmit={onSubmit}
+          className="space-y-4"
+        >
+          {validacion.resumenVisible && (
+            <ErrorSummary errores={validacion.listaErrores} onEnfocar={enfocarCampo} />
+          )}
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="fuente-alias">
+                Alias <Obligatorio />
+              </Label>
               <Input
-                id="fuente-color"
-                type="color"
-                value={form.color}
-                onChange={(e) => setForm((f) => ({ ...f, color: e.target.value }))}
-                className="h-10 w-16 cursor-pointer p-1"
-                aria-label="Color de la fuente"
+                id="fuente-alias"
+                value={form.alias}
+                onChange={(e) => {
+                  setForm((f) => ({ ...f, alias: e.target.value }))
+                  validacion.validarChange("alias", () => validarAlias(e.target.value))
+                }}
+                onBlur={(e) => validacion.validarBlur("alias", () => validarAlias(e.target.value))}
+                placeholder="Ej: Athena"
+                aria-required="true"
+                aria-invalid={validacion.errores.alias ? true : undefined}
+                aria-describedby={validacion.errores.alias ? "fuente-alias-error" : undefined}
               />
-              <Input
-                value={form.color}
-                onChange={(e) => setForm((f) => ({ ...f, color: e.target.value }))}
-                className="h-10 w-32 font-mono text-xs"
-              />
+              <FieldError id="fuente-alias-error" error={validacion.errores.alias} />
             </div>
-          </div>
-
-          <div className="space-y-3 rounded-lg border p-3">
-            <div className="flex items-center justify-between gap-3">
-              <div className="space-y-0.5">
-                <Label htmlFor="fuente-split-auto">Split automático</Label>
-                <p className="text-xs text-muted-foreground">
-                  Genera el split al registrar un pago de esta fuente.
-                </p>
-              </div>
-              <Switch
-                id="fuente-split-auto"
-                checked={form.split_auto}
-                onCheckedChange={(v) => setForm((f) => ({ ...f, split_auto: v }))}
-              />
-            </div>
-            {form.split_auto && (
-              <div className="space-y-1.5">
-                <Label htmlFor="fuente-split-modo">Modo de cálculo</Label>
-                <Select
-                  value={form.split_auto_modo || "default"}
-                  onValueChange={(v) =>
-                    setForm((f) => ({ ...f, split_auto_modo: v === "default" ? "" : v }))
+            <div className="space-y-1.5">
+              <Label htmlFor="fuente-color">Color</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  id="fuente-color"
+                  type="color"
+                  value={/^#[0-9a-fA-F]{6}$/.test(form.color) ? form.color : "#3b82f6"}
+                  onChange={(e) => {
+                    setForm((f) => ({ ...f, color: e.target.value }))
+                    validacion.validarChange("color", () => validarColor(e.target.value))
+                  }}
+                  className="h-10 w-16 cursor-pointer p-1"
+                  aria-label="Color de la fuente"
+                  aria-invalid={validacion.errores.color ? true : undefined}
+                  aria-describedby={validacion.errores.color ? "fuente-color-error" : undefined}
+                />
+                <Input
+                  id="fuente-color-hex"
+                  value={form.color}
+                  onChange={(e) => {
+                    setForm((f) => ({ ...f, color: e.target.value }))
+                    validacion.validarChange("color", () => validarColor(e.target.value))
+                  }}
+                  onBlur={(e) =>
+                    validacion.validarBlur("color", () => validarColor(e.target.value))
                   }
-                >
-                  <SelectTrigger id="fuente-split-modo">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="default">Usar el modo por defecto</SelectItem>
-                    {MODOS.map((m) => (
-                      <SelectItem key={m} value={m}>
-                        {m}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  className="h-10 w-32 font-mono text-xs"
+                  aria-label="Color hexadecimal de la fuente"
+                  aria-invalid={validacion.errores.color ? true : undefined}
+                  aria-describedby={validacion.errores.color ? "fuente-color-error" : undefined}
+                />
               </div>
-            )}
+              <FieldError id="fuente-color-error" error={validacion.errores.color} />
+            </div>
+
+            <fieldset className="m-0 min-w-0 space-y-3 rounded-lg border p-3">
+              <legend className="sr-only">Split automático</legend>
+              <div className="flex items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <Label htmlFor="fuente-split-auto">Split automático</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Genera el split al registrar un pago de esta fuente.
+                  </p>
+                </div>
+                <Switch
+                  id="fuente-split-auto"
+                  checked={form.split_auto}
+                  onCheckedChange={(v) => setForm((f) => ({ ...f, split_auto: v }))}
+                />
+              </div>
+              {form.split_auto && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="fuente-split-modo">Modo de cálculo</Label>
+                  <Select
+                    value={form.split_auto_modo || "default"}
+                    onValueChange={(v) => {
+                      const modo = v === "default" ? "" : v
+                      setForm((f) => ({ ...f, split_auto_modo: modo }))
+                      validacion.validarChange("split_auto_modo", () =>
+                        validarSplitAutoModo(modo),
+                      )
+                    }}
+                  >
+                    <SelectTrigger
+                      id="fuente-split-modo"
+                      aria-invalid={
+                        validacion.errores.split_auto_modo ? true : undefined
+                      }
+                      aria-describedby={
+                        validacion.errores.split_auto_modo
+                          ? "fuente-split-modo-error"
+                          : undefined
+                      }
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Usar el modo por defecto</SelectItem>
+                      {MODOS.map((m) => (
+                        <SelectItem key={m} value={m}>
+                          {m}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FieldError
+                    id="fuente-split-modo-error"
+                    error={validacion.errores.split_auto_modo}
+                  />
+                </div>
+              )}
+            </fieldset>
           </div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button onClick={guardar} disabled={!valido || isPending}>
-            {isPending && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />}
-            {fuente ? "Guardar cambios" : "Crear fuente"}
-          </Button>
-        </DialogFooter>
+          <DialogFooter>
+            <Button variant="outline" type="button" onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />}
+              {fuente ? "Guardar cambios" : "Crear fuente"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )
