@@ -252,7 +252,6 @@ export function useSubirComprobante() {
       toast.success(`Comprobante subido a pago #${res.id}`)
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 
@@ -412,7 +411,6 @@ export function useSubirQR() {
       toast.success("QR subido")
       qc.invalidateQueries({ queryKey: queryKeys.cuentas })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 
@@ -441,7 +439,6 @@ export function useSubirLogoFuente() {
       toast.success("Logo actualizado")
       qc.invalidateQueries({ queryKey: queryKeys.fuentes })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 
@@ -467,6 +464,5 @@ export function useActualizarSplitSettings() {
       toast.success(`Modo por defecto: ${res.modo_default}`)
       qc.invalidateQueries({ queryKey: queryKeys.splitSettings })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }

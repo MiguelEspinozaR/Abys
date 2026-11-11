@@ -84,6 +84,8 @@ export default function RegistrarPage() {
   const [montoStr, setMontoStr] = useState("")
   const [notas, setNotas] = useState("")
   const [comprobante, setComprobante] = useState<File | null>(null)
+  const [comprobanteError, setComprobanteError] = useState<string | null>(null)
+  const [pagoGuardado, setPagoGuardado] = useState(false)
   const [ocrResumen, setOcrResumen] = useState<{
     monto?: number
     fecha?: string
@@ -92,6 +94,8 @@ export default function RegistrarPage() {
 
   const montoInputRef = useRef<HTMLInputElement>(null)
   const calendarioRef = useRef<HTMLDivElement>(null)
+  /** Pago ya creado: los reintentos de comprobante nunca vuelven a hacer POST /pagos (D16). */
+  const pagoIdRef = useRef<number | null>(null)
 
   /**
    * Snapshot de cambios sin guardar (R4). Incluye los campos editables y un
@@ -199,53 +203,110 @@ export default function RegistrarPage() {
   const puedeGuardar =
     fuenteValida && fechaPago !== "" && montoCents != null && montoCents > 0 && diasTrabajados.size >= 1
 
-  const guardar = async () => {
-    if (!puedeGuardar || montoCents == null || !fuenteValida) return
-    if (enviandoRef.current) return
-    enviandoRef.current = true
-    let pagoId: number | null = null
-    try {
-      const res = await crearPago.mutateAsync({
-        fuente_id: Number(fuenteId),
-        fecha_pago: fechaPago,
-        monto_enteros: montoCents,
-        metodo_pago: metodo,
-        notas: notas.trim() ? notas.trim() : null,
-        dias_trabajados: [...diasTrabajados].sort(),
-      })
-      pagoId = res.data.id
-    } catch (e) {
-      const resuelto =
-        e instanceof ApiRequestError
-          ? resolverErrorApi(e, ERRORES_API_REGISTRAR)
-          : {
-              campo: undefined,
-              mensaje:
-                e instanceof Error
-                  ? e.message
-                  : "No se pudo guardar el pago. Inténtalo de nuevo.",
-            }
-      validacion.establecerError(resuelto.campo, resuelto.mensaje)
-      enviandoRef.current = false
-      return
+  const mensajeErrorSubida = (e: unknown): string => {
+    if (e instanceof ApiRequestError) {
+      return e.message.trim() || "No se pudo subir el comprobante. Inténtalo de nuevo."
     }
+    if (e instanceof Error && e.message.trim()) return e.message
+    return "No se pudo subir el comprobante. Inténtalo de nuevo."
+  }
 
-    try {
-      if (comprobante && pagoId != null) {
-        await subirComprobante.mutateAsync({ id: pagoId, archivo: comprobante })
-      }
-    } catch {
-      // M3 (D16) reemplaza esto por el error inline y el reintento de comprobante
-      // sin recrear el pago. En M2 el hook conserva su toast y no se navega.
-      enviandoRef.current = false
-      return
-    }
-
-    // R4.6: el formulario queda limpio antes de navegar; el ref evita que
-    // `useBlocker` vea el snapshot anterior durante la navegación.
+  /** Limpia la guardia y navega; el pago ya está guardado (R4.6/D16). */
+  const finalizarGuardado = () => {
     guardadoRef.current = true
     resetear()
     validacion.limpiar()
+    pagoIdRef.current = null
+    setPagoGuardado(false)
+    setComprobanteError(null)
+    enviandoRef.current = false
+    navigate("/ingresos")
+  }
+
+  /** Sube solo el comprobante del pago ya creado; nunca reenvía el pago (D16). */
+  const subirComprobanteDePago = async (pagoId: number): Promise<boolean> => {
+    if (!comprobante) return true
+    try {
+      await subirComprobante.mutateAsync({ id: pagoId, archivo: comprobante })
+      setComprobanteError(null)
+      return true
+    } catch (e) {
+      setComprobanteError(mensajeErrorSubida(e))
+      return false
+    }
+  }
+
+  const guardar = async () => {
+    if (!puedeGuardar || montoCents == null || !fuenteValida) return
+    if (validarNotas(notas) != null) {
+      validacion.validarBlur("notas", () => validarNotas(notas))
+      return
+    }
+    if (enviandoRef.current) return
+    enviandoRef.current = true
+    setComprobanteError(null)
+
+    // Si el pago ya se creó en un intento anterior, solo se reintenta el upload.
+    let pagoId = pagoIdRef.current
+    if (pagoId == null) {
+      try {
+        const res = await crearPago.mutateAsync({
+          fuente_id: Number(fuenteId),
+          fecha_pago: fechaPago,
+          monto_enteros: montoCents,
+          metodo_pago: metodo,
+          notas: notas.trim() ? notas.trim() : null,
+          dias_trabajados: [...diasTrabajados].sort(),
+        })
+        pagoId = res.data.id
+        pagoIdRef.current = pagoId
+        setPagoGuardado(true)
+      } catch (e) {
+        const resuelto =
+          e instanceof ApiRequestError
+            ? resolverErrorApi(e, ERRORES_API_REGISTRAR)
+            : {
+                campo: undefined,
+                mensaje:
+                  e instanceof Error
+                    ? e.message
+                    : "No se pudo guardar el pago. Inténtalo de nuevo.",
+              }
+        validacion.establecerError(resuelto.campo, resuelto.mensaje)
+        enviandoRef.current = false
+        return
+      }
+    }
+
+    const subido = await subirComprobanteDePago(pagoId)
+    if (!subido) {
+      // El pago queda guardado; se ofrece reintentar solo el comprobante.
+      enviandoRef.current = false
+      return
+    }
+
+    finalizarGuardado()
+  }
+
+  /** Reintento D16: solo sube el comprobante del pago ya creado. */
+  const reintentarComprobante = async () => {
+    const pagoId = pagoIdRef.current
+    if (pagoId == null || !comprobante || enviandoRef.current) return
+    enviandoRef.current = true
+    setComprobanteError(null)
+    const subido = await subirComprobanteDePago(pagoId)
+    enviandoRef.current = false
+    if (subido) finalizarGuardado()
+  }
+
+  /** Salida explícita tras un fallo de comprobante: no bloquea por cambios (D16). */
+  const irAIngresos = () => {
+    guardadoRef.current = true
+    resetear()
+    validacion.limpiar()
+    pagoIdRef.current = null
+    setPagoGuardado(false)
+    setComprobanteError(null)
     enviandoRef.current = false
     navigate("/ingresos")
   }
@@ -521,9 +582,32 @@ export default function RegistrarPage() {
               <CardContent>
                 <ComprobanteDropzone
                   comprobante={comprobante}
-                  onChange={setComprobante}
+                  onChange={(f) => {
+                    setComprobante(f)
+                    setComprobanteError(null)
+                  }}
                   onResultadoOcr={aplicarOcr}
+                  errorSubida={comprobanteError}
                 />
+                {pagoGuardado && comprobanteError && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => void reintentarComprobante()}
+                      disabled={subirComprobante.isPending || !comprobante}
+                    >
+                      {subirComprobante.isPending ? (
+                        <Loader2 className="mr-2 size-3.5 animate-spin" aria-hidden />
+                      ) : null}
+                      Reintentar comprobante
+                    </Button>
+                    <Button type="button" size="sm" variant="outline" onClick={irAIngresos}>
+                      Ir a ingresos
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
 

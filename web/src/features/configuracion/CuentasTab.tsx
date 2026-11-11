@@ -54,6 +54,7 @@ import { useFormErrors } from "@/hooks/useFormErrors"
 import { useFormDirty } from "@/hooks/useFormDirty"
 import { ApiRequestError, assetUrl } from "@/services/api"
 import { ERRORES_API_CUENTA, ERRORES_API_TASA, resolverErrorApi } from "@/lib/api-errors"
+import { ACCEPT_UPLOAD, validarArchivo } from "@/lib/uploads"
 import {
   useActualizarCuenta,
   useCambiarTasa,
@@ -501,6 +502,14 @@ function QrCell({ cuenta }: { cuenta: Cuenta }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const subir = useSubirQR()
   const eliminar = useEliminarQR()
+  const [error, setError] = useState<string | null>(null)
+  const errorApi = subir.isError
+    ? subir.error instanceof Error && subir.error.message.trim()
+      ? subir.error.message
+      : "No se pudo subir el QR. Inténtalo de nuevo."
+    : null
+  const errorVisible = error ?? errorApi
+  const errorId = `qr-error-${cuenta.id}`
   const qrUrl = assetUrl(cuenta.qr_ruta)
 
   return (
@@ -519,38 +528,57 @@ function QrCell({ cuenta }: { cuenta: Cuenta }) {
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={ACCEPT_UPLOAD}
         className="hidden"
+        aria-describedby={errorVisible ? errorId : undefined}
         onChange={(e) => {
           const f = e.target.files?.[0]
-          if (f) subir.mutate({ id: cuenta.id, archivo: f })
+          e.target.value = ""
+          if (!f) return
+          const mensaje = validarArchivo(f)
+          if (mensaje) {
+            setError(mensaje)
+            return
+          }
+          setError(null)
+          subir.reset()
+          subir.mutate({ id: cuenta.id, archivo: f })
         }}
       />
-      <div className="flex gap-1">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-7"
-          onClick={() => inputRef.current?.click()}
-          disabled={subir.isPending}
-          aria-label={`Subir QR de ${cuenta.alias}`}
-        >
-          {subir.isPending ? (
-            <Loader2 className="size-3.5 animate-spin" aria-hidden />
-          ) : (
-            <Upload className="size-3.5" aria-hidden />
-          )}
-        </Button>
-        {qrUrl && (
+      <div className="min-w-0 space-y-1">
+        <div className="flex gap-1">
           <Button
             variant="ghost"
             size="icon"
-            className="size-7 text-muted-foreground hover:text-destructive"
-            onClick={() => eliminar.mutate(cuenta.id)}
-            aria-label={`Quitar QR de ${cuenta.alias}`}
+            className="size-7"
+            onClick={() => inputRef.current?.click()}
+            disabled={subir.isPending}
+            aria-label={`Subir QR de ${cuenta.alias}`}
+            aria-invalid={errorVisible ? true : undefined}
+            aria-describedby={errorVisible ? errorId : undefined}
           >
-            <X className="size-3.5" aria-hidden />
+            {subir.isPending ? (
+              <Loader2 className="size-3.5 animate-spin" aria-hidden />
+            ) : (
+              <Upload className="size-3.5" aria-hidden />
+            )}
           </Button>
+          {qrUrl && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-7 text-muted-foreground hover:text-destructive"
+              onClick={() => eliminar.mutate(cuenta.id)}
+              aria-label={`Quitar QR de ${cuenta.alias}`}
+            >
+              <X className="size-3.5" aria-hidden />
+            </Button>
+          )}
+        </div>
+        {errorVisible && (
+          <p id={errorId} role="alert" className="max-w-40 text-[11px] leading-tight text-destructive">
+            {errorVisible}
+          </p>
         )}
       </div>
     </div>

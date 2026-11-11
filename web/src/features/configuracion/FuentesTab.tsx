@@ -58,6 +58,7 @@ import {
 } from "@/services/hooks"
 import { ApiRequestError, assetUrl } from "@/services/api"
 import { ERRORES_API_FUENTE, resolverErrorApi } from "@/lib/api-errors"
+import { ACCEPT_UPLOAD, validarArchivo } from "@/lib/uploads"
 import { validarAlias, validarColor, validarSplitAutoModo } from "@/lib/validators"
 import type { Fuente, FuentePayload } from "@/services/types"
 
@@ -369,6 +370,14 @@ function LogoCell({ fuente }: { fuente: Fuente }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const subir = useSubirLogoFuente()
   const eliminar = useEliminarLogoFuente()
+  const [error, setError] = useState<string | null>(null)
+  const errorApi = subir.isError
+    ? subir.error instanceof Error && subir.error.message.trim()
+      ? subir.error.message
+      : "No se pudo subir el logo. Inténtalo de nuevo."
+    : null
+  const errorVisible = error ?? errorApi
+  const errorId = `logo-error-${fuente.id}`
   const logoUrl = assetUrl(fuente.logo_ruta)
 
   return (
@@ -387,39 +396,57 @@ function LogoCell({ fuente }: { fuente: Fuente }) {
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={ACCEPT_UPLOAD}
         className="hidden"
+        aria-describedby={errorVisible ? errorId : undefined}
         onChange={(e) => {
           const f = e.target.files?.[0]
-          if (f) subir.mutate({ id: fuente.id, archivo: f })
           e.target.value = ""
+          if (!f) return
+          const mensaje = validarArchivo(f)
+          if (mensaje) {
+            setError(mensaje)
+            return
+          }
+          setError(null)
+          subir.reset()
+          subir.mutate({ id: fuente.id, archivo: f })
         }}
       />
-      <div className="flex gap-1">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-7"
-          onClick={() => inputRef.current?.click()}
-          disabled={subir.isPending}
-          aria-label={`Subir logo de ${fuente.alias}`}
-        >
-          {subir.isPending ? (
-            <Loader2 className="size-3.5 animate-spin" aria-hidden />
-          ) : (
-            <Upload className="size-3.5" aria-hidden />
-          )}
-        </Button>
-        {logoUrl && (
+      <div className="min-w-0 space-y-1">
+        <div className="flex gap-1">
           <Button
             variant="ghost"
             size="icon"
-            className="size-7 text-muted-foreground hover:text-destructive"
-            onClick={() => eliminar.mutate(fuente.id)}
-            aria-label={`Quitar logo de ${fuente.alias}`}
+            className="size-7"
+            onClick={() => inputRef.current?.click()}
+            disabled={subir.isPending}
+            aria-label={`Subir logo de ${fuente.alias}`}
+            aria-invalid={errorVisible ? true : undefined}
+            aria-describedby={errorVisible ? errorId : undefined}
           >
-            <X className="size-3.5" aria-hidden />
+            {subir.isPending ? (
+              <Loader2 className="size-3.5 animate-spin" aria-hidden />
+            ) : (
+              <Upload className="size-3.5" aria-hidden />
+            )}
           </Button>
+          {logoUrl && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-7 text-muted-foreground hover:text-destructive"
+              onClick={() => eliminar.mutate(fuente.id)}
+              aria-label={`Quitar logo de ${fuente.alias}`}
+            >
+              <X className="size-3.5" aria-hidden />
+            </Button>
+          )}
+        </div>
+        {errorVisible && (
+          <p id={errorId} role="alert" className="max-w-40 text-[11px] leading-tight text-destructive">
+            {errorVisible}
+          </p>
         )}
       </div>
     </div>
