@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { FormEvent } from "react"
+import { useBlocker } from "react-router-dom"
+import type { Blocker } from "react-router-dom"
 import {
   Dialog,
   DialogContent,
@@ -24,8 +26,12 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Loader2, TriangleAlert } from "lucide-react"
 import { FieldError } from "@/components/form/FieldError"
 import { ErrorSummary } from "@/components/form/ErrorSummary"
+import { ConfirmarDescarteDialog } from "@/components/form/ConfirmarDescarteDialog"
 import { useFormErrors } from "@/hooks/useFormErrors"
+import { useFormDirty } from "@/hooks/useFormDirty"
 import { useActualizarPago, useFuentes } from "@/services/hooks"
+import { ApiRequestError } from "@/services/api"
+import { ERRORES_API_EDITAR_PAGO, resolverErrorApi } from "@/lib/api-errors"
 import { bsToCents, METODOS_PAGO } from "@/lib/format"
 import {
   MAX_NOTAS,
@@ -63,6 +69,22 @@ const Obligatorio = () => (
   </span>
 )
 
+/**
+ * Guardia de navegación montada solo con el diálogo abierto y sucio.
+ *
+ * React Router evalúa únicamente el último bloqueador registrado; como hay un
+ * `EditarPagoDialog` por fila, un `useBlocker` por instancia dejaría activo el
+ * de la última fila (cerrado). Montar esta guardia al abrir garantiza que el
+ * bloqueador activo sea el del formulario que se está editando.
+ */
+function GuardiaNavegacion({ onBloqueado }: { onBloqueado: (b: Blocker) => void }) {
+  const blocker = useBlocker(true)
+  useEffect(() => {
+    if (blocker.state === "blocked") onBloqueado(blocker)
+  }, [blocker, onBloqueado])
+  return null
+}
+
 export function EditarPagoDialog({ pago, children }: Props) {
   const { data: fuentes } = useFuentes()
   const actualizar = useActualizarPago()
@@ -75,6 +97,41 @@ export function EditarPagoDialog({ pago, children }: Props) {
   const [metodo, setMetodo] = useState<MetodoPago>(pago.metodo_pago)
   const [montoStr, setMontoStr] = useState((pago.monto_enteros / 100).toLocaleString("es-BO", { minimumFractionDigits: 2 }))
   const [notas, setNotas] = useState(pago.notas ?? "")
+
+  /** Valores originales del pago: se restauran al descartar (R4.5). */
+  const estadoInicial = useMemo(
+    () => ({
+      fuenteId: String(pago.fuente_id),
+      fechaPago: pago.fecha_pago,
+      dias: [...pago.dias_trabajados.map((d) => d.fecha)].sort(),
+      metodo: pago.metodo_pago,
+      montoStr: (pago.monto_enteros / 100).toLocaleString("es-BO", {
+        minimumFractionDigits: 2,
+      }),
+      notas: pago.notas ?? "",
+    }),
+    [pago],
+  )
+
+  const snapshot = {
+    fuenteId,
+    fechaPago,
+    dias: [...dias].sort(),
+    metodo,
+    montoStr,
+    notas,
+  }
+  const { sucio, resetear } = useFormDirty(snapshot)
+  const sucioRef = useRef(sucio)
+  sucioRef.current = sucio
+  const [confirmarCierre, setConfirmarCierre] = useState(false)
+  const blockerRef = useRef<Blocker | null>(null)
+  const [bloqueoPendiente, setBloqueoPendiente] = useState(false)
+
+  const alBloquear = useCallback((blocker: Blocker) => {
+    blockerRef.current = blocker
+    setBloqueoPendiente(true)
+  }, [])
 
   const montoCents = bsToCents(montoStr)
   const conSplit = pago.split_id != null
@@ -89,9 +146,50 @@ export function EditarPagoDialog({ pago, children }: Props) {
     document.getElementById(IDS_Campos[campo])?.focus()
   }
 
-  const cerrar = () => {
-    setAbierto(false)
+  const restaurar = () => {
+    setFuenteId(estadoInicial.fuenteId)
+    setFechaPago(estadoInicial.fechaPago)
+    setDias(new Set(estadoInicial.dias))
+    setMetodo(estadoInicial.metodo)
+    setMontoStr(estadoInicial.montoStr)
+    setNotas(estadoInicial.notas)
+    setHerramienta("trabajo")
+  }
+
+  /** Descarta los cambios, restaura los valores originales y cierra. */
+  const cerrarDirecto = () => {
+    restaurar()
+    resetear(estadoInicial)
     validacion.limpiar()
+    setConfirmarCierre(false)
+    setAbierto(false)
+  }
+
+  /** Escape/overlay/X/Cancelar: intercepta solo si hay cambios (R4.3). */
+  const solicitarCierre = () => {
+    if (sucioRef.current) setConfirmarCierre(true)
+    else cerrarDirecto()
+  }
+
+  /** Acción segura: cancela la navegación bloqueada (si la hay) y conserva datos. */
+  const seguirEditando = () => {
+    if (bloqueoPendiente) {
+      blockerRef.current?.reset?.()
+      blockerRef.current = null
+      setBloqueoPendiente(false)
+    }
+    setConfirmarCierre(false)
+  }
+
+  /** Acción destructiva: restaura/cierra y, si venía de navegación, la reanuda. */
+  const descartarCambios = () => {
+    const veniaDeBloqueo = bloqueoPendiente
+    cerrarDirecto()
+    setBloqueoPendiente(false)
+    if (veniaDeBloqueo) {
+      blockerRef.current?.proceed?.()
+      blockerRef.current = null
+    }
   }
 
   const marcarDia = (fecha: string) => {
@@ -114,6 +212,7 @@ export function EditarPagoDialog({ pago, children }: Props) {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    validacion.limpiarErrorFormulario()
     const valido = validacion.validarSubmit([
       {
         campo: "dias",
@@ -151,22 +250,41 @@ export function EditarPagoDialog({ pago, children }: Props) {
 
   const guardar = async () => {
     if (montoCents == null || montoCents <= 0 || dias.size < 1 || fechaPago === "") return
-    await actualizar.mutateAsync({
-      id: pago.id,
-      payload: {
-        fuente_id: Number(fuenteId),
-        fecha_pago: fechaPago,
-        monto_enteros: montoCents,
-        metodo_pago: metodo,
-        notas: notas.trim() ? notas.trim() : null,
-        dias_trabajados: [...dias].sort(),
-      },
-    })
-    cerrar()
+    if (actualizar.isPending) return
+    try {
+      await actualizar.mutateAsync({
+        id: pago.id,
+        payload: {
+          fuente_id: Number(fuenteId),
+          fecha_pago: fechaPago,
+          monto_enteros: montoCents,
+          metodo_pago: metodo,
+          notas: notas.trim() ? notas.trim() : null,
+          dias_trabajados: [...dias].sort(),
+        },
+      })
+      // Tras guardar: sin confirmación y sin bloqueo (R4.6).
+      resetear()
+      validacion.limpiar()
+      setConfirmarCierre(false)
+      setAbierto(false)
+    } catch (e) {
+      const resuelto =
+        e instanceof ApiRequestError
+          ? resolverErrorApi(e, ERRORES_API_EDITAR_PAGO)
+          : {
+              campo: undefined,
+              mensaje:
+                e instanceof Error
+                  ? e.message
+                  : "No se pudo guardar el pago. Inténtalo de nuevo.",
+            }
+      validacion.establecerError(resuelto.campo, resuelto.mensaje)
+    }
   }
 
   return (
-    <Dialog open={abierto} onOpenChange={(o) => (o ? setAbierto(true) : cerrar())}>
+    <Dialog open={abierto} onOpenChange={(o) => (o ? setAbierto(true) : solicitarCierre())}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
@@ -196,6 +314,11 @@ export function EditarPagoDialog({ pago, children }: Props) {
         >
           {validacion.resumenVisible && (
             <ErrorSummary errores={validacion.listaErrores} onEnfocar={enfocarCampo} />
+          )}
+          {validacion.errorFormulario && (
+            <p role="alert" className="text-sm text-destructive">
+              {validacion.errorFormulario}
+            </p>
           )}
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -355,7 +478,7 @@ export function EditarPagoDialog({ pago, children }: Props) {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" type="button" onClick={cerrar}>
+            <Button variant="outline" type="button" onClick={solicitarCierre}>
               Cancelar
             </Button>
             <Button type="submit" disabled={actualizar.isPending}>
@@ -364,6 +487,14 @@ export function EditarPagoDialog({ pago, children }: Props) {
             </Button>
           </DialogFooter>
         </form>
+
+        {abierto && sucio && <GuardiaNavegacion onBloqueado={alBloquear} />}
+
+        <ConfirmarDescarteDialog
+          abierto={confirmarCierre || bloqueoPendiente}
+          onSeguir={seguirEditando}
+          onDescartar={descartarCambios}
+        />
       </DialogContent>
     </Dialog>
   )

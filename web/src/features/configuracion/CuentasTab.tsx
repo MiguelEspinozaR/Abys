@@ -1,5 +1,6 @@
-import { useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import type { FormEvent } from "react"
+import { useBlocker } from "react-router-dom"
 import {
   History,
   ImageOff,
@@ -48,8 +49,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 import { FieldError } from "@/components/form/FieldError"
 import { ErrorSummary } from "@/components/form/ErrorSummary"
+import { ConfirmarDescarteDialog } from "@/components/form/ConfirmarDescarteDialog"
 import { useFormErrors } from "@/hooks/useFormErrors"
-import { assetUrl } from "@/services/api"
+import { useFormDirty } from "@/hooks/useFormDirty"
+import { ApiRequestError, assetUrl } from "@/services/api"
+import { ERRORES_API_CUENTA, ERRORES_API_TASA, resolverErrorApi } from "@/lib/api-errors"
 import {
   useActualizarCuenta,
   useCambiarTasa,
@@ -77,14 +81,46 @@ const Obligatorio = () => (
 
 function TasaDialog({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void }) {
   const cambiarTasa = useCambiarTasa()
-  const [tasa, setTasa] = useState(String(bpsToPercentNum(cuenta.tasa_bps)))
-  const [aplicarPendientes, setAplicarPendientes] = useState(false)
+  const estadoInicial = {
+    tasa: String(bpsToPercentNum(cuenta.tasa_bps)),
+    aplicarPendientes: false,
+  }
+  const [tasa, setTasa] = useState(estadoInicial.tasa)
+  const [aplicarPendientes, setAplicarPendientes] = useState(
+    estadoInicial.aplicarPendientes,
+  )
+  const { sucio, resetear } = useFormDirty({ tasa, aplicarPendientes })
+  const sucioRef = useRef(sucio)
+  sucioRef.current = sucio
+  const debeBloquear = useCallback(() => sucioRef.current, [])
+  const blocker = useBlocker(debeBloquear)
+  const [confirmarCierre, setConfirmarCierre] = useState(false)
   const validacion = useFormErrors<"tasa">()
 
   const tasaNum = Number(tasa.replace(",", "."))
 
+  const restaurar = () => {
+    setTasa(estadoInicial.tasa)
+    setAplicarPendientes(estadoInicial.aplicarPendientes)
+    resetear(estadoInicial)
+    validacion.limpiar()
+    setConfirmarCierre(false)
+  }
+
+  const cerrarDirecto = () => {
+    restaurar()
+    onClose()
+  }
+
+  /** Escape/overlay/X/Cancelar: intercepta solo si hay cambios (R4.3). */
+  const solicitarCierre = () => {
+    if (sucioRef.current) setConfirmarCierre(true)
+    else cerrarDirecto()
+  }
+
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    validacion.limpiarErrorFormulario()
     const valido = validacion.validarSubmit([
       {
         campo: "tasa",
@@ -98,15 +134,33 @@ function TasaDialog({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void }
   const guardar = async () => {
     // Defensa interna: la validez la explica el formulario, no un botón gris (D2).
     if (!Number.isFinite(tasaNum) || tasaNum < 0 || tasaNum > 100) return
-    await cambiarTasa.mutateAsync({
-      id: cuenta.id,
-      payload: { tasa: tasaNum, aplicar_pendientes: aplicarPendientes },
-    })
-    onClose()
+    if (cambiarTasa.isPending) return
+    try {
+      await cambiarTasa.mutateAsync({
+        id: cuenta.id,
+        payload: { tasa: tasaNum, aplicar_pendientes: aplicarPendientes },
+      })
+      resetear()
+      validacion.limpiar()
+      setConfirmarCierre(false)
+      onClose()
+    } catch (e) {
+      const resuelto =
+        e instanceof ApiRequestError
+          ? resolverErrorApi(e, ERRORES_API_TASA)
+          : {
+              campo: undefined,
+              mensaje:
+                e instanceof Error
+                  ? e.message
+                  : "No se pudo guardar la tasa. Inténtalo de nuevo.",
+            }
+      validacion.establecerError(resuelto.campo, resuelto.mensaje)
+    }
   }
 
   return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
+    <Dialog open onOpenChange={(o) => !o && solicitarCierre()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle id="tasa-dialog-titulo">Tasa de {cuenta.alias}</DialogTitle>
@@ -124,6 +178,11 @@ function TasaDialog({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void }
         >
           {validacion.resumenVisible && (
             <ErrorSummary errores={validacion.listaErrores} onEnfocar={() => document.getElementById(`tasa-${cuenta.id}`)?.focus()} />
+          )}
+          {validacion.errorFormulario && (
+            <p role="alert" className="text-sm text-destructive">
+              {validacion.errorFormulario}
+            </p>
           )}
           <div className="space-y-4">
             <div className="space-y-1.5">
@@ -165,7 +224,7 @@ function TasaDialog({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void }
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" type="button" onClick={onClose}>
+            <Button variant="outline" type="button" onClick={solicitarCierre}>
               Cancelar
             </Button>
             <Button type="submit" disabled={cambiarTasa.isPending}>
@@ -174,6 +233,19 @@ function TasaDialog({ cuenta, onClose }: { cuenta: Cuenta; onClose: () => void }
             </Button>
           </DialogFooter>
         </form>
+
+        <ConfirmarDescarteDialog
+          abierto={confirmarCierre || blocker.state === "blocked"}
+          onSeguir={() => {
+            if (blocker.state === "blocked") blocker.reset?.()
+            setConfirmarCierre(false)
+          }}
+          onDescartar={() => {
+            const veniaDeBloqueo = blocker.state === "blocked"
+            cerrarDirecto()
+            if (veniaDeBloqueo) blocker.proceed?.()
+          }}
+        />
       </DialogContent>
     </Dialog>
   )
@@ -234,6 +306,15 @@ interface FormCuenta {
   numero: string
 }
 
+/** Valores iniciales del formulario, usados también al descartar cambios (R4.5). */
+function formCuentaInicial(cuenta: Cuenta | null): FormCuenta {
+  return {
+    alias: cuenta?.alias ?? "",
+    banco: cuenta?.banco ?? "",
+    numero: cuenta?.numero ?? "",
+  }
+}
+
 function CuentaDialog({
   cuenta,
   onClose,
@@ -243,16 +324,38 @@ function CuentaDialog({
 }) {
   const crear = useCrearCuenta()
   const actualizar = useActualizarCuenta()
-  const [form, setForm] = useState<FormCuenta>({
-    alias: cuenta?.alias ?? "",
-    banco: cuenta?.banco ?? "",
-    numero: cuenta?.numero ?? "",
-  })
+  const estadoInicial = formCuentaInicial(cuenta)
+  const [form, setForm] = useState<FormCuenta>(estadoInicial)
+  const { sucio, resetear } = useFormDirty(form)
+  const sucioRef = useRef(sucio)
+  sucioRef.current = sucio
+  const debeBloquear = useCallback(() => sucioRef.current, [])
+  const blocker = useBlocker(debeBloquear)
+  const [confirmarCierre, setConfirmarCierre] = useState(false)
   const validacion = useFormErrors<"alias">()
   const isPending = crear.isPending || actualizar.isPending
 
+  const restaurar = () => {
+    setForm(estadoInicial)
+    resetear(estadoInicial)
+    validacion.limpiar()
+    setConfirmarCierre(false)
+  }
+
+  const cerrarDirecto = () => {
+    restaurar()
+    onClose()
+  }
+
+  /** Escape/overlay/X/Cancelar: intercepta solo si hay cambios (R4.3). */
+  const solicitarCierre = () => {
+    if (sucioRef.current) setConfirmarCierre(true)
+    else cerrarDirecto()
+  }
+
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    validacion.limpiarErrorFormulario()
     const valido = validacion.validarSubmit([
       {
         campo: "alias",
@@ -266,18 +369,36 @@ function CuentaDialog({
   const guardar = async () => {
     // Defensa interna: la validez la explica el formulario, no un botón gris (D2).
     if (form.alias.trim() === "") return
+    if (isPending) return
     const payload = {
       alias: form.alias.trim(),
       banco: form.banco.trim() ? form.banco.trim() : null,
       numero: form.numero.trim() ? form.numero.trim() : null,
     }
-    if (cuenta) await actualizar.mutateAsync({ id: cuenta.id, payload })
-    else await crear.mutateAsync(payload)
-    onClose()
+    try {
+      if (cuenta) await actualizar.mutateAsync({ id: cuenta.id, payload })
+      else await crear.mutateAsync(payload)
+      resetear()
+      validacion.limpiar()
+      setConfirmarCierre(false)
+      onClose()
+    } catch (e) {
+      const resuelto =
+        e instanceof ApiRequestError
+          ? resolverErrorApi(e, ERRORES_API_CUENTA)
+          : {
+              campo: undefined,
+              mensaje:
+                e instanceof Error
+                  ? e.message
+                  : "No se pudo guardar la cuenta. Inténtalo de nuevo.",
+            }
+      validacion.establecerError(resuelto.campo, resuelto.mensaje)
+    }
   }
 
   return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
+    <Dialog open onOpenChange={(o) => !o && solicitarCierre()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle id="cuenta-dialog-titulo">
@@ -299,6 +420,11 @@ function CuentaDialog({
               errores={validacion.listaErrores}
               onEnfocar={() => document.getElementById("cuenta-alias")?.focus()}
             />
+          )}
+          {validacion.errorFormulario && (
+            <p role="alert" className="text-sm text-destructive">
+              {validacion.errorFormulario}
+            </p>
           )}
           <div className="space-y-4">
             <div className="space-y-1.5">
@@ -340,7 +466,7 @@ function CuentaDialog({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" type="button" onClick={onClose}>
+            <Button variant="outline" type="button" onClick={solicitarCierre}>
               Cancelar
             </Button>
             <Button type="submit" disabled={isPending}>
@@ -349,6 +475,19 @@ function CuentaDialog({
             </Button>
           </DialogFooter>
         </form>
+
+        <ConfirmarDescarteDialog
+          abierto={confirmarCierre || blocker.state === "blocked"}
+          onSeguir={() => {
+            if (blocker.state === "blocked") blocker.reset?.()
+            setConfirmarCierre(false)
+          }}
+          onDescartar={() => {
+            const veniaDeBloqueo = blocker.state === "blocked"
+            cerrarDirecto()
+            if (veniaDeBloqueo) blocker.proceed?.()
+          }}
+        />
       </DialogContent>
     </Dialog>
   )

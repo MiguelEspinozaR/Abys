@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import type { FormEvent } from "react"
-import { useNavigate } from "react-router-dom"
+import { useBlocker, useNavigate } from "react-router-dom"
 import { Loader2, Save, ScanText, X } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -17,8 +17,12 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { FieldError } from "@/components/form/FieldError"
 import { ErrorSummary } from "@/components/form/ErrorSummary"
+import { ConfirmarDescarteDialog } from "@/components/form/ConfirmarDescarteDialog"
 import { useFormErrors } from "@/hooks/useFormErrors"
+import { useFormDirty } from "@/hooks/useFormDirty"
 import { useCrearPago, useFuentes, usePagos, useSubirComprobante } from "@/services/hooks"
+import { ApiRequestError } from "@/services/api"
+import { ERRORES_API_REGISTRAR, resolverErrorApi } from "@/lib/api-errors"
 import { bsToCents, formatBs, formatearFechaEs, METODOS_PAGO, toISODate } from "@/lib/format"
 import { motionBehavior } from "@/lib/a11y"
 import {
@@ -89,6 +93,33 @@ export default function RegistrarPage() {
   const montoInputRef = useRef<HTMLInputElement>(null)
   const calendarioRef = useRef<HTMLDivElement>(null)
 
+  /**
+   * Snapshot de cambios sin guardar (R4). Incluye los campos editables y un
+   * descriptor del comprobante (el `File` en sí no se compara estructuralmente).
+   */
+  const snapshot = {
+    dias: [...diasTrabajados].sort(),
+    fechaPago,
+    fuenteId,
+    metodo,
+    montoStr,
+    notas,
+    comprobante: comprobante
+      ? `${comprobante.name}:${comprobante.size}:${comprobante.lastModified}`
+      : "",
+  }
+  const { sucio, resetear } = useFormDirty(snapshot)
+  const sucioRef = useRef(sucio)
+  sucioRef.current = sucio
+  const guardadoRef = useRef(false)
+  const debeBloquear = useCallback(
+    () => sucioRef.current && !guardadoRef.current,
+    [],
+  )
+  const blocker = useBlocker(debeBloquear)
+
+  const enviandoRef = useRef(false)
+
   const montoCents = bsToCents(montoStr)
   const validacion = useFormErrors<Campo>()
 
@@ -128,6 +159,7 @@ export default function RegistrarPage() {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    validacion.limpiarErrorFormulario()
     const valido = validacion.validarSubmit([
       {
         campo: "dias",
@@ -169,17 +201,52 @@ export default function RegistrarPage() {
 
   const guardar = async () => {
     if (!puedeGuardar || montoCents == null || !fuenteValida) return
-    const res = await crearPago.mutateAsync({
-      fuente_id: Number(fuenteId),
-      fecha_pago: fechaPago,
-      monto_enteros: montoCents,
-      metodo_pago: metodo,
-      notas: notas.trim() ? notas.trim() : null,
-      dias_trabajados: [...diasTrabajados].sort(),
-    })
-    if (comprobante) {
-      await subirComprobante.mutateAsync({ id: res.data.id, archivo: comprobante })
+    if (enviandoRef.current) return
+    enviandoRef.current = true
+    let pagoId: number | null = null
+    try {
+      const res = await crearPago.mutateAsync({
+        fuente_id: Number(fuenteId),
+        fecha_pago: fechaPago,
+        monto_enteros: montoCents,
+        metodo_pago: metodo,
+        notas: notas.trim() ? notas.trim() : null,
+        dias_trabajados: [...diasTrabajados].sort(),
+      })
+      pagoId = res.data.id
+    } catch (e) {
+      const resuelto =
+        e instanceof ApiRequestError
+          ? resolverErrorApi(e, ERRORES_API_REGISTRAR)
+          : {
+              campo: undefined,
+              mensaje:
+                e instanceof Error
+                  ? e.message
+                  : "No se pudo guardar el pago. Inténtalo de nuevo.",
+            }
+      validacion.establecerError(resuelto.campo, resuelto.mensaje)
+      enviandoRef.current = false
+      return
     }
+
+    try {
+      if (comprobante && pagoId != null) {
+        await subirComprobante.mutateAsync({ id: pagoId, archivo: comprobante })
+      }
+    } catch {
+      // M3 (D16) reemplaza esto por el error inline y el reintento de comprobante
+      // sin recrear el pago. En M2 el hook conserva su toast y no se navega.
+      enviandoRef.current = false
+      return
+    }
+
+    // R4.6: el formulario queda limpio antes de navegar; el ref evita que
+    // `useBlocker` vea el snapshot anterior durante la navegación.
+    guardadoRef.current = true
+    resetear()
+    validacion.limpiar()
+    enviandoRef.current = false
     navigate("/ingresos")
   }
 
@@ -251,6 +318,11 @@ export default function RegistrarPage() {
       >
         {validacion.resumenVisible && (
           <ErrorSummary errores={validacion.listaErrores} onEnfocar={enfocarCampo} />
+        )}
+        {validacion.errorFormulario && (
+          <p role="alert" className="text-sm text-destructive">
+            {validacion.errorFormulario}
+          </p>
         )}
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -541,6 +613,15 @@ export default function RegistrarPage() {
           </div>
         </div>
       </form>
+
+      <ConfirmarDescarteDialog
+        abierto={blocker.state === "blocked"}
+        onSeguir={() => blocker.reset?.()}
+        onDescartar={() => {
+          resetear()
+          blocker.proceed?.()
+        }}
+      />
     </div>
   )
 }

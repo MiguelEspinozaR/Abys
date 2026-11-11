@@ -213,7 +213,6 @@ export function useCrearPago() {
       invalidarPagosYDashboard(qc)
       qc.invalidateQueries({ queryKey: queryKeys.splits })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 
@@ -226,7 +225,6 @@ export function useActualizarPago() {
       toast.success(`Pago #${pago.id} actualizado`)
       invalidarPagosYDashboard(qc)
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 
@@ -267,7 +265,6 @@ export function useGenerarSplit() {
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
       qc.invalidateQueries({ queryKey: queryKeys.splits })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 
@@ -317,7 +314,6 @@ export function useCambiarTasa() {
       qc.invalidateQueries({ queryKey: queryKeys.splits })
       qc.invalidateQueries({ queryKey: ["split"] })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 
@@ -334,7 +330,6 @@ export function useCrearFuente() {
       qc.invalidateQueries({ queryKey: queryKeys.fuentes })
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 
@@ -348,7 +343,6 @@ export function useActualizarFuente() {
       qc.invalidateQueries({ queryKey: queryKeys.fuentes })
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 
@@ -375,7 +369,6 @@ export function useCrearCuenta() {
       qc.invalidateQueries({ queryKey: queryKeys.cuentas })
       qc.invalidateQueries({ queryKey: queryKeys.splits })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 
@@ -390,7 +383,6 @@ export function useActualizarCuenta() {
       qc.invalidateQueries({ queryKey: queryKeys.splits })
       qc.invalidateQueries({ queryKey: ["split"] })
     },
-    onError: (e: Error) => toast.error(e.message),
   })
 }
 

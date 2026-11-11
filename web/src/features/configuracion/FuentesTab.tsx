@@ -1,5 +1,6 @@
-import { useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import type { FormEvent } from "react"
+import { useBlocker } from "react-router-dom"
 import { ImageOff, Loader2, Pencil, Plus, Trash2, Upload, X } from "lucide-react"
 import {
   AlertDialog,
@@ -44,7 +45,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { FieldError } from "@/components/form/FieldError"
 import { ErrorSummary } from "@/components/form/ErrorSummary"
+import { ConfirmarDescarteDialog } from "@/components/form/ConfirmarDescarteDialog"
 import { useFormErrors } from "@/hooks/useFormErrors"
+import { useFormDirty } from "@/hooks/useFormDirty"
 import {
   useActualizarFuente,
   useCrearFuente,
@@ -53,7 +56,8 @@ import {
   useFuentes,
   useSubirLogoFuente,
 } from "@/services/hooks"
-import { assetUrl } from "@/services/api"
+import { ApiRequestError, assetUrl } from "@/services/api"
+import { ERRORES_API_FUENTE, resolverErrorApi } from "@/lib/api-errors"
 import { validarAlias, validarColor, validarSplitAutoModo } from "@/lib/validators"
 import type { Fuente, FuentePayload } from "@/services/types"
 
@@ -66,6 +70,16 @@ interface FormFuente {
   color: string
   split_auto: boolean
   split_auto_modo: string
+}
+
+/** Valores iniciales del formulario, usados también al descartar cambios (R4.5). */
+function formInicial(fuente: Fuente | null): FormFuente {
+  return {
+    alias: fuente?.alias ?? "",
+    color: fuente?.color ?? "#3b82f6",
+    split_auto: fuente?.split_auto ?? false,
+    split_auto_modo: fuente?.split_auto_modo ?? DEFAULT_MODO,
+  }
 }
 
 /** Campos con reglas de validación del diálogo de fuente (R2). */
@@ -93,15 +107,35 @@ function FuenteDialog({
 }) {
   const crear = useCrearFuente()
   const actualizar = useActualizarFuente()
-  const [form, setForm] = useState<FormFuente>({
-    alias: fuente?.alias ?? "",
-    color: fuente?.color ?? "#3b82f6",
-    split_auto: fuente?.split_auto ?? false,
-    split_auto_modo: fuente?.split_auto_modo ?? DEFAULT_MODO,
-  })
+  const estadoInicial = formInicial(fuente)
+  const [form, setForm] = useState<FormFuente>(estadoInicial)
+  const { sucio, resetear } = useFormDirty(form)
+  const sucioRef = useRef(sucio)
+  sucioRef.current = sucio
+  const debeBloquear = useCallback(() => sucioRef.current, [])
+  const blocker = useBlocker(debeBloquear)
+  const [confirmarCierre, setConfirmarCierre] = useState(false)
   const validacion = useFormErrors<Campo>()
 
   const isPending = crear.isPending || actualizar.isPending
+
+  const restaurar = () => {
+    setForm(estadoInicial)
+    resetear(estadoInicial)
+    validacion.limpiar()
+    setConfirmarCierre(false)
+  }
+
+  const cerrarDirecto = () => {
+    restaurar()
+    onClose()
+  }
+
+  /** Escape/overlay/X/Cancelar: intercepta solo si hay cambios (R4.3). */
+  const solicitarCierre = () => {
+    if (sucioRef.current) setConfirmarCierre(true)
+    else cerrarDirecto()
+  }
 
   const enfocarCampo = (campo: Campo) => {
     document.getElementById(IDS_Campos[campo])?.focus()
@@ -109,6 +143,7 @@ function FuenteDialog({
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    validacion.limpiarErrorFormulario()
     const valido = validacion.validarSubmit([
       {
         campo: "alias",
@@ -131,6 +166,7 @@ function FuenteDialog({
   }
 
   const guardar = async () => {
+    if (isPending) return
     const payload: FuentePayload = {
       alias: form.alias.trim(),
       color: form.color,
@@ -139,13 +175,31 @@ function FuenteDialog({
       split_auto_modo:
         form.split_auto && form.split_auto_modo ? (form.split_auto_modo as Modo) : null,
     }
-    if (fuente) await actualizar.mutateAsync({ id: fuente.id, payload })
-    else await crear.mutateAsync(payload)
-    onClose()
+    try {
+      if (fuente) await actualizar.mutateAsync({ id: fuente.id, payload })
+      else await crear.mutateAsync(payload)
+      // Tras guardar: sin confirmación y sin bloqueo (R4.6).
+      resetear()
+      validacion.limpiar()
+      setConfirmarCierre(false)
+      onClose()
+    } catch (e) {
+      const resuelto =
+        e instanceof ApiRequestError
+          ? resolverErrorApi(e, ERRORES_API_FUENTE)
+          : {
+              campo: undefined,
+              mensaje:
+                e instanceof Error
+                  ? e.message
+                  : "No se pudo guardar la fuente. Inténtalo de nuevo.",
+            }
+      validacion.establecerError(resuelto.campo, resuelto.mensaje)
+    }
   }
 
   return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
+    <Dialog open onOpenChange={(o) => !o && solicitarCierre()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle id="fuente-dialog-titulo">
@@ -164,6 +218,11 @@ function FuenteDialog({
         >
           {validacion.resumenVisible && (
             <ErrorSummary errores={validacion.listaErrores} onEnfocar={enfocarCampo} />
+          )}
+          {validacion.errorFormulario && (
+            <p role="alert" className="text-sm text-destructive">
+              {validacion.errorFormulario}
+            </p>
           )}
           <div className="space-y-4">
             <div className="space-y-1.5">
@@ -279,7 +338,7 @@ function FuenteDialog({
             </fieldset>
           </div>
           <DialogFooter>
-            <Button variant="outline" type="button" onClick={onClose}>
+            <Button variant="outline" type="button" onClick={solicitarCierre}>
               Cancelar
             </Button>
             <Button type="submit" disabled={isPending}>
@@ -288,6 +347,19 @@ function FuenteDialog({
             </Button>
           </DialogFooter>
         </form>
+
+        <ConfirmarDescarteDialog
+          abierto={confirmarCierre || blocker.state === "blocked"}
+          onSeguir={() => {
+            if (blocker.state === "blocked") blocker.reset?.()
+            setConfirmarCierre(false)
+          }}
+          onDescartar={() => {
+            const veniaDeBloqueo = blocker.state === "blocked"
+            cerrarDirecto()
+            if (veniaDeBloqueo) blocker.proceed?.()
+          }}
+        />
       </DialogContent>
     </Dialog>
   )

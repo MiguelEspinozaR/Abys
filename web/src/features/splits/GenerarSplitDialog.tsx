@@ -23,6 +23,8 @@ import { FieldError } from "@/components/form/FieldError"
 import { ErrorSummary } from "@/components/form/ErrorSummary"
 import { useFormErrors } from "@/hooks/useFormErrors"
 import { useGenerarSplit } from "@/services/hooks"
+import { ApiRequestError } from "@/services/api"
+import { ERRORES_API_GENERAR_SPLIT, resolverErrorApi } from "@/lib/api-errors"
 import { validarModoSplit } from "@/lib/validators"
 import type { Pago } from "@/services/types"
 
@@ -56,12 +58,29 @@ export function GenerarSplitDialog({ pago, children }: Props) {
   }
 
   const confirmar = async () => {
-    await generar.mutateAsync({ pago_id: pago.id, modo_calculo: modo as "preciso" })
-    cerrar()
+    if (generar.isPending) return
+    try {
+      await generar.mutateAsync({ pago_id: pago.id, modo_calculo: modo as "preciso" })
+      cerrar()
+    } catch (e) {
+      // R3.4: el diálogo permanece abierto y conserva los datos.
+      const resuelto =
+        e instanceof ApiRequestError
+          ? resolverErrorApi(e, ERRORES_API_GENERAR_SPLIT)
+          : {
+              campo: undefined,
+              mensaje:
+                e instanceof Error
+                  ? e.message
+                  : "No se pudo generar el split. Inténtalo de nuevo.",
+            }
+      validacion.establecerError(resuelto.campo, resuelto.mensaje)
+    }
   }
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    validacion.limpiarErrorFormulario()
     const valido = validacion.validarSubmit([
       {
         campo: "modo",
@@ -96,6 +115,11 @@ export function GenerarSplitDialog({ pago, children }: Props) {
               errores={validacion.listaErrores}
               onEnfocar={() => document.getElementById("modo")?.focus()}
             />
+          )}
+          {validacion.errorFormulario && (
+            <p role="alert" className="text-sm text-destructive">
+              {validacion.errorFormulario}
+            </p>
           )}
 
           <div className="space-y-2">
