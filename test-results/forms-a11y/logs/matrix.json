@@ -1,0 +1,3025 @@
+[
+  {
+    "ac": "ac1",
+    "id": "registrar",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "form con aria-labelledby=registrar-pago-titulo",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "todos los controles del form tienen nombre accesible (51)",
+        "pass": true,
+        "detail": "51 controles"
+      },
+      {
+        "name": "fieldset #metodo con legend",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "fieldset #registrar-dias con legend",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "Enter en #monto envía el formulario",
+        "pass": true,
+        "detail": "submits=1"
+      },
+      {
+        "name": "Enter en #fuente abre el listbox",
+        "pass": true,
+        "detail": "select-content=1"
+      },
+      {
+        "name": "Enter en #fuente NO envía el form",
+        "pass": true,
+        "detail": "submits=1"
+      },
+      {
+        "name": "Enter en #notas inserta salto de línea",
+        "pass": true,
+        "detail": "\"abc\\n\""
+      },
+      {
+        "name": "Enter en #notas NO envía el form",
+        "pass": true,
+        "detail": "submits=1"
+      }
+    ],
+    "error": null,
+    "durationMs": 3758,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac1",
+    "id": "editar",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "dialog aria-labelledby=edit-pago-titulo",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "todos los controles del diálogo tienen nombre accesible (51)",
+        "pass": true,
+        "detail": "51 controles"
+      },
+      {
+        "name": "Enter en #edit-monto envía el formulario",
+        "pass": true,
+        "detail": "submits=1"
+      },
+      {
+        "name": "Enter en #edit-fuente abre el listbox",
+        "pass": true,
+        "detail": "select-content=1"
+      },
+      {
+        "name": "Enter en #edit-fuente NO envía el form",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "botón Cancelar es type=button",
+        "pass": true,
+        "detail": "type=button"
+      },
+      {
+        "name": "botón X de cierre es type=button",
+        "pass": true,
+        "detail": "type=button"
+      }
+    ],
+    "error": null,
+    "durationMs": 4811,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac1",
+    "id": "fuente",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "todos los controles del diálogo fuente tienen nombre accesible (7)",
+        "pass": true,
+        "detail": "7 controles"
+      },
+      {
+        "name": "Enter en #fuente-alias envía el formulario",
+        "pass": true,
+        "detail": "submits=1"
+      },
+      {
+        "name": "el diálogo permanece abierto tras submit inválido",
+        "pass": true,
+        "detail": "ok"
+      }
+    ],
+    "error": null,
+    "durationMs": 4303,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac1",
+    "id": "cuenta",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "todos los controles del diálogo cuenta tienen nombre accesible (6)",
+        "pass": true,
+        "detail": "6 controles"
+      },
+      {
+        "name": "Enter en #cuenta-alias envía el formulario",
+        "pass": true,
+        "detail": "submits=1"
+      },
+      {
+        "name": "el diálogo permanece abierto tras submit inválido",
+        "pass": true,
+        "detail": "ok"
+      }
+    ],
+    "error": null,
+    "durationMs": 3558,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac1",
+    "id": "tasa",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "todos los controles del diálogo tasa tienen nombre accesible (5)",
+        "pass": true,
+        "detail": "5 controles"
+      },
+      {
+        "name": "cuenta General no tiene botón Editar tasa (histórica)",
+        "pass": true,
+        "detail": "ok"
+      }
+    ],
+    "error": null,
+    "durationMs": 3120,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac1",
+    "id": "generar-split",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "todos los controles del diálogo generar-split tienen nombre accesible (4)",
+        "pass": true,
+        "detail": "4 controles"
+      },
+      {
+        "name": "Enter en #modo abre el listbox",
+        "pass": true,
+        "detail": "select-content=1"
+      },
+      {
+        "name": "Enter en #modo NO envía el form",
+        "pass": true,
+        "detail": "ok"
+      }
+    ],
+    "error": null,
+    "durationMs": 3652,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac1",
+    "id": "splits-tab",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "SplitsTab no renderiza <form> (autoguardado)",
+        "pass": true,
+        "detail": "tabs-content=0, page=0"
+      },
+      {
+        "name": "todos los controles de SplitsTab tienen nombre accesible",
+        "pass": true,
+        "detail": "1 controles"
+      },
+      {
+        "name": "#split-modo-default-error es región aria-live=polite",
+        "pass": true,
+        "detail": "aria-live=polite"
+      },
+      {
+        "name": "cambiar el modo dispara PUT /settings/split (autoguardado)",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "el select refleja el nuevo modo",
+        "pass": true,
+        "detail": "valor=preciso (truncado al centavo)"
+      }
+    ],
+    "error": null,
+    "durationMs": 4521,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac2",
+    "id": "registrar-invalido",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "error inline de días visible tras submit vacío",
+        "pass": true,
+        "detail": "Selecciona al menos un día"
+      },
+      {
+        "name": "fieldset #registrar-dias aria-describedby → error",
+        "pass": true,
+        "detail": "{\"invalid\":null,\"desc\":\"registrar-dias-error\"}"
+      },
+      {
+        "name": "#monto aria-invalid + aria-describedby incluye monto-error",
+        "pass": true,
+        "detail": "{\"invalid\":\"true\",\"desc\":\"monto-ayuda monto-separadores monto-error\"}"
+      },
+      {
+        "name": "#fuente aria-invalid + aria-describedby incluye fuente-error",
+        "pass": true,
+        "detail": "{\"invalid\":\"true\",\"desc\":\"fuente-error\"}"
+      },
+      {
+        "name": "ErrorSummary role=alert con ítems por campo inválido",
+        "pass": true,
+        "detail": "[\"Selecciona al menos un día\",\"Selecciona una fuente\",\"Ingresa un monto válido, p. ej. 265,00\"]"
+      },
+      {
+        "name": "título del resumen",
+        "pass": true,
+        "detail": "Revisa los siguientes campos:Selecciona al menos un díaSelec"
+      },
+      {
+        "name": "el foco va al primer campo inválido (#registrar-dias)",
+        "pass": true,
+        "detail": "{\"id\":\"registrar-dias\",\"tag\":\"FIELDSET\",\"text\":\"Días trabajados y fecha de pago *TrabajoPagoQuitar«‹noviembr\",\"inDialog\":null}"
+      },
+      {
+        "name": "corregir el monto limpia su error en vivo",
+        "pass": true,
+        "detail": "aria-invalid=null, ítems=2"
+      },
+      {
+        "name": "blur con monto inválido muestra el error",
+        "pass": true,
+        "detail": "Ingresa un monto válido, p. ej. 265,00"
+      }
+    ],
+    "error": null,
+    "durationMs": 3761,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac2-registrar-invalido-m390-light.png"
+  },
+  {
+    "ac": "ac2",
+    "id": "registrar-invalido-dark",
+    "theme": "dark",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "errores visibles en tema oscuro",
+        "pass": true,
+        "detail": "ok"
+      }
+    ],
+    "error": null,
+    "durationMs": 3029,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac2-registrar-invalido-m390-dark.png"
+  },
+  {
+    "ac": "ac2",
+    "id": "editar-invalido",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "error inline de monto visible en editar",
+        "pass": true,
+        "detail": "Ingresa un monto válido, p. ej. 265,00"
+      },
+      {
+        "name": "#edit-monto aria-invalid + aria-describedby",
+        "pass": true,
+        "detail": "{\"invalid\":\"true\",\"desc\":\"edit-monto-error\"}"
+      },
+      {
+        "name": "ErrorSummary en el diálogo con ítems",
+        "pass": true,
+        "detail": "[\"Ingresa un monto válido, p. ej. 265,00\"]"
+      },
+      {
+        "name": "foco en el primer campo inválido (#edit-monto)",
+        "pass": true,
+        "detail": "{\"id\":\"edit-monto\",\"tag\":\"INPUT\",\"text\":\"\",\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      }
+    ],
+    "error": null,
+    "durationMs": 4180,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac2-editar-invalido-m390-light.png"
+  },
+  {
+    "ac": "ac2",
+    "id": "editar-monto-split",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "#edit-monto deshabilitado cuando el pago tiene split",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "aviso visible: monto no editable con split",
+        "pass": true,
+        "detail": "Pago con splitEl monto no se puede modificar si el pago tiene split (lo rechaza la API). El resto de campos sí es editab"
+      }
+    ],
+    "error": null,
+    "durationMs": 3651,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac2",
+    "id": "fuente-invalido",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "error inline de alias visible",
+        "pass": true,
+        "detail": "El alias es obligatorio"
+      },
+      {
+        "name": "#fuente-alias aria-invalid + aria-describedby",
+        "pass": true,
+        "detail": "{\"invalid\":\"true\",\"desc\":\"fuente-alias-error\"}"
+      },
+      {
+        "name": "foco en #fuente-alias",
+        "pass": true,
+        "detail": "{\"id\":\"fuente-alias\",\"tag\":\"INPUT\",\"text\":\"\",\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "hex inválido muestra error de color",
+        "pass": true,
+        "detail": "Ingresa un color hexadecimal válido, p. ej. #3b82f6"
+      },
+      {
+        "name": "modo de split aparece al activar split automático",
+        "pass": true,
+        "detail": "inicial=0, tras toggle visible=true"
+      }
+    ],
+    "error": null,
+    "durationMs": 4969,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac2-fuente-invalido-m390-light.png"
+  },
+  {
+    "ac": "ac2",
+    "id": "cuenta-invalido",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "error inline de alias visible en cuenta",
+        "pass": true,
+        "detail": "El alias es obligatorio"
+      },
+      {
+        "name": "foco en #cuenta-alias",
+        "pass": true,
+        "detail": "{\"id\":\"cuenta-alias\",\"tag\":\"INPUT\",\"text\":\"\",\"inDialog\":\"dialog-content\"}"
+      }
+    ],
+    "error": null,
+    "durationMs": 3761,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac2",
+    "id": "tasa-invalido",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "error inline de tasa visible",
+        "pass": true,
+        "detail": "Ingresa una tasa válida entre 0 y 100"
+      },
+      {
+        "name": "input tasa aria-invalid + aria-describedby",
+        "pass": true,
+        "detail": "{\"invalid\":\"true\",\"desc\":\"tasa-2-error\"}"
+      },
+      {
+        "name": "foco en el input de tasa",
+        "pass": true,
+        "detail": "{\"id\":\"tasa-2\",\"tag\":\"INPUT\",\"text\":\"\",\"inDialog\":\"dialog-content\"}"
+      }
+    ],
+    "error": null,
+    "durationMs": 3478,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac2",
+    "id": "notas-maxlength",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "maxLength=500 en #notas",
+        "pass": true,
+        "detail": "len=500, contador=500/500"
+      },
+      {
+        "name": "contador muestra 500/500",
+        "pass": true,
+        "detail": "500/500"
+      },
+      {
+        "name": "teclado no supera 500 caracteres",
+        "pass": true,
+        "detail": "len=500"
+      },
+      {
+        "name": "500 exactos no es error",
+        "pass": true,
+        "detail": "aria-invalid=null"
+      }
+    ],
+    "error": null,
+    "durationMs": 2833,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac2",
+    "id": "notas-ocr-mayor-500",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "OCR deja notas >500 (sin pasar por maxLength)",
+        "pass": true,
+        "detail": "len=596"
+      },
+      {
+        "name": "contador refleja >500",
+        "pass": true,
+        "detail": "596/500"
+      },
+      {
+        "name": "#notas aria-invalid + aria-describedby incluye notas-error",
+        "pass": true,
+        "detail": "{\"invalid\":\"true\",\"desc\":\"notas-contador notas-error\"}"
+      },
+      {
+        "name": "error inline de notas visible",
+        "pass": true,
+        "detail": "Máximo 500 caracteres"
+      },
+      {
+        "name": "guardado bloqueado mientras notas >500",
+        "pass": true,
+        "detail": "POSTs=0"
+      },
+      {
+        "name": "corregir notas limpia el error",
+        "pass": true,
+        "detail": "aria-invalid=null"
+      },
+      {
+        "name": "tras corregir, el pago se guarda",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "navegación a /ingresos tras guardar",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      }
+    ],
+    "error": null,
+    "durationMs": 6568,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos/99999/comprobante"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac2-registrar-notas-ocr-m390-light.png"
+  },
+  {
+    "ac": "ac3",
+    "id": "registrar-400",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "form aria-busy=true durante el envío",
+        "pass": true,
+        "detail": "aria-busy=true"
+      },
+      {
+        "name": "submit deshabilitado durante el envío",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "exactamente 1 POST /pagos (sin doble envío)",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 400 global en el resumen (p[role=alert])",
+        "pass": true,
+        "detail": "El monto debe ser mayor a cero (mock harness)"
+      },
+      {
+        "name": "sin diálogos de confirmación espurios",
+        "pass": true,
+        "detail": "dialogs=0"
+      },
+      {
+        "name": "los datos del formulario persisten",
+        "pass": true,
+        "detail": "monto=265,00, fuente=Essencia"
+      },
+      {
+        "name": "no se navegó fuera de /registrar",
+        "pass": true,
+        "detail": "http://localhost:5178/registrar"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5703,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/pagos"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "registrar-409",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "exactamente 1 POST /pagos (sin doble envío)",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 409 global en el resumen (p[role=alert])",
+        "pass": true,
+        "detail": "La fuente ya tiene un pago registrado hoy (mock harness)"
+      },
+      {
+        "name": "sin diálogos de confirmación espurios",
+        "pass": true,
+        "detail": "dialogs=0"
+      },
+      {
+        "name": "los datos del formulario persisten",
+        "pass": true,
+        "detail": "monto=265,00, fuente=Essencia"
+      },
+      {
+        "name": "no se navegó fuera de /registrar",
+        "pass": true,
+        "detail": "http://localhost:5178/registrar"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5370,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+        "url": "http://localhost:18082/api/v1/pagos"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "registrar-422",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "exactamente 1 POST /pagos (sin doble envío)",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 422 global en el resumen (p[role=alert])",
+        "pass": true,
+        "detail": "El monto no puede modificarse: el pago tiene split (mock harness)"
+      },
+      {
+        "name": "sin diálogos de confirmación espurios",
+        "pass": true,
+        "detail": "dialogs=0"
+      },
+      {
+        "name": "los datos del formulario persisten",
+        "pass": true,
+        "detail": "monto=265,00, fuente=Essencia"
+      },
+      {
+        "name": "no se navegó fuera de /registrar",
+        "pass": true,
+        "detail": "http://localhost:5178/registrar"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5083,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+        "url": "http://localhost:18082/api/v1/pagos"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "registrar-500",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "exactamente 1 POST /pagos (sin doble envío)",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 500 global en el resumen (p[role=alert])",
+        "pass": true,
+        "detail": "Error interno del servidor (mock harness)"
+      },
+      {
+        "name": "sin diálogos de confirmación espurios",
+        "pass": true,
+        "detail": "dialogs=0"
+      },
+      {
+        "name": "los datos del formulario persisten",
+        "pass": true,
+        "detail": "monto=265,00, fuente=Essencia"
+      },
+      {
+        "name": "no se navegó fuera de /registrar",
+        "pass": true,
+        "detail": "http://localhost:5178/registrar"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5345,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+        "url": "http://localhost:18082/api/v1/pagos"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "editar-400",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 PUT /pagos/:id",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "error 400 global en el resumen del diálogo",
+        "pass": true,
+        "detail": "Monto fuera de rango (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto tras el error",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "los datos editados persisten",
+        "pass": true,
+        "detail": "monto=300,00"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5400,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/pagos/235"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/pagos/235"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "editar-409",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 PUT /pagos/:id",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "error 409 global en el resumen del diálogo",
+        "pass": true,
+        "detail": "Conflicto de negocio al editar (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto tras el error",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "los datos editados persisten",
+        "pass": true,
+        "detail": "monto=300,00"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5398,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+        "url": "http://localhost:18082/api/v1/pagos/235"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/pagos/235"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "editar-422",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 PUT /pagos/:id",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "error 422 mapeado al campo monto (inline)",
+        "pass": true,
+        "detail": "El monto no puede modificarse: el pago tiene split (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto tras el error",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "los datos editados persisten",
+        "pass": true,
+        "detail": "monto=300,00"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5189,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+        "url": "http://localhost:18082/api/v1/pagos/235"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/pagos/235"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac3-editar-422-m390-light.png"
+  },
+  {
+    "ac": "ac3",
+    "id": "editar-500",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 PUT /pagos/:id",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "error 500 global en el resumen del diálogo",
+        "pass": true,
+        "detail": "Error interno del servidor (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto tras el error",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "los datos editados persisten",
+        "pass": true,
+        "detail": "monto=300,00"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5217,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+        "url": "http://localhost:18082/api/v1/pagos/235"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/pagos/235"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "fuente-400",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 POST /fuentes",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 400 global en el resumen del diálogo",
+        "pass": true,
+        "detail": "El alias ya existe (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "el alias persiste",
+        "pass": true,
+        "detail": "alias=QA Fuente"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5550,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/fuentes"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/fuentes"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "fuente-409",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 POST /fuentes",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 409 global en el resumen del diálogo",
+        "pass": true,
+        "detail": "Conflicto al crear la fuente (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "el alias persiste",
+        "pass": true,
+        "detail": "alias=QA Fuente"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5378,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+        "url": "http://localhost:18082/api/v1/fuentes"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/fuentes"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "fuente-500",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 POST /fuentes",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 500 global en el resumen del diálogo",
+        "pass": true,
+        "detail": "Error interno del servidor (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "el alias persiste",
+        "pass": true,
+        "detail": "alias=QA Fuente"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5156,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+        "url": "http://localhost:18082/api/v1/fuentes"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/fuentes"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "cuenta-400",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 POST /cuentas",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 400 mapeado al campo alias (inline)",
+        "pass": true,
+        "detail": "El alias ya existe (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "el alias persiste",
+        "pass": true,
+        "detail": "alias=QA Cuenta"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 4840,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/cuentas"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/cuentas"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "cuenta-409",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 POST /cuentas",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 409 global en el resumen del diálogo",
+        "pass": true,
+        "detail": "Conflicto al crear la cuenta (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "el alias persiste",
+        "pass": true,
+        "detail": "alias=QA Cuenta"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 4590,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+        "url": "http://localhost:18082/api/v1/cuentas"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/cuentas"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "cuenta-500",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 POST /cuentas",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 500 global en el resumen del diálogo",
+        "pass": true,
+        "detail": "Error interno del servidor (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "el alias persiste",
+        "pass": true,
+        "detail": "alias=QA Cuenta"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 4817,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+        "url": "http://localhost:18082/api/v1/cuentas"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/cuentas"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "tasa-400",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 PUT /cuentas/:id/tasa",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "error 400 visible (campo o resumen)",
+        "pass": true,
+        "detail": "inline=Tasa fuera de rango (mock harness) | global=null"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "la tasa editada persiste",
+        "pass": true,
+        "detail": "tasa=25"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 4885,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/cuentas/2/tasa"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/cuentas/2/tasa"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "tasa-409",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 PUT /cuentas/:id/tasa",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "error 409 visible (campo o resumen)",
+        "pass": true,
+        "detail": "inline=La suma de tasas supera 100% (mock harness) | global=null"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "la tasa editada persiste",
+        "pass": true,
+        "detail": "tasa=25"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 4671,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+        "url": "http://localhost:18082/api/v1/cuentas/2/tasa"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/cuentas/2/tasa"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac3-tasa-409-m390-light.png"
+  },
+  {
+    "ac": "ac3",
+    "id": "tasa-500",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 PUT /cuentas/:id/tasa",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "error 500 visible (campo o resumen)",
+        "pass": true,
+        "detail": "inline= | global=Error interno del servidor (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "la tasa editada persiste",
+        "pass": true,
+        "detail": "tasa=25"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 4805,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+        "url": "http://localhost:18082/api/v1/cuentas/2/tasa"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/cuentas/2/tasa"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "generar-split-400",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 POST /splits",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 400 visible (campo o resumen)",
+        "pass": true,
+        "detail": "inline= | global=Modo inválido (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 4735,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/splits"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/splits"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "generar-split-409",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 POST /splits",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 409 visible (campo o resumen)",
+        "pass": true,
+        "detail": "inline= | global=El pago ya tiene un split (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 4666,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+        "url": "http://localhost:18082/api/v1/splits"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/splits"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "generar-split-500",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "1 POST /splits",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "error 500 visible (campo o resumen)",
+        "pass": true,
+        "detail": "inline= | global=Error interno del servidor (mock harness)"
+      },
+      {
+        "name": "el diálogo permanece abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5033,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+        "url": "http://localhost:18082/api/v1/splits"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/splits"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac3-split-500-m390-light.png"
+  },
+  {
+    "ac": "ac3",
+    "id": "splits-tab-400",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "select deshabilitado mientras guarda",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "1 PUT /settings/split",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "el valor revierte al valor válido tras el error",
+        "pass": true,
+        "detail": "antes=enteros (truncado a 1 Bs) | después=enteros (truncado a 1 Bs)"
+      },
+      {
+        "name": "error inline visible con aria-live=polite",
+        "pass": true,
+        "detail": "{\"text\":\"Modo inválido (mock harness)\",\"srOnly\":false}"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5563,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/settings/split"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/settings/split"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac3",
+    "id": "splits-tab-409",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "select deshabilitado mientras guarda",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "1 PUT /settings/split",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "el valor revierte al valor válido tras el error",
+        "pass": true,
+        "detail": "antes=enteros (truncado a 1 Bs) | después=enteros (truncado a 1 Bs)"
+      },
+      {
+        "name": "error inline visible con aria-live=polite",
+        "pass": true,
+        "detail": "{\"text\":\"Conflicto al guardar el modo (mock harness)\",\"srOnly\":false}"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5390,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+        "url": "http://localhost:18082/api/v1/settings/split"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/settings/split"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac3-splits-tab-409-m390-light.png"
+  },
+  {
+    "ac": "ac3",
+    "id": "splits-tab-500",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "select deshabilitado mientras guarda",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "1 PUT /settings/split",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "el valor revierte al valor válido tras el error",
+        "pass": true,
+        "detail": "antes=enteros (truncado a 1 Bs) | después=enteros (truncado a 1 Bs)"
+      },
+      {
+        "name": "error inline visible con aria-live=polite",
+        "pass": true,
+        "detail": "{\"text\":\"Error interno del servidor (mock harness)\",\"srOnly\":false}"
+      },
+      {
+        "name": "0 toasts de error (sonner)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 unhandledrejection",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 errores de consola",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 5482,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+        "url": "http://localhost:18082/api/v1/settings/split"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "PUT",
+        "path": "/api/v1/settings/split"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "registrar-nav",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "navegación con cambios muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "título ¿Descartar cambios?",
+        "pass": true,
+        "detail": "¿Descartar cambios?"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\"",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "no se navegó (bloqueado)",
+        "pass": true,
+        "detail": "http://localhost:5178/registrar"
+      },
+      {
+        "name": "\"Seguir editando\" conserva los cambios",
+        "pass": true,
+        "detail": "dialog closed=true, monto=100,00"
+      },
+      {
+        "name": "\"Descartar cambios\" navega a /ingresos",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      },
+      {
+        "name": "descartar NO guarda el pago",
+        "pass": true,
+        "detail": "POSTs=0"
+      }
+    ],
+    "error": null,
+    "durationMs": 4778,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac4-confirm-registrar-m390-light.png"
+  },
+  {
+    "ac": "ac4",
+    "id": "registrar-limpio",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "sin cambios no aparece ConfirmarDescarte",
+        "pass": true,
+        "detail": "dialogs=0"
+      },
+      {
+        "name": "navegación inmediata",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      }
+    ],
+    "error": null,
+    "durationMs": 3763,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "registrar-tras-guardar",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "guardado exitoso navega a /ingresos",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      },
+      {
+        "name": "1 POST /pagos",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "sin confirmación de descarte tras guardar",
+        "pass": true,
+        "detail": "ok"
+      }
+    ],
+    "error": null,
+    "durationMs": 4901,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "editar-close",
+    "theme": "dark",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "cerrar con X y cambios muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "el diálogo de edición sigue abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "\"Seguir editando\" conserva los cambios",
+        "pass": true,
+        "detail": "monto=300,00"
+      },
+      {
+        "name": "\"Descartar cambios\" cierra el diálogo",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "descartar NO guarda (0 PUT)",
+        "pass": true,
+        "detail": "PUTs=0"
+      }
+    ],
+    "error": null,
+    "durationMs": 5664,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac4-confirm-editar-m390-dark.png"
+  },
+  {
+    "ac": "ac4",
+    "id": "editar-escape",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "Escape con cambios muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "Escape en la confirmación = seguir editando",
+        "pass": true,
+        "detail": "confirm closed=true, edit open=true, monto=300,00"
+      }
+    ],
+    "error": null,
+    "durationMs": 4425,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "editar-nav",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "navegación SPA con diálogo abierto y sucio muestra confirmación",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "descartar navega a /splits",
+        "pass": true,
+        "detail": "http://localhost:5178/splits"
+      }
+    ],
+    "error": null,
+    "durationMs": 5225,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "registrar-ocr-sucio",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "OCR autocompleta el monto",
+        "pass": true,
+        "detail": "monto=265,00"
+      },
+      {
+        "name": "datos autocompletados por OCR también disparan la guardia",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "seguir editando conserva el formulario",
+        "pass": true,
+        "detail": "ok"
+      }
+    ],
+    "error": null,
+    "durationMs": 3552,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac5",
+    "id": "comprobante-pdf",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "PDF rechazado con error inline",
+        "pass": true,
+        "detail": "El archivo debe ser una imagen PNG, JPG, WEBP o GIF."
+      },
+      {
+        "name": "0 requests de subida",
+        "pass": true,
+        "detail": "writes=0"
+      },
+      {
+        "name": "sin barra de progreso",
+        "pass": true,
+        "detail": "ok"
+      }
+    ],
+    "error": null,
+    "durationMs": 2692,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac5",
+    "id": "comprobante-11mb",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "11MB rechazado con error inline",
+        "pass": true,
+        "detail": "El archivo debe pesar como máximo 10 MB."
+      },
+      {
+        "name": "0 requests de subida",
+        "pass": true,
+        "detail": "writes=0"
+      }
+    ],
+    "error": null,
+    "durationMs": 6825,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac5-comprobante-11mb-m390-light.png"
+  },
+  {
+    "ac": "ac5",
+    "id": "comprobante-drop-11mb",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "drop de 11MB rechazado con error inline",
+        "pass": true,
+        "detail": "drop={\"ok\":true} err=El archivo debe pesar como máximo 10 MB."
+      },
+      {
+        "name": "0 requests de subida por drop",
+        "pass": true,
+        "detail": "writes=0"
+      }
+    ],
+    "error": null,
+    "durationMs": 2886,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac5",
+    "id": "comprobante-valido-ocr",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "nombre del archivo visible (comprobante)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "tamaño visible en KB (comprobante)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "sin error con archivo válido",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "barra de progreso visible durante la lectura",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "progressbar con aria-label descriptivo",
+        "pass": true,
+        "detail": "Progreso de lectura del comprobante"
+      },
+      {
+        "name": "estado de OCR anunciado en región aria-live=polite",
+        "pass": true,
+        "detail": "durante=Leyendo comprobante… | después=Comprobante leído: Monto 265,00 Bs · Fecha jue, 5 nov 2026"
+      },
+      {
+        "name": "OCR autocompleta monto (265,00)",
+        "pass": true,
+        "detail": "monto=265,00"
+      },
+      {
+        "name": "OCR autocompleta notas con referencia",
+        "pass": true,
+        "detail": "Referencia: 1234567890 — pago mensual de servicios del mes d"
+      }
+    ],
+    "error": null,
+    "durationMs": 4896,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac5",
+    "id": "pago-200-comprobante-400",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "exactamente 1 POST /pagos (no se re-crea el pago)",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "1 intento de comprobante",
+        "pass": true,
+        "detail": "uploads=1"
+      },
+      {
+        "name": "error de comprobante inline visible",
+        "pass": true,
+        "detail": "La imagen del comprobante no es válida (mock harness)"
+      },
+      {
+        "name": "botón \"Reintentar comprobante\" visible",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "botón \"Ir a ingresos\" visible",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "sigue en /registrar (pago ya guardado)",
+        "pass": true,
+        "detail": "http://localhost:5178/registrar"
+      },
+      {
+        "name": "sin confirmación de descarte al reintentar upload",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "\"Ir a ingresos\" navega sin bloqueo",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      },
+      {
+        "name": "no se creó un segundo pago",
+        "pass": true,
+        "detail": "POSTs=1"
+      }
+    ],
+    "error": null,
+    "durationMs": 4744,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/pagos/99999/comprobante"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos/99999/comprobante"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac5-comprobante-reintentar-m390-light.png"
+  },
+  {
+    "ac": "ac5",
+    "id": "reintentar-comprobante",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "reintentar solo sube el comprobante (1 POST /pagos)",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "2 uploads de comprobante (fallo + reintento)",
+        "pass": true,
+        "detail": "uploads=2"
+      },
+      {
+        "name": "tras reintento exitoso navega a /ingresos",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      }
+    ],
+    "error": null,
+    "durationMs": 5287,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/pagos/99999/comprobante"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos/99999/comprobante"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos/99999/comprobante"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac5",
+    "id": "logo-invalidos",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "logo PDF rechazado con error inline",
+        "pass": true,
+        "detail": "{\"id\":\"logo-error-1\",\"text\":\"El archivo debe ser una imagen PNG, JPG, WEBP o GIF.\"}"
+      },
+      {
+        "name": "logo 11MB rechazado con error inline",
+        "pass": true,
+        "detail": "El archivo debe pesar como máximo 10 MB."
+      },
+      {
+        "name": "0 requests de subida de logo",
+        "pass": true,
+        "detail": "writes=0"
+      },
+      {
+        "name": "logo no muestra nombre/tamaño del archivo",
+        "pass": true,
+        "detail": "ok"
+      }
+    ],
+    "error": null,
+    "durationMs": 8349,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac5",
+    "id": "logo-qr-validos",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "logo válido hace 1 POST /fuentes/:id/logo (mock)",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "sin error tras subir logo válido",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "QR PDF rechazado con error inline",
+        "pass": true,
+        "detail": "El archivo debe ser una imagen PNG, JPG, WEBP o GIF."
+      },
+      {
+        "name": "0 requests de subida de QR",
+        "pass": true,
+        "detail": "writes=0"
+      }
+    ],
+    "error": null,
+    "durationMs": 5775,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/fuentes/1/logo"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac6",
+    "id": "registrar-teclado",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "primer Tab = \"Saltar al contenido\"",
+        "pass": true,
+        "detail": "{}"
+      },
+      {
+        "name": "#fuente alcanzable por Tab",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "Enter abre el listbox",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "opción elegida con teclado",
+        "pass": true,
+        "detail": "valor=Essencia"
+      },
+      {
+        "name": "#monto alcanzable por Tab",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "días del calendario alcanzables por Tab",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"role\":null,\"slot\":null,\"variant\":null,\"text\":\"1\",\"aria\":\"\"}"
+      },
+      {
+        "name": "Enter marca el día enfocado",
+        "pass": true,
+        "detail": "tiles marcados=1"
+      },
+      {
+        "name": "submit alcanzable por Tab",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "Enter en submit guarda el pago",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "navega a /ingresos",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      },
+      {
+        "name": "indicador de foco ≥3:1 en 3 paradas de Tab",
+        "pass": true,
+        "detail": ""
+      }
+    ],
+    "error": null,
+    "durationMs": 7110,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac6",
+    "id": "walk-registrar",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "walk por /registrar: 54 paradas, todas con foco visible e indicador",
+        "pass": true,
+        "detail": ""
+      }
+    ],
+    "error": null,
+    "durationMs": 18514,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac6",
+    "id": "focus-trap-dialogos",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "foco inicial dentro del diálogo",
+        "pass": true,
+        "detail": "{\"id\":\"fuente-alias\",\"tag\":\"INPUT\",\"text\":\"\",\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "Tab dentro del diálogo no escapa (trampa de foco)",
+        "pass": true,
+        "detail": "escapes=0"
+      },
+      {
+        "name": "Tab dentro de la confirmación no escapa",
+        "pass": true,
+        "detail": "escapes=0"
+      },
+      {
+        "name": "foco sigue dentro de la confirmación",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      }
+    ],
+    "error": null,
+    "durationMs": 4696,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac6",
+    "id": "splits-teclado",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "Enter abre el listbox del autoguardado",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "selección con teclado dispara el PUT",
+        "pass": true,
+        "detail": "PUTs=1"
+      },
+      {
+        "name": "el modo cambió con teclado",
+        "pass": true,
+        "detail": "antes=enteros (truncado a 1 Bs) después=redondeado (half-up a 1 Bs)"
+      }
+    ],
+    "error": null,
+    "durationMs": 4524,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  }
+]

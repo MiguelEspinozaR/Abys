@@ -1,0 +1,19 @@
+$ npm test (cwd /home/miky/Documentos/finanzasMikyGoRef/web)
+
+> abys-web@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.0 /home/miky/Documentos/finanzasMikyGoRef/web
+
+
+ Test Files  6 passed (6)
+      Tests  69 passed (69)
+   Start at  21:29:16
+   Duration  4.34s (import 72%, transform 17%, tests 7%, worker 4%)
+
+    Isolate  6 workers spawned · ~722ms startup each (spawn + environment, per file)
+             at least ~722ms faster with isolate: false — reuses workers across files instead of one per file
+
+
+[exit 0]

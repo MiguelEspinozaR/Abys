@@ -1,0 +1,48 @@
+$ git branch --show-current
+feat/forms-a11y
+
+$ git rev-parse HEAD
+da2e7d86043c22d87ad494b13c85499fa5a62685
+
+$ git diff --stat 490de51..HEAD -- web/package.json backend/go.mod
+(vacío)
+[exit 0]
+
+$ git diff --name-only 490de51..HEAD
+web/src/components/form/ConfirmarDescarteDialog.tsx
+web/src/components/form/ErrorSummary.tsx
+web/src/components/form/FieldError.tsx
+web/src/components/ui/button.tsx
+web/src/components/ui/dialog.tsx
+web/src/features/configuracion/CuentasTab.tsx
+web/src/features/configuracion/FuentesTab.tsx
+web/src/features/configuracion/SplitsTab.tsx
+web/src/features/ingresos/EditarPagoDialog.tsx
+web/src/features/registrar/CalendarioDias.tsx
+web/src/features/registrar/ComprobanteDropzone.tsx
+web/src/features/registrar/RegistrarPage.tsx
+web/src/features/splits/GenerarSplitDialog.tsx
+web/src/hooks/useFormDirty.ts
+web/src/hooks/useFormErrors.ts
+web/src/lib/api-errors.test.ts
+web/src/lib/api-errors.ts
+web/src/lib/uploads.test.ts
+web/src/lib/uploads.ts
+web/src/lib/validators.test.ts
+web/src/lib/validators.ts
+web/src/services/hooks.ts
+[exit 0]
+
+archivos fuera de alcance: (ninguno)
+
+$ git ls-remote --heads origin feat/forms-a11y
+da2e7d86043c22d87ad494b13c85499fa5a62685	refs/heads/feat/forms-a11y
+[exit 0]
+
+HEAD local = da2e7d86043c22d87ad494b13c85499fa5a62685
+
+coincidencia HEAD==origin/feat/forms-a11y: sí
+
+$ git status --porcelain
+?? test-results/forms-a11y/
+?? test-results/tests/forms-a11y.json

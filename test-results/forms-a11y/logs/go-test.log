@@ -1,0 +1,15 @@
+$ go test ./... (cwd /home/miky/Documentos/finanzasMikyGoRef/backend)
+?   	abys/cmd/server	[no test files]
+?   	abys/docs	[no test files]
+?   	abys/internal/apperr	[no test files]
+?   	abys/internal/config	[no test files]
+?   	abys/internal/database	[no test files]
+?   	abys/internal/handler	[no test files]
+?   	abys/internal/middleware	[no test files]
+?   	abys/internal/model	[no test files]
+?   	abys/internal/repository	[no test files]
+ok  	abys/internal/router	(cached)
+?   	abys/internal/service	[no test files]
+ok  	abys/internal/splitcalc	(cached)
+
+[exit 0]

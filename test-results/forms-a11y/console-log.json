@@ -1,0 +1,710 @@
+{
+  "nota": "Consola/failedRequests/unhandledrejection por caso del harness (favicon excluido; respuestas mockeadas marcadas x-harness-mock excluidas).",
+  "casos": [
+    {
+      "ac": "ac1",
+      "id": "registrar",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac1",
+      "id": "editar",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac1",
+      "id": "fuente",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac1",
+      "id": "cuenta",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac1",
+      "id": "tasa",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac1",
+      "id": "generar-split",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac1",
+      "id": "splits-tab",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac2",
+      "id": "registrar-invalido",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac2",
+      "id": "registrar-invalido-dark",
+      "theme": "dark",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac2",
+      "id": "editar-invalido",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac2",
+      "id": "editar-monto-split",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac2",
+      "id": "fuente-invalido",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac2",
+      "id": "cuenta-invalido",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac2",
+      "id": "tasa-invalido",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac2",
+      "id": "notas-maxlength",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac2",
+      "id": "notas-ocr-mayor-500",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac3",
+      "id": "registrar-400",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/pagos"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "registrar-409",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+          "url": "http://localhost:18082/api/v1/pagos"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "registrar-422",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+          "url": "http://localhost:18082/api/v1/pagos"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "registrar-500",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+          "url": "http://localhost:18082/api/v1/pagos"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "editar-400",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/pagos/235"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "editar-409",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+          "url": "http://localhost:18082/api/v1/pagos/235"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "editar-422",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+          "url": "http://localhost:18082/api/v1/pagos/235"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "editar-500",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+          "url": "http://localhost:18082/api/v1/pagos/235"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "fuente-400",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/fuentes"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "fuente-409",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+          "url": "http://localhost:18082/api/v1/fuentes"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "fuente-500",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+          "url": "http://localhost:18082/api/v1/fuentes"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "cuenta-400",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/cuentas"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "cuenta-409",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+          "url": "http://localhost:18082/api/v1/cuentas"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "cuenta-500",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+          "url": "http://localhost:18082/api/v1/cuentas"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "tasa-400",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/cuentas/2/tasa"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "tasa-409",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+          "url": "http://localhost:18082/api/v1/cuentas/2/tasa"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "tasa-500",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+          "url": "http://localhost:18082/api/v1/cuentas/2/tasa"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "generar-split-400",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/splits"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "generar-split-409",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+          "url": "http://localhost:18082/api/v1/splits"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "generar-split-500",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+          "url": "http://localhost:18082/api/v1/splits"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "splits-tab-400",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/settings/split"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "splits-tab-409",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+          "url": "http://localhost:18082/api/v1/settings/split"
+        }
+      ]
+    },
+    {
+      "ac": "ac3",
+      "id": "splits-tab-500",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+          "url": "http://localhost:18082/api/v1/settings/split"
+        }
+      ]
+    },
+    {
+      "ac": "ac4",
+      "id": "registrar-nav",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "registrar-limpio",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "registrar-tras-guardar",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "editar-close",
+      "theme": "dark",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "editar-escape",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "editar-nav",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "registrar-ocr-sucio",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac5",
+      "id": "comprobante-pdf",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac5",
+      "id": "comprobante-11mb",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac5",
+      "id": "comprobante-drop-11mb",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac5",
+      "id": "comprobante-valido-ocr",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac5",
+      "id": "pago-200-comprobante-400",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/pagos/99999/comprobante"
+        }
+      ]
+    },
+    {
+      "ac": "ac5",
+      "id": "reintentar-comprobante",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/pagos/99999/comprobante"
+        }
+      ]
+    },
+    {
+      "ac": "ac5",
+      "id": "logo-invalidos",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac5",
+      "id": "logo-qr-validos",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac6",
+      "id": "registrar-teclado",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac6",
+      "id": "walk-registrar",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac6",
+      "id": "focus-trap-dialogos",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac6",
+      "id": "splits-teclado",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    }
+  ]
+}

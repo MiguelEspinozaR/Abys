@@ -1,0 +1,2105 @@
+{
+  "meta": {
+    "started": "2026-11-12T01:20:18.870Z",
+    "finished": "2026-11-12T01:30:09.403Z",
+    "baseUrl": "http://localhost:5178",
+    "apiUrl": "http://localhost:18082/api/v1",
+    "chrome": "156.0.8078.79",
+    "node": "v22.22.1",
+    "playwright": "1.65.0",
+    "commit": "da2e7d8",
+    "tesseractChunk": "/assets/index-DgvX7Flt.js",
+    "nota": "Escrituras de API mockeadas con page.route (red de seguridad 599 HARNESS_BLOCKED_WRITE); backend :18082 solo GETs reales."
+  },
+  "ac1": {
+    "pass": true,
+    "cases": 7,
+    "failed": [],
+    "checks": 32,
+    "detail": "nombre accesible por campo, Enter envía inputs / abre Selects, 0 forms en SplitsTab"
+  },
+  "ac2": {
+    "pass": true,
+    "cases": 9,
+    "failed": [],
+    "checks": 39,
+    "detail": "errores inline + aria-invalid/aria-describedby + resumen role=alert + foco en primer inválido; notas ≤500 y >500 vía OCR"
+  },
+  "ac3": {
+    "pass": true,
+    "cases": 23,
+    "failed": [],
+    "checks": 187,
+    "detail": "400/409/422/500 por formulario: error inline/resumen, diálogo abierto, datos persistentes, 0 toasts, 0 unhandled"
+  },
+  "ac4": {
+    "pass": true,
+    "cases": 7,
+    "failed": [],
+    "checks": 24,
+    "detail": "guardia de descarte en nav SPA, X/Cancelar/Escape; beforeunload fuera de alcance (R4.9)"
+  },
+  "ac5": {
+    "pass": true,
+    "cases": 8,
+    "failed": [],
+    "checks": 35,
+    "detail": "PDF/11MB rechazados sin request; nombre/tamaño solo en comprobante; progreso anunciado; reintento solo del upload"
+  },
+  "ac6": {
+    "pass": true,
+    "cases": 4,
+    "failed": [],
+    "checks": 19,
+    "detail": "flujo completo por teclado, walk de Tab con indicador ≥3:1, trampas de foco, autoguardado por teclado"
+  },
+  "ac7": {
+    "routeDefaults": [
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 14,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 71,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Dashboard"
+        ],
+        "route": "/",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 10,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 0,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 413,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 435,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 44,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Ingresos",
+          "202654",
+          "202546"
+        ],
+        "route": "/ingresos",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 40,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 0,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 22,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 95,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Splits"
+        ],
+        "route": "/splits",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 22,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 0,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 53,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 76,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Registrar pago"
+        ],
+        "route": "/registrar",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 16,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 0,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 22,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 25,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 2,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Configuración"
+        ],
+        "route": "/configuracion",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 20,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 0,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 14,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 71,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Dashboard"
+        ],
+        "route": "/",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 10,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 0,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 413,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 435,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 44,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Ingresos",
+          "202654",
+          "202546"
+        ],
+        "route": "/ingresos",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 40,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 0,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 22,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 95,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Splits"
+        ],
+        "route": "/splits",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 22,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 0,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 53,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 76,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Registrar pago"
+        ],
+        "route": "/registrar",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 16,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 0,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 22,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 25,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 2,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Configuración"
+        ],
+        "route": "/configuracion",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 20,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 0,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 20,
+        "small": 16,
+        "touchFailures": 8,
+        "touchDetail": [
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Dashboard\"]",
+            "texto": "Dashboard",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Registrar\"]",
+            "texto": "Registrar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+            "texto": "Ingresos",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Splits\"]",
+            "texto": "Splits",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Configuración\"]",
+            "texto": "Configuración",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Health\"]",
+            "texto": "Health",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Cambiar a modo oscuro",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Colapsar sidebar",
+            "w": 223,
+            "h": 36
+          }
+        ],
+        "contrastChecked": 87,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Dashboard"
+        ],
+        "route": "/",
+        "theme": "light",
+        "viewport": "desktop",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 16,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 16,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 419,
+        "small": 419,
+        "touchFailures": 8,
+        "touchDetail": [
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Dashboard\"]",
+            "texto": "Dashboard",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Registrar\"]",
+            "texto": "Registrar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+            "texto": "Ingresos",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Splits\"]",
+            "texto": "Splits",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Configuración\"]",
+            "texto": "Configuración",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Health\"]",
+            "texto": "Health",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Cambiar a modo oscuro",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Colapsar sidebar",
+            "w": 223,
+            "h": 36
+          }
+        ],
+        "contrastChecked": 445,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 44,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Ingresos",
+          "202654",
+          "202546"
+        ],
+        "route": "/ingresos",
+        "theme": "light",
+        "viewport": "desktop",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 40,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 419,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 28,
+        "small": 28,
+        "touchFailures": 8,
+        "touchDetail": [
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Dashboard\"]",
+            "texto": "Dashboard",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Registrar\"]",
+            "texto": "Registrar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+            "texto": "Ingresos",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Splits\"]",
+            "texto": "Splits",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Configuración\"]",
+            "texto": "Configuración",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Health\"]",
+            "texto": "Health",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Cambiar a modo oscuro",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Colapsar sidebar",
+            "w": 223,
+            "h": 36
+          }
+        ],
+        "contrastChecked": 105,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Splits"
+        ],
+        "route": "/splits",
+        "theme": "light",
+        "viewport": "desktop",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 28,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 28,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 59,
+        "small": 22,
+        "touchFailures": 17,
+        "touchDetail": [
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Dashboard\"]",
+            "texto": "Dashboard",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Registrar\"]",
+            "texto": "Registrar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+            "texto": "Ingresos",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Splits\"]",
+            "texto": "Splits",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Configuración\"]",
+            "texto": "Configuración",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Health\"]",
+            "texto": "Health",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Cambiar a modo oscuro",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Colapsar sidebar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "fieldset.m-0.min-w-0 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button",
+            "texto": "«",
+            "w": 24.53,
+            "h": 28
+          },
+          {
+            "selector": "fieldset.m-0.min-w-0 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev-button",
+            "texto": "‹",
+            "w": 21.61,
+            "h": 28
+          },
+          {
+            "selector": "fieldset.m-0.min-w-0 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__label",
+            "texto": "noviembre de 2026",
+            "w": 279.72,
+            "h": 28
+          },
+          {
+            "selector": "fieldset.m-0.min-w-0 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next-button",
+            "texto": "›",
+            "w": 21.61,
+            "h": 28
+          },
+          {
+            "selector": "fieldset.m-0.min-w-0 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next2-button",
+            "texto": "»",
+            "w": 24.53,
+            "h": 28
+          },
+          {
+            "selector": "div[data-slot=\"card-content\"] > fieldset.m-0.min-w-0 > div[aria-label=\"Método de pago\"] > button[data-slot=\"button\"]",
+            "texto": "Efectivo",
+            "w": 128.66,
+            "h": 28
+          },
+          {
+            "selector": "div[data-slot=\"card-content\"] > fieldset.m-0.min-w-0 > div[aria-label=\"Método de pago\"] > button[data-slot=\"button\"]",
+            "texto": "QR",
+            "w": 128.67,
+            "h": 28
+          }
+        ],
+        "contrastChecked": 86,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Registrar pago"
+        ],
+        "route": "/registrar",
+        "theme": "light",
+        "viewport": "desktop",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 22,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 22,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 28,
+        "small": 27,
+        "touchFailures": 9,
+        "touchDetail": [
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Dashboard\"]",
+            "texto": "Dashboard",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Registrar\"]",
+            "texto": "Registrar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+            "texto": "Ingresos",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Splits\"]",
+            "texto": "Splits",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Configuración\"]",
+            "texto": "Configuración",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Health\"]",
+            "texto": "Health",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Cambiar a modo oscuro",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Colapsar sidebar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.space-y-4 > div[data-slot=\"card\"] > div[data-slot=\"card-header\"] > button[data-slot=\"button\"]",
+            "texto": "Nueva cuenta",
+            "w": 207.47,
+            "h": 28
+          }
+        ],
+        "contrastChecked": 35,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 2,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Configuración"
+        ],
+        "route": "/configuracion",
+        "theme": "light",
+        "viewport": "desktop",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 26,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 27,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 20,
+        "small": 16,
+        "touchFailures": 8,
+        "touchDetail": [
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Dashboard\"]",
+            "texto": "Dashboard",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Registrar\"]",
+            "texto": "Registrar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+            "texto": "Ingresos",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Splits\"]",
+            "texto": "Splits",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Configuración\"]",
+            "texto": "Configuración",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Health\"]",
+            "texto": "Health",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Cambiar a modo claro",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Colapsar sidebar",
+            "w": 223,
+            "h": 36
+          }
+        ],
+        "contrastChecked": 87,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Dashboard"
+        ],
+        "route": "/",
+        "theme": "dark",
+        "viewport": "desktop",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 16,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 16,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 419,
+        "small": 419,
+        "touchFailures": 8,
+        "touchDetail": [
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Dashboard\"]",
+            "texto": "Dashboard",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Registrar\"]",
+            "texto": "Registrar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+            "texto": "Ingresos",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Splits\"]",
+            "texto": "Splits",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Configuración\"]",
+            "texto": "Configuración",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Health\"]",
+            "texto": "Health",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Cambiar a modo claro",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Colapsar sidebar",
+            "w": 223,
+            "h": 36
+          }
+        ],
+        "contrastChecked": 445,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 44,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Ingresos",
+          "202654",
+          "202546"
+        ],
+        "route": "/ingresos",
+        "theme": "dark",
+        "viewport": "desktop",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 40,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 419,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 28,
+        "small": 28,
+        "touchFailures": 8,
+        "touchDetail": [
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Dashboard\"]",
+            "texto": "Dashboard",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Registrar\"]",
+            "texto": "Registrar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+            "texto": "Ingresos",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Splits\"]",
+            "texto": "Splits",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Configuración\"]",
+            "texto": "Configuración",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Health\"]",
+            "texto": "Health",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Cambiar a modo claro",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Colapsar sidebar",
+            "w": 223,
+            "h": 36
+          }
+        ],
+        "contrastChecked": 105,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Splits"
+        ],
+        "route": "/splits",
+        "theme": "dark",
+        "viewport": "desktop",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 8,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 28,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 59,
+        "small": 22,
+        "touchFailures": 17,
+        "touchDetail": [
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Dashboard\"]",
+            "texto": "Dashboard",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Registrar\"]",
+            "texto": "Registrar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+            "texto": "Ingresos",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Splits\"]",
+            "texto": "Splits",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Configuración\"]",
+            "texto": "Configuración",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Health\"]",
+            "texto": "Health",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Cambiar a modo claro",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Colapsar sidebar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "fieldset.m-0.min-w-0 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button",
+            "texto": "«",
+            "w": 24.53,
+            "h": 28
+          },
+          {
+            "selector": "fieldset.m-0.min-w-0 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev-button",
+            "texto": "‹",
+            "w": 21.61,
+            "h": 28
+          },
+          {
+            "selector": "fieldset.m-0.min-w-0 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__label",
+            "texto": "noviembre de 2026",
+            "w": 279.72,
+            "h": 28
+          },
+          {
+            "selector": "fieldset.m-0.min-w-0 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next-button",
+            "texto": "›",
+            "w": 21.61,
+            "h": 28
+          },
+          {
+            "selector": "fieldset.m-0.min-w-0 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next2-button",
+            "texto": "»",
+            "w": 24.53,
+            "h": 28
+          },
+          {
+            "selector": "div[data-slot=\"card-content\"] > fieldset.m-0.min-w-0 > div[aria-label=\"Método de pago\"] > button[data-slot=\"button\"]",
+            "texto": "Efectivo",
+            "w": 128.66,
+            "h": 28
+          },
+          {
+            "selector": "div[data-slot=\"card-content\"] > fieldset.m-0.min-w-0 > div[aria-label=\"Método de pago\"] > button[data-slot=\"button\"]",
+            "texto": "QR",
+            "w": 128.67,
+            "h": 28
+          }
+        ],
+        "contrastChecked": 86,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Registrar pago"
+        ],
+        "route": "/registrar",
+        "theme": "dark",
+        "viewport": "desktop",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 22,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 22,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 28,
+        "small": 27,
+        "touchFailures": 9,
+        "touchDetail": [
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Dashboard\"]",
+            "texto": "Dashboard",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Registrar\"]",
+            "texto": "Registrar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Ingresos\"]",
+            "texto": "Ingresos",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Splits\"]",
+            "texto": "Splits",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Configuración\"]",
+            "texto": "Configuración",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "nav[aria-label=\"Secciones\"] > div > div.space-y-0\\.5 > a[aria-label=\"Health\"]",
+            "texto": "Health",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Cambiar a modo claro",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.hidden > aside[aria-label=\"Navegación principal\"] > div.shrink-0.space-y-0\\.5 > button[data-slot=\"tooltip-trigger\"]",
+            "texto": "Colapsar sidebar",
+            "w": 223,
+            "h": 36
+          },
+          {
+            "selector": "div.space-y-4 > div[data-slot=\"card\"] > div[data-slot=\"card-header\"] > button[data-slot=\"button\"]",
+            "texto": "Nueva cuenta",
+            "w": 207.47,
+            "h": 28
+          }
+        ],
+        "contrastChecked": 35,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 2,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Configuración"
+        ],
+        "route": "/configuracion",
+        "theme": "dark",
+        "viewport": "desktop",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "before": {
+          "targets": 26,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        },
+        "after": {
+          "targets": 27,
+          "truncados": 0,
+          "contrastes": 0,
+          "sinNombre": 0
+        }
+      }
+    ],
+    "formStates": [
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 56,
+        "small": 3,
+        "touchFailures": 3,
+        "touchDetail": [
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "Selecciona al menos un día",
+            "w": 180.47,
+            "h": 20
+          },
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "Selecciona una fuente",
+            "w": 147.41,
+            "h": 20
+          },
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "Ingresa un monto válido, p. ej. 265,00",
+            "w": 249.14,
+            "h": 20
+          }
+        ],
+        "contrastChecked": 83,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Registrar pago"
+        ],
+        "route": "estado:registrar-invalido",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "screenshot": "screenshots/ac7-registrar-invalido-m390-light.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 56,
+        "small": 3,
+        "touchFailures": 3,
+        "touchDetail": [
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "Selecciona al menos un día",
+            "w": 180.47,
+            "h": 20
+          },
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "Selecciona una fuente",
+            "w": 147.41,
+            "h": 20
+          },
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "Ingresa un monto válido, p. ej. 265,00",
+            "w": 249.14,
+            "h": 20
+          }
+        ],
+        "contrastChecked": 83,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Registrar pago"
+        ],
+        "route": "estado:registrar-invalido",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "screenshot": "screenshots/ac7-registrar-invalido-m390-dark.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 53,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 77,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Registrar pago"
+        ],
+        "route": "estado:registrar-11mb",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "screenshot": "screenshots/ac7-registrar-11mb-m390-light.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 51,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 69,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 44,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Ingresos",
+          "202654",
+          "202546",
+          "Editar pago #235"
+        ],
+        "route": "estado:editar-invalido",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "screenshot": "screenshots/ac7-editar-invalido-m390-light.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 2,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 4,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 44,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Ingresos",
+          "202654",
+          "202546",
+          "Editar pago #235",
+          "¿Descartar cambios?"
+        ],
+        "route": "estado:editar-confirm",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "screenshot": "screenshots/ac7-editar-confirm-m390-light.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 8,
+        "small": 2,
+        "touchFailures": 1,
+        "touchDetail": [
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "El alias es obligatorio",
+            "w": 139.3,
+            "h": 20
+          }
+        ],
+        "contrastChecked": 11,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 3,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Configuración",
+          "Nueva fuente"
+        ],
+        "route": "estado:fuente-invalido",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "screenshot": "screenshots/ac7-fuente-invalido-m390-light.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 6,
+        "small": 2,
+        "touchFailures": 1,
+        "touchDetail": [
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "Ingresa una tasa válida entre 0 y 100",
+            "w": 241.95,
+            "h": 20
+          }
+        ],
+        "contrastChecked": 11,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 2,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Configuración",
+          "Tasa de Box"
+        ],
+        "route": "estado:tasa-invalido",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "screenshot": "screenshots/ac7-tasa-invalido-m390-light.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 8,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 16,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [
+          {
+            "politeness": "polite",
+            "texto": "Conflicto (mock harness)"
+          }
+        ],
+        "headings": [
+          "Configuración"
+        ],
+        "route": "estado:splits-tab-error",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [
+          {
+            "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+            "url": "http://localhost:18082/api/v1/settings/split"
+          }
+        ],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "screenshot": "screenshots/ac7-splits-tab-error-m390-light.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 4,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 6,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 44,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Ingresos",
+          "202654",
+          "202546",
+          "Generar split — pago #235"
+        ],
+        "route": "estado:generar-split-dialog",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "screenshot": "screenshots/ac7-generar-split-m390-light.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 57,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 89,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 1,
+        "toasts": 0,
+        "ariaLive": [
+          {
+            "politeness": "polite",
+            "texto": "Comprobante leído: Monto 265,00 Bs · Fecha jue, 5 nov 2026"
+          }
+        ],
+        "headings": [
+          "Registrar pago"
+        ],
+        "route": "estado:registrar-ocr-resumen",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "ocrCheck": {
+          "toasts": 0,
+          "inlineAriaLive": true,
+          "ariaLive": [
+            {
+              "politeness": "polite",
+              "texto": "Comprobante leído: Monto 265,00 Bs · Fecha jue, 5 nov 2026"
+            }
+          ]
+        },
+        "screenshot": "screenshots/ac7-registrar-ocr-m390-light.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 57,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 89,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 1,
+        "toasts": 0,
+        "ariaLive": [
+          {
+            "politeness": "polite",
+            "texto": "Comprobante leído: Monto 265,00 Bs · Fecha jue, 5 nov 2026"
+          }
+        ],
+        "headings": [
+          "Registrar pago"
+        ],
+        "route": "estado:registrar-ocr-resumen",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "ocrCheck": {
+          "toasts": 0,
+          "inlineAriaLive": true,
+          "ariaLive": [
+            {
+              "politeness": "polite",
+              "texto": "Comprobante leído: Monto 265,00 Bs · Fecha jue, 5 nov 2026"
+            }
+          ]
+        },
+        "screenshot": "screenshots/ac7-registrar-ocr-m390-dark.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 6,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 7,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 2,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Configuración",
+          "Nueva cuenta"
+        ],
+        "route": "estado:cuenta-dialog",
+        "theme": "light",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": [],
+        "screenshot": "screenshots/ac7-cuenta-dialog-m390-light.png"
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 56,
+        "small": 3,
+        "touchFailures": 3,
+        "touchDetail": [
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "Selecciona al menos un día",
+            "w": 180.47,
+            "h": 20
+          },
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "Selecciona una fuente",
+            "w": 147.41,
+            "h": 20
+          },
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "Ingresa un monto válido, p. ej. 265,00",
+            "w": 249.14,
+            "h": 20
+          }
+        ],
+        "contrastChecked": 83,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Registrar pago"
+        ],
+        "route": "estado:registrar-invalido",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": []
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 51,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 69,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 44,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Ingresos",
+          "202654",
+          "202546",
+          "Editar pago #235"
+        ],
+        "route": "estado:editar-invalido",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": []
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 8,
+        "small": 2,
+        "touchFailures": 1,
+        "touchDetail": [
+          {
+            "selector": "div.space-y-2.rounded-lg > ul.list-disc.space-y-1 > li.text-sm > button.rounded-sm.text-left",
+            "texto": "El alias es obligatorio",
+            "w": 139.3,
+            "h": 20
+          }
+        ],
+        "contrastChecked": 11,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 3,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Configuración",
+          "Nueva fuente"
+        ],
+        "route": "estado:fuente-invalido",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": []
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 8,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 16,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 0,
+        "toasts": 0,
+        "ariaLive": [
+          {
+            "politeness": "polite",
+            "texto": "Conflicto (mock harness)"
+          }
+        ],
+        "headings": [
+          "Configuración"
+        ],
+        "route": "estado:splits-tab-error",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [
+          {
+            "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+            "url": "http://localhost:18082/api/v1/settings/split"
+          }
+        ],
+        "failedRequests": [],
+        "unexpectedWrites": []
+      },
+      {
+        "overflowX": 0,
+        "truncados": 0,
+        "targets": 2,
+        "small": 0,
+        "touchFailures": 0,
+        "touchDetail": [],
+        "contrastChecked": 4,
+        "contrastFailures": 0,
+        "contrastes": [],
+        "sinNombre": [],
+        "imgsSinDim": 44,
+        "toasts": 0,
+        "ariaLive": [],
+        "headings": [
+          "Ingresos",
+          "202654",
+          "202546",
+          "Editar pago #235",
+          "¿Descartar cambios?"
+        ],
+        "route": "estado:editar-confirm",
+        "theme": "dark",
+        "viewport": "mobile",
+        "console": [],
+        "mockedNetwork": [],
+        "failedRequests": [],
+        "unexpectedWrites": []
+      }
+    ],
+    "desktopShots": [
+      {
+        "route": "/registrar",
+        "theme": "light",
+        "screenshot": "screenshots/ac7-route-registrar-desktop-light.png"
+      },
+      {
+        "route": "/registrar",
+        "theme": "dark",
+        "screenshot": "screenshots/ac7-route-registrar-desktop-dark.png"
+      },
+      {
+        "route": "/configuracion",
+        "theme": "light",
+        "screenshot": "screenshots/ac7-route-configuracion-desktop-light.png"
+      },
+      {
+        "route": "/configuracion",
+        "theme": "dark",
+        "screenshot": "screenshots/ac7-route-configuracion-desktop-dark.png"
+      },
+      {
+        "route": "/ingresos+dialog",
+        "theme": "light",
+        "screenshot": "screenshots/ac7-ingresos-editar-dialog-desktop-light.png"
+      }
+    ],
+    "pass": true
+  },
+  "ac8": {
+    "tsc": {
+      "cmd": "npx tsc -b",
+      "cwd": "/home/miky/Documentos/finanzasMikyGoRef/web",
+      "status": 0,
+      "durationMs": 21243,
+      "log": "logs/tsc.log",
+      "tail": []
+    },
+    "npmTest": {
+      "cmd": "npm test",
+      "cwd": "/home/miky/Documentos/finanzasMikyGoRef/web",
+      "status": 0,
+      "durationMs": 7165,
+      "log": "logs/npm-test.log",
+      "tail": [
+        "> vitest run",
+        " RUN  v5.0.0 /home/miky/Documentos/finanzasMikyGoRef/web",
+        " Test Files  6 passed (6)",
+        "      Tests  69 passed (69)",
+        "   Start at  21:29:16",
+        "   Duration  4.34s (import 72%, transform 17%, tests 7%, worker 4%)",
+        "    Isolate  6 workers spawned · ~722ms startup each (spawn + environment, per file)",
+        "             at least ~722ms faster with isolate: false — reuses workers across files instead of one per file"
+      ]
+    },
+    "build": {
+      "cmd": "npm run build",
+      "cwd": "/home/miky/Documentos/finanzasMikyGoRef/web",
+      "status": 0,
+      "durationMs": 43876,
+      "log": "logs/build.log",
+      "tail": [
+        "dist/assets/ConfiguracionPage-D1BCb8cH.js                   47.86 kB │ gzip:  12.45 kB",
+        "dist/assets/DashboardPage-Dx0X7Szx.js                      423.66 kB │ gzip: 122.37 kB",
+        "dist/assets/index-BjxIZoAg.js                              512.56 kB │ gzip: 164.08 kB",
+        "✓ built in 22.09s",
+        "(!) Some chunks are larger than 500 kB after minification. Consider:",
+        "- Using dynamic import() to code-split the application",
+        "- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks",
+        "- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit."
+      ]
+    },
+    "goTest": {
+      "cmd": "go test ./...",
+      "cwd": "/home/miky/Documentos/finanzasMikyGoRef/backend",
+      "status": 0,
+      "durationMs": 2006,
+      "log": "logs/go-test.log",
+      "tail": [
+        "?   \tabys/internal/database\t[no test files]",
+        "?   \tabys/internal/handler\t[no test files]",
+        "?   \tabys/internal/middleware\t[no test files]",
+        "?   \tabys/internal/model\t[no test files]",
+        "?   \tabys/internal/repository\t[no test files]",
+        "ok  \tabys/internal/router\t(cached)",
+        "?   \tabys/internal/service\t[no test files]",
+        "ok  \tabys/internal/splitcalc\t(cached)"
+      ]
+    },
+    "pass": true
+  },
+  "ac9": {
+    "branch": "feat/forms-a11y",
+    "head": "da2e7d86043c22d87ad494b13c85499fa5a62685",
+    "baseCommit": "490de51",
+    "diffDeps": "",
+    "changedFiles": [
+      "web/src/components/form/ConfirmarDescarteDialog.tsx",
+      "web/src/components/form/ErrorSummary.tsx",
+      "web/src/components/form/FieldError.tsx",
+      "web/src/components/ui/button.tsx",
+      "web/src/components/ui/dialog.tsx",
+      "web/src/features/configuracion/CuentasTab.tsx",
+      "web/src/features/configuracion/FuentesTab.tsx",
+      "web/src/features/configuracion/SplitsTab.tsx",
+      "web/src/features/ingresos/EditarPagoDialog.tsx",
+      "web/src/features/registrar/CalendarioDias.tsx",
+      "web/src/features/registrar/ComprobanteDropzone.tsx",
+      "web/src/features/registrar/RegistrarPage.tsx",
+      "web/src/features/splits/GenerarSplitDialog.tsx",
+      "web/src/hooks/useFormDirty.ts",
+      "web/src/hooks/useFormErrors.ts",
+      "web/src/lib/api-errors.test.ts",
+      "web/src/lib/api-errors.ts",
+      "web/src/lib/uploads.test.ts",
+      "web/src/lib/uploads.ts",
+      "web/src/lib/validators.test.ts",
+      "web/src/lib/validators.ts",
+      "web/src/services/hooks.ts"
+    ],
+    "outOfScope": [],
+    "pass": true
+  },
+  "ac10": {
+    "remote": "da2e7d86043c22d87ad494b13c85499fa5a62685\trefs/heads/feat/forms-a11y",
+    "remoteSha": "da2e7d86043c22d87ad494b13c85499fa5a62685",
+    "head": "da2e7d86043c22d87ad494b13c85499fa5a62685",
+    "pass": true
+  },
+  "ac11": {
+    "status": "PENDING",
+    "nota": "Release notes post-release: fuera del BUILD (M4)"
+  },
+  "ac12": {
+    "evidencia": [
+      "report.md",
+      "metrics-before.json",
+      "metrics-after.json",
+      "console-log.json",
+      "logs/",
+      "screenshots/",
+      "harness/forms-audit.cjs"
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+$ grep -rn "beforeunload" web/src
+(sin coincidencias — 0 resultados)
+
+Nota: AC4 verifica el aviso de cambios sin guardar en la app; el cierre real de pestaña
+no se puede simular con Playwright (limitación documentada en report.md).

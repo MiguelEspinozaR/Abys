@@ -1,0 +1,3450 @@
+[
+  {
+    "theme": "dark",
+    "viewport": "desktop",
+    "route": "/",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Dashboard",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Registrar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Ingresos",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Splits",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Configuración",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Health",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Cambiar a modo claro",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Colapsar sidebar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Semanal",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Semanal",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Mensual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Mensual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Anual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Anual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Histórico",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Histórico",
+        "w": 28,
+        "h": 28
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Dashboard"
+    ],
+    "lang": "es",
+    "colorScheme": "dark",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 16,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": "desktop",
+    "route": "/ingresos",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Dashboard",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Registrar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Ingresos",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Splits",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Configuración",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Health",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Cambiar a modo claro",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Colapsar sidebar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "input[input]#fi",
+        "texto": "",
+        "w": 271,
+        "h": 32
+      },
+      {
+        "el": "input[input]#ff",
+        "texto": "",
+        "w": 271,
+        "h": 32
+      },
+      {
+        "el": "button[select-trigger]#fuente",
+        "texto": "Todas",
+        "w": 271,
+        "h": 32
+      },
+      {
+        "el": "button[select-trigger]#metodo",
+        "texto": "Todos",
+        "w": 271,
+        "h": 32
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.mt-3.flex > button[button].group/button.inline-flex",
+        "texto": "Aplicar",
+        "w": 65,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.mt-3.flex > button[button].group/button.inline-flex",
+        "texto": "Limpiar",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [
+      {
+        "src": "/uploads/comprobante_1792191520692303026.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191520692303026.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191465907622502.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191465907622502.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191373643313570.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191373643313570.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238740172959226.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238740172959226.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238671002779635.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238671002779635.jpeg",
+        "alt": "Comprobante adjunto"
+      }
+    ],
+    "contrastes": [],
+    "headings": [
+      "H1: Ingresos",
+      "H2: 202654",
+      "H2: 202546"
+    ],
+    "lang": "es",
+    "colorScheme": "dark",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 421,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": "desktop",
+    "route": "/splits",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Dashboard",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Registrar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Ingresos",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Splits",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Configuración",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Health",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Cambiar a modo claro",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Colapsar sidebar",
+        "w": 223,
+        "h": 36
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Splits"
+    ],
+    "lang": "es",
+    "colorScheme": "dark",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 8,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": "desktop",
+    "route": "/registrar",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Dashboard",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Registrar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Ingresos",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Splits",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Configuración",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Health",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Cambiar a modo claro",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Colapsar sidebar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Trabajo",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Pago",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Quitar",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button",
+        "texto": "«",
+        "w": 25,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev-button",
+        "texto": "‹",
+        "w": 22,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__label",
+        "texto": "noviembre de 2026",
+        "w": 280,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next-button",
+        "texto": "›",
+        "w": 22,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next2-button",
+        "texto": "»",
+        "w": 25,
+        "h": 28
+      },
+      {
+        "el": "button[select-trigger]#fuente",
+        "texto": "Selecciona la fuente",
+        "w": 176,
+        "h": 32
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "Efectivo",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "QR",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "Transacción",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "input[input]#monto",
+        "texto": "",
+        "w": 404,
+        "h": 32
+      },
+      {
+        "el": "main.flex-1.overflow-y-auto > div.mx-auto.max-w-4xl > div.grid.grid-cols-1 > div.space-y-6 > button[button].group/button.inline-flex",
+        "texto": "Guardar pago",
+        "w": 436,
+        "h": 36
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Registrar pago"
+    ],
+    "lang": "es",
+    "colorScheme": "dark",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 22,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": "desktop",
+    "route": "/configuracion",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Dashboard",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Registrar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Ingresos",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Splits",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Configuración",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Health",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Cambiar a modo claro",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Colapsar sidebar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_5_-trigger-cuentas",
+        "texto": "Cuentas",
+        "w": 98,
+        "h": 25
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_5_-trigger-fuentes",
+        "texto": "Fuentes",
+        "w": 67,
+        "h": 25
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_5_-trigger-splits",
+        "texto": "Splits",
+        "w": 79,
+        "h": 25
+      },
+      {
+        "el": "div[tabs-content]#radix-_r_5_-content-cuentas > div.space-y-4 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > button[button].group/button.inline-flex",
+        "texto": "Nueva cuenta",
+        "w": 207,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de General",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Ver historial de General",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de Box",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Quitar QR de Box",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Editar tasa de Box (30 %)",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Historial de Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Editar Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de Business",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Quitar QR de Business",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Editar tasa de Business (20 %)",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Historial de Business",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Editar Business",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar Business",
+        "w": 32,
+        "h": 32
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [
+      {
+        "src": "/uploads/qr_1791221659024745321.jpg",
+        "alt": "QR de Box"
+      },
+      {
+        "src": "/uploads/qr_1791221691129677979.png",
+        "alt": "QR de Business"
+      }
+    ],
+    "contrastes": [],
+    "headings": [
+      "H1: Configuración"
+    ],
+    "lang": "es",
+    "colorScheme": "dark",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 26,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": "mobile",
+    "route": "/",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.grid.size-8",
+        "texto": "Abrir navegación",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.ml-auto.grid",
+        "texto": "Cambiar a modo claro",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Semanal",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Semanal",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Mensual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Mensual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Anual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Anual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Histórico",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Histórico",
+        "w": 28,
+        "h": 28
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Dashboard"
+    ],
+    "lang": "es",
+    "colorScheme": "dark",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 10,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": "mobile",
+    "route": "/ingresos",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.grid.size-8",
+        "texto": "Abrir navegación",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.ml-auto.grid",
+        "texto": "Cambiar a modo claro",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "input[input]#fi",
+        "texto": "",
+        "w": 326,
+        "h": 32
+      },
+      {
+        "el": "input[input]#ff",
+        "texto": "",
+        "w": 326,
+        "h": 32
+      },
+      {
+        "el": "button[select-trigger]#fuente",
+        "texto": "Todas",
+        "w": 326,
+        "h": 32
+      },
+      {
+        "el": "button[select-trigger]#metodo",
+        "texto": "Todos",
+        "w": 326,
+        "h": 32
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.mt-3.flex > button[button].group/button.inline-flex",
+        "texto": "Aplicar",
+        "w": 65,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.mt-3.flex > button[button].group/button.inline-flex",
+        "texto": "Limpiar",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [
+      {
+        "src": "/uploads/comprobante_1792191520692303026.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191520692303026.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191465907622502.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191465907622502.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191373643313570.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191373643313570.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238740172959226.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238740172959226.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238671002779635.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238671002779635.jpeg",
+        "alt": "Comprobante adjunto"
+      }
+    ],
+    "contrastes": [],
+    "headings": [
+      "H1: Ingresos",
+      "H2: 202654",
+      "H2: 202546"
+    ],
+    "lang": "es",
+    "colorScheme": "dark",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 415,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": "mobile",
+    "route": "/splits",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.grid.size-8",
+        "texto": "Abrir navegación",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.ml-auto.grid",
+        "texto": "Cambiar a modo claro",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-2 > div.flex.flex-wrap > div.flex.items-center > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Ver datos",
+        "w": 80,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-2 > div.flex.flex-wrap > div.flex.items-center > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Ver datos",
+        "w": 80,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-2 > div.flex.flex-wrap > div.flex.items-center > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Ver datos",
+        "w": 80,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Splits"
+    ],
+    "lang": "es",
+    "colorScheme": "dark",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 22,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": "mobile",
+    "route": "/registrar",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.grid.size-8",
+        "texto": "Abrir navegación",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.ml-auto.grid",
+        "texto": "Cambiar a modo claro",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Trabajo",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Pago",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Quitar",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button",
+        "texto": "«",
+        "w": 25,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev-button",
+        "texto": "‹",
+        "w": 22,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__label",
+        "texto": "noviembre de 2026",
+        "w": 202,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next-button",
+        "texto": "›",
+        "w": 22,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next2-button",
+        "texto": "»",
+        "w": 25,
+        "h": 28
+      },
+      {
+        "el": "button[select-trigger]#fuente",
+        "texto": "Selecciona la fuente",
+        "w": 176,
+        "h": 32
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "Efectivo",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "QR",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "Transacción",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "input[input]#monto",
+        "texto": "",
+        "w": 326,
+        "h": 32
+      },
+      {
+        "el": "main.flex-1.overflow-y-auto > div.mx-auto.max-w-4xl > div.grid.grid-cols-1 > div.space-y-6 > button[button].group/button.inline-flex",
+        "texto": "Guardar pago",
+        "w": 358,
+        "h": 36
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Registrar pago"
+    ],
+    "lang": "es",
+    "colorScheme": "dark",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 16,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": "mobile",
+    "route": "/configuracion",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.grid.size-8",
+        "texto": "Abrir navegación",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.ml-auto.grid",
+        "texto": "Cambiar a modo claro",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_9_-trigger-cuentas",
+        "texto": "Cuentas",
+        "w": 98,
+        "h": 25
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_9_-trigger-fuentes",
+        "texto": "Fuentes",
+        "w": 67,
+        "h": 25
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_9_-trigger-splits",
+        "texto": "Splits",
+        "w": 79,
+        "h": 25
+      },
+      {
+        "el": "div[tabs-content]#radix-_r_9_-content-cuentas > div.space-y-4 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > button[button].group/button.inline-flex",
+        "texto": "Nueva cuenta",
+        "w": 207,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de General",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Ver historial de General",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de Box",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Quitar QR de Box",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Editar tasa de Box (30 %)",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Historial de Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Editar Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de Business",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Quitar QR de Business",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Editar tasa de Business (20 %)",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Historial de Business",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Editar Business",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar Business",
+        "w": 32,
+        "h": 32
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [
+      {
+        "src": "/uploads/qr_1791221659024745321.jpg",
+        "alt": "QR de Box"
+      },
+      {
+        "src": "/uploads/qr_1791221691129677979.png",
+        "alt": "QR de Business"
+      }
+    ],
+    "contrastes": [],
+    "headings": [
+      "H1: Configuración"
+    ],
+    "lang": "es",
+    "colorScheme": "dark",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 20,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": "desktop",
+    "route": "/",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Dashboard",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Registrar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Ingresos",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Splits",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Configuración",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Health",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Cambiar a modo oscuro",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Colapsar sidebar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Semanal",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Semanal",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Mensual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Mensual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Anual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Anual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Histórico",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Histórico",
+        "w": 28,
+        "h": 28
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Dashboard"
+    ],
+    "lang": "es",
+    "colorScheme": "light",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 16,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": "desktop",
+    "route": "/ingresos",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Dashboard",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Registrar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Ingresos",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Splits",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Configuración",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Health",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Cambiar a modo oscuro",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Colapsar sidebar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "input[input]#fi",
+        "texto": "",
+        "w": 271,
+        "h": 32
+      },
+      {
+        "el": "input[input]#ff",
+        "texto": "",
+        "w": 271,
+        "h": 32
+      },
+      {
+        "el": "button[select-trigger]#fuente",
+        "texto": "Todas",
+        "w": 271,
+        "h": 32
+      },
+      {
+        "el": "button[select-trigger]#metodo",
+        "texto": "Todos",
+        "w": 271,
+        "h": 32
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.mt-3.flex > button[button].group/button.inline-flex",
+        "texto": "Aplicar",
+        "w": 65,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.mt-3.flex > button[button].group/button.inline-flex",
+        "texto": "Limpiar",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.flex.items-start > div.hidden.items-center > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [
+      {
+        "src": "/uploads/comprobante_1792191520692303026.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191520692303026.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191465907622502.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191465907622502.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191373643313570.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191373643313570.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238740172959226.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238740172959226.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238671002779635.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238671002779635.jpeg",
+        "alt": "Comprobante adjunto"
+      }
+    ],
+    "contrastes": [],
+    "headings": [
+      "H1: Ingresos",
+      "H2: 202654",
+      "H2: 202546"
+    ],
+    "lang": "es",
+    "colorScheme": "light",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 421,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": "desktop",
+    "route": "/splits",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Dashboard",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Registrar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Ingresos",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Splits",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Configuración",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Health",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Cambiar a modo oscuro",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Colapsar sidebar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-2 > div.flex.flex-wrap > div.flex.items-center > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Ver datos",
+        "w": 80,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-2 > div.flex.flex-wrap > div.flex.items-center > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Ver datos",
+        "w": 80,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-2 > div.flex.flex-wrap > div.flex.items-center > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Ver datos",
+        "w": 80,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Splits"
+    ],
+    "lang": "es",
+    "colorScheme": "light",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 28,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": "desktop",
+    "route": "/registrar",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Dashboard",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Registrar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Ingresos",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Splits",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Configuración",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Health",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Cambiar a modo oscuro",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Colapsar sidebar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Trabajo",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Pago",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Quitar",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button",
+        "texto": "«",
+        "w": 25,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev-button",
+        "texto": "‹",
+        "w": 22,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__label",
+        "texto": "noviembre de 2026",
+        "w": 280,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next-button",
+        "texto": "›",
+        "w": 22,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next2-button",
+        "texto": "»",
+        "w": 25,
+        "h": 28
+      },
+      {
+        "el": "button[select-trigger]#fuente",
+        "texto": "Selecciona la fuente",
+        "w": 176,
+        "h": 32
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "Efectivo",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "QR",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "Transacción",
+        "w": 129,
+        "h": 28
+      },
+      {
+        "el": "input[input]#monto",
+        "texto": "",
+        "w": 404,
+        "h": 32
+      },
+      {
+        "el": "main.flex-1.overflow-y-auto > div.mx-auto.max-w-4xl > div.grid.grid-cols-1 > div.space-y-6 > button[button].group/button.inline-flex",
+        "texto": "Guardar pago",
+        "w": 436,
+        "h": 36
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Registrar pago"
+    ],
+    "lang": "es",
+    "colorScheme": "light",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 22,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": "desktop",
+    "route": "/configuracion",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Dashboard",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Registrar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Ingresos",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Splits",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Configuración",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "aside.flex.h-full > nav.flex-1.space-y-5 > div > div.space-y-0.5 > a.group/nav.flex",
+        "texto": "Health",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Cambiar a modo oscuro",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "div.flex.h-dvh > div.hidden.md:flex > aside.flex.h-full > div.shrink-0.space-y-0.5 > button[tooltip-trigger].flex.h-9",
+        "texto": "Colapsar sidebar",
+        "w": 223,
+        "h": 36
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_9_-trigger-cuentas",
+        "texto": "Cuentas",
+        "w": 98,
+        "h": 25
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_9_-trigger-fuentes",
+        "texto": "Fuentes",
+        "w": 67,
+        "h": 25
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_9_-trigger-splits",
+        "texto": "Splits",
+        "w": 79,
+        "h": 25
+      },
+      {
+        "el": "div[tabs-content]#radix-_r_9_-content-cuentas > div.space-y-4 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > button[button].group/button.inline-flex",
+        "texto": "Nueva cuenta",
+        "w": 207,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de General",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Ver historial de General",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de Box",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Quitar QR de Box",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Editar tasa de Box (30 %)",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Historial de Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Editar Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de Business",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Quitar QR de Business",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Editar tasa de Business (20 %)",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Historial de Business",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Editar Business",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar Business",
+        "w": 32,
+        "h": 32
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [
+      {
+        "src": "/uploads/qr_1791221659024745321.jpg",
+        "alt": "QR de Box"
+      },
+      {
+        "src": "/uploads/qr_1791221691129677979.png",
+        "alt": "QR de Business"
+      }
+    ],
+    "contrastes": [],
+    "headings": [
+      "H1: Configuración"
+    ],
+    "lang": "es",
+    "colorScheme": "light",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 26,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": "mobile",
+    "route": "/",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.grid.size-8",
+        "texto": "Abrir navegación",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.ml-auto.grid",
+        "texto": "Cambiar a modo oscuro",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Semanal",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Semanal",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Mensual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Mensual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Anual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Anual",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Anterior: Histórico",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.grid.grid-cols-1 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > div.flex.shrink-0 > button[button].group/button.inline-flex",
+        "texto": "Siguiente: Histórico",
+        "w": 28,
+        "h": 28
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Dashboard"
+    ],
+    "lang": "es",
+    "colorScheme": "light",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 10,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": "mobile",
+    "route": "/ingresos",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.grid.size-8",
+        "texto": "Abrir navegación",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.ml-auto.grid",
+        "texto": "Cambiar a modo oscuro",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "input[input]#fi",
+        "texto": "",
+        "w": 326,
+        "h": 32
+      },
+      {
+        "el": "input[input]#ff",
+        "texto": "",
+        "w": 326,
+        "h": 32
+      },
+      {
+        "el": "button[select-trigger]#fuente",
+        "texto": "Todas",
+        "w": 326,
+        "h": 32
+      },
+      {
+        "el": "button[select-trigger]#metodo",
+        "texto": "Todos",
+        "w": 326,
+        "h": 32
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.mt-3.flex > button[button].group/button.inline-flex",
+        "texto": "Aplicar",
+        "w": 65,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.mt-3.flex > button[button].group/button.inline-flex",
+        "texto": "Limpiar",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.rounded-lg.border > div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > button.block.shrink-0",
+        "texto": "Ver comprobante",
+        "w": 42,
+        "h": 42
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "section > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver detalle",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > div[dialog-trigger].inline-flex > button[tooltip-trigger].group/button.inline-flex",
+        "texto": "Generar split",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Editar pago",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div.flex.items-start > div.min-w-0.flex-1 > div.mt-1.5.flex > div.flex.shrink-0 > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar pago",
+        "w": 32,
+        "h": 32
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [
+      {
+        "src": "/uploads/comprobante_1792191520692303026.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191520692303026.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191465907622502.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191465907622502.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191373643313570.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1792191373643313570.png",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238740172959226.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238740172959226.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238671002779635.jpeg",
+        "alt": "Comprobante adjunto"
+      },
+      {
+        "src": "/uploads/comprobante_1791238671002779635.jpeg",
+        "alt": "Comprobante adjunto"
+      }
+    ],
+    "contrastes": [],
+    "headings": [
+      "H1: Ingresos",
+      "H2: 202654",
+      "H2: 202546"
+    ],
+    "lang": "es",
+    "colorScheme": "light",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 415,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": "mobile",
+    "route": "/splits",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.grid.size-8",
+        "texto": "Abrir navegación",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.ml-auto.grid",
+        "texto": "Cambiar a modo oscuro",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-2 > div.flex.flex-wrap > div.flex.items-center > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Ver datos",
+        "w": 80,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-2 > div.flex.flex-wrap > div.flex.items-center > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Ver datos",
+        "w": 80,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-2 > div.flex.flex-wrap > div.flex.items-center > button[dialog-trigger].group/button.inline-flex",
+        "texto": "Ver datos",
+        "w": 80,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "div.mx-auto.max-w-6xl > div[card].group/card.flex > div.rounded-lg.border > div.flex.items-start > button.mt-0.5.grid",
+        "texto": "Ver split",
+        "w": 28,
+        "h": 28
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Splits"
+    ],
+    "lang": "es",
+    "colorScheme": "light",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 22,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": "mobile",
+    "route": "/registrar",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.grid.size-8",
+        "texto": "Abrir navegación",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.ml-auto.grid",
+        "texto": "Cambiar a modo oscuro",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Trabajo",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Pago",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing) > div.space-y-3 > div.flex.items-center > button[button].group/button.inline-flex",
+        "texto": "Quitar",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button",
+        "texto": "«",
+        "w": 25,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev-button",
+        "texto": "‹",
+        "w": 22,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__label",
+        "texto": "noviembre de 2026",
+        "w": 202,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next-button",
+        "texto": "›",
+        "w": 22,
+        "h": 28
+      },
+      {
+        "el": "div[card-content].px-(--card-spacing) > div.space-y-3 > div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next2-button",
+        "texto": "»",
+        "w": 25,
+        "h": 28
+      },
+      {
+        "el": "button[select-trigger]#fuente",
+        "texto": "Selecciona la fuente",
+        "w": 176,
+        "h": 32
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "Efectivo",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "QR",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "div[card].group/card.flex > div[card-content].px-(--card-spacing).space-y-4 > div.space-y-1.5 > div.grid.grid-cols-3 > button[button].group/button.inline-flex",
+        "texto": "Transacción",
+        "w": 103,
+        "h": 28
+      },
+      {
+        "el": "input[input]#monto",
+        "texto": "",
+        "w": 326,
+        "h": 32
+      },
+      {
+        "el": "main.flex-1.overflow-y-auto > div.mx-auto.max-w-4xl > div.grid.grid-cols-1 > div.space-y-6 > button[button].group/button.inline-flex",
+        "texto": "Guardar pago",
+        "w": 358,
+        "h": 36
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [],
+    "contrastes": [],
+    "headings": [
+      "H1: Registrar pago"
+    ],
+    "lang": "es",
+    "colorScheme": "light",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 16,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": "mobile",
+    "route": "/configuracion",
+    "overflowX": 0,
+    "truncados": [],
+    "targets": [
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.grid.size-8",
+        "texto": "Abrir navegación",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "div#root > div.flex.h-dvh > div.flex.min-w-0 > header.flex.h-14 > button.ml-auto.grid",
+        "texto": "Cambiar a modo oscuro",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_9_-trigger-cuentas",
+        "texto": "Cuentas",
+        "w": 98,
+        "h": 25
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_9_-trigger-fuentes",
+        "texto": "Fuentes",
+        "w": 67,
+        "h": 25
+      },
+      {
+        "el": "button[tabs-trigger]#radix-_r_9_-trigger-splits",
+        "texto": "Splits",
+        "w": 79,
+        "h": 25
+      },
+      {
+        "el": "div[tabs-content]#radix-_r_9_-content-cuentas > div.space-y-4 > div[card].group/card.flex > div[card-header].group/card-header.@container/card-header > button[button].group/button.inline-flex",
+        "texto": "Nueva cuenta",
+        "w": 207,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de General",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Ver historial de General",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de Box",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Quitar QR de Box",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Editar tasa de Box (30 %)",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Historial de Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Editar Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar Box",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Subir QR de Business",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.items-center > div.flex.gap-1 > button[button].group/button.inline-flex",
+        "texto": "Quitar QR de Business",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "el": "table[table].w-full.caption-bottom > tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > button[button].group/button.inline-flex",
+        "texto": "Editar tasa de Business (20 %)",
+        "w": 91,
+        "h": 28
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Historial de Business",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[button].group/button.inline-flex",
+        "texto": "Editar Business",
+        "w": 32,
+        "h": 32
+      },
+      {
+        "el": "tbody[table-body].[&_tr:last-child]:border-0 > tr[table-row].border-b.transition-colors > td[table-cell].p-2.align-middle > div.flex.justify-end > button[alert-dialog-trigger].group/button.inline-flex",
+        "texto": "Eliminar Business",
+        "w": 32,
+        "h": 32
+      }
+    ],
+    "sinNombre": [],
+    "imgsSinDim": [
+      {
+        "src": "/uploads/qr_1791221659024745321.jpg",
+        "alt": "QR de Box"
+      },
+      {
+        "src": "/uploads/qr_1791221691129677979.png",
+        "alt": "QR de Business"
+      }
+    ],
+    "contrastes": [],
+    "headings": [
+      "H1: Configuración"
+    ],
+    "lang": "es",
+    "colorScheme": "light",
+    "themeColor": null,
+    "counts": {
+      "truncados": 0,
+      "targets": 20,
+      "sinNombre": 0,
+      "contrastes": 0
+    }
+  }
+]
