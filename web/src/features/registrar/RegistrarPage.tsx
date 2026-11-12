@@ -632,20 +632,20 @@ export default function RegistrarPage() {
                   </div>
                   <dl className="grid grid-cols-1 gap-1.5 text-sm sm:grid-cols-2">
                     <div className="flex items-center justify-between gap-2 sm:justify-start">
-                      <dt className="text-muted-foreground">Monto:</dt>
+                      <dt className="text-card-foreground">Monto:</dt>
                       <dd className="font-medium">
                         {ocrResumen.monto != null ? formatBs(ocrResumen.monto) : "no detectado"}
                       </dd>
                     </div>
                     <div className="flex items-center justify-between gap-2 sm:justify-start">
-                      <dt className="text-muted-foreground">Fecha:</dt>
+                      <dt className="text-card-foreground">Fecha:</dt>
                       <dd className="font-medium">
                         {ocrResumen.fecha ? formatearFechaEs(ocrResumen.fecha) : "no detectada"}
                       </dd>
                     </div>
                     {ocrResumen.descripcion && (
                       <div className="flex items-start justify-between gap-2 sm:col-span-2 sm:justify-start">
-                        <dt className="text-muted-foreground">Descripción:</dt>
+                        <dt className="text-card-foreground">Descripción:</dt>
                         <dd className="min-w-0 flex-1 break-words">{ocrResumen.descripcion}</dd>
                       </div>
                     )}

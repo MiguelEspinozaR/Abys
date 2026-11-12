@@ -5,7 +5,6 @@ import { ACCEPT_UPLOAD, validarArchivo } from "@/lib/uploads"
 import { leerComprobante } from "@/services/ocr"
 import { Button } from "@/components/ui/button"
 import { formatBs, formatearFechaEs } from "@/lib/format"
-import { toast } from "sonner"
 
 interface ResultadoOcr {
   monto_enteros?: number
@@ -87,20 +86,16 @@ export function ComprobanteDropzone({
       if (res.fecha) partes.push(`Fecha ${formatearFechaEs(res.fecha)}`)
       if (partes.length > 0) {
         setEstadoOcr(`Comprobante leído: ${partes.join(" · ")}`)
-        toast.success(`Comprobante leído: ${partes.join(" · ")}`)
       } else if (res.descripcion || res.referencia) {
         setEstadoOcr(
           "Se detectó texto del comprobante, pero no el monto ni la fecha. Revísalo abajo.",
         )
-        toast.info("Se detectó texto del comprobante, pero no el monto ni la fecha. Revísalo abajo.")
       } else {
         setEstadoOcr("No se detectaron datos claros. Completa los campos manualmente.")
-        toast.info("No se detectaron datos claros. Completa los campos manualmente.")
       }
     } catch {
       if (!mountedRef.current) return
       setEstadoOcr("No se pudo procesar el comprobante. Revisa la conexión o la imagen.")
-      toast.error("No se pudo procesar el comprobante. Revisa la conexión o la imagen.")
     } finally {
       if (mountedRef.current) setLeyendo(false)
     }
