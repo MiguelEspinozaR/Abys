@@ -1,11 +1,14 @@
 {
   "task_id": "forms-a11y-security-scan",
   "feature": "forms-a11y",
-  "commit": "8e0f194",
+  "commit": "d496d73",
   "base_commit": "490de51",
+  "product_diff_base": "490de51",
+  "product_diff_head": "7a545a2",
+  "evidence_commit": "d496d73",
   "scanner": "gitleaks-missing-regex-fallback",
   "hard_blocks": [],
   "findings": [],
-  "summary": "Security scan of diff 490de51..8e0f194 for feature forms-a11y. Scope: web/ directory only. No exposed secrets detected via regex patterns (API keys, tokens, passwords, private keys). No SAST vulnerabilities found. No dependency vulnerabilities (no new deps added; web/package.json unchanged). No insecure configuration changes. No supply-chain issues. No beforeunload usage confirmed. No backend changes. Gitleaks not available; regex fallback declared advisory.",
+  "summary": "Security scan of diff 490de51..d496d73 for feature forms-a11y. Scope: web/ directory only (evidence in test-results/forms-a11y/). Backend has no changes. No exposed secrets detected via regex patterns (API keys, tokens, passwords, private keys). No SAST vulnerabilities found. No dependency vulnerabilities (web/package.json unchanged between base and HEAD). No insecure configuration changes. No supply-chain issues. No beforeunload usage confirmed in any diff. Gitleaks not available; regex fallback declared advisory. REVIEW fixes in ErrorSummary, button, EditarPagoDialog, CalendarioDias, RegistrarPage — all UI/accessibility/state-management changes, no secrets or credentials introduced.",
   "verdict": "pass"
 }
