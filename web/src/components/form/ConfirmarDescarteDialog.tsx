@@ -2,12 +2,13 @@
  * Confirmación de descarte de cambios (SPEC forms-a11y R4.4/R4.5).
  *
  * `AlertDialog` controlado que nunca llama a la API: solo avisa y delega en el
- * formulario. La acción segura “Seguir editando” recibe el foco inicial; Escape
- * o clic en el overlay equivalen a seguir editando. “Descartar cambios” es la
- * acción destructiva.
+ * formulario. La acción segura “Seguir editando” recibe el foco inicial y, al
+ * cerrar, restaura el foco en el control que lo tenía antes (R4.5); Escape
+ * equivale a seguir editando. “Descartar cambios” es la acción destructiva y
+ * no restaura el foco.
  */
 
-import { useRef } from "react"
+import { useCallback, useLayoutEffect, useRef } from "react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,6 +40,38 @@ export function ConfirmarDescarteDialog({
 }: Props) {
   const seguirRef = useRef<HTMLButtonElement>(null)
   const descartandoRef = useRef(false)
+  /** Elemento que tenía el foco al abrirse la confirmación (R4.5). */
+  const focoPrevioRef = useRef<HTMLElement | null>(null)
+  const abiertoPrevioRef = useRef(false)
+  const restaurarPendienteRef = useRef(false)
+
+  const restaurarFoco = useCallback(() => {
+    const destino = focoPrevioRef.current
+    focoPrevioRef.current = null
+    if (!destino || !destino.isConnected) return
+    // Se ejecuta cuando el cierre ya se ha confirmado y el diálogo se desmontó.
+    window.setTimeout(() => {
+      if (destino.isConnected) destino.focus({ preventScroll: true })
+    }, 0)
+  }, [])
+
+  // Se captura en layout effect: antes de que el FocusScope de Radix mueva el
+  // foco al botón seguro. Al capturar en render/effect se perdería el origen.
+  useLayoutEffect(() => {
+    if (!abierto) {
+      abiertoPrevioRef.current = false
+      if (restaurarPendienteRef.current) {
+        restaurarPendienteRef.current = false
+        restaurarFoco()
+      }
+      return
+    }
+    if (!abiertoPrevioRef.current) {
+      const activo = document.activeElement
+      focoPrevioRef.current = activo instanceof HTMLElement ? activo : null
+      abiertoPrevioRef.current = true
+    }
+  }, [abierto, restaurarFoco])
 
   return (
     <AlertDialog
@@ -50,6 +83,7 @@ export function ConfirmarDescarteDialog({
           return
         }
         // Escape, overlay o cierre del AlertDialog: acción segura.
+        restaurarPendienteRef.current = true
         onSeguir()
       }}
     >
@@ -58,6 +92,11 @@ export function ConfirmarDescarteDialog({
           // El foco inicial va a “Seguir editando”, no a la acción destructiva.
           e.preventDefault()
           seguirRef.current?.focus()
+        }}
+        onCloseAutoFocus={(e) => {
+          // Evita que Radix restaure por su cuenta (podría dejar BODY) y
+          // compita con la restauración explícita de la acción segura.
+          e.preventDefault()
         }}
       >
         <AlertDialogHeader>
