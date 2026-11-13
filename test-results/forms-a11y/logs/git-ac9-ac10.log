@@ -2,13 +2,64 @@ $ git branch --show-current
 feat/forms-a11y
 
 $ git rev-parse HEAD
-da2e7d86043c22d87ad494b13c85499fa5a62685
+7a545a263e1cf1599b310467ee35056d850da852
 
 $ git diff --stat 490de51..HEAD -- web/package.json backend/go.mod
 (vacío)
 [exit 0]
 
 $ git diff --name-only 490de51..HEAD
+test-results/forms-a11y/console-log.json
+test-results/forms-a11y/harness/forms-audit.cjs
+test-results/forms-a11y/logs/ac1.md
+test-results/forms-a11y/logs/ac2.md
+test-results/forms-a11y/logs/ac3.md
+test-results/forms-a11y/logs/ac4-beforeunload.txt
+test-results/forms-a11y/logs/ac4.md
+test-results/forms-a11y/logs/ac5.md
+test-results/forms-a11y/logs/ac6.md
+test-results/forms-a11y/logs/build.log
+test-results/forms-a11y/logs/git-ac9-ac10.log
+test-results/forms-a11y/logs/go-test.log
+test-results/forms-a11y/logs/matrix.json
+test-results/forms-a11y/logs/npm-test.log
+test-results/forms-a11y/logs/tsc.log
+test-results/forms-a11y/metrics-after.json
+test-results/forms-a11y/metrics-before.json
+test-results/forms-a11y/report.md
+test-results/forms-a11y/screenshots/ac2-editar-invalido-m390-light.png
+test-results/forms-a11y/screenshots/ac2-fuente-invalido-m390-light.png
+test-results/forms-a11y/screenshots/ac2-registrar-invalido-m390-dark.png
+test-results/forms-a11y/screenshots/ac2-registrar-invalido-m390-light.png
+test-results/forms-a11y/screenshots/ac2-registrar-notas-ocr-m390-light.png
+test-results/forms-a11y/screenshots/ac3-editar-422-m390-light.png
+test-results/forms-a11y/screenshots/ac3-split-500-m390-light.png
+test-results/forms-a11y/screenshots/ac3-splits-tab-409-m390-light.png
+test-results/forms-a11y/screenshots/ac3-tasa-409-m390-light.png
+test-results/forms-a11y/screenshots/ac4-confirm-editar-m390-dark.png
+test-results/forms-a11y/screenshots/ac4-confirm-registrar-m390-light.png
+test-results/forms-a11y/screenshots/ac5-comprobante-11mb-m390-light.png
+test-results/forms-a11y/screenshots/ac5-comprobante-reintentar-m390-light.png
+test-results/forms-a11y/screenshots/ac7-cuenta-dialog-m390-light.png
+test-results/forms-a11y/screenshots/ac7-editar-confirm-m390-light.png
+test-results/forms-a11y/screenshots/ac7-editar-invalido-m390-light.png
+test-results/forms-a11y/screenshots/ac7-fuente-invalido-m390-light.png
+test-results/forms-a11y/screenshots/ac7-generar-split-m390-light.png
+test-results/forms-a11y/screenshots/ac7-ingresos-editar-dialog-desktop-light.png
+test-results/forms-a11y/screenshots/ac7-registrar-11mb-m390-light.png
+test-results/forms-a11y/screenshots/ac7-registrar-invalido-m390-dark.png
+test-results/forms-a11y/screenshots/ac7-registrar-invalido-m390-light.png
+test-results/forms-a11y/screenshots/ac7-registrar-ocr-m390-dark.png
+test-results/forms-a11y/screenshots/ac7-registrar-ocr-m390-light.png
+test-results/forms-a11y/screenshots/ac7-route-configuracion-desktop-dark.png
+test-results/forms-a11y/screenshots/ac7-route-configuracion-desktop-light.png
+test-results/forms-a11y/screenshots/ac7-route-registrar-desktop-dark.png
+test-results/forms-a11y/screenshots/ac7-route-registrar-desktop-light.png
+test-results/forms-a11y/screenshots/ac7-splits-tab-error-m390-light.png
+test-results/forms-a11y/screenshots/ac7-tasa-invalido-m390-light.png
+test-results/security/forms-a11y.json
+test-results/security/forms-a11y.md
+test-results/tests/forms-a11y.json
 web/src/components/form/ConfirmarDescarteDialog.tsx
 web/src/components/form/ErrorSummary.tsx
 web/src/components/form/FieldError.tsx
@@ -36,13 +87,34 @@ web/src/services/hooks.ts
 archivos fuera de alcance: (ninguno)
 
 $ git ls-remote --heads origin feat/forms-a11y
-da2e7d86043c22d87ad494b13c85499fa5a62685	refs/heads/feat/forms-a11y
+7a545a263e1cf1599b310467ee35056d850da852	refs/heads/feat/forms-a11y
 [exit 0]
 
-HEAD local = da2e7d86043c22d87ad494b13c85499fa5a62685
+HEAD local = 7a545a263e1cf1599b310467ee35056d850da852
 
 coincidencia HEAD==origin/feat/forms-a11y: sí
 
 $ git status --porcelain
-?? test-results/forms-a11y/
-?? test-results/tests/forms-a11y.json
+M test-results/forms-a11y/harness/forms-audit.cjs
+ M test-results/forms-a11y/logs/build.log
+ M test-results/forms-a11y/logs/npm-test.log
+ M test-results/forms-a11y/screenshots/ac2-editar-invalido-m390-light.png
+ M test-results/forms-a11y/screenshots/ac2-fuente-invalido-m390-light.png
+ M test-results/forms-a11y/screenshots/ac2-registrar-invalido-m390-dark.png
+ M test-results/forms-a11y/screenshots/ac2-registrar-invalido-m390-light.png
+ M test-results/forms-a11y/screenshots/ac2-registrar-notas-ocr-m390-light.png
+ M test-results/forms-a11y/screenshots/ac3-editar-422-m390-light.png
+ M test-results/forms-a11y/screenshots/ac3-tasa-409-m390-light.png
+ M test-results/forms-a11y/screenshots/ac5-comprobante-11mb-m390-light.png
+ M test-results/forms-a11y/screenshots/ac7-editar-confirm-m390-light.png
+ M test-results/forms-a11y/screenshots/ac7-editar-invalido-m390-light.png
+ M test-results/forms-a11y/screenshots/ac7-fuente-invalido-m390-light.png
+ M test-results/forms-a11y/screenshots/ac7-registrar-11mb-m390-light.png
+ M test-results/forms-a11y/screenshots/ac7-registrar-invalido-m390-dark.png
+ M test-results/forms-a11y/screenshots/ac7-registrar-invalido-m390-light.png
+ M test-results/forms-a11y/screenshots/ac7-route-registrar-desktop-dark.png
+ M test-results/forms-a11y/screenshots/ac7-route-registrar-desktop-light.png
+ M test-results/forms-a11y/screenshots/ac7-tasa-invalido-m390-light.png
+?? test-results/forms-a11y/screenshots/ac2-editar-metodo-invalido-m390-light.png
+?? test-results/forms-a11y/screenshots/ac5-post-pago-bloqueado-m390-light.png
+?? test-results/forms-a11y/screenshots/ac5-qr-valido-m390-light.png

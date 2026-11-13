@@ -2,9 +2,10 @@
 
 | caso | tema | resultado | checks | detalle de fallos |
 |---|---|---|---|---|
-| registrar-invalido | light | PASS | 9 | — |
+| registrar-invalido | light | PASS | 10 | — |
 | registrar-invalido-dark | dark | PASS | 1 | — |
 | editar-invalido | light | PASS | 5 | — |
+| editar-metodo-invalido | light | PASS | 5 | — |
 | editar-monto-split | light | PASS | 2 | — |
 | fuente-invalido | light | PASS | 5 | — |
 | cuenta-invalido | light | PASS | 2 | — |
@@ -15,9 +16,10 @@
 ## registrar-invalido (light, mobile)
 
 - [x] error inline de días visible tras submit vacío — Selecciona al menos un día
-- [x] fieldset #registrar-dias aria-describedby → error — {"invalid":null,"desc":"registrar-dias-error"}
+- [x] #registrar-dias aria-invalid=true + aria-describedby → error — {"invalid":"true","desc":"registrar-dias-error"}
 - [x] #monto aria-invalid + aria-describedby incluye monto-error — {"invalid":"true","desc":"monto-ayuda monto-separadores monto-error"}
 - [x] #fuente aria-invalid + aria-describedby incluye fuente-error — {"invalid":"true","desc":"fuente-error"}
+- [x] #metodo sin aria-invalid con método seleccionado (estado inválido no alcanzable: Efectivo por defecto) — {"invalid":null,"desc":null}
 - [x] ErrorSummary role=alert con ítems por campo inválido — ["Selecciona al menos un día","Selecciona una fuente","Ingresa un monto válido, p. ej. 265,00"]
 - [x] título del resumen — Revisa los siguientes campos:Selecciona al menos un díaSelec
 - [x] el foco va al primer campo inválido (#registrar-dias) — {"id":"registrar-dias","tag":"FIELDSET","text":"Días trabajados y fecha de pago *TrabajoPagoQuitar«‹noviembr","inDialog":null}
@@ -38,6 +40,15 @@
 - [x] foco en el primer campo inválido (#edit-monto) — {"id":"edit-monto","tag":"INPUT","text":"","inDialog":"dialog-content"}
 - [x] el diálogo permanece abierto — ok
 - captura: screenshots/ac2-editar-invalido-m390-light.png
+
+## editar-metodo-invalido (light, mobile)
+
+- [x] #edit-metodo aria-invalid=true + aria-describedby → edit-metodo-error — {"invalid":"true","desc":"edit-metodo-error","err":"Selecciona un método de pago"}
+- [x] error inline de método (Selecciona un método de pago) — Selecciona un método de pago
+- [x] ErrorSummary incluye el error de método — ["Selecciona un método de pago"]
+- [x] el diálogo permanece abierto (sin PUT) — ok
+- [x] 0 escrituras (PUT /pagos nunca se ejecuta) — writes=0, unexpected=0
+- captura: screenshots/ac2-editar-metodo-invalido-m390-light.png
 
 ## editar-monto-split (light, mobile)
 

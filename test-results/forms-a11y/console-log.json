@@ -103,6 +103,16 @@
     },
     {
       "ac": "ac2",
+      "id": "editar-metodo-invalido",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac2",
       "id": "editar-monto-split",
       "theme": "light",
       "console": [],
@@ -665,6 +675,35 @@
       "unhandled": [],
       "unexpectedWrites": [],
       "mockedNetwork": []
+    },
+    {
+      "ac": "ac5",
+      "id": "qr-valido",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac5",
+      "id": "post-pago-bloqueado",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/pagos/99999/comprobante"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+          "url": "http://localhost:18082/api/v1/pagos/99999/comprobante"
+        }
+      ]
     },
     {
       "ac": "ac6",

@@ -4,11 +4,11 @@
   "title": "Formularios accesibles: semántica, errores inline y guardia de cambios (bloque B)",
   "lifecycle_state": "BUILD",
   "branch": "feat/forms-a11y",
-  "commit": "da2e7d86043c22d87ad494b13c85499fa5a62685",
+  "commit": "7a545a263e1cf1599b310467ee35056d850da852",
   "base_commit": "490de51",
-  "generated_at": "2026-11-12T01:30:21Z",
+  "generated_at": "2026-11-13T00:31:45Z",
   "status": "pass",
-  "status_reason": "AC1-AC10 y AC12 pasan con evidencia en da2e7d8 (HEAD == origin). AC7 queda en PASS: 20 rutas y 17 estados sin overflow, contraste, truncados, nombres ni consola; registrar-ocr-resumen verificado en light y dark con 0 fallos de contraste, 0 toasts y estado inline aria-live=polite. El hallazgo de contraste de 974ca45 (dt 4.28:1, toast 4.26:1) quedó corregido en da2e7d8 y se conserva en el historial. AC11 (deploy) sigue PENDING por diseño (post-release).",
+  "status_reason": "AC1-AC10 y AC12 pasan con evidencia en 7a545a2 (HEAD == origin). Ronda REVIEW previa (H1/M1/M2/M3/M5) corregida y re-verificada: H1 exige 0 touchFailures en los 17 estados de formulario y da 0 (registrar-invalido ya no tiene items de 20 px); M1 cubre aria-invalid en #registrar-dias y, para el método, en el estado alcanzable #edit-metodo (#metodo de /registrar nunca queda sin valor: Efectivo por defecto); M2 añade el caso post-pago bloqueado (campos disabled, sin re-POST /pagos, OCR sin efecto, reintento solo del upload, salida sin confirmación); M5 añade QR válido con POST mockeado; M3 elimina la comparación before/after del gate y corrige la afirmación del baseline (su 'targets' son elementos <44 px, no el total). AC7: 20 rutas y 17 estados sin overflow, contraste, truncados, nombres ni consola; registrar-ocr-resumen light/dark con 0 contraste, 0 toasts y aria-live=polite. AC11 (deploy) sigue PENDING por diseño (post-release).",
   "environment": {
     "os": "linux",
     "node": "v22.22.1",
@@ -16,7 +16,7 @@
     "browser": "Chrome 156.0.8078.79 via Playwright 1.65.0 (headless, channel=chrome)",
     "backend_url": "http://localhost:18082",
     "frontend_preview_url": "http://localhost:5178",
-    "staging_note": "web/dist reconstruido con VITE_API_URL=http://localhost:18082/api/v1 sobre da2e7d8 y servido por vite preview :5178 (reiniciado tras el build). Backend de auditoría :18082 recibió solo GETs reales; :8081/:8082 no se tocaron. Todas las escrituras API se mockearon con page.route y una red de seguridad 599 HARNESS_BLOCKED_WRITE."
+    "staging_note": "web/dist reconstruido con VITE_API_URL=http://localhost:18082/api/v1 sobre 7a545a2 y servido por vite preview :5178 (reiniciado tras el build). Backend de auditoría :18082 recibió solo GETs reales; :8081/:8082 no se tocaron. Todas las escrituras API se mockearon con page.route y una red de seguridad 599 HARNESS_BLOCKED_WRITE."
   },
   "configured_suites": [
     {
@@ -28,7 +28,7 @@
       "exit_code": 0,
       "test_files": 6,
       "tests": 69,
-      "duration_seconds": 7.2,
+      "duration_seconds": 4.5,
       "log": "test-results/forms-a11y/logs/npm-test.log"
     },
     {
@@ -58,7 +58,7 @@
       "env": "VITE_API_URL=http://localhost:18082/api/v1",
       "status": "pass",
       "exit_code": 0,
-      "duration_seconds": 43.9,
+      "duration_seconds": 21.5,
       "log": "test-results/forms-a11y/logs/build.log"
     }
   ],
@@ -68,8 +68,40 @@
       "command": "node test-results/forms-a11y/harness/forms-audit.cjs",
       "status": "pass",
       "exit_code": 0,
-      "note": "58/58 casos PASS (336 checks), AC7 PASS (20 rutas + 17 estados) y AC8/AC9/AC10 integrados sobre da2e7d8. console-log.json: 58/58 casos sin consola, requests fallidos ni escrituras inesperadas.",
+      "note": "61/61 casos PASS (361 checks), AC7 PASS (20 rutas + 17 estados) y AC8/AC9/AC10 integrados sobre 7a545a2. console-log.json: 61/61 casos sin consola, requests fallidos ni escrituras inesperadas.",
       "evidence": "test-results/forms-a11y/metrics-after.json"
+    },
+    {
+      "name": "ac7-touch-gate-h1",
+      "command": "node test-results/forms-a11y/harness/forms-audit.cjs (ac7 formStates)",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "H1: el gate de los 17 estados exige touchFailures === 0 (hit-test 44x44). Resultado: 0 fallos en los 17 estados; registrar-invalido mobile light/dark pasa de 3 items de ErrorSummary de 20 px a 0 fallos (small=0).",
+      "evidence": "test-results/forms-a11y/metrics-after.json#ac7.formStates"
+    },
+    {
+      "name": "ac2-aria-invalid-grupos-m1",
+      "command": "node test-results/forms-a11y/harness/forms-audit.cjs (ac2 editar-metodo-invalido)",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "M1: #registrar-dias aria-invalid=true + aria-describedby=registrar-dias-error. El estado de error de método (misma regla validarMetodoPago) se verifica en #edit-metodo con un pago de método inválido vía GET mockeado: aria-invalid=true, error inline y ErrorSummary, sin PUT.",
+      "evidence": "test-results/forms-a11y/logs/ac2.md"
+    },
+    {
+      "name": "ac5-post-pago-bloqueado-m2",
+      "command": "node test-results/forms-a11y/harness/forms-audit.cjs (ac5 post-pago-bloqueado)",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "M2: campos (calendario, fuente, 3 métodos, monto, notas) disabled, sin botón Guardar pago, requestSubmit() no hace POST extra (POST /pagos=1), OCR de otro comprobante no altera el monto guardado, reintento hace solo el 2.º upload y 'Ir a ingresos' navega sin ConfirmarDescarte.",
+      "evidence": "test-results/forms-a11y/logs/ac5.md"
+    },
+    {
+      "name": "ac5-qr-valido-m5",
+      "command": "node test-results/forms-a11y/harness/forms-audit.cjs (ac5 qr-valido)",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "M5: QR PNG válido con POST /cuentas/:id/qr mockeado 200: exactamente 1 request registrado, sin error inline y sin escrituras no mockeadas. Captura ac5-qr-valido-m390-light.png.",
+      "evidence": "test-results/forms-a11y/logs/ac5.md"
     },
     {
       "name": "ac7-ocr-light-dark",
@@ -85,7 +117,7 @@
       "status": "pass",
       "exit_code": 0,
       "note": "Histórico: en 974ca45 el hallazgo de contraste se reproducía igual a +400/+1200/+3200 ms (no era artefacto de transición). Quedó corregido en da2e7d8 y ya no se reproduce.",
-      "evidence": "test-results/forms-a11y/report.md#historial-del-hallazgo--corregido-en-da2e7d8"
+      "evidence": "test-results/forms-a11y/report.md#historial-de-hallazgos-y-correcciones"
     },
     {
       "name": "ac4-beforeunload-grep",
@@ -106,9 +138,9 @@
     },
     "AC2": {
       "status": "pass",
-      "summary": "Errores inline con aria-invalid + aria-describedby, fieldset de días asociado al error, ErrorSummary con ítems enfocables, foco al primer campo inválido y monto bloqueado con split.",
-      "cases": 9,
-      "checks": 39,
+      "summary": "Errores inline con aria-invalid + aria-describedby, fieldset #registrar-dias con aria-invalid=true, ErrorSummary con ítems enfocables, foco al primer campo inválido y monto bloqueado con split. El estado de error de método se cubre en #edit-metodo (pago con método inválido vía GET mockeado); #metodo de /registrar no puede quedar sin valor.",
+      "cases": 10,
+      "checks": 45,
       "evidence": "test-results/forms-a11y/logs/ac2.md"
     },
     "AC3": {
@@ -127,9 +159,9 @@
     },
     "AC5": {
       "status": "pass",
-      "summary": "Comprobantes: PDF y >11 MB rechazados con mensaje, drop rechazado, OCR rellena monto/fecha/notas, fallo de comprobante tras pago 200 permite reintentar, logo/QR válidos e inválidos.",
-      "cases": 8,
-      "checks": 35,
+      "summary": "Comprobantes: PDF y >11 MB rechazados con mensaje, drop rechazado, OCR rellena monto/fecha/notas, fallo de comprobante tras pago 200 permite reintentar, logo/QR inválidos y válidos, QR válido con POST mockeado y estado post-pago bloqueado (sin re-POST /pagos, OCR sin efecto, reintento solo del upload, salida sin confirmación).",
+      "cases": 10,
+      "checks": 54,
       "evidence": "test-results/forms-a11y/logs/ac5.md"
     },
     "AC6": {
@@ -141,7 +173,7 @@
     },
     "AC7": {
       "status": "pass",
-      "summary": "20 rutas (5 rutas x light/dark x mobile/desktop) y 17 estados sin overflow, sin fallos de contraste, sin truncados, sin controles sin nombre y sin consola. registrar-ocr-resumen verificado en light y dark: 0 contraste, 0 toasts y estado inline aria-live=polite.",
+      "summary": "20 rutas (5 rutas x light/dark x mobile/desktop) y 17 estados sin overflow, sin fallos de contraste, sin truncados, sin controles sin nombre y sin consola. Los 17 estados mobile exigen y obtienen 0 touchFailures (H1). registrar-ocr-resumen verificado en light y dark: 0 contraste, 0 toasts y estado inline aria-live=polite.",
       "routes": 20,
       "route_failures": 0,
       "states": 17,
@@ -168,14 +200,36 @@
         "status": "fail",
         "contrast_violations": 4,
         "violations": [
-          { "text": "Monto:", "selector": "dt.text-muted-foreground", "ratio": 4.28, "need": 4.5 },
-          { "text": "Fecha:", "selector": "dt.text-muted-foreground", "ratio": 4.28, "need": 4.5 },
-          { "text": "Descripción:", "selector": "dt.text-muted-foreground", "ratio": 4.28, "need": 4.5 },
-          { "text": "Comprobante leído: Monto 265,00 Bs · Fecha jue, 5 nov 2026", "selector": "ol.toaster > li.cn-toast > div > div", "ratio": 4.26, "need": 4.5 }
+          {
+            "text": "Monto:",
+            "selector": "dt.text-muted-foreground",
+            "ratio": 4.28,
+            "need": 4.5
+          },
+          {
+            "text": "Fecha:",
+            "selector": "dt.text-muted-foreground",
+            "ratio": 4.28,
+            "need": 4.5
+          },
+          {
+            "text": "Descripción:",
+            "selector": "dt.text-muted-foreground",
+            "ratio": 4.28,
+            "need": 4.5
+          },
+          {
+            "text": "Comprobante leído: Monto 265,00 Bs · Fecha jue, 5 nov 2026",
+            "selector": "ol.toaster > li.cn-toast > div > div",
+            "ratio": 4.26,
+            "need": 4.5
+          }
         ],
         "resolution": "Corregido en da2e7d8: RegistrarPage.tsx usa text-card-foreground en los dt del resumen OCR y ComprobanteDropzone.tsx elimina los toasts de OCR conservando el estado inline con aria-live=polite. Verificado 0 fallos en light/dark."
       },
-      "evidence": "test-results/forms-a11y/metrics-after.json#ac7"
+      "evidence": "test-results/forms-a11y/metrics-after.json#ac7",
+      "state_touch_failures": 0,
+      "touch_gate": "estados de formulario: touchFailures === 0 (H1); small=1 en fuente-invalido/tasa-invalido corresponde a un switch/checkbox dentro de su wrapper/label (0 touchFailures). Rutas desktop: small informativo (regla 44 px solo táctil)"
     },
     "AC8": {
       "status": "pass",
@@ -195,17 +249,19 @@
     },
     "AC9": {
       "status": "pass",
-      "summary": "22 archivos cambiados en 490de51..da2e7d8; sin cambios de dependencias ni archivos fuera de alcance.",
-      "changed_files": 22,
+      "summary": "73 archivos cambiados en 490de51..7a545a2 (22 de producto en web/ + 51 de evidencia en test-results/); sin cambios de dependencias ni archivos fuera de alcance.",
+      "changed_files": 73,
       "out_of_scope": [],
       "diff_dependencies": "",
-      "evidence": "test-results/forms-a11y/metrics-after.json#ac9"
+      "evidence": "test-results/forms-a11y/metrics-after.json#ac9",
+      "product_changed_files": 22,
+      "evidence_changed_files": 51
     },
     "AC10": {
       "status": "pass",
       "summary": "HEAD local coincide con origin/feat/forms-a11y.",
-      "head": "da2e7d86043c22d87ad494b13c85499fa5a62685",
-      "remote": "da2e7d86043c22d87ad494b13c85499fa5a62685",
+      "head": "7a545a263e1cf1599b310467ee35056d850da852",
+      "remote": "7a545a263e1cf1599b310467ee35056d850da852",
       "evidence": "test-results/forms-a11y/logs/git-ac9-ac10.log"
     },
     "AC11": {
@@ -215,9 +271,9 @@
     },
     "AC12": {
       "status": "pass",
-      "summary": "Reporte y bundle de evidencia consolidados: report.md, métricas antes/después, consola, logs por AC, 30 capturas (incluye OCR light/dark) y harness ejecutable.",
+      "summary": "Reporte y bundle de evidencia consolidados: report.md, métricas antes/después, consola, logs por AC, 33 capturas (incluye OCR light/dark, post-pago y QR válido) y harness ejecutable.",
       "report": "test-results/forms-a11y/report.md",
-      "screenshots": 30,
+      "screenshots": 33,
       "console_failure_cases": 0,
       "evidence": "test-results/forms-a11y/report.md"
     }
@@ -250,6 +306,51 @@
   },
   "findings": [
     {
+      "id": "REVIEW-H1",
+      "severity": "medium",
+      "classification": "review_fix",
+      "status": "resolved",
+      "summary": "H1: en registrar-invalido mobile los botones del ErrorSummary medían 20 px de alto y el harness los trataba como informativos. Corregido en 7a545a2 con max-md:min-h-11 max-md:w-full max-md:py-2; el gate ahora exige touchFailures === 0 en los 17 estados y da 0.",
+      "resolution": "ErrorSummary.tsx (7a545a2) + gate H1 en el harness. Medición post-fix: registrar-invalido light/dark 0 touchFailures, 0 small.",
+      "evidence": "test-results/forms-a11y/metrics-after.json#ac7.formStates"
+    },
+    {
+      "id": "REVIEW-M1",
+      "severity": "low",
+      "classification": "review_fix",
+      "status": "resolved",
+      "summary": "M1: AC2 no afirmaba aria-invalid en los grupos. #registrar-dias ahora expone aria-invalid=true; #metodo de /registrar no alcanza estado de error (Efectivo por defecto), así que la misma regla se verifica en #edit-metodo con un pago de método inválido vía GET mockeado.",
+      "resolution": "CalendarioDias.tsx (7a545a2) + asserts AC2 y caso editar-metodo-invalido.",
+      "evidence": "test-results/forms-a11y/logs/ac2.md"
+    },
+    {
+      "id": "REVIEW-M2",
+      "severity": "high",
+      "classification": "review_fix",
+      "status": "resolved",
+      "summary": "M2: tras crear el pago los campos seguían editables y un submit tardío podía reenviar. Corregido en RegistrarPage.tsx (7a545a2): campos disabled, submit oculto, onSubmit/guardar/OCR con early-return. Verificado en ac5/post-pago-bloqueado (sin POST extra, OCR sin efecto, reintento solo upload, salida sin confirmación).",
+      "resolution": "RegistrarPage.tsx (7a545a2) + caso AC5 post-pago-bloqueado.",
+      "evidence": "test-results/forms-a11y/logs/ac5.md"
+    },
+    {
+      "id": "REVIEW-M3",
+      "severity": "info",
+      "classification": "review_fix",
+      "status": "resolved",
+      "summary": "M3: la afirmación del informe anterior (baseline /ingresos 40 targets vs 413/419 actuales) comparaba cantidades distintas: en metrics-before.json 'targets' es la lista de elementos <44 px, mientras que en metrics-after 'targets' es el total de interactivos y 'touchFailures' mide el hit-test. El baseline es de otro build (bloque A) y no es un gate válido.",
+      "resolution": "Harness sin carga/comparación del baseline; report.md con los conteos reales (10-40 elements <44 px por ruta) y aclaración de semántica. El baseline se conserva como referencia histórica.",
+      "evidence": "test-results/forms-a11y/report.md#baseline-ac7-metrics-beforejson--aclaración"
+    },
+    {
+      "id": "REVIEW-M5",
+      "severity": "low",
+      "classification": "review_fix",
+      "status": "resolved",
+      "summary": "M5: faltaba evidencia de QR válido. Añadido ac5/qr-valido: PNG por 'Subir QR de' con POST /cuentas/:id/qr mockeado 200, 1 request, sin error inline ni escrituras no mockeadas.",
+      "resolution": "Caso AC5 qr-valido + captura ac5-qr-valido-m390-light.png.",
+      "evidence": "test-results/forms-a11y/logs/ac5.md"
+    },
+    {
       "id": "AC7-CONTRAST-OCR",
       "severity": "medium",
       "classification": "new_finding",
@@ -257,14 +358,6 @@
       "summary": "En 974ca45 el estado registrar-ocr-resumen (light) fallaba AA: dt.text-muted-foreground del resumen OCR medía 4.28:1 (Monto, Fecha, Descripción) y el texto del toast de éxito 4.26:1 frente a 4.5:1 requerido.",
       "resolution": "Corregido en da2e7d8: RegistrarPage.tsx pasa los dt a text-card-foreground y ComprobanteDropzone.tsx elimina los toasts de OCR (conserva aria-live=polite). Verificación post-fix en light y dark: 0 fallos de contraste y 0 toasts.",
       "evidence": "test-results/forms-a11y/metrics-after.json#ac7.formStates"
-    },
-    {
-      "id": "AC7-BASELINE-STALE",
-      "severity": "info",
-      "classification": "informational",
-      "status": "accepted_documented",
-      "summary": "metrics-before.json registra /ingresos con 40 targets; el build nuevo tiene 413 mobile / 419 desktop por los botones por fila. La comparación before/after es informativa, no una regresión.",
-      "evidence": "test-results/forms-a11y/metrics-before.json"
     },
     {
       "id": "AC7-TOUCH-DESKTOP",
@@ -281,12 +374,25 @@
       "status": "accepted_documented",
       "summary": "El cierre real de pestaña no se puede simular con Playwright; AC4 cubre el aviso in-app y el grep confirma 0 usos de beforeunload en web/src.",
       "evidence": "test-results/forms-a11y/logs/ac4-beforeunload.txt"
+    },
+    {
+      "id": "AC7-BASELINE-SEMANTICS",
+      "severity": "info",
+      "classification": "informational",
+      "status": "accepted_documented",
+      "summary": "metrics-before.json (bloque A, build previo) guarda listas de elementos <44 px por ruta (10-40); no es comparable con targets (total) ni con touchFailures del build actual y no se usa como gate.",
+      "evidence": "test-results/forms-a11y/metrics-before.json"
     }
   ],
   "residual_risks": [
     {
       "id": "BASELINE-CAP",
-      "summary": "El baseline AC7 capturó subconjuntos de targets y quedó desactualizado por los botones por fila de /ingresos; las comparaciones se reportan como informativas.",
+      "summary": "El baseline AC7 pertenece al bloque A y mide otra semántica (lista de elementos <44 px) sobre otro build; se conserva como referencia histórica y no se compara en el gate.",
+      "classification": "accepted_documented"
+    },
+    {
+      "id": "METODO-ESTADO-INALCANZABLE",
+      "summary": "#metodo de /registrar nunca queda sin valor (Efectivo por defecto), así que su aria-invalid no se puede disparar por UI; la misma regla se cubre en #edit-metodo con fixture de método inválido.",
       "classification": "accepted_documented"
     },
     {
@@ -308,10 +414,11 @@
   },
   "git": {
     "mutations_performed": false,
-    "working_tree_note": "Solo test-results/ está sin trackear; no se hizo commit, tag ni push."
+    "working_tree_note": "Solo test-results/ está modificado/sin trackear; no se hizo commit, tag ni push."
   },
   "deploy": {
     "status": "pending",
     "note": "AC11 se verifica post-release en test3.mikylab.com tras AWAITING_APPROVAL; fuera de BUILD/M4."
-  }
+  },
+  "lifecycle_note": "Runtime en BUILD tras REVIEW rechazado (H1/M1/M2/M3/M5). 7a545a2 contiene los fixes y esta evidencia alimenta el re-REVIEW y el SCAN; la transición a TEST no corresponde todavía porque el runtime no está en REVIEW aprobado."
 }

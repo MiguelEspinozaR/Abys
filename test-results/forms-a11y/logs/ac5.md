@@ -10,6 +10,8 @@
 | reintentar-comprobante | light | PASS | 3 | — |
 | logo-invalidos | light | PASS | 4 | — |
 | logo-qr-validos | light | PASS | 4 | — |
+| qr-valido | light | PASS | 5 | — |
+| post-pago-bloqueado | light | PASS | 14 | — |
 
 ## comprobante-pdf (light, mobile)
 
@@ -76,3 +78,33 @@
 - [x] QR PDF rechazado con error inline — El archivo debe ser una imagen PNG, JPG, WEBP o GIF.
 - [x] 0 requests de subida de QR — writes=0
 - escrituras mockeadas: [{"method":"POST","path":"/api/v1/fuentes/1/logo"}]
+
+## qr-valido (light, mobile)
+
+- [x] controles de QR disponibles en Cuentas — ["Subir QR de General","Subir QR de Box","Subir QR de Business"]
+- [x] QR PNG válido hace exactamente 1 POST /cuentas/:id/qr (mock) — POSTs=1
+- [x] sin error inline tras subir QR válido — []
+- [x] request registrado en /cuentas/:id/qr — [{"method":"POST","path":"/api/v1/cuentas/3/qr"}]
+- [x] 0 escrituras no mockeadas — []
+- escrituras mockeadas: [{"method":"POST","path":"/api/v1/cuentas/3/qr"}]
+- captura: screenshots/ac5-qr-valido-m390-light.png
+
+## post-pago-bloqueado (light, mobile)
+
+- [x] calendario bloqueado (fieldset disabled) — true
+- [x] select de fuente bloqueado — true
+- [x] los 3 métodos de pago bloqueados — [{"label":"Efectivo","disabled":true},{"label":"QR","disabled":true},{"label":"Transacción","disabled":true}]
+- [x] monto bloqueado — true
+- [x] notas bloqueadas — true
+- [x] sin botón "Guardar pago" (submit principal ausente) — botones=0
+- [x] requestSubmit() dispara el evento submit — submits=1→2
+- [x] submit tardío no hace POST /pagos (sigue 1) — pagos=1
+- [x] submit tardío no reintenta el comprobante — uploads=1
+- [x] OCR post-pago no altera el monto guardado — antes=265,00, después=265,00
+- [x] reintento hace un 2.º POST de comprobante — uploads=2
+- [x] reintento no re-crea el pago (POST /pagos sigue 1) — pagos=1
+- [x] "Ir a ingresos" navega a /ingresos sin confirmación — http://localhost:5178/ingresos
+- [x] 0 escrituras no mockeadas — []
+- respuestas mockeadas 4xx/5xx (no cuentan como error de consola): 2
+- escrituras mockeadas: [{"method":"POST","path":"/api/v1/pagos"},{"method":"POST","path":"/api/v1/pagos/99999/comprobante"},{"method":"POST","path":"/api/v1/pagos/99999/comprobante"}]
+- captura: screenshots/ac5-post-pago-bloqueado-m390-light.png

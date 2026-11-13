@@ -27,7 +27,6 @@ const OUT = path.join(ROOT, 'test-results/forms-a11y')
 const SHOTS = path.join(OUT, 'screenshots')
 const LOGS = path.join(OUT, 'logs')
 const GATE = path.join(ROOT, 'test-results/a11y-gate/harness/audit.cjs')
-const GATE_METRICS_BEFORE = path.join(ROOT, 'test-results/a11y-gate/metrics-before.json')
 const WEB = path.join(ROOT, 'web')
 const BACKEND = path.join(ROOT, 'backend')
 const BASE = process.env.BASE_URL || 'http://localhost:5178'
@@ -97,6 +96,8 @@ const MB11 = Buffer.alloc(11 * 1024 * 1024, 1)
 /** Texto OCR con monto+fecha+referencia+descripcion (~146 chars de notas). */
 const OCR_TEXTO = 'Monto debitado: 265,00\nFecha: 05/11/2026\nReferencia: 1234567890\nDescripción: pago mensual de servicios del mes de octubre'
 /** Texto OCR largo: descripcion se trunca a 120 en el parser (services.ts). */
+/** Texto OCR alternativo: si se aplicara tras guardar, cambiaría el monto (999,00). */
+const OCR_TEXTO_ALT = 'Monto debitado: 999,00\nFecha: 10/11/2026\nReferencia: 9999999999\nDescripción: otro comprobante distinto'
 const OCR_TEXTO_LARGO = 'Monto debitado: 265,00\nFecha: 05/11/2026\nReferencia: 1234567890\nDescripción: ' + 'pago mensual servicios varios con detalle extendido '.repeat(10)
 
 /* ------------------------------------------------------------------ */
@@ -342,6 +343,17 @@ async function fillRegistrarValido(env, { monto = '265,00', fuente = 'Essencia' 
 }
 
 const MOCK_PAGO_200 = { data: { id: 99999, fuente_id: 2, fecha_pago: '2026-11-10', monto_enteros: 26500, metodo_pago: 'efectivo', notas: null, dias_trabajados: [1], split_id: null } }
+/** Pago con un método fuera de METODOS_PAGO: estado de error alcanzable (solo GET mockeado). */
+const MOCK_PAGO_METODO_INVALIDO = {
+  id: 235, fuente_id: 2, fecha_pago: '2026-10-29', monto_enteros: 20000, metodo_pago: 'cheque', notas: 'Parlana en malnova',
+  imagen_ruta: null, created_at: '2026-10-30T00:32:06.658339-04:00', updated_at: '2026-10-30T00:32:06.658339-04:00',
+  fuente_alias: 'Essencia', fuente_color: '#023749',
+  dias_trabajados: [
+    { id: 443, pago_id: 235, fecha: '2026-10-26' },
+    { id: 444, pago_id: 235, fecha: '2026-10-28' },
+    { id: 445, pago_id: 235, fecha: '2026-10-29' },
+  ],
+}
 const MOCK_COMPROBANTE_200 = { data: { id: 99999, imagen_ruta: '/uploads/harness.png' } }
 const ERR_400_CAMPO = (campo, mensaje) => ({ error: { code: 'VALIDATION_ERROR', message: mensaje, campo } })
 const ERR_409 = (mensaje, campo) => ({ error: { code: 'BUSINESS_RULE_CONFLICT', message: mensaje, ...(campo ? { campo } : {}) } })
@@ -586,8 +598,8 @@ async function ac2(browser) {
         const f = document.getElementById('registrar-dias')
         return { invalid: f.getAttribute('aria-invalid'), desc: f.getAttribute('aria-describedby') || '' }
       })
-      // R2.11: el fieldset se asocia al error vía aria-describedby (no lleva aria-invalid).
-      checks.push(CHECK('fieldset #registrar-dias aria-describedby → error', fset.desc.includes('registrar-dias-error'), JSON.stringify(fset)))
+      // M1: el fieldset del calendario lleva aria-invalid además de aria-describedby.
+      checks.push(CHECK('#registrar-dias aria-invalid=true + aria-describedby → error', fset.invalid === 'true' && fset.desc.includes('registrar-dias-error'), JSON.stringify(fset)))
       const monto = await page.evaluate(() => {
         const el = document.getElementById('monto')
         return { invalid: el.getAttribute('aria-invalid'), desc: el.getAttribute('aria-describedby') || '' }
@@ -598,6 +610,15 @@ async function ac2(browser) {
         return { invalid: el.getAttribute('aria-invalid'), desc: el.getAttribute('aria-describedby') || '' }
       })
       checks.push(CHECK('#fuente aria-invalid + aria-describedby incluye fuente-error', fuente.invalid === 'true' && /fuente-error/.test(fuente.desc), JSON.stringify(fuente)))
+      // M1: el grupo #metodo tiene aria-invalid cableado a validacion.errores.metodo, pero
+      // en /registrar un método siempre está seleccionado (Efectivo por defecto), así que
+      // el estado de error NO es alcanzable por UI. Se comprueba que no marca falso
+      // positivo; el estado alcanzable de la misma regla se cubre en «editar-metodo-invalido».
+      const metodo = await page.evaluate(() => {
+        const el = document.getElementById('metodo')
+        return { invalid: el.getAttribute('aria-invalid'), desc: el.getAttribute('aria-describedby') }
+      })
+      checks.push(CHECK('#metodo sin aria-invalid con método seleccionado (estado inválido no alcanzable: Efectivo por defecto)', metodo.invalid !== 'true' && metodo.desc === null, JSON.stringify(metodo)))
       const summary = await page.evaluate(() => {
         const s = document.querySelector('form div[role=alert]')
         if (!s) return null
@@ -660,6 +681,47 @@ async function ac2(browser) {
       checks.push(CHECK('foco en el primer campo inválido (#edit-monto)', focus && focus.id === 'edit-monto', JSON.stringify(focus)))
       const dlgOpen = await page.locator('[data-slot=dialog-content]').count()
       checks.push(CHECK('el diálogo permanece abierto', dlgOpen >= 1))
+      return checks
+    },
+  })
+
+  // M1: estado de error de método alcanzable (el grupo #metodo de /registrar nunca
+  // queda sin valor: Efectivo por defecto). Se usa un pago con método fuera del
+  // catálogo vía GET mockeado; el PUT nunca se ejecuta (validación previa).
+  await runCase(browser, {
+    ac: 'ac2', id: 'editar-metodo-invalido', theme: 'light', shot: 'ac2-editar-metodo-invalido-m390-light',
+    run: async (env) => {
+      const { page } = env
+      await page.route(API + '/pagos?*', route => {
+        if (route.request().method() !== 'GET') return route.fallback()
+        return route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          headers: { 'x-harness-mock': '1' },
+          body: JSON.stringify({ data: [MOCK_PAGO_METODO_INVALIDO], meta: { page: 1, page_size: 20, total: 1, total_pages: 1 } }),
+        })
+      })
+      await openEditarPago(env, false)
+      const checks = []
+      // La validación no corre mientras fuentesLoading (fix de EditarPagoDialog).
+      await page.waitForFunction(() => {
+        const b = Array.from(document.querySelectorAll('[data-slot=dialog-content] button')).find(x => (x.textContent || '').trim() === 'Guardar cambios')
+        return b && !b.disabled
+      }, null, { timeout: 10000 })
+      await page.waitForTimeout(300)
+      await page.getByRole('button', { name: 'Guardar cambios' }).click()
+      await page.waitForTimeout(500)
+      const metodo = await page.evaluate(() => {
+        const el = document.getElementById('edit-metodo')
+        const err = document.getElementById('edit-metodo-error')
+        return { invalid: el && el.getAttribute('aria-invalid'), desc: el && el.getAttribute('aria-describedby'), err: err ? (err.textContent || '').trim() : '' }
+      })
+      checks.push(CHECK('#edit-metodo aria-invalid=true + aria-describedby → edit-metodo-error', metodo.invalid === 'true' && /edit-metodo-error/.test(metodo.desc || ''), JSON.stringify(metodo)))
+      checks.push(CHECK('error inline de método (Selecciona un método de pago)', /método de pago/i.test(metodo.err), metodo.err))
+      const items = await page.evaluate(() => Array.from(document.querySelectorAll('[data-slot=dialog-content] div[role=alert] button')).map(b => (b.textContent || '').trim()))
+      checks.push(CHECK('ErrorSummary incluye el error de método', items.some(t => /método de pago/i.test(t)), JSON.stringify(items)))
+      checks.push(CHECK('el diálogo permanece abierto (sin PUT)', (await page.locator('[data-slot=dialog-content]').count()) >= 1))
+      checks.push(CHECK('0 escrituras (PUT /pagos nunca se ejecuta)', env.st.unexpected.length === 0 && env.st.requests.length === 0, 'writes=' + env.st.requests.length + ', unexpected=' + env.st.unexpected.length))
       return checks
     },
   })
@@ -1563,6 +1625,99 @@ async function ac5(browser) {
       return checks
     },
   })
+
+  // M5: QR válido (PNG) con request de subida mockeado + evidencia.
+  await runCase(browser, {
+    ac: 'ac5', id: 'qr-valido', theme: 'light', shot: 'ac5-qr-valido-m390-light',
+    run: async (env) => {
+      const { page } = env
+      await goto(page, '/configuracion', 1200)
+      await page.getByRole('tab', { name: 'Cuentas' }).click()
+      await page.waitForTimeout(700)
+      const qrInput = 'button[aria-label^="Subir QR de"] >> xpath=ancestor::div[2]/preceding-sibling::input[1]'
+      if ((await page.locator(qrInput).count()) === 0) {
+        await page.locator('button[aria-label^="Ver detalle de"], button[aria-label*="detalle"]').first().click().catch(() => {})
+        await page.waitForTimeout(500)
+      }
+      const checks = []
+      const labels = await page.locator('button[aria-label^="Subir QR de"]').evaluateAll(els => els.map(e => e.getAttribute('aria-label')))
+      checks.push(CHECK('controles de QR disponibles en Cuentas', labels.length > 0, JSON.stringify(labels)))
+      await mockWrite(env, { glob: API + '/cuentas/*/qr', method: 'POST', status: 200, body: { data: { id: 3, qr_ruta: '/uploads/harness-qr.png' } } })
+      await page.locator(qrInput).first().setInputFiles({ name: 'qr.png', mimeType: 'image/png', buffer: PNG_BUFFER })
+      await page.waitForTimeout(1000)
+      const posts = writeCount(env, 'POST', /\/qr$/)
+      checks.push(CHECK('QR PNG válido hace exactamente 1 POST /cuentas/:id/qr (mock)', posts === 1, 'POSTs=' + posts))
+      const errs = await page.evaluate(() => Array.from(document.querySelectorAll('[id^=qr-error-]')).map(e => (e.textContent || '').trim()).filter(Boolean))
+      checks.push(CHECK('sin error inline tras subir QR válido', errs.length === 0, JSON.stringify(errs)))
+      const qrReq = env.st.requests.filter(r => r.method === 'POST' && /\/qr$/.test(r.path))
+      checks.push(CHECK('request registrado en /cuentas/:id/qr', qrReq.length === 1 && /^\/api\/v1\/cuentas\/\d+\/qr$/.test(qrReq[0].path), JSON.stringify(qrReq)))
+      checks.push(CHECK('0 escrituras no mockeadas', env.st.unexpected.length === 0, JSON.stringify(env.st.unexpected)))
+      return checks
+    },
+  })
+
+  // M2: estado post-pago (D16) — campos bloqueados, sin re-POST /pagos, OCR sin efecto,
+  // reintento solo del upload y salida a ingresos sin confirmación de descarte.
+  await runCase(browser, {
+    ac: 'ac5', id: 'post-pago-bloqueado', theme: 'light', ocrText: OCR_TEXTO_ALT, shot: 'ac5-post-pago-bloqueado-m390-light',
+    run: async (env) => {
+      const { page } = env
+      await goto(page, '/registrar')
+      await mockWrite(env, { glob: API + '/pagos', method: 'POST', status: 200, body: MOCK_PAGO_200 })
+      await mockWrite(env, { glob: API + '/pagos/*/comprobante', method: 'POST', status: 400, body: ERR_400_CAMPO('imagen', 'La imagen del comprobante no es válida (mock harness)') })
+      const checks = []
+      await page.setInputFiles('form input[type=file]', { name: 'comprobante.png', mimeType: 'image/png', buffer: PNG_BUFFER })
+      await page.getByRole('button', { name: 'Leer comprobante' }).click()
+      await page.getByRole('button', { name: 'Ver fecha en el calendario' }).waitFor({ state: 'visible', timeout: 10000 })
+      await fillRegistrarValido(env)
+      await page.getByRole('button', { name: 'Guardar pago' }).click()
+      await page.getByRole('button', { name: 'Reintentar comprobante' }).waitFor({ state: 'visible', timeout: 15000 })
+      await page.waitForTimeout(400)
+      const dom = await page.evaluate(() => {
+        const dis = id => { const el = document.getElementById(id); return el ? el.disabled === true : null }
+        const metodo = document.getElementById('metodo')
+        return {
+          dias: dis('registrar-dias'), fuente: dis('fuente'), monto: dis('monto'), notas: dis('notas'),
+          metodo: metodo ? Array.from(metodo.querySelectorAll('button')).map(b => ({ label: (b.textContent || '').trim(), disabled: b.disabled })) : null,
+          guardar: Array.from(document.querySelectorAll('button')).filter(b => (b.textContent || '').trim() === 'Guardar pago').length,
+        }
+      })
+      checks.push(CHECK('calendario bloqueado (fieldset disabled)', dom.dias === true, JSON.stringify(dom.dias)))
+      checks.push(CHECK('select de fuente bloqueado', dom.fuente === true, JSON.stringify(dom.fuente)))
+      checks.push(CHECK('los 3 métodos de pago bloqueados', !!dom.metodo && dom.metodo.length === 3 && dom.metodo.every(m => m.disabled), JSON.stringify(dom.metodo)))
+      checks.push(CHECK('monto bloqueado', dom.monto === true, JSON.stringify(dom.monto)))
+      checks.push(CHECK('notas bloqueadas', dom.notas === true, JSON.stringify(dom.notas)))
+      checks.push(CHECK('sin botón "Guardar pago" (submit principal ausente)', dom.guardar === 0, 'botones=' + dom.guardar))
+      // Un submit tardío no reenvía ni valida.
+      const antes = { pagos: writeCount(env, 'POST', /\/pagos$/), uploads: writeCount(env, 'POST', /\/comprobante$/), submits: await page.evaluate(() => window.__submits) }
+      await page.evaluate(() => document.querySelector('form[aria-labelledby="registrar-pago-titulo"]').requestSubmit())
+      await page.waitForTimeout(600)
+      const despues = { pagos: writeCount(env, 'POST', /\/pagos$/), uploads: writeCount(env, 'POST', /\/comprobante$/), submits: await page.evaluate(() => window.__submits) }
+      checks.push(CHECK('requestSubmit() dispara el evento submit', despues.submits === antes.submits + 1, 'submits=' + antes.submits + '→' + despues.submits))
+      checks.push(CHECK('submit tardío no hace POST /pagos (sigue 1)', despues.pagos === 1 && antes.pagos === 1, 'pagos=' + despues.pagos))
+      checks.push(CHECK('submit tardío no reintenta el comprobante', despues.uploads === antes.uploads, 'uploads=' + despues.uploads))
+      // El OCR de un comprobante nuevo no altera los campos guardados.
+      const montoGuardado = await page.inputValue('#monto')
+      await page.setInputFiles('form input[type=file]', { name: 'otro.png', mimeType: 'image/png', buffer: PNG_BUFFER })
+      await page.getByRole('button', { name: 'Leer comprobante' }).click()
+      await page.waitForTimeout(900)
+      const montoTrasOcr = await page.inputValue('#monto')
+      checks.push(CHECK('OCR post-pago no altera el monto guardado', montoGuardado === '265,00' && montoTrasOcr === '265,00', 'antes=' + montoGuardado + ', después=' + montoTrasOcr))
+      // Reintento: solo sube el comprobante, nunca re-crea el pago.
+      await page.getByRole('button', { name: 'Reintentar comprobante' }).click()
+      await page.waitForTimeout(900)
+      const uploads2 = writeCount(env, 'POST', /\/comprobante$/)
+      const pagos2 = writeCount(env, 'POST', /\/pagos$/)
+      checks.push(CHECK('reintento hace un 2.º POST de comprobante', uploads2 === 2, 'uploads=' + uploads2))
+      checks.push(CHECK('reintento no re-crea el pago (POST /pagos sigue 1)', pagos2 === 1, 'pagos=' + pagos2))
+      // Salida a ingresos sin guardia de descarte.
+      await page.getByRole('button', { name: 'Ir a ingresos' }).click()
+      await page.waitForTimeout(800)
+      checks.push(CHECK('"Ir a ingresos" navega a /ingresos sin confirmación', page.url().includes('/ingresos') && (await page.locator('[data-slot=alert-dialog-content]').count()) === 0, page.url()))
+      checks.push(CHECK('0 escrituras no mockeadas', env.st.unexpected.length === 0, JSON.stringify(env.st.unexpected)))
+      return checks
+    },
+  })
 }
 
 /* ==========================================================================
@@ -1795,9 +1950,10 @@ async function collectState(page, route, theme, vpLabel) {
 async function ac7(browser) {
   const routeDefaults = []
   const formStates = []
-  const before = JSON.parse(fs.readFileSync(GATE_METRICS_BEFORE, 'utf8'))
 
   // 1) Rutas por defecto: mismos viewports/temas que el baseline del gate A.
+  // M3: el baseline (test-results/a11y-gate) mide otra semántica (lista de
+  // elementos <44px) y otro build, así que NO se compara aquí ni se usa como gate.
   for (const vp of [VIEWPORTS.m390, VIEWPORTS.desktop]) {
     for (const theme of ['light', 'dark']) {
       for (const route of ROUTES) {
@@ -1808,21 +1964,11 @@ async function ac7(browser) {
           state.console = env.consoleMsgs.filter(m => !/favicon/i.test(m.text))
           state.mockedNetwork = env.st.consoleMocked
           state.failedRequests = env.failed.filter(f => !/favicon/i.test(f.url))
-          const b = before.find(e => e.theme === theme && e.viewport === vp.label && e.route === route)
-          // El baseline guarda listas; se comparan conteos equivalentes
-          // (targets = elementos interactivos <44px, informational).
-          state.before = b ? {
-            targets: (b.targets || []).length,
-            truncados: (b.truncados || []).length,
-            contrastes: (b.contrastes || []).length,
-            sinNombre: (b.sinNombre || []).length,
-          } : null
-          state.after = { targets: state.small, truncados: state.truncados, contrastes: state.contrastFailures, sinNombre: state.sinNombre.length }
           routeDefaults.push(state)
           // Criterio del gate A: overflow, contraste y consola/failedRequests.
           // Los touch targets (<44px) son informativos, igual que en el baseline.
           const ok = state.contrastFailures === 0 && state.overflowX === 0 && state.truncados === 0 && state.sinNombre.length === 0 && state.console.length === 0 && state.failedRequests.length === 0
-          console.log(`  [${ok ? 'PASS' : 'FAIL'}] ac7/route ${route} ${theme}/${vp.label} — targets<44=${state.small} (antes=${b ? (b.targets || []).length : '?'}, info) touch=${state.touchFailures} (info) contraste=${state.contrastFailures} overflow=${state.overflowX} truncados=${state.truncados} sinNombre=${state.sinNombre.length} consola=${state.console.length}`)
+          console.log(`  [${ok ? 'PASS' : 'FAIL'}] ac7/route ${route} ${theme}/${vp.label} — targets<44=${state.small} touch=${state.touchFailures} contraste=${state.contrastFailures} overflow=${state.overflowX} truncados=${state.truncados} sinNombre=${state.sinNombre.length} consola=${state.console.length}`)
         } catch (e) {
           routeDefaults.push({ route, theme, viewport: vp.label, error: e.message })
           console.log(`  [ERROR] ac7/route ${route} ${theme}/${vp.label} — ${e.message}`)
@@ -2032,9 +2178,10 @@ async function ac7(browser) {
       }
       formStates.push(state)
       if (def.shot) state.screenshot = await shot(env.page, def.shot)
-      // Criterio del gate A (touch targets informativos) + OCR (sin toasts, aria-live).
-      const ok = state.contrastFailures === 0 && state.overflowX === 0 && state.truncados === 0 && state.sinNombre.length === 0 && state.console.length === 0 && state.failedRequests.length === 0 && ocrOk
-      console.log(`  [${ok ? 'PASS' : 'FAIL'}] ac7/estado ${def.id} ${def.theme} — targets=${state.targets} touch=${state.touchFailures} (info) contraste=${state.contrastFailures} overflow=${state.overflowX} truncados=${state.truncados} sinNombre=${state.sinNombre.length} consola=${state.console.length} toasts=${state.toasts}${def.id === 'registrar-ocr-resumen' ? ' ariaLive=' + (state.ocrCheck.inlineAriaLive ? 'ok' : 'FALLA') : ''}`)
+      // H1: en los estados de formulario (m390) los touch targets NO son informativos:
+      // cualquier control <44px hace fallar el estado. OCR: sin toasts + aria-live.
+      const ok = state.touchFailures === 0 && state.contrastFailures === 0 && state.overflowX === 0 && state.truncados === 0 && state.sinNombre.length === 0 && state.console.length === 0 && state.failedRequests.length === 0 && state.unexpectedWrites.length === 0 && ocrOk
+      console.log(`  [${ok ? 'PASS' : 'FAIL'}] ac7/estado ${def.id} ${def.theme} — touch=${state.touchFailures} (gate) small=${state.small} contraste=${state.contrastFailures} overflow=${state.overflowX} truncados=${state.truncados} sinNombre=${state.sinNombre.length} consola=${state.console.length} writes=${state.unexpectedWrites.length} toasts=${state.toasts}${def.id === 'registrar-ocr-resumen' ? ' ariaLive=' + (state.ocrCheck.inlineAriaLive ? 'ok' : 'FALLA') : ''}`)
     } catch (e) {
       formStates.push({ id: def.id, theme: def.theme, error: e.message })
       console.log(`  [ERROR] ac7/estado ${def.id} ${def.theme} — ${e.message}`)
@@ -2066,10 +2213,11 @@ async function ac7(browser) {
     }
   }
 
-  // Criterio del gate A: overflow, contraste, truncados, sinNombre y consola.
-  // touch targets son informativos (baseline igual).
+  // Rutas: criterio del gate A (overflow, contraste, truncados, sinNombre, consola);
+  // en desktop los <44px son informativos (regla táctil no aplica a ratón).
   const routeOk = routeDefaults.every(s => !s.error && s.contrastFailures === 0 && s.overflowX === 0 && s.truncados === 0 && s.sinNombre.length === 0 && s.console.length === 0 && s.failedRequests.length === 0)
-  const statesOk = formStates.every(s => !s.error && s.contrastFailures === 0 && s.overflowX === 0 && s.truncados === 0 && s.sinNombre.length === 0 && s.console.length === 0 && s.failedRequests.length === 0 && (s.ocrCheck ? s.ocrCheck.toasts === 0 && s.ocrCheck.inlineAriaLive : true))
+  // Estados (m390): H1 exige 0 touch targets <44px, además del resto del gate A.
+  const statesOk = formStates.every(s => !s.error && s.touchFailures === 0 && s.contrastFailures === 0 && s.overflowX === 0 && s.truncados === 0 && s.sinNombre.length === 0 && s.console.length === 0 && s.failedRequests.length === 0 && s.unexpectedWrites.length === 0 && (s.ocrCheck ? s.ocrCheck.toasts === 0 && s.ocrCheck.inlineAriaLive : true))
   return { routeDefaults, formStates, desktopShots, pass: routeOk && statesOk }
 }
 
@@ -2192,10 +2340,10 @@ async function main() {
       nota: 'Escrituras de API mockeadas con page.route (red de seguridad 599 HARNESS_BLOCKED_WRITE); backend :18082 solo GETs reales.',
     },
     ac1: { ...acSummary('ac1'), detail: 'nombre accesible por campo, Enter envía inputs / abre Selects, 0 forms en SplitsTab' },
-    ac2: { ...acSummary('ac2'), detail: 'errores inline + aria-invalid/aria-describedby + resumen role=alert + foco en primer inválido; notas ≤500 y >500 vía OCR' },
+    ac2: { ...acSummary('ac2'), detail: 'errores inline + aria-invalid/aria-describedby (incl. fieldset del calendario y método inválido en #edit-metodo) + resumen role=alert + foco en primer inválido; notas ≤500 y >500 vía OCR' },
     ac3: { ...acSummary('ac3'), detail: '400/409/422/500 por formulario: error inline/resumen, diálogo abierto, datos persistentes, 0 toasts, 0 unhandled' },
     ac4: { ...acSummary('ac4'), detail: 'guardia de descarte en nav SPA, X/Cancelar/Escape; beforeunload fuera de alcance (R4.9)' },
-    ac5: { ...acSummary('ac5'), detail: 'PDF/11MB rechazados sin request; nombre/tamaño solo en comprobante; progreso anunciado; reintento solo del upload' },
+    ac5: { ...acSummary('ac5'), detail: 'PDF/11MB rechazados sin request; nombre/tamaño solo en comprobante; progreso anunciado; post-pago bloqueado (sin re-POST, OCR sin efecto, reintento solo del upload); QR válido con POST mockeado' },
     ac6: { ...acSummary('ac6'), detail: 'flujo completo por teclado, walk de Tab con indicador ≥3:1, trampas de foco, autoguardado por teclado' },
     ac7: ac7Res,
     ac8: quality.ac8,

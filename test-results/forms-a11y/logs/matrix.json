@@ -52,7 +52,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3758,
+    "durationMs": 3896,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -105,7 +105,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4811,
+    "durationMs": 4604,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -138,7 +138,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4303,
+    "durationMs": 4035,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -171,7 +171,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3558,
+    "durationMs": 3769,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -199,7 +199,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3120,
+    "durationMs": 2970,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -232,7 +232,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3652,
+    "durationMs": 3869,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -275,7 +275,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4521,
+    "durationMs": 4488,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -297,9 +297,9 @@
         "detail": "Selecciona al menos un día"
       },
       {
-        "name": "fieldset #registrar-dias aria-describedby → error",
+        "name": "#registrar-dias aria-invalid=true + aria-describedby → error",
         "pass": true,
-        "detail": "{\"invalid\":null,\"desc\":\"registrar-dias-error\"}"
+        "detail": "{\"invalid\":\"true\",\"desc\":\"registrar-dias-error\"}"
       },
       {
         "name": "#monto aria-invalid + aria-describedby incluye monto-error",
@@ -310,6 +310,11 @@
         "name": "#fuente aria-invalid + aria-describedby incluye fuente-error",
         "pass": true,
         "detail": "{\"invalid\":\"true\",\"desc\":\"fuente-error\"}"
+      },
+      {
+        "name": "#metodo sin aria-invalid con método seleccionado (estado inválido no alcanzable: Efectivo por defecto)",
+        "pass": true,
+        "detail": "{\"invalid\":null,\"desc\":null}"
       },
       {
         "name": "ErrorSummary role=alert con ítems por campo inválido",
@@ -338,7 +343,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3761,
+    "durationMs": 3991,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -362,7 +367,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3029,
+    "durationMs": 2801,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -406,7 +411,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4180,
+    "durationMs": 4385,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -416,6 +421,50 @@
     "unexpectedWrites": [],
     "pass": true,
     "screenshot": "screenshots/ac2-editar-invalido-m390-light.png"
+  },
+  {
+    "ac": "ac2",
+    "id": "editar-metodo-invalido",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "#edit-metodo aria-invalid=true + aria-describedby → edit-metodo-error",
+        "pass": true,
+        "detail": "{\"invalid\":\"true\",\"desc\":\"edit-metodo-error\",\"err\":\"Selecciona un método de pago\"}"
+      },
+      {
+        "name": "error inline de método (Selecciona un método de pago)",
+        "pass": true,
+        "detail": "Selecciona un método de pago"
+      },
+      {
+        "name": "ErrorSummary incluye el error de método",
+        "pass": true,
+        "detail": "[\"Selecciona un método de pago\"]"
+      },
+      {
+        "name": "el diálogo permanece abierto (sin PUT)",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 escrituras (PUT /pagos nunca se ejecuta)",
+        "pass": true,
+        "detail": "writes=0, unexpected=0"
+      }
+    ],
+    "error": null,
+    "durationMs": 4060,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac2-editar-metodo-invalido-m390-light.png"
   },
   {
     "ac": "ac2",
@@ -435,7 +484,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3651,
+    "durationMs": 3361,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -478,7 +527,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4969,
+    "durationMs": 5087,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -507,7 +556,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3761,
+    "durationMs": 3563,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -540,7 +589,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3478,
+    "durationMs": 3447,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -578,7 +627,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2833,
+    "durationMs": 2753,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -636,7 +685,7 @@
       }
     ],
     "error": null,
-    "durationMs": 6568,
+    "durationMs": 6637,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -719,7 +768,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5703,
+    "durationMs": 5465,
     "console": [],
     "mockedNetwork": [
       {
@@ -792,7 +841,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5370,
+    "durationMs": 5185,
     "console": [],
     "mockedNetwork": [
       {
@@ -865,7 +914,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5083,
+    "durationMs": 5397,
     "console": [],
     "mockedNetwork": [
       {
@@ -938,7 +987,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5345,
+    "durationMs": 5348,
     "console": [],
     "mockedNetwork": [
       {
@@ -1006,7 +1055,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5400,
+    "durationMs": 5182,
     "console": [],
     "mockedNetwork": [
       {
@@ -1074,7 +1123,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5398,
+    "durationMs": 5005,
     "console": [],
     "mockedNetwork": [
       {
@@ -1142,7 +1191,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5189,
+    "durationMs": 5356,
     "console": [],
     "mockedNetwork": [
       {
@@ -1211,7 +1260,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5217,
+    "durationMs": 5227,
     "console": [],
     "mockedNetwork": [
       {
@@ -1279,7 +1328,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5550,
+    "durationMs": 5187,
     "console": [],
     "mockedNetwork": [
       {
@@ -1347,7 +1396,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5378,
+    "durationMs": 5431,
     "console": [],
     "mockedNetwork": [
       {
@@ -1415,7 +1464,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5156,
+    "durationMs": 5407,
     "console": [],
     "mockedNetwork": [
       {
@@ -1483,7 +1532,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4840,
+    "durationMs": 4630,
     "console": [],
     "mockedNetwork": [
       {
@@ -1551,7 +1600,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4590,
+    "durationMs": 4923,
     "console": [],
     "mockedNetwork": [
       {
@@ -1619,7 +1668,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4817,
+    "durationMs": 4757,
     "console": [],
     "mockedNetwork": [
       {
@@ -1687,7 +1736,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4885,
+    "durationMs": 4685,
     "console": [],
     "mockedNetwork": [
       {
@@ -1755,7 +1804,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4671,
+    "durationMs": 4985,
     "console": [],
     "mockedNetwork": [
       {
@@ -1824,7 +1873,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4805,
+    "durationMs": 4773,
     "console": [],
     "mockedNetwork": [
       {
@@ -1887,7 +1936,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4735,
+    "durationMs": 4674,
     "console": [],
     "mockedNetwork": [
       {
@@ -1950,7 +1999,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4666,
+    "durationMs": 4935,
     "console": [],
     "mockedNetwork": [
       {
@@ -2013,7 +2062,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5033,
+    "durationMs": 4671,
     "console": [],
     "mockedNetwork": [
       {
@@ -2082,7 +2131,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5563,
+    "durationMs": 5508,
     "console": [],
     "mockedNetwork": [
       {
@@ -2150,7 +2199,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5390,
+    "durationMs": 5600,
     "console": [],
     "mockedNetwork": [
       {
@@ -2219,7 +2268,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5482,
+    "durationMs": 5648,
     "console": [],
     "mockedNetwork": [
       {
@@ -2282,7 +2331,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4778,
+    "durationMs": 4569,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2311,7 +2360,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3763,
+    "durationMs": 3299,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2344,7 +2393,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4901,
+    "durationMs": 4646,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2392,7 +2441,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5664,
+    "durationMs": 5901,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2421,7 +2470,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4425,
+    "durationMs": 4479,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2449,7 +2498,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5225,
+    "durationMs": 4928,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2482,7 +2531,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3552,
+    "durationMs": 3569,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2515,7 +2564,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2692,
+    "durationMs": 2793,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2543,7 +2592,7 @@
       }
     ],
     "error": null,
-    "durationMs": 6825,
+    "durationMs": 6980,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2572,7 +2621,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2886,
+    "durationMs": 2926,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2630,7 +2679,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4896,
+    "durationMs": 4655,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2693,7 +2742,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4744,
+    "durationMs": 4787,
     "console": [],
     "mockedNetwork": [
       {
@@ -2741,7 +2790,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5287,
+    "durationMs": 5389,
     "console": [],
     "mockedNetwork": [
       {
@@ -2797,7 +2846,7 @@
       }
     ],
     "error": null,
-    "durationMs": 8349,
+    "durationMs": 7755,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2835,7 +2884,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5775,
+    "durationMs": 5491,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2849,6 +2898,166 @@
     ],
     "unexpectedWrites": [],
     "pass": true
+  },
+  {
+    "ac": "ac5",
+    "id": "qr-valido",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "controles de QR disponibles en Cuentas",
+        "pass": true,
+        "detail": "[\"Subir QR de General\",\"Subir QR de Box\",\"Subir QR de Business\"]"
+      },
+      {
+        "name": "QR PNG válido hace exactamente 1 POST /cuentas/:id/qr (mock)",
+        "pass": true,
+        "detail": "POSTs=1"
+      },
+      {
+        "name": "sin error inline tras subir QR válido",
+        "pass": true,
+        "detail": "[]"
+      },
+      {
+        "name": "request registrado en /cuentas/:id/qr",
+        "pass": true,
+        "detail": "[{\"method\":\"POST\",\"path\":\"/api/v1/cuentas/3/qr\"}]"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 4445,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/cuentas/3/qr"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac5-qr-valido-m390-light.png"
+  },
+  {
+    "ac": "ac5",
+    "id": "post-pago-bloqueado",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "calendario bloqueado (fieldset disabled)",
+        "pass": true,
+        "detail": "true"
+      },
+      {
+        "name": "select de fuente bloqueado",
+        "pass": true,
+        "detail": "true"
+      },
+      {
+        "name": "los 3 métodos de pago bloqueados",
+        "pass": true,
+        "detail": "[{\"label\":\"Efectivo\",\"disabled\":true},{\"label\":\"QR\",\"disabled\":true},{\"label\":\"Transacción\",\"disabled\":true}]"
+      },
+      {
+        "name": "monto bloqueado",
+        "pass": true,
+        "detail": "true"
+      },
+      {
+        "name": "notas bloqueadas",
+        "pass": true,
+        "detail": "true"
+      },
+      {
+        "name": "sin botón \"Guardar pago\" (submit principal ausente)",
+        "pass": true,
+        "detail": "botones=0"
+      },
+      {
+        "name": "requestSubmit() dispara el evento submit",
+        "pass": true,
+        "detail": "submits=1→2"
+      },
+      {
+        "name": "submit tardío no hace POST /pagos (sigue 1)",
+        "pass": true,
+        "detail": "pagos=1"
+      },
+      {
+        "name": "submit tardío no reintenta el comprobante",
+        "pass": true,
+        "detail": "uploads=1"
+      },
+      {
+        "name": "OCR post-pago no altera el monto guardado",
+        "pass": true,
+        "detail": "antes=265,00, después=265,00"
+      },
+      {
+        "name": "reintento hace un 2.º POST de comprobante",
+        "pass": true,
+        "detail": "uploads=2"
+      },
+      {
+        "name": "reintento no re-crea el pago (POST /pagos sigue 1)",
+        "pass": true,
+        "detail": "pagos=1"
+      },
+      {
+        "name": "\"Ir a ingresos\" navega a /ingresos sin confirmación",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      },
+      {
+        "name": "0 escrituras no mockeadas",
+        "pass": true,
+        "detail": "[]"
+      }
+    ],
+    "error": null,
+    "durationMs": 8392,
+    "console": [],
+    "mockedNetwork": [
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/pagos/99999/comprobante"
+      },
+      {
+        "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+        "url": "http://localhost:18082/api/v1/pagos/99999/comprobante"
+      }
+    ],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos/99999/comprobante"
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/pagos/99999/comprobante"
+      }
+    ],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac5-post-pago-bloqueado-m390-light.png"
   },
   {
     "ac": "ac6",
@@ -2913,7 +3122,7 @@
       }
     ],
     "error": null,
-    "durationMs": 7110,
+    "durationMs": 6989,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2941,7 +3150,7 @@
       }
     ],
     "error": null,
-    "durationMs": 18514,
+    "durationMs": 18637,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2979,7 +3188,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4696,
+    "durationMs": 4729,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3012,7 +3221,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4524,
+    "durationMs": 4945,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
