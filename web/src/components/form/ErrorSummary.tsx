@@ -30,7 +30,7 @@ export function ErrorSummary<Campo extends string>({
             <button
               type="button"
               onClick={() => onEnfocar(campo)}
-              className="rounded-sm text-left text-destructive underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
+              className="inline-flex items-center rounded-sm text-left text-destructive underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-ring max-md:min-h-11 max-md:w-full max-md:py-2"
             >
               {mensaje}
             </button>

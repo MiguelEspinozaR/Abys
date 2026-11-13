@@ -86,7 +86,7 @@ function GuardiaNavegacion({ onBloqueado }: { onBloqueado: (b: Blocker) => void 
 }
 
 export function EditarPagoDialog({ pago, children }: Props) {
-  const { data: fuentes } = useFuentes()
+  const { data: fuentes, isLoading: fuentesLoading } = useFuentes()
   const actualizar = useActualizarPago()
 
   const [abierto, setAbierto] = useState(false)
@@ -212,6 +212,8 @@ export function EditarPagoDialog({ pago, children }: Props) {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    // Evita marcar "fuente inválida" mientras aún no se cargaron las fuentes.
+    if (fuentesLoading) return
     validacion.limpiarErrorFormulario()
     const valido = validacion.validarSubmit([
       {
@@ -481,7 +483,7 @@ export function EditarPagoDialog({ pago, children }: Props) {
             <Button variant="outline" type="button" onClick={solicitarCierre}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={actualizar.isPending}>
+            <Button type="submit" disabled={actualizar.isPending || fuentesLoading}>
               {actualizar.isPending && <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />}
               Guardar cambios
             </Button>

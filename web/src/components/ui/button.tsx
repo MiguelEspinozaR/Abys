@@ -44,12 +44,16 @@ const buttonVariants = cva(
  * `type` por defecto en `button` (no `submit`): dentro de un `<form>`, los botones
  * secundarios (Cancelar, X, acciones de fila) no deben disparar el submit. El botón
  * principal lo sobrescribe explícito con `type="submit"`.
+ *
+ * Con `asChild` no se aplica el `type` por defecto: el hijo puede ser un enlace u
+ * otro elemento donde `type="button"` no corresponde. Si el consumidor lo pasa
+ * explícito, se respeta.
  */
 function Button({
   className,
   variant = "default",
   size = "default",
-  type = "button",
+  type,
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &
@@ -57,6 +61,7 @@ function Button({
     asChild?: boolean
   }) {
   const Comp = asChild ? Slot.Root : "button"
+  const tipo = asChild ? type : (type ?? "button")
 
   return (
     <Comp
@@ -64,7 +69,7 @@ function Button({
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
-      type={type}
+      {...(tipo ? { type: tipo } : {})}
       {...props}
     />
   )

@@ -163,6 +163,8 @@ export default function RegistrarPage() {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    // Tras crear el pago los campos están bloqueados: no se valida ni se reenvía.
+    if (pagoGuardado) return
     validacion.limpiarErrorFormulario()
     const valido = validacion.validarSubmit([
       {
@@ -237,6 +239,9 @@ export default function RegistrarPage() {
   }
 
   const guardar = async () => {
+    // El pago ya se creó: solo se permite reintentar el comprobante (D16). Un submit
+    // tardío nunca debe reenviar ni descartar los cambios bloqueados.
+    if (pagoGuardado) return
     if (!puedeGuardar || montoCents == null || !fuenteValida) return
     if (validarNotas(notas) != null) {
       validacion.validarBlur("notas", () => validarNotas(notas))
@@ -317,6 +322,9 @@ export default function RegistrarPage() {
     referencia?: string
     descripcion?: string
   }) => {
+    // Con el pago ya creado los campos están bloqueados: el OCR de un comprobante
+    // nuevo solo sirve para reintentar la subida, no para editar el pago guardado.
+    if (pagoGuardado) return
     if (r.monto_enteros != null) {
       setMontoStr(
         (r.monto_enteros / 100).toLocaleString("es-BO", {
@@ -410,6 +418,7 @@ export default function RegistrarPage() {
                   herramienta={herramienta}
                   setHerramienta={setHerramienta}
                   onMarcarDia={marcarDia}
+                  disabled={pagoGuardado}
                 />
               </CardContent>
             </Card>
@@ -428,6 +437,7 @@ export default function RegistrarPage() {
                   </Label>
                   <Select
                     value={fuenteId}
+                    disabled={fuentesLoading || pagoGuardado}
                     onValueChange={(v) => {
                       setFuenteId(v)
                       validacion.validarChange("fuente", () => validarFuente(v, idsFuentes))
@@ -435,7 +445,7 @@ export default function RegistrarPage() {
                   >
                     <SelectTrigger
                       id="fuente"
-                      disabled={fuentesLoading}
+                      disabled={fuentesLoading || pagoGuardado}
                       aria-required="true"
                       aria-invalid={validacion.errores.fuente ? true : undefined}
                       aria-describedby={
@@ -481,6 +491,7 @@ export default function RegistrarPage() {
                   tabIndex={-1}
                   className="m-0 min-w-0 space-y-1.5 border-0 p-0"
                   aria-describedby={validacion.errores.metodo ? "metodo-error" : undefined}
+                  aria-invalid={validacion.errores.metodo ? true : undefined}
                 >
                   <legend className="px-0 text-sm leading-none font-medium">
                     Método de pago <Obligatorio />
@@ -497,6 +508,7 @@ export default function RegistrarPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => setMetodo(m.value as MetodoPago)}
+                        disabled={pagoGuardado}
                         aria-pressed={metodo === m.value}
                         className={
                           metodo === m.value
@@ -521,6 +533,7 @@ export default function RegistrarPage() {
                     inputMode="decimal"
                     placeholder="Ej: 1.234,56"
                     value={montoStr}
+                    disabled={pagoGuardado}
                     aria-required="true"
                     aria-invalid={validacion.errores.monto ? true : undefined}
                     aria-describedby={
@@ -554,6 +567,7 @@ export default function RegistrarPage() {
                     rows={3}
                     placeholder="Referencia, período pagado, observaciones…"
                     value={notas}
+                    disabled={pagoGuardado}
                     maxLength={MAX_NOTAS}
                     aria-invalid={validacion.errores.notas ? true : undefined}
                     aria-describedby={
@@ -589,7 +603,9 @@ export default function RegistrarPage() {
                   onResultadoOcr={aplicarOcr}
                   errorSubida={comprobanteError}
                 />
-                {pagoGuardado && comprobanteError && (
+                {/* Con el pago creado solo quedan estas salidas: reintentar el
+                    comprobante (nunca re-POST /pagos) o ir a ingresos (D16). */}
+                {pagoGuardado && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Button
                       type="button"
@@ -681,19 +697,21 @@ export default function RegistrarPage() {
               </Card>
             )}
 
-            <Button
-              type="submit"
-              size="lg"
-              className="w-full"
-              disabled={enviando}
-            >
-              {enviando ? (
-                <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
-              ) : (
-                <Save className="mr-2 size-4" aria-hidden />
-              )}
-              Guardar pago
-            </Button>
+            {!pagoGuardado && (
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full"
+                disabled={enviando}
+              >
+                {enviando ? (
+                  <Loader2 className="mr-2 size-4 animate-spin" aria-hidden />
+                ) : (
+                  <Save className="mr-2 size-4" aria-hidden />
+                )}
+                Guardar pago
+              </Button>
+            )}
           </div>
         </div>
       </form>

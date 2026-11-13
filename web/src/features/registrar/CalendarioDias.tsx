@@ -29,6 +29,11 @@ interface Props {
   error?: string | null
   /** id del elemento de error (target del `aria-describedby` del fieldset). */
   errorId?: string
+  /**
+   * Bloquea la edición del calendario (p. ej. después de guardar el pago y fallar
+   * el comprobante): deshabilita el `fieldset` y sus botones, sin desmontarlo.
+   */
+  disabled?: boolean
 }
 
 const HERRAMIENTAS: { valor: Herramienta; label: string; icono: React.ElementType }[] = [
@@ -56,6 +61,7 @@ export function CalendarioDias({
   onMarcarDia,
   error,
   errorId,
+  disabled = false,
 }: Props) {
   const fechaSel = fechaPago ? fromISODate(fechaPago) : null
 
@@ -63,8 +69,10 @@ export function CalendarioDias({
     <fieldset
       id={id}
       tabIndex={-1}
+      disabled={disabled}
       className="m-0 min-w-0 space-y-3 border-0 p-0"
       aria-describedby={error ? errorId : undefined}
+      aria-invalid={error ? true : undefined}
     >
       <legend className="px-0 text-sm leading-none font-medium">{legend}</legend>
       <div className="flex items-center gap-1 rounded-lg border bg-muted/40 p-1" role="toolbar" aria-label="Herramientas del calendario">
@@ -75,6 +83,7 @@ export function CalendarioDias({
             variant="ghost"
             size="sm"
             onClick={() => setHerramienta(valor)}
+            disabled={disabled}
             aria-pressed={herramienta === valor}
             className={cn(
               "flex-1 gap-1.5 text-xs",
