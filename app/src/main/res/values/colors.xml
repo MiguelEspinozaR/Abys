@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="abys_background">#FFFBFF</color>
+    <color name="abys_surface">#FFFBFF</color>
+    <color name="abys_primary">#023749</color>
+    <color name="ic_launcher_background">#023749</color>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icono Abys: símbolo de moneda (Bs) estilizado. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,34h18c11,0 19,8 19,20s-8,20 -19,20H40zM49,42v24h9c6.6,0 11,-5 11,-12s-4.4,-12 -11,-12z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M36,34h6v40h-6z" />
+</vector>
