@@ -52,7 +52,7 @@ fun ConfiguracionScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Text("Configuración", style = MaterialTheme.typography.headlineSmall)
+
             Text(
                 text = "Administra fuentes de ingreso, cuentas de distribución y splits.",
                 style = MaterialTheme.typography.bodySmall,

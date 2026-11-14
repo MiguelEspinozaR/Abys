@@ -10,10 +10,12 @@ import com.mikylab.abys.domain.model.Pago
 import com.mikylab.abys.domain.repository.FuenteRepository
 import com.mikylab.abys.domain.repository.PagoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -26,6 +28,10 @@ data class IngresosUiState(
     val cargando: Boolean = true,
     val pagosPorAnio: Map<Int, List<Pago>> = emptyMap(),
     val totalPagos: Int = 0,
+    /** Nº total de pagos que cumplen el filtro (puede ser mayor que los cargados). */
+    val totalFiltrados: Int = 0,
+    val pagina: Int = 1,
+    val hayMas: Boolean = false,
     val expanded: Set<String> = emptySet(),
     val filtrosAplicados: FiltroPagos = FiltroPagos(),
     val fechaInicio: LocalDate? = null,
@@ -44,24 +50,37 @@ class IngresosViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(IngresosUiState())
     val uiState: StateFlow<IngresosUiState> = _uiState.asStateFlow()
 
-    private val filtros = MutableStateFlow(FiltroPagos(pageSize = 100))
+    private val filtros = MutableStateFlow(FiltroPagos(pageSize = TAMANO_PAGINA))
+
+    /** Pagos cargados (se acumulan al pedir más páginas). */
+    private val _pagos = MutableStateFlow<List<Pago>>(emptyList())
 
     val fuentes: StateFlow<List<Fuente>> = fuenteRepository.observeFuentes()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     init {
         viewModelScope.launch {
+            @OptIn(ExperimentalCoroutinesApi::class)
             filtros
-                .flatMapLatest { filtro -> pagoRepository.observePagos(filtro) }
-                .collect { pagos ->
+                .flatMapLatest { filtro -> pagoRepository.observePagos(filtro.copy(page = 1)) }
+                .collect { primeraPagina ->
+                    _pagos.value = primeraPagina
                     _uiState.update { estado ->
                         estado.copy(
                             cargando = false,
-                            pagosPorAnio = pagos.groupBy { it.fechaPago.year },
-                            totalPagos = pagos.size,
+                            pagosPorAnio = primeraPagina.groupBy { it.fechaPago.year },
+                            totalPagos = primeraPagina.size,
+                            pagina = 1,
+                            hayMas = primeraPagina.size < estado.totalFiltrados,
                         )
                     }
                 }
+        }
+        viewModelScope.launch {
+            filtros.collect { filtro ->
+                val total = pagoRepository.contarPagos(filtro)
+                _uiState.update { it.copy(totalFiltrados = total, hayMas = it.totalPagos < total) }
+            }
         }
     }
 
@@ -80,22 +99,48 @@ class IngresosViewModel @Inject constructor(
             fechaFin = estado.fechaFin,
             fuenteLocalId = estado.fuenteLocalId,
             metodoPago = estado.metodoPago,
-            pageSize = 100,
+            pageSize = TAMANO_PAGINA,
         )
         _uiState.update { it.copy(filtrosAplicados = filtros.value) }
     }
 
     fun limpiarFiltros() {
+        filtros.value = FiltroPagos(pageSize = TAMANO_PAGINA)
         _uiState.update {
             it.copy(
                 fechaInicio = null,
                 fechaFin = null,
                 fuenteLocalId = null,
                 metodoPago = null,
-                filtrosAplicados = FiltroPagos(),
+                filtrosAplicados = filtros.value,
             )
         }
-        filtros.value = FiltroPagos(pageSize = 100)
+    }
+
+    /** Carga la siguiente página de pagos (el espejo local puede ser grande). */
+    fun cargarMas() {
+        val estado = _uiState.value
+        if (!estado.hayMas) return
+        viewModelScope.launch {
+            val siguientePagina = estado.pagina + 1
+            val siguientes = pagoRepository
+                .observePagos(filtros.value.copy(page = siguientePagina))
+                .first()
+            if (siguientes.isEmpty()) {
+                _uiState.update { it.copy(hayMas = false) }
+                return@launch
+            }
+            val acumulados = _pagos.value + siguientes
+            _pagos.value = acumulados
+            _uiState.update {
+                it.copy(
+                    pagosPorAnio = acumulados.groupBy { pago -> pago.fechaPago.year },
+                    totalPagos = acumulados.size,
+                    pagina = siguientePagina,
+                    hayMas = acumulados.size < it.totalFiltrados,
+                )
+            }
+        }
     }
 
     fun toggleExpandido(localId: String) = _uiState.update { estado ->
@@ -114,4 +159,8 @@ class IngresosViewModel @Inject constructor(
     }
 
     fun limpiarError() = _uiState.update { it.copy(error = null) }
+
+    private companion object {
+        const val TAMANO_PAGINA = 50
+    }
 }

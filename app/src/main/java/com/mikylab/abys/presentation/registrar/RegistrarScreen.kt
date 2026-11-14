@@ -71,7 +71,7 @@ fun RegistrarScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Text("Registrar pago", style = MaterialTheme.typography.headlineSmall)
+
             Text(
                 text = "Marca los días trabajados en el calendario y completa el resto del formulario.",
                 style = MaterialTheme.typography.bodySmall,

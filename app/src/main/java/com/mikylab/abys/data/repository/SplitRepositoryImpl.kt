@@ -1,9 +1,8 @@
 package com.mikylab.abys.data.repository
 
-import androidx.room.withTransaction
 import com.mikylab.abys.core.result.AppError
 import com.mikylab.abys.core.result.AppResult
-import com.mikylab.abys.data.local.AbysDatabase
+import com.mikylab.abys.data.local.TransactionRunner
 import com.mikylab.abys.data.local.dao.CuentaDao
 import com.mikylab.abys.data.local.dao.PagoDao
 import com.mikylab.abys.data.local.dao.SplitDao
@@ -25,19 +24,26 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Repositorio de splits (local-first).
+ * Repositorio de splits (flujo **Splits**): local-first.
  *
  * El split se **calcula localmente** con [SplitCalculator] (mismo algoritmo que el backend)
  * para dar respuesta inmediata sin red; al sincronizarse, el servidor devuelve el split
- * autoritativo y sus transacciones, que reemplazan la vista local.
+ * autoritativo y sus transacciones, que **reemplazan** la vista local conservando el
+ * `localId` de las filas que ya existían (para no perder operaciones pendientes).
+ *
+ * Reglas:
+ * - BR-030/031 → como máximo **un** split por pago (índice único en Room y en el backend).
+ * - BR-036 → no se puede eliminar un split con transacciones realizadas.
+ * - BR-060/061 → al recalcular, las realizadas quedan **congeladas**.
+ * - BR-072 → marcar una transacción como realizada es irreversible.
  */
 @Singleton
 class SplitRepositoryImpl @Inject constructor(
-    private val db: AbysDatabase,
     private val splitDao: SplitDao,
     private val pagoDao: PagoDao,
     private val cuentaDao: CuentaDao,
     private val pendingWriter: PendingWriter,
+    private val transactions: TransactionRunner,
 ) : SplitRepository {
 
     override fun observeSplits(): Flow<List<Split>> =
@@ -60,8 +66,9 @@ class SplitRepositoryImpl @Inject constructor(
     override suspend fun generarSplit(pagoLocalId: String, modo: String): AppResult<Split> {
         val pago = pagoDao.getPorId(pagoLocalId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "pago no encontrado"))
-        val existente = splitDao.getPorServerId(pago.serverId ?: -1L)
-            ?: splitDao.observePorPago(pagoLocalId).let { null }
+
+        // BR-030: máximo un split por pago (el backend responde 409 en el POST /splits).
+        val existente = splitDao.getPorPago(pagoLocalId)
         if (existente != null) {
             return AppResult.Failure(
                 AppError(
@@ -130,7 +137,7 @@ class SplitRepositoryImpl @Inject constructor(
             )
         }
 
-        db.withTransaction {
+        transactions.run {
             splitDao.upsert(entidad)
             splitDao.upsertTransacciones(transacciones)
             pendingWriter.encolar(Operations.TIPO_SPLIT, localId, Operations.OP_UPSERT)
@@ -170,16 +177,32 @@ class SplitRepositoryImpl @Inject constructor(
             )
         }
 
+        val ahora = System.currentTimeMillis()
+        // Las realizadas quedan congeladas (BR-021/060): solo se actualizan las pendientes.
         val actualizadas = transacciones.map { tx ->
             val nuevo = resultado.indice[tx.localId] ?: return@map tx
-            tx.copy(
-                montoEnteros = nuevo.montoCents,
-                tasaBps = nuevo.tasaBps,
-                syncState = if (tx.realizado) tx.syncState else SyncState.PENDING_UPDATE,
-                updatedAtLocal = System.currentTimeMillis(),
-            )
+            if (tx.realizado) {
+                tx
+            } else {
+                tx.copy(
+                    montoEnteros = nuevo.montoCents,
+                    tasaBps = nuevo.tasaBps,
+                    syncState = SyncState.PENDING_UPDATE,
+                    updatedAtLocal = ahora,
+                )
+            }
         }
-        db.withTransaction {
+        val splitActualizado = split.copy(
+            totalPendiente = actualizadas.filter { !it.realizado }.sumOf { it.montoEnteros },
+            totalRealizado = actualizadas.filter { it.realizado }.sumOf { it.montoEnteros },
+            updatedAt = ahora,
+            syncState = SyncState.PENDING_UPDATE,
+            updatedAtLocal = ahora,
+            lastError = null,
+        )
+
+        transactions.run {
+            splitDao.upsert(splitActualizado)
             splitDao.reemplazarTransacciones(splitLocalId, actualizadas)
             pendingWriter.encolar(
                 Operations.TIPO_SPLIT,
@@ -188,12 +211,13 @@ class SplitRepositoryImpl @Inject constructor(
                 serverId = split.serverId,
             )
         }
-        return AppResult.Success(split.copy(syncState = SyncState.PENDING_UPDATE).toDomain(actualizadas))
+        return AppResult.Success(splitActualizado.toDomain(actualizadas))
     }
 
     override suspend fun eliminarSplit(splitLocalId: String): AppResult<Unit> {
         val split = splitDao.getPorId(splitLocalId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "split no encontrado"))
+        // BR-036: no se puede eliminar un split con transacciones realizadas.
         val tieneRealizadas = splitDao.getTransacciones(splitLocalId).any { it.realizado }
         if (tieneRealizadas) {
             return AppResult.Failure(
@@ -203,8 +227,9 @@ class SplitRepositoryImpl @Inject constructor(
                 ),
             )
         }
-        db.withTransaction {
+        transactions.run {
             if (split.serverId == null) {
+                splitDao.borrarDelSplit(splitLocalId)
                 splitDao.borrar(splitLocalId)
             } else {
                 splitDao.upsert(
@@ -227,8 +252,12 @@ class SplitRepositoryImpl @Inject constructor(
     override suspend fun marcarRealizada(transaccionLocalId: String): AppResult<Transaccion> {
         val transaccion = splitDao.getTransaccion(transaccionLocalId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "transacción no encontrada"))
+        if (transaccion.realizado) {
+            // BR-072: marcar como realizada es irreversible.
+            return AppResult.Success(transaccion.toDomain())
+        }
         val ahora = System.currentTimeMillis()
-        db.withTransaction {
+        transactions.run {
             splitDao.marcarRealizada(
                 transaccionLocalId,
                 realizado = true,
@@ -236,9 +265,11 @@ class SplitRepositoryImpl @Inject constructor(
                 state = SyncState.PENDING_UPDATE,
                 now = ahora,
             )
+            // La operación se encola por el `localId` de la transacción: el worker la resuelve
+            // contra el servidor cuando la transacción ya tenga `serverId` (BR-072).
             pendingWriter.encolar(
                 Operations.TIPO_TRANSACCION,
-                transaccion.splitLocalId,
+                transaccionLocalId,
                 Operations.OP_REALIZE,
                 serverId = transaccion.serverId,
             )

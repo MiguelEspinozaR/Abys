@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import androidx.room.Transaction
 import androidx.room.Update
 import com.mikylab.abys.data.local.entity.FuenteEntity
@@ -29,10 +30,10 @@ interface FuenteDao {
     @Query("SELECT * FROM fuentes")
     suspend fun getAll(): List<FuenteEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsert(fuente: FuenteEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertAll(fuentes: List<FuenteEntity>)
 
     @Update

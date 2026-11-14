@@ -287,12 +287,130 @@ Checks manuales mínimos:
 
 ## 9. Definition of Done (Fase 1 / scaffold navegable)
 
-- [ ] `./gradlew assembleDebug` compila sin errores ni warnings bloqueantes.
-- [ ] `./gradlew test` pasa (tests de formato, fechas, validación y `SplitCalculator`).
-- [ ] La app arranca y navega entre **Dashboard, Registrar, Ingresos, Splits, Configuración y Health**.
-- [ ] Room crea el esquema v1 con las 10 tablas y la cola de pendientes.
-- [ ] Retrofit/OkHttp configurados contra la base URL configurable; los errores se mapean a `AppResult.Failure`.
-- [ ] `EncryptedSharedPreferences` storing token (vacío) y base URL; se puede cambiar la URL en Ajustes.
-- [ ] `WorkManager` encola push/pull; un pago creado offline aparece en la cola y se sube al recuperar red.
-- [ ] Las 6 pantallas leen **exclusivamente** de Room (vía ViewModel) y muestran estados vacío/cargando/error.
-- [ ] `docs/` actualizado con cualquier detalle nuevo descubierto durante la implementación.
+- [x] `./gradlew assembleDebug` compila sin errores ni warnings bloqueantes.
+- [x] `./gradlew test` pasa (34 tests: paridad de `splitcalc.go`, `format.ts` y `validations.go`).
+- [x] `./gradlew lintDebug` sin errores.
+- [x] La app arranca y navega entre **Dashboard, Registrar, Ingresos, Splits, Configuración y Health**.
+- [x] Room crea el esquema v1 con las 10 tablas y la cola de pendientes (`app/schemas/.../1.json`).
+- [x] Retrofit/OkHttp configurados contra la base URL configurable; los errores se mapean a `AppResult.Failure`.
+- [x] `EncryptedSharedPreferences` guardando token (vacío) y base URL; editable en Ajustes.
+- [x] `WorkManager` encola push/pull; un pago creado offline aparece en la cola y se sube al recuperar red.
+- [x] Las 6 pantallas leen **exclusivamente** de Room (vía ViewModel) y muestran estados vacío/cargando/error.
+- [x] `docs/` actualizado con cualquier detalle nuevo descubierto durante la implementación.
+
+---
+
+## 10. Estado tras la Fase 1 (scaffold) y trabajo pendiente
+
+### 10.1 Qué ya está implementado (base para paralelizar)
+
+| Capa | Implementado | Ficheros |
+|---|---|---|
+| `core` | `Money`/`Percent` (centavos/bps), `DateFormats` (es-BO + La Paz), `AppResult`/`AppError`, `ApiErrorParser`, `AuthInterceptor`, `SecureStore` (EncryptedSharedPreferences), `TokenStore`, `BaseUrlStore` (URL dinámica) | `core/**` |
+| `domain` | Modelos (`Pago`, `Fuente`, `Cuenta`, `Split`, `Transaccion`, `HistorialTasa`, `SplitSettings`, `HealthInfo`, aggregados de dashboard), `SyncState`, interfaces de repositorio, `SplitCalculator` (réplica de `splitcalc.go`), `ValidarPagoUseCase` | `domain/**` |
+| `data/local` | 10 entidades Room con estado de sync, 10 DAOs, `AbysDatabase` (v1, `exportSchema`), `Converters`, relaciones `@Relation` | `data/local/**` |
+| `data/remote` | DTOs kotlinx.serialization, `AbysApi` (40 endpoints), `AbysApiProvider` (reconstruye Retrofit al cambiar la URL), `safeApiCall`, mappers DTO→Entity | `data/remote/**` |
+| `data/repository` | Repos offline-first (Pago, Fuente, Cuenta, Split, Settings, Health, Dashboard, SyncStatus) + `PendingWriter` | `data/repository/**` |
+| `data/sync` | `SyncScheduler`, `SyncPushWorker`/`SyncPullWorker`/`SyncAllWorker` (Hilt), `PushProcessor` (cola en orden + backoff + `FAILED` en errores terminales), `PullProcessor` (reconciliación), `GeneralRateHelper` | `data/sync/**` |
+| `presentation` | Tema M3 (claro/oscuro), navegación con `NavigationBar`, componentes (`KpiCard`, `EstadoVacio`, `ErrorState`, `SyncStatusChip`, gráficos `Canvas`), 6 pantallas + ViewModels | `presentation/**` |
+
+### 10.2 Pendiente por feature (siguiente tanda, paralelizable)
+
+| Feature | Pendiente |
+|---|---|
+| **Registrar** | Subida de comprobante (Photo Picker + multipart), OCR (ML Kit), resumen "Detectado en el comprobante", navegación a Ingresos tras guardar |
+| **Ingresos** | Diálogos de edición/eliminación, "Generar split", zoom de comprobante, paginación, filtro por texto |
+| **Splits** | Diálogos "Generar split" / "Transferir a {alias}" (con QR) / "Ver datos" de cuenta, recálculo, warning de 0 Bs por cuenta no General |
+| **Configuración** | CRUD de fuentes y cuentas (diálogos), cambio de tasa + historial, QR/logo, sección de Ajustes completa (URL, sync, tema) |
+| **Dashboard** | Navegación entre semanas/meses/años en los gráficos, tooltips, rango del histórico |
+| **OCR** | ML Kit Text Recognition (fase 2, ver `feature-matrix.md` §3.1) |
+
+### 10.3 Partición lista para paralelizar (sin solapamiento de archivos)
+
+Con los contratos ya congelados en código (C5–C10), las siguientes bandejas se pueden repartir
+**sin tocar los mismos archivos**:
+
+| Lote | Agente | Rutas exclusivas | Entregable |
+|---|---|---|---|
+| L1 | UI-Dashboard | `presentation/dashboard/**` | KPIs + gráficos con navegación y tooltips |
+| L2 | UI-Registrar | `presentation/registrar/**` | Comprobante + OCR + guardado real |
+| L3 | UI-Ingresos | `presentation/ingresos/**` | Diálogos editar/eliminar + generar split |
+| L4 | UI-Splits | `presentation/splits/**` | Diálogos de split/realizar/cuenta |
+| L5 | UI-Configuración | `presentation/configuracion/**` | CRUD fuentes/cuentas + tasas + ajustes |
+| L6 | Sync-Advanced | `data/sync/**` | Reintentos, resolución de conflictos, "descartar cambio local" |
+| L7 | Tests | `app/src/test/**` | Tests de DAOs (`room-testing`) y de repositorios (MockK) |
+
+**Restricción para todos los lotes**: no modificar `domain/**`, `core/**`, `data/local/**`,
+`data/remote/**` ni los ficheros compartidos (`MainActivity`, `AbysApplication`,
+`libs.versions.toml`, `app/build.gradle.kts`); si hace falta un cambio ahí, se solicita al arquitecto.
+Cada lote debe terminar con `./gradlew :app:assembleDebug :app:testDebugUnitTest` en verde.
+
+### 10.4 Notas técnicas relevantes para los lotes
+
+- **Los importes de iconos**: `material-icons-extended` 1.7.8 no incluye `CircleDollarSign` ni
+  `Database` (usa `Payments` y `Storage`); el conjunto "core" (49 iconos) cubre `List`, `Settings`,
+  `Refresh`, `Warning`, `Delete`, `Edit`, `Search`, `Add`, `Close`.
+- **Comments anidados**: Kotlin admite `/*` anidado, así que escribir `` `/dashboard/*` `` dentro de
+  un KDoc **comenta el resto del archivo**. Evitar `/*` dentro de comentarios.
+- **Type-safe Room**: los `dao` con `Flow<T>` sobre POJOs (`TotalesRango`, `FilaHistorial`) deben
+ _keep_ los POJOs con constructor simple y campos no nulables.
+- **`Result` de WorkManager**: fuera de un `Worker` el tipo es `androidx.work.ListenableWorker.Result`
+  (no existe `androidx.work.Result`).
+- **`inline` en interfaces**: Kotlin lo prohíbe; las funciones de extensión `map`/`onSuccess`/
+  `onFailure` de `AppResult` están fuera de la interfaz.
+
+---
+
+## 11. Pasada "capa de datos" (Dashboard · Ingresos · Splits) — 2026-11-14
+
+Trabajo del arquitecto sobre el scaffold existente. Objetivo: que los tres flujos principales
+funcionen **offline-first de punta a punta** (escribir en Room → subir → volver a Room sin
+duplicar ni perder datos).
+
+### 11.1 Cambios en la capa Room (`data/local/**`)
+
+| Cambio | Fichero | Motivo |
+|---|---|---|
+| `TransactionRunner` (interfaz + `RoomTransactionRunner`) | `TransactionRunner.kt` (nuevo) | Frontera transaccional testeable: los repositorios ya no dependen de `RoomDatabase` en los tests JVM |
+| `observePagos(..., limit, offset)` + `contarPagos(filtros)` | `dao/PagoDao.kt` | Paginación real de Ingresos (antes el `page`/`pageSize` del filtro se ignoraban) |
+| `getPorPago(pagoLocalId)` | `dao/SplitDao.kt` | Comprobar **en local** que el pago no tiene split (BR-030) |
+| `contarTransaccionesRealizadas(pagoLocalId)` | `dao/SplitDao.kt` | Comprobar **en local** que el pago no tiene realizadas (BR-005) |
+
+Sin cambios de esquema: la versión de Room sigue siendo **1** (no hace falta migración).
+
+### 11.2 Cambios en la capa remota (`data/remote/**`)
+
+- `AbysApi` incluye los **5 endpoints de dashboard** (`summary`, `weekly`, `monthly`, `yearly`,
+  `history`) + `dto/DashboardDtos.kt` (nuevo). El contrato queda completo frente a `backlog/api.md`.
+- `AbysApiProvider` sin cambios: base URL dinámica (editable en Ajustes), `OkHttpClient` reutilizado
+  y reconstrucción perezosa de Retrofit al cambiar la URL.
+
+### 11.3 Cambios en los repositorios offline-first (`data/repository/**`)
+
+| Flujo | Cambio |
+|---|---|
+| **Ingresos** (`PagoRepositoryImpl`) | Escrituras atómicas vía `TransactionRunner`; los días que no cambian **conservan su fila local** (y su `serverId`); el borrado se rechaza **sin red** si hay realizadas (BR-005); el cambio de monto se rechaza si el pago tiene split (BR-081/422) |
+| **Splits** (`SplitRepositoryImpl`) | Se corrigió la detección de "el pago ya tiene split" (antes nunca se detectaba); el recálculo **persiste** el estado del split y congela las realizadas (BR-021); "marcar como realizada" se encola por el `localId` de la transacción y es idempotente |
+| **Dashboard** (`DashboardRepositoryImpl`) | Se mantiene el cálculo local (offline) y se añade `consultarServidor(mes, anio)`: contrasta el total local con `GET /dashboard/summary` y avisa si faltan datos |
+
+### 11.4 Cambios en la sincronización (`data/sync/**`)
+
+- **Pull**: la reconciliación se hace por **`serverId`** (antes por `localId`), lo que evita
+  insertar filas duplicadas y violar el índice único `serverId`; se conservan los `localId`
+  locales; las filas que el servidor ya no tiene se marcan como eliminadas (soft delete) **solo**
+  si la respuesta cubrió todos los registros.
+- **Push**: tras `POST /splits` y `PUT /splits/:id`, las transacciones del servidor **reemplazan**
+  a las locales conservando su `localId` (`SplitTransactionsSync`, nuevo) → "marcar como realizada"
+  pendiente se resuelve contra la fila correcta; se corrigió la actualización de "realizada", que
+  creaba una fila duplicada y perdía la `cuentaLocalId`.
+- **Push (pagos)**: tras `PUT /pagos/:id` se sincronizan los `serverId` de los días.
+
+### 11.5 Verificación
+
+```bash
+./gradlew :app:assembleDebug        # compila
+./gradlew :app:testDebugUnitTest    # 49 tests (34 previos + 15 nuevos de repositorios)
+```
+
+Tests nuevos (`app/src/test/.../data/repository/`): `PagoRepositoryImplTest` (7),
+`SplitRepositoryImplTest` (5), `DashboardRepositoryImplTest` (3), con MockK sobre los DAOs.

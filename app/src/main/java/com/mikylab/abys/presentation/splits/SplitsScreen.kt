@@ -49,7 +49,7 @@ fun SplitsScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Text("Splits", style = MaterialTheme.typography.headlineSmall)
+
             Text(
                 text = "Distribución de cada pago entre cuentas según sus tasas. " +
                     "Los splits pendientes se congelan al marcar cada transferencia como realizada.",

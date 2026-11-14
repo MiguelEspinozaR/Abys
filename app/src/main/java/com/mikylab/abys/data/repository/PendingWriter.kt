@@ -1,6 +1,5 @@
 package com.mikylab.abys.data.repository
 
-import com.mikylab.abys.data.local.AbysDatabase
 import com.mikylab.abys.data.local.dao.PendingOperationDao
 import com.mikylab.abys.data.local.entity.PendingOperationEntity
 import com.mikylab.abys.data.sync.SyncScheduler
@@ -15,7 +14,6 @@ import javax.inject.Singleton
  */
 @Singleton
 class PendingWriter @Inject constructor(
-    private val db: AbysDatabase,
     private val pendingDao: PendingOperationDao,
     private val syncScheduler: SyncScheduler,
 ) {

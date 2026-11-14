@@ -1,9 +1,8 @@
 package com.mikylab.abys.data.repository
 
-import androidx.room.withTransaction
 import com.mikylab.abys.core.result.AppError
 import com.mikylab.abys.core.result.AppResult
-import com.mikylab.abys.data.local.AbysDatabase
+import com.mikylab.abys.data.local.TransactionRunner
 import com.mikylab.abys.data.local.dao.FuenteDao
 import com.mikylab.abys.data.local.entity.FuenteEntity
 import com.mikylab.abys.data.mapper.DomainMappers.toDomain
@@ -20,9 +19,9 @@ import javax.inject.Singleton
 /** Repositorio de fuentes (local-first). */
 @Singleton
 class FuenteRepositoryImpl @Inject constructor(
-    private val db: AbysDatabase,
     private val fuenteDao: FuenteDao,
     private val pendingWriter: PendingWriter,
+    private val transactions: TransactionRunner,
 ) : FuenteRepository {
 
     override fun observeFuentes(): Flow<List<Fuente>> =
@@ -60,7 +59,7 @@ class FuenteRepositoryImpl @Inject constructor(
             updatedAtServer = null,
             lastError = null,
         )
-        db.withTransaction {
+        transactions.run {
             fuenteDao.upsert(entidad)
             pendingWriter.encolar(Operations.TIPO_FUENTE, localId, Operations.OP_UPSERT)
         }
@@ -91,7 +90,7 @@ class FuenteRepositoryImpl @Inject constructor(
             updatedAtLocal = System.currentTimeMillis(),
             lastError = null,
         )
-        db.withTransaction {
+        transactions.run {
             fuenteDao.upsert(actualizada)
             pendingWriter.encolar(Operations.TIPO_FUENTE, localId, Operations.OP_UPSERT)
         }
@@ -102,7 +101,7 @@ class FuenteRepositoryImpl @Inject constructor(
         val existente = fuenteDao.getPorId(localId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "fuente no encontrada"))
         val ahora = System.currentTimeMillis()
-        db.withTransaction {
+        transactions.run {
             if (existente.serverId == null) {
                 fuenteDao.marcarSincronizado(localId, SyncState.SYNCED, null, null, null)
             } else {
@@ -122,7 +121,7 @@ class FuenteRepositoryImpl @Inject constructor(
         val existente = fuenteDao.getPorId(localId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "fuente no encontrada"))
         val payload = """{"${Operations.PAYLOAD_ARCHIVO}":"$rutaArchivo"}"""
-        db.withTransaction {
+        transactions.run {
             fuenteDao.upsert(
                 existente.copy(
                     logoRuta = rutaArchivo,
@@ -143,7 +142,7 @@ class FuenteRepositoryImpl @Inject constructor(
     override suspend fun eliminarLogo(localId: String): AppResult<Unit> {
         val existente = fuenteDao.getPorId(localId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "fuente no encontrada"))
-        db.withTransaction {
+        transactions.run {
             fuenteDao.upsert(existente.copy(logoRuta = null, updatedAtLocal = System.currentTimeMillis()))
             pendingWriter.encolar(
                 Operations.TIPO_FUENTE,

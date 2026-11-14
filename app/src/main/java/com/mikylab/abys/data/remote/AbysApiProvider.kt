@@ -39,8 +39,11 @@ class AbysApiProvider @Inject constructor(
         val current = cachedApi
         if (current != null && cachedBaseUrl == base) return current
 
+        // Retrofit exige que la base URL termine en "/".
+        val baseUrl = if (base.endsWith("/")) base else "$base/"
+
         val retrofit = Retrofit.Builder()
-            .baseUrl(base)
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()

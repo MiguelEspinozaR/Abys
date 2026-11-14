@@ -24,9 +24,6 @@ object ValidarPagoUseCase {
         if (draft.monto.centavos < 0) {
             return Resultado.Error("el monto del pago no puede ser negativo")
         }
-        if (draft.fechaPago == null) {
-            return Resultado.Error("fecha inválida, use YYYY-MM-DD")
-        }
         if (!metodosPermitidos.contains(draft.metodoPago.wire)) {
             return Resultado.Error(
                 "método de pago inválido; use: ${metodosPermitidos.joinToString(", ")}",

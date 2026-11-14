@@ -52,6 +52,10 @@ object DateFormats {
     /** `"agosto 2026"` — usado en los títulos del dashboard. */
     fun mesAnio(fecha: LocalDate): String = fecha.format(mesLargo)
 
+    /** Igual que [mesAnio] pero con la inicial en mayúscula ("Agosto 2026"). */
+    fun mesAnioTitulo(fecha: LocalDate): String =
+        mesAnio(fecha).replaceFirstChar { it.uppercase(locale) }
+
     /** `toISODate` — `LocalDate` → `"YYYY-MM-DD"`. */
     fun toIso(fecha: LocalDate): String = fecha.toString()
 

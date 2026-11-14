@@ -55,7 +55,7 @@ fun HealthScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("Salud del sistema", style = MaterialTheme.typography.headlineSmall)
+
                     Text(
                         text = state.ultimaComprobacion?.let {
                             "Última comprobación: ${DateFormats.horaLocal(it)}"

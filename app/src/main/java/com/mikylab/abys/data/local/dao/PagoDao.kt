@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import androidx.room.Transaction
 import com.mikylab.abys.data.local.entity.DiaTrabajadoEntity
 import com.mikylab.abys.data.local.entity.PagoEntity
@@ -13,6 +14,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PagoDao {
 
+    /**
+     * Listado paginado de pagos (mismo contrato que `GET /pagos`).
+     *
+     * `limit = Int.MAX_VALUE` equivale a "sin paginación"; `offset = (page - 1) * pageSize`.
+     */
     @Query(
         """
         SELECT p.* FROM pagos p
@@ -23,6 +29,7 @@ interface PagoDao {
           AND (:fuenteLocalId IS NULL OR p.fuenteLocalId = :fuenteLocalId)
           AND (:metodoPago IS NULL OR p.metodoPago = :metodoPago)
         ORDER BY p.fechaPago DESC, p.serverId DESC
+        LIMIT :limit OFFSET :offset
         """,
     )
     fun observePagos(
@@ -30,7 +37,28 @@ interface PagoDao {
         fechaFin: String?,
         fuenteLocalId: String?,
         metodoPago: String?,
+        limit: Int,
+        offset: Int,
     ): Flow<List<PagoEntity>>
+
+    /** Total de pagos que cumplen el filtro (para la paginación de Ingresos). */
+    @Query(
+        """
+        SELECT COUNT(*) FROM pagos p
+        JOIN fuentes f ON f.localId = p.fuenteLocalId
+        WHERE p.deletedAt IS NULL
+          AND (:fechaInicio IS NULL OR p.fechaPago >= :fechaInicio)
+          AND (:fechaFin IS NULL OR p.fechaPago <= :fechaFin)
+          AND (:fuenteLocalId IS NULL OR p.fuenteLocalId = :fuenteLocalId)
+          AND (:metodoPago IS NULL OR p.metodoPago = :metodoPago)
+        """,
+    )
+    suspend fun contarPagos(
+        fechaInicio: String?,
+        fechaFin: String?,
+        fuenteLocalId: String?,
+        metodoPago: String?,
+    ): Int
 
     @Query("SELECT * FROM pagos WHERE localId = :localId")
     fun observePorId(localId: String): Flow<PagoEntity?>
@@ -44,10 +72,10 @@ interface PagoDao {
     @Query("SELECT * FROM pagos WHERE deletedAt IS NULL")
     suspend fun getAll(): List<PagoEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsert(pago: PagoEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertAll(pagos: List<PagoEntity>)
 
     @Query(
@@ -93,10 +121,10 @@ interface PagoDao {
     @Query("SELECT * FROM dias_trabajados")
     suspend fun getAllDias(): List<DiaTrabajadoEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertDias(dias: List<DiaTrabajadoEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertDia(dia: DiaTrabajadoEntity)
 
     @Query("DELETE FROM dias_trabajados WHERE pagoLocalId = :pagoLocalId")

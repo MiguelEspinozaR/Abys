@@ -1,9 +1,8 @@
 package com.mikylab.abys.data.repository
 
-import androidx.room.withTransaction
 import com.mikylab.abys.core.result.AppError
 import com.mikylab.abys.core.result.AppResult
-import com.mikylab.abys.data.local.AbysDatabase
+import com.mikylab.abys.data.local.TransactionRunner
 import com.mikylab.abys.data.local.dao.CuentaDao
 import com.mikylab.abys.data.local.entity.CuentaEntity
 import com.mikylab.abys.data.mapper.DomainMappers.toDomain
@@ -22,10 +21,10 @@ import javax.inject.Singleton
 /** Repositorio de cuentas (local-first). */
 @Singleton
 class CuentaRepositoryImpl @Inject constructor(
-    private val db: AbysDatabase,
     private val cuentaDao: CuentaDao,
     private val pendingWriter: PendingWriter,
     private val generalRateHelper: GeneralRateHelper,
+    private val transactions: TransactionRunner,
 ) : CuentaRepository {
 
     override fun observeCuentas(): Flow<List<Cuenta>> =
@@ -62,7 +61,7 @@ class CuentaRepositoryImpl @Inject constructor(
             updatedAtServer = null,
             lastError = null,
         )
-        db.withTransaction {
+        transactions.run {
             cuentaDao.upsert(entidad)
             pendingWriter.encolar(Operations.TIPO_CUENTA, localId, Operations.OP_UPSERT)
         }
@@ -91,7 +90,7 @@ class CuentaRepositoryImpl @Inject constructor(
             updatedAtLocal = System.currentTimeMillis(),
             lastError = null,
         )
-        db.withTransaction {
+        transactions.run {
             cuentaDao.upsert(actualizada)
             pendingWriter.encolar(Operations.TIPO_CUENTA, localId, Operations.OP_UPSERT)
         }
@@ -110,7 +109,7 @@ class CuentaRepositoryImpl @Inject constructor(
             )
         }
         val ahora = System.currentTimeMillis()
-        db.withTransaction {
+        transactions.run {
             if (existente.serverId == null) {
                 cuentaDao.marcarSincronizado(localId, SyncState.SYNCED, null, null, null, null, null)
             } else {
@@ -130,7 +129,7 @@ class CuentaRepositoryImpl @Inject constructor(
         val existente = cuentaDao.getPorId(localId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "cuenta no encontrada"))
         val payload = """{"${Operations.PAYLOAD_ARCHIVO}":"$rutaArchivo"}"""
-        db.withTransaction {
+        transactions.run {
             cuentaDao.upsert(
                 existente.copy(qrRuta = rutaArchivo, updatedAtLocal = System.currentTimeMillis()),
             )
@@ -148,7 +147,7 @@ class CuentaRepositoryImpl @Inject constructor(
     override suspend fun eliminarQr(localId: String): AppResult<Unit> {
         val existente = cuentaDao.getPorId(localId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "cuenta no encontrada"))
-        db.withTransaction {
+        transactions.run {
             cuentaDao.upsert(existente.copy(qrRuta = null, updatedAtLocal = System.currentTimeMillis()))
             pendingWriter.encolar(
                 Operations.TIPO_CUENTA,
@@ -199,7 +198,7 @@ class CuentaRepositoryImpl @Inject constructor(
 
         val payload = """{"${Operations.PAYLOAD_TASA}":$tasaPorcentaje,""" +
             """"${Operations.PAYLOAD_APLICAR}":$aplicarPendientes}"""
-        db.withTransaction {
+        transactions.run {
             cuentaDao.upsert(
                 existente.copy(
                     tasaBps = nuevaBps,

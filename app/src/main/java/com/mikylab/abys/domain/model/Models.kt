@@ -154,6 +154,20 @@ data class PuntoHistorial(
     val cantidadPagos: Int,
 )
 
+/**
+ * Resumen del mes calculado por el **servidor** (`GET /dashboard/summary`).
+ *
+ * Se usa para contrastar el resumen local (calculado sobre Room): si difieren, significa que
+ * al espejo local le faltan pagos → la app avisa de que hay datos por sincronizar.
+ */
+data class DashboardResumenServidor(
+    val mes: Int,
+    val anio: Int,
+    val total: Money,
+    val cantidadPagos: Int,
+    val diasTrabajados: Int,
+)
+
 /** Barras del gráfico semanal (siempre 7 días). */
 data class BarraDia(
     val fecha: LocalDate,

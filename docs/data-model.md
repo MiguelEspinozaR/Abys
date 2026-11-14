@@ -301,15 +301,34 @@ data class CuentaConHistorial(
 | DAO | Observables (Flow) | Escrituras | Notas |
 |---|---|---|---|
 | `FuenteDao` | `observeActivas()`, `observePorId(localId)` | `upsert`, `upsertAll`, `marcarSincronizado`, `softDelete`, `pendientes()` | |
-| `PagoDao` | `observeConDetalle(filtros)`, `observePorId`, `observeRecientes` | `upsert`, `upsertAll`, `softDelete`, `pendientes()` | Filtros: fecha, fuente, método, paginación |
-| `DiaTrabajadoDao` | `observePorPago(pagoLocalId)` | `upsertAll`, `replacePorPago`, `borrarPorPago` | |
+| `PagoDao` | `observePagos(filtros, limit, offset)`, `observePorId`, `observeTodosLosDias()` | `upsert`, `upsertAll`, `marcarSincronizado`, `marcarEliminado`, `pendientes()` | Filtros: fecha, fuente, método; paginación `limit/offset`; `contarPagos(filtros)` para el total |
+| `DiaTrabajadoDao` | `observePorPago(pagoLocalId)` | `upsertAll`, `reemplazarDias`, `borrarPorPago` | `reemplazarDias` es atómica |
 | `CuentaDao` | `observeActivas()`, `observeGeneral()` | `upsert`, `upsertAll`, `softDelete` | |
 | `HistorialTasaDao` | `observePorCuenta(cuentaLocalId)` | `insert`, `tasaVigente(cuentaLocalId)` | vigente = `aplicadaDesde DESC, id DESC` |
-| `SplitDao` | `observePorPago`, `observeConTransacciones` | `upsert`, `replaceTransacciones` | 1 split por pago (índice único) |
-| `TransaccionDao` | `observePorSplit`, `pendientes()` | `upsertAll`, `marcarRealizada`, `replacePorSplit` | |
+| `SplitDao` | `observePorPago`, `observeTodos` | `upsert`, `reemplazarTransacciones` | 1 split por pago (índice único); `getPorPago(pagoLocalId)` para la comprobación local (BR-030) |
+| `TransaccionDao` | `observePorSplit`, `pendientes()` | `upsertAll`, `marcarRealizada`, `replacePorSplit` | `contarTransaccionesRealizadas(pagoLocalId)` replica `HasTransaccionesRealizadas` (BR-005) |
 | `SettingDao` | `observeModoDefault()` | `upsert` | |
 | `PendingOperationDao` | `pendientes()` | `encolar`, `completar`, `actualizarIntento` | orden por `createdAt` |
 | `SyncStateDao` | `observe()` | `upsert` | singleton |
+
+### 4.1 Frontera transaccional
+
+Las escrituras offline-first (fila + operación en la cola) deben ser **atómicas**. Para poder
+testear los repositorios en la JVM (sin Android), esa frontera se abstrae:
+
+```kotlin
+// data/local/TransactionRunner.kt
+interface TransactionRunner {
+    suspend fun <R> run(block: suspend () -> R): R
+}
+
+class RoomTransactionRunner @Inject constructor(private val db: AbysDatabase) : TransactionRunner {
+    override suspend fun <R> run(block: suspend () -> R): R = db.withTransaction { block() }
+}
+```
+
+En producción se inyecta `RoomTransactionRunner` (Hilt); en los tests, un doble que ejecuta el
+bloque directamente (`app/src/test/.../data/repository/*Test.kt`).
 
 Consultas clave:
 
@@ -437,10 +456,18 @@ Reglas que **debe** respetar (idénticas al backend):
 | Crear split | `POST /splits` | Tras el push, **se reemplaza** el split local por el del servidor |
 | Recalcular split | `PUT /splits/{id}` | |
 | Eliminar split | `DELETE /splits/{id}` | 409 si hay realizadas |
-| Marcar realizada | `PUT /transacciones/{id}/realizar` | Irreversible: al fallar, la UI avisa |
+| Marcar realizada | `PUT /transacciones/{id}/realizar` | Irreversible: al fallar, la UI avisa. La operación se encola por el `localId` de la transacción: en el push se resuelve su `serverId` (puede no existir todavía → reintento tras subir el split) |
 | Modo por defecto | `PUT /settings/split` | |
 
 **Orden de push** (respeta dependencias): `fuentes → cuentas → pagos → días → splits → transacciones → settings`.
+
+**Respuesta del servidor como autoridad**: tras `POST /splits` o `PUT /splits/:id`, las
+transacciones devueltas por el servidor **reemplazan** a las locales (`SplitTransactionsSync`),
+conservando el `localId` de las filas que ya existían. Así:
+- no se duplican transacciones,
+- las operaciones encoladas por `localId` (p. ej. "marcar como realizada") siguen resolviendo a
+  la misma fila,
+- una realización marcada **en local** no se deshace (gana el cambio local).
 
 **Idempotencia**: cada operación lleva `serverId` cuando ya existe; las operaciones de tipo
 `PENDING_CREATE` se reintentan con el mismo payload. Si el servidor responde `404` al actualizar,
@@ -452,17 +479,29 @@ se degrada a `PENDING_CREATE` (la fila se recrea). Si responde `409`/`422`, la o
 Orden de refresco: `fuentes → cuentas (+historial) → pagos (+días) → splits (+transacciones) → settings`.
 El dashboard **no** se persiste: se calcula **localmente** sobre `pagos` (misma agregación que el
 backend: `EXTRACT(YEAR/MONTH)`, días distintos, etc.) — así el dashboard funciona offline y no
-requiere 5 endpoints por refresh.
+requiere 5 endpoints por refresh. El endpoint `GET /dashboard/summary` sí se usa para **contrastar**
+el total local con el del servidor (`DashboardRepository.consultarServidor`): si el servidor tiene
+más, la UI avisa de que faltan datos y se encola una sincronización completa.
+
+**Identidad de la reconciliación**: la fila local y la remota se emparejan por **`serverId`**
+(nunca por `localId`, porque una fila creada en el dispositivo tiene UUID y la descargada del
+servidor `srv-<id>`). Si no se emparejasen por `serverId`, el pull insertaría una fila duplicada
+y chocaría con el índice único `serverId`.
 
 Reconciliación pull:
 
 | Situación | Acción |
 |---|---|
-| Fila local `SYNCED` y el servidor trae cambios (`updated_at` > `updatedAtServer`) | Sobrescribir local, `syncState = SYNCED` |
+| Fila local `SYNCED` y el servidor trae cambios (`updated_at` > `updatedAtServer`) | Sobrescribir local (conservando su `localId`), `syncState = SYNCED` |
 | Fila local `PENDING_*` | **No** sobrescribir (el cambio local gana); se encola el pull después del push |
 | Fila en el servidor que no existe local | Insertar (`SYNCED`) |
 | Fila local `SYNCED` que ya no está en el servidor | Soft delete local (`deletedAt`) |
 | Fila local `PENDING_DELETE` confirmada por el servidor | Marcar `SYNCED` + `deletedAt` |
+| Transacciones del split | Se reemplazan por las del servidor conservando el `localId` (§7.2) |
+
+> El borrado lógico por ausencia solo se aplica cuando la respuesta del servidor cubrió **todos**
+> los registros (`meta.total <= tamaño de la respuesta`); si la paginación quedó incompleta, no se
+> marca nada como eliminado (se registra un aviso en el log).
 
 ### 7.4 Cola de pendientes (`pending_operations`)
 

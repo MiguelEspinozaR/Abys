@@ -1,15 +1,20 @@
 package com.mikylab.abys.data.repository
 
 import com.mikylab.abys.core.money.Money
+import com.mikylab.abys.core.result.AppResult
 import com.mikylab.abys.data.local.dao.DashboardDao
 import com.mikylab.abys.data.local.dao.PagoDao
+import com.mikylab.abys.data.remote.AbysApiProvider
+import com.mikylab.abys.data.remote.safeApiCall
 import com.mikylab.abys.domain.model.BarraDia
 import com.mikylab.abys.domain.model.BarraMes
 import com.mikylab.abys.domain.model.BarraSemana
+import com.mikylab.abys.domain.model.DashboardResumenServidor
 import com.mikylab.abys.domain.model.DashboardSummary
 import com.mikylab.abys.domain.model.PuntoHistorial
 import com.mikylab.abys.domain.repository.DashboardRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import java.time.YearMonth
@@ -17,26 +22,30 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Dashboard calculado localmente sobre Room.
+ * Dashboard del flujo **Dashboard**: se calcula **localmente** sobre Room.
  *
- * Replica la semántica de los endpoints de dashboard:
+ * Replica la semántica de los endpoints de dashboard del backend:
  * - `summary`: Σ montos y nº de pagos con `fecha_pago` en el mes + nº de **días distintos**
  *   trabajados en el mes (de pagos activos);
  * - `weekly`: 7 días (lunes→domingo) de la semana que contiene la fecha, rellenados con ceros;
  * - `monthly`: semanas de 7 días desde el día 1, la última recortada al final del mes;
  * - `yearly`: 12 meses rellenados con ceros;
  * - `history`: agrupación `(anio, mes)` de pagos activos.
+ *
+ * Así el dashboard funciona **sin conexión**; [consultarServidor] permite contrastar el total
+ * local con el del backend para detectar que al espejo local le faltan pagos.
  */
 @Singleton
 class DashboardRepositoryImpl @Inject constructor(
     private val dashboardDao: DashboardDao,
     private val pagoDao: PagoDao,
+    private val apiProvider: AbysApiProvider,
 ) : DashboardRepository {
 
     override fun observeResumen(mes: Int, anio: Int): Flow<DashboardSummary> {
         val inicio = YearMonth.of(anio, mes).atDay(1).toString()
         val fin = YearMonth.of(anio, mes).atEndOfMonth().toString()
-        return kotlinx.coroutines.flow.combine(
+        return combine(
             dashboardDao.observeTotales(inicio, fin),
             dashboardDao.observeDiasTrabajados(inicio, fin),
         ) { totales, dias ->
@@ -67,7 +76,7 @@ class DashboardRepositoryImpl @Inject constructor(
         val lunes = fecha.minusDays(offset.toLong())
         val domingo = lunes.plusDays(6)
         return pagoDao
-            .observePagos(lunes.toString(), domingo.toString(), null, null)
+            .observePagos(lunes.toString(), domingo.toString(), null, null, SIN_PAGINACION, 0)
             .map { pagos ->
                 val porFecha = pagos.groupBy { it.fechaPago }
                 (0L..6L).map { offsetDia ->
@@ -87,15 +96,15 @@ class DashboardRepositoryImpl @Inject constructor(
         val inicio = ym.atDay(1)
         val fin = ym.atEndOfMonth()
         return pagoDao
-            .observePagos(inicio.toString(), fin.toString(), null, null)
+            .observePagos(inicio.toString(), fin.toString(), null, null, SIN_PAGINACION, 0)
             .map { pagos ->
-                val grupos = pagos.groupBy { it.fechaPago }
+                val porFecha = pagos.groupBy { it.fechaPago }
                 val numSemanas = ((fin.dayOfMonth - 1) / 7) + 1
                 (1..numSemanas).map { semana ->
                     val desde = inicio.plusDays(((semana - 1) * 7).toLong())
                     val hasta = minOf(inicio.plusDays((semana * 7 - 1).toLong()), fin)
-                    val delRango = grupos.filter { (_, lista) ->
-                        lista.any { pago -> pago.fechaPago in desde.toString()..hasta.toString() }
+                    val delRango = porFecha.filterKeys { fecha ->
+                        fecha >= desde.toString() && fecha <= hasta.toString()
                     }.values.flatten()
                     BarraSemana(
                         semana = semana,
@@ -109,7 +118,7 @@ class DashboardRepositoryImpl @Inject constructor(
     }
 
     override fun observeAnio(anio: Int): Flow<List<BarraMes>> =
-        pagoDao.observePagos("$anio-01-01", "$anio-12-31", null, null).map { pagos ->
+        pagoDao.observePagos("$anio-01-01", "$anio-12-31", null, null, SIN_PAGINACION, 0).map { pagos ->
             val porMes = pagos.groupBy { it.fechaPago.substring(5, 7).toIntOrNull() ?: 0 }
             (1..12).map { mes ->
                 val delMes = porMes[mes].orEmpty()
@@ -120,4 +129,32 @@ class DashboardRepositoryImpl @Inject constructor(
                 )
             }
         }
+
+    /**
+     * Resumen del mes según el **servidor** (`GET /dashboard/summary`).
+     *
+     * Se usa para contrastar con el resumen local: si el total del servidor es mayor, al espejo
+     * local le faltan pagos (habitual tras instalar la app en otro dispositivo o tras un push
+     * fallido) y conviene avisar al usuario.
+     */
+    override suspend fun consultarServidor(mes: Int, anio: Int): AppResult<DashboardResumenServidor> =
+        safeApiCall {
+            val dto = apiProvider.api().dashboardSummary(mes, anio).data
+                ?: throw com.mikylab.abys.core.result.AppErrorException(
+                    code = com.mikylab.abys.core.result.AppError.CODE_UNKNOWN,
+                    message = "El servidor no devolvió el resumen del dashboard",
+                )
+            DashboardResumenServidor(
+                mes = dto.mes,
+                anio = dto.anio,
+                total = Money(dto.totalCentavos),
+                cantidadPagos = dto.cantidadPagos,
+                diasTrabajados = dto.diasTrabajados,
+            )
+        }
+
+    private companion object {
+        /** Sin paginación (el dashboard necesita todos los pagos del rango). */
+        const val SIN_PAGINACION = Int.MAX_VALUE
+    }
 }

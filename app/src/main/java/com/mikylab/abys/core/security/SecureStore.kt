@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.mikylab.abys.core.security
 
 import android.content.Context
@@ -12,10 +14,15 @@ import javax.inject.Singleton
  * Almacenamiento cifrado (AES256) para credenciales y configuración sensible.
  *
  * Usa `EncryptedSharedPreferences` (AndroidX Security). **Nunca** se escribe en texto plano.
+ *
+ * Nota: AndroidX Security está en fase de *deprecation* upstream (recomienda las APIs de
+ * plataforma), pero se mantiene aquí porque el requisito del proyecto es explícito: los
+ * tokens y la URL base deben vivir en `EncryptedSharedPreferences`.
  */
+@Suppress("DEPRECATION")
 @Singleton
 class SecureStore @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) {
 
     private val prefs: SharedPreferences by lazy { createPrefs() }

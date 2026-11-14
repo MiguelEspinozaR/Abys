@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.mikylab.abys.data.local.entity.AppSettingEntity
 import com.mikylab.abys.data.local.entity.PendingOperationEntity
 import com.mikylab.abys.data.local.entity.SyncStateEntity
@@ -19,7 +20,7 @@ interface SettingDao {
     @Query("SELECT * FROM app_settings WHERE clave = :clave")
     suspend fun get(clave: String): AppSettingEntity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsert(setting: AppSettingEntity)
 }
 
@@ -66,7 +67,7 @@ interface SyncStateDao {
     @Query("SELECT * FROM sync_state WHERE id = 1")
     suspend fun get(): SyncStateEntity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsert(estado: SyncStateEntity)
 
     @Query("UPDATE sync_state SET ultimoSyncOk = :ok, ultimoIntento = :intento, ultimoError = :error, pendientes = :pendientes WHERE id = 1")

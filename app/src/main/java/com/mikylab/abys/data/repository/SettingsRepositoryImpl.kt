@@ -1,9 +1,8 @@
 package com.mikylab.abys.data.repository
 
-import androidx.room.withTransaction
 import com.mikylab.abys.core.result.AppError
 import com.mikylab.abys.core.result.AppResult
-import com.mikylab.abys.data.local.AbysDatabase
+import com.mikylab.abys.data.local.TransactionRunner
 import com.mikylab.abys.data.local.dao.SettingDao
 import com.mikylab.abys.data.local.entity.AppSettingEntity
 import com.mikylab.abys.data.remote.AbysApiProvider
@@ -22,9 +21,9 @@ import javax.inject.Singleton
 /** Configuración global (modo de split por defecto). */
 @Singleton
 class SettingsRepositoryImpl @Inject constructor(
-    private val db: AbysDatabase,
     private val settingDao: SettingDao,
     private val pendingWriter: PendingWriter,
+    private val transactions: TransactionRunner,
 ) : SettingsRepository {
 
     override fun observeSplitSettings(): Flow<SplitSettings> =
@@ -37,7 +36,7 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override suspend fun setModoDefault(modo: String): AppResult<Unit> {
         val modoCalculo = ModoCalculo.fromWire(modo)
-        db.withTransaction {
+        transactions.run {
             settingDao.upsert(
                 AppSettingEntity(
                     clave = CLAVE_MODO_DEFAULT,

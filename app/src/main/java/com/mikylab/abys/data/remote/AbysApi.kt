@@ -9,6 +9,11 @@ import com.mikylab.abys.data.remote.dto.CrearCuentaRequest
 import com.mikylab.abys.data.remote.dto.CrearFuenteRequest
 import com.mikylab.abys.data.remote.dto.CrearPagoRequest
 import com.mikylab.abys.data.remote.dto.CrearPagoResponse
+import com.mikylab.abys.data.remote.dto.DashboardHistoryDto
+import com.mikylab.abys.data.remote.dto.DashboardMonthlyDto
+import com.mikylab.abys.data.remote.dto.DashboardSummaryDto
+import com.mikylab.abys.data.remote.dto.DashboardWeeklyDto
+import com.mikylab.abys.data.remote.dto.DashboardYearlyDto
 import com.mikylab.abys.data.remote.dto.EliminadoResponse
 import com.mikylab.abys.data.remote.dto.FuenteDto
 import com.mikylab.abys.data.remote.dto.GenerarSplitRequest
@@ -192,6 +197,31 @@ interface AbysApi {
     suspend fun actualizarSplitSettings(
         @Body body: SplitSettingsRequest,
     ): ApiEnvelope<SplitSettingsDto>
+
+    // ── Dashboard ───────────────────────────────────────────────────────────
+
+    @GET("dashboard/summary")
+    suspend fun dashboardSummary(
+        @Query("mes") mes: Int,
+        @Query("anio") anio: Int,
+    ): ApiEnvelope<DashboardSummaryDto>
+
+    @GET("dashboard/weekly")
+    suspend fun dashboardWeekly(
+        @Query("fecha") fecha: String? = null,
+    ): ApiEnvelope<DashboardWeeklyDto>
+
+    @GET("dashboard/monthly")
+    suspend fun dashboardMonthly(
+        @Query("mes") mes: Int,
+        @Query("anio") anio: Int,
+    ): ApiEnvelope<DashboardMonthlyDto>
+
+    @GET("dashboard/yearly")
+    suspend fun dashboardYearly(@Query("anio") anio: Int): ApiEnvelope<DashboardYearlyDto>
+
+    @GET("dashboard/history")
+    suspend fun dashboardHistory(): ApiEnvelope<DashboardHistoryDto>
 
     // ── Health ──────────────────────────────────────────────────────────────
 

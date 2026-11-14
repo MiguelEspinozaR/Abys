@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import androidx.room.Transaction
 import com.mikylab.abys.data.local.entity.SplitEntity
 import com.mikylab.abys.data.local.entity.TransaccionEntity
@@ -19,6 +20,10 @@ interface SplitDao {
     @Query("SELECT * FROM splits WHERE pagoLocalId = :pagoLocalId LIMIT 1")
     fun observePorPago(pagoLocalId: String): Flow<SplitEntity?>
 
+    /** Split de un pago (consulta puntual, no reactiva). */
+    @Query("SELECT * FROM splits WHERE pagoLocalId = :pagoLocalId LIMIT 1")
+    suspend fun getPorPago(pagoLocalId: String): SplitEntity?
+
     @Query("SELECT * FROM splits WHERE localId = :localId")
     fun observePorId(localId: String): Flow<SplitEntity?>
 
@@ -31,10 +36,10 @@ interface SplitDao {
     @Query("SELECT * FROM splits")
     suspend fun getAll(): List<SplitEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsert(split: SplitEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertAll(splits: List<SplitEntity>)
 
     @Query(
@@ -87,10 +92,10 @@ interface SplitDao {
     @Query("SELECT * FROM transacciones")
     suspend fun getAllTransacciones(): List<TransaccionEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertTransacciones(transacciones: List<TransaccionEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertTransaccion(transaccion: TransaccionEntity)
 
     @Query(
@@ -130,4 +135,18 @@ interface SplitDao {
 
     @Query("DELETE FROM transacciones WHERE splitLocalId = :splitLocalId")
     suspend fun borrarDelSplit(splitLocalId: String)
+
+    /**
+     * Nº de transacciones **realizadas** de un pago (a través de su split).
+     * Replica `PagoRepo.HasTransaccionesRealizadas` (BR-005) para poder validar el borrado
+     * de un pago **sin red**.
+     */
+    @Query(
+        """
+        SELECT COUNT(*) FROM transacciones t
+        JOIN splits s ON s.localId = t.splitLocalId
+        WHERE s.pagoLocalId = :pagoLocalId AND t.realizado = 1
+        """,
+    )
+    suspend fun contarTransaccionesRealizadas(pagoLocalId: String): Int
 }

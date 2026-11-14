@@ -6,18 +6,26 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Layers
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -52,14 +60,56 @@ fun DashboardScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Text("Dashboard", style = MaterialTheme.typography.headlineSmall)
-            Text(
-                text = "Resumen del mes de ${DateFormats.mesAnio(
-                    java.time.LocalDate.of(state.anio, state.mes, 1),
-                )}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Resumen del mes de ${DateFormats.mesAnioTitulo(java.time.LocalDate.of(state.anio, state.mes, 1))}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                IconButton(onClick = viewModel::refrescar, enabled = !state.consultandoServidor) {
+                    if (state.consultandoServidor) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            strokeWidth = 2.dp,
+                        )
+                    } else {
+                        Icon(Icons.Filled.Refresh, contentDescription = "Contrastar con el servidor")
+                    }
+                }
+            }
+        }
+
+        if (state.faltanDatos) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    ),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(Icons.Filled.Warning, contentDescription = null)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("Faltan datos por sincronizar", style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                text = "El servidor tiene " +
+                                    "${state.resumenServidor?.total?.centavos?.formatBs() ?: "—"} " +
+                                    "en este mes y la app tiene menos.",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                        TextButton(onClick = viewModel::refrescar) { Text("Reintentar") }
+                    }
+                }
+            }
         }
 
         item {
@@ -121,10 +171,10 @@ fun DashboardScreen(
                         }
                         Row {
                             IconButton(onClick = viewModel::semanaAnterior) {
-                                Icon(Icons.Filled.CalendarMonth, contentDescription = "Anterior: Semanal")
+                                Icon(Icons.Filled.ChevronLeft, contentDescription = "Anterior: Semanal")
                             }
                             IconButton(onClick = viewModel::semanaSiguiente) {
-                                Icon(Icons.Filled.CalendarMonth, contentDescription = "Siguiente: Semanal")
+                                Icon(Icons.Filled.ChevronRight, contentDescription = "Siguiente: Semanal")
                             }
                         }
                     }
@@ -150,7 +200,7 @@ fun DashboardScreen(
                             Text("Mensual", style = MaterialTheme.typography.titleSmall)
                             Text(
                                 text = "Distribución por semana · ${
-                                    DateFormats.mesAnio(java.time.LocalDate.of(state.anio, state.mes, 1))
+                                    DateFormats.mesAnioTitulo(java.time.LocalDate.of(state.anio, state.mes, 1))
                                 }",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -158,10 +208,10 @@ fun DashboardScreen(
                         }
                         Row {
                             IconButton(onClick = viewModel::mesAnterior) {
-                                Icon(Icons.Filled.CalendarMonth, contentDescription = "Anterior: Mensual")
+                                Icon(Icons.Filled.ChevronLeft, contentDescription = "Anterior: Mensual")
                             }
                             IconButton(onClick = viewModel::mesSiguiente) {
-                                Icon(Icons.Filled.CalendarMonth, contentDescription = "Siguiente: Mensual")
+                                Icon(Icons.Filled.ChevronRight, contentDescription = "Siguiente: Mensual")
                             }
                         }
                     }

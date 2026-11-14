@@ -30,6 +30,8 @@ class AbysApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        // Sincronización periódica (push + pull) + refresco inmediato al abrir la app.
         syncScheduler.schedulePeriodic()
+        syncScheduler.requestPull()
     }
 }

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.mikylab.abys.data.local.entity.CuentaEntity
 import com.mikylab.abys.data.local.entity.HistorialTasaEntity
 import com.mikylab.abys.domain.model.SyncState
@@ -30,10 +31,10 @@ interface CuentaDao {
     @Query("SELECT * FROM cuentas WHERE deletedAt IS NULL AND esGeneral = 1 ORDER BY serverId LIMIT 1")
     suspend fun getGeneral(): CuentaEntity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsert(cuenta: CuentaEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertAll(cuentas: List<CuentaEntity>)
 
     @Query(
@@ -86,9 +87,9 @@ interface CuentaDao {
     )
     suspend fun tasaVigente(cuentaLocalId: String): HistorialTasaEntity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertHistorial(entradas: List<HistorialTasaEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertHistorialEntrada(entrada: HistorialTasaEntity)
 }

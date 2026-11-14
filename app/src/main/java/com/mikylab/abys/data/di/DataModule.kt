@@ -3,6 +3,8 @@ package com.mikylab.abys.data.di
 import android.content.Context
 import androidx.room.Room
 import com.mikylab.abys.data.local.AbysDatabase
+import com.mikylab.abys.data.local.RoomTransactionRunner
+import com.mikylab.abys.data.local.TransactionRunner
 import com.mikylab.abys.data.local.dao.CuentaDao
 import com.mikylab.abys.data.local.dao.DashboardDao
 import com.mikylab.abys.data.local.dao.FuenteDao
@@ -71,4 +73,8 @@ abstract class RepositoryModule {
     @Binds abstract fun bindHealthRepository(impl: HealthRepositoryImpl): HealthRepository
     @Binds abstract fun bindDashboardRepository(impl: DashboardRepositoryImpl): DashboardRepository
     @Binds abstract fun bindSyncStatusRepository(impl: SyncStatusRepositoryImpl): SyncStatusRepository
+
+    /** Frontera transaccional de Room (permite testear los repositorios sin Android). */
+    @Binds @Singleton
+    abstract fun bindTransactionRunner(impl: RoomTransactionRunner): TransactionRunner
 }

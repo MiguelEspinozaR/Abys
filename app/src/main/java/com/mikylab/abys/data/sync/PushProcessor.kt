@@ -1,7 +1,6 @@
 package com.mikylab.abys.data.sync
 
 import com.mikylab.abys.core.result.AppError
-import com.mikylab.abys.data.local.AbysDatabase
 import com.mikylab.abys.data.local.dao.CuentaDao
 import com.mikylab.abys.data.local.dao.FuenteDao
 import com.mikylab.abys.data.local.dao.PagoDao
@@ -43,7 +42,6 @@ import javax.inject.Singleton
  */
 @Singleton
 class PushProcessor @Inject constructor(
-    private val db: AbysDatabase,
     private val apiProvider: AbysApiProvider,
     private val fuenteDao: FuenteDao,
     private val pagoDao: PagoDao,
@@ -52,6 +50,7 @@ class PushProcessor @Inject constructor(
     private val settingDao: SettingDao,
     private val pendingDao: PendingOperationDao,
     private val syncStateDao: SyncStateDao,
+    private val splitTransactionsSync: SplitTransactionsSync,
 ) {
 
     private sealed interface OpResult {
@@ -61,7 +60,16 @@ class PushProcessor @Inject constructor(
     }
 
     suspend fun push(): androidx.work.ListenableWorker.Result {
-        val api = apiProvider.api()
+        val api = try {
+            apiProvider.api()
+        } catch (e: IllegalArgumentException) {
+            // URL del backend inválida: no es reintentable hasta que el usuario la corrija.
+            registrarEstado(error = "URL del backend inválida: ${e.message}")
+            return androidx.work.ListenableWorker.Result.failure()
+        } catch (e: Throwable) {
+            registrarEstado(error = e.message ?: "No se pudo preparar el cliente HTTP")
+            return androidx.work.ListenableWorker.Result.retry()
+        }
         val ahora = System.currentTimeMillis()
         val operaciones = pendingDao.pendientes(ahora)
 
@@ -288,6 +296,8 @@ class PushProcessor @Inject constructor(
                 when (val res = call { api.eliminarPago(serverId) }) {
                     is CallResult.Error -> classify(res.error)
                     is CallResult.Ok -> {
+                        // El servidor hace soft delete: los días quedan huérfanos y se limpian.
+                        pagoDao.borrarDiasDe(pago.localId)
                         pagoDao.marcarSincronizado(pago.localId, SyncState.SYNCED, serverId, null, null)
                         OpResult.Done
                     }
@@ -347,7 +357,13 @@ class PushProcessor @Inject constructor(
                             pagoDao.getDias(pago.localId).forEach { dia ->
                                 val serverIdDia = idsPorFecha[dia.fecha]
                                 if (serverIdDia != null) {
-                                    pagoDao.upsertDia(dia.copy(serverId = serverIdDia))
+                                    pagoDao.upsertDia(
+                                        dia.copy(
+                                            serverId = serverIdDia,
+                                            syncState = SyncState.SYNCED,
+                                            updatedAtLocal = System.currentTimeMillis(),
+                                        ),
+                                    )
                                 }
                             }
                             OpResult.Done
@@ -383,6 +399,20 @@ class PushProcessor @Inject constructor(
                                     lastError = null,
                                 ),
                             )
+                            // El backend reemplaza los días: se sincronizan sus ids.
+                            val idsPorFecha = dto.diasTrabajados.associate { it.fecha to it.id }
+                            pagoDao.getDias(pago.localId).forEach { dia ->
+                                val serverIdDia = idsPorFecha[dia.fecha]
+                                if (serverIdDia != null && dia.serverId != serverIdDia) {
+                                    pagoDao.upsertDia(
+                                        dia.copy(
+                                            serverId = serverIdDia,
+                                            syncState = SyncState.SYNCED,
+                                            updatedAtLocal = System.currentTimeMillis(),
+                                        ),
+                                    )
+                                }
+                            }
                             OpResult.Done
                         }
                     }
@@ -426,6 +456,9 @@ class PushProcessor @Inject constructor(
                                     lastError = null,
                                 ),
                             )
+                            // El servidor es la autoridad del split: sus transacciones
+                            // reemplazan a las locales (conservando su `localId`).
+                            splitTransactionsSync.aplicar(split.localId, dto)
                             OpResult.Done
                         }
                     }
@@ -444,6 +477,7 @@ class PushProcessor @Inject constructor(
                                     lastError = null,
                                 ),
                             )
+                            splitTransactionsSync.aplicar(split.localId, dto)
                             OpResult.Done
                         }
                     }
@@ -453,25 +487,31 @@ class PushProcessor @Inject constructor(
     }
 
     private suspend fun ejecutarTransaccion(api: AbysApi, op: PendingOperationEntity): OpResult {
-        val serverId = op.serverId ?: return OpResult.Done
+        // La operación apunta al `localId` de la transacción: se resuelve en el momento del push
+        // porque su `serverId` puede existir ya (el split se sube antes) o no (aún no sincronizado).
+        val transaccion = splitDao.getTransaccion(op.entityLocalId)
+            ?: return OpResult.Done // la fila ya no existe: nada que enviar
+        if (transaccion.realizado && transaccion.syncState == SyncState.SYNCED) {
+            return OpResult.Done // ya está marcada como realizada en el servidor
+        }
+        val serverId = transaccion.serverId
+            ?: return OpResult.Retry("La transacción aún no existe en el servidor")
         return when (val res = call { api.marcarRealizada(serverId) }) {
             is CallResult.Error -> classify(res.error)
             is CallResult.Ok -> {
                 val dto = res.value.data
                 if (dto != null) {
+                    // Se actualiza **la misma fila local** (no se crea una nueva).
                     splitDao.upsertTransaccion(
-                        com.mikylab.abys.data.local.entity.TransaccionEntity(
-                            localId = com.mikylab.abys.data.remote.mapper.RemoteMappers.serverLocalId(dto.id),
+                        transaccion.copy(
                             serverId = dto.id,
-                            splitLocalId = op.entityLocalId,
-                            cuentaLocalId = null,
                             montoEnteros = dto.montoEnteros,
                             tasaBps = dto.tasaBps,
                             aliasSnapshot = dto.aliasSnapshot,
-                            realizado = dto.realizado,
-                            fechaRealizacion = com.mikylab.abys.core.time.DateFormats.parseInstant(dto.fechaRealizacion)?.toEpochMilli(),
-                            createdAt = System.currentTimeMillis(),
-                            updatedAt = System.currentTimeMillis(),
+                            realizado = true,
+                            fechaRealizacion = transaccion.fechaRealizacion
+                                ?: com.mikylab.abys.core.time.DateFormats.parseInstant(dto.fechaRealizacion)
+                                    ?.toEpochMilli(),
                             syncState = SyncState.SYNCED,
                             updatedAtLocal = System.currentTimeMillis(),
                             lastError = null,

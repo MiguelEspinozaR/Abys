@@ -5,6 +5,7 @@ import com.mikylab.abys.domain.model.BarraDia
 import com.mikylab.abys.domain.model.BarraMes
 import com.mikylab.abys.domain.model.BarraSemana
 import com.mikylab.abys.domain.model.Cuenta
+import com.mikylab.abys.domain.model.DashboardResumenServidor
 import com.mikylab.abys.domain.model.DashboardSummary
 import com.mikylab.abys.domain.model.FiltroPagos
 import com.mikylab.abys.domain.model.Fuente
@@ -26,6 +27,10 @@ interface PagoRepository {
     fun observePagos(filtro: FiltroPagos): Flow<List<Pago>>
     fun observePago(localId: String): Flow<Pago?>
     fun observePagosPorAnio(): Flow<Map<Int, List<Pago>>>
+
+    /** Total de pagos que cumplen el filtro (paginación de Ingresos). */
+    suspend fun contarPagos(filtro: FiltroPagos): Int
+
     suspend fun crearPago(draft: PagoDraft): AppResult<Pago>
     suspend fun actualizarPago(localId: String, draft: PagoDraft): AppResult<Pago>
     suspend fun eliminarPago(localId: String): AppResult<Unit>
@@ -96,6 +101,9 @@ interface HealthRepository {
 /**
  * Dashboard. Se calcula **localmente** sobre Room con la misma semántica que los endpoints
  * `dashboard` del backend, de modo que funciona sin conexión.
+ *
+ * [consultarServidor] permite contrastar el total local con el del backend para detectar que
+ * al espejo local le faltan datos (p. ej. tras instalar la app en otro dispositivo).
  */
 interface DashboardRepository {
     fun observeResumen(mes: Int, anio: Int): Flow<DashboardSummary>
@@ -103,6 +111,9 @@ interface DashboardRepository {
     fun observeSemana(fecha: java.time.LocalDate): Flow<List<BarraDia>>
     fun observeMes(mes: Int, anio: Int): Flow<List<BarraSemana>>
     fun observeAnio(anio: Int): Flow<List<BarraMes>>
+
+    /** Resumen del mes según el servidor (`GET /dashboard/summary`). */
+    suspend fun consultarServidor(mes: Int, anio: Int): AppResult<DashboardResumenServidor>
 }
 
 /** Estado de la sincronización (cola de pendientes y último error). */

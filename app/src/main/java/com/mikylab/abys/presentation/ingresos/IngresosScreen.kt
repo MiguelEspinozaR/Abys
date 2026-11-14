@@ -58,9 +58,12 @@ fun IngresosScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item {
-            Text("Ingresos", style = MaterialTheme.typography.headlineSmall)
             Text(
-                text = "${state.totalPagos} pagos registrados",
+                text = if (state.totalFiltrados > state.totalPagos) {
+                    "${state.totalPagos} de ${state.totalFiltrados} pagos registrados"
+                } else {
+                    "${state.totalPagos} pagos registrados"
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -168,6 +171,17 @@ fun IngresosScreen(
                     expandido = pago.localId in state.expanded,
                     onToggle = { viewModel.toggleExpandido(pago.localId) },
                 )
+            }
+        }
+
+        if (state.hayMas) {
+            item(key = "cargar-mas") {
+                TextButton(
+                    onClick = viewModel::cargarMas,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("Cargar más (${state.totalPagos} de ${state.totalFiltrados})")
+                }
             }
         }
     }
