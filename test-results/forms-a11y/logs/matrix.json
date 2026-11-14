@@ -52,7 +52,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3896,
+    "durationMs": 4071,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -105,7 +105,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4604,
+    "durationMs": 4430,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -138,7 +138,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4035,
+    "durationMs": 4417,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -171,7 +171,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3769,
+    "durationMs": 3480,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -199,7 +199,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2970,
+    "durationMs": 3060,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -232,7 +232,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3869,
+    "durationMs": 3630,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -275,7 +275,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4488,
+    "durationMs": 4550,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -343,7 +343,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3991,
+    "durationMs": 3776,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -367,7 +367,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2801,
+    "durationMs": 2873,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -411,7 +411,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4385,
+    "durationMs": 4290,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -455,7 +455,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4060,
+    "durationMs": 4239,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -484,7 +484,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3361,
+    "durationMs": 3422,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -527,7 +527,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5087,
+    "durationMs": 4936,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -556,7 +556,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3563,
+    "durationMs": 3796,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -589,7 +589,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3447,
+    "durationMs": 3361,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -627,7 +627,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2753,
+    "durationMs": 2904,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -685,7 +685,7 @@
       }
     ],
     "error": null,
-    "durationMs": 6637,
+    "durationMs": 6329,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -768,7 +768,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5465,
+    "durationMs": 5703,
     "console": [],
     "mockedNetwork": [
       {
@@ -841,7 +841,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5185,
+    "durationMs": 5585,
     "console": [],
     "mockedNetwork": [
       {
@@ -914,7 +914,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5397,
+    "durationMs": 5287,
     "console": [],
     "mockedNetwork": [
       {
@@ -987,7 +987,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5348,
+    "durationMs": 5188,
     "console": [],
     "mockedNetwork": [
       {
@@ -1055,7 +1055,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5182,
+    "durationMs": 5132,
     "console": [],
     "mockedNetwork": [
       {
@@ -1123,7 +1123,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5005,
+    "durationMs": 5149,
     "console": [],
     "mockedNetwork": [
       {
@@ -1191,7 +1191,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5356,
+    "durationMs": 5186,
     "console": [],
     "mockedNetwork": [
       {
@@ -1260,7 +1260,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5227,
+    "durationMs": 5126,
     "console": [],
     "mockedNetwork": [
       {
@@ -1328,7 +1328,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5187,
+    "durationMs": 5499,
     "console": [],
     "mockedNetwork": [
       {
@@ -1396,7 +1396,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5431,
+    "durationMs": 5249,
     "console": [],
     "mockedNetwork": [
       {
@@ -1464,7 +1464,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5407,
+    "durationMs": 5268,
     "console": [],
     "mockedNetwork": [
       {
@@ -1532,7 +1532,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4630,
+    "durationMs": 4774,
     "console": [],
     "mockedNetwork": [
       {
@@ -1600,7 +1600,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4923,
+    "durationMs": 4838,
     "console": [],
     "mockedNetwork": [
       {
@@ -1668,7 +1668,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4757,
+    "durationMs": 4664,
     "console": [],
     "mockedNetwork": [
       {
@@ -1736,7 +1736,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4685,
+    "durationMs": 4928,
     "console": [],
     "mockedNetwork": [
       {
@@ -1804,7 +1804,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4985,
+    "durationMs": 4878,
     "console": [],
     "mockedNetwork": [
       {
@@ -1873,7 +1873,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4773,
+    "durationMs": 4681,
     "console": [],
     "mockedNetwork": [
       {
@@ -1936,7 +1936,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4674,
+    "durationMs": 4818,
     "console": [],
     "mockedNetwork": [
       {
@@ -1999,7 +1999,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4935,
+    "durationMs": 4836,
     "console": [],
     "mockedNetwork": [
       {
@@ -2062,7 +2062,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4671,
+    "durationMs": 4731,
     "console": [],
     "mockedNetwork": [
       {
@@ -2131,7 +2131,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5508,
+    "durationMs": 5626,
     "console": [],
     "mockedNetwork": [
       {
@@ -2199,7 +2199,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5600,
+    "durationMs": 5551,
     "console": [],
     "mockedNetwork": [
       {
@@ -2268,7 +2268,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5648,
+    "durationMs": 5377,
     "console": [],
     "mockedNetwork": [
       {
@@ -2320,6 +2320,11 @@
         "detail": "dialog closed=true, monto=100,00"
       },
       {
+        "name": "R4.5: foco tras \"Seguir editando\" en el form (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"INPUT\",\"id\":\"monto\",\"text\":\"\",\"isBody\":false,\"insideForm\":true,\"inDialog\":null}"
+      },
+      {
         "name": "\"Descartar cambios\" navega a /ingresos",
         "pass": true,
         "detail": "http://localhost:5178/ingresos"
@@ -2331,7 +2336,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4569,
+    "durationMs": 4568,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2360,7 +2365,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3299,
+    "durationMs": 3492,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2393,7 +2398,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4646,
+    "durationMs": 4710,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2430,6 +2435,11 @@
         "detail": "monto=300,00"
       },
       {
+        "name": "R4.5: foco tras \"Seguir editando\" en el diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"text\":\"Close\",\"isBody\":false,\"insideForm\":false,\"inDialog\":\"dialog-content\"}"
+      },
+      {
         "name": "\"Descartar cambios\" cierra el diálogo",
         "pass": true,
         "detail": "ok"
@@ -2441,7 +2451,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5901,
+    "durationMs": 5737,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2467,10 +2477,15 @@
         "name": "Escape en la confirmación = seguir editando",
         "pass": true,
         "detail": "confirm closed=true, edit open=true, monto=300,00"
+      },
+      {
+        "name": "R4.5: foco tras Escape seguro en el diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"INPUT\",\"id\":\"edit-monto\",\"text\":\"\",\"isBody\":false,\"insideForm\":true,\"inDialog\":\"dialog-content\"}"
       }
     ],
     "error": null,
-    "durationMs": 4479,
+    "durationMs": 4513,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2492,13 +2507,18 @@
         "detail": "ok"
       },
       {
+        "name": "R4.5: foco tras \"Seguir editando\" (nav) en el diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"INPUT\",\"id\":\"edit-monto\",\"text\":\"\",\"isBody\":false,\"insideForm\":true,\"inDialog\":\"dialog-content\"} url=http://localhost:5178/ingresos"
+      },
+      {
         "name": "descartar navega a /splits",
         "pass": true,
         "detail": "http://localhost:5178/splits"
       }
     ],
     "error": null,
-    "durationMs": 4928,
+    "durationMs": 5711,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2528,10 +2548,498 @@
         "name": "seguir editando conserva el formulario",
         "pass": true,
         "detail": "ok"
+      },
+      {
+        "name": "R4.5: foco tras \"Seguir editando\" (OCR) en el form (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"INPUT\",\"id\":\"monto\",\"text\":\"\",\"isBody\":false,\"insideForm\":true,\"inDialog\":null}"
       }
     ],
     "error": null,
-    "durationMs": 3569,
+    "durationMs": 3728,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "fuente-nav",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "navegación SPA con Fuente dirty muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "screenshots/ac4-confirm-fuente-nav-m390-light.png"
+      },
+      {
+        "name": "título ¿Descartar cambios?",
+        "pass": true,
+        "detail": "¿Descartar cambios?"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\"",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "no se navegó (bloqueado)",
+        "pass": true,
+        "detail": "http://localhost:5178/configuracion"
+      },
+      {
+        "name": "\"Seguir editando\" conserva el formulario y no navega",
+        "pass": true,
+        "detail": "{\"valor\":\"Fuente harness\",\"url\":\"http://localhost:5178/configuracion\",\"dialogoAbierto\":true}"
+      },
+      {
+        "name": "R4.5: foco tras \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"INPUT\",\"id\":\"fuente-alias\",\"text\":\"\",\"isBody\":false,\"insideForm\":true,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "\"Descartar cambios\" navega a /ingresos",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      },
+      {
+        "name": "descartar no deja diálogos abiertos",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 escrituras de API",
+        "pass": true,
+        "detail": "{\"writes\":0,\"unexpected\":[]}"
+      }
+    ],
+    "error": null,
+    "durationMs": 6654,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "fuente-close",
+    "theme": "dark",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "cierre por X muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\" (X)",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "\"Seguir editando\" (X) conserva el formulario",
+        "pass": true,
+        "detail": "{\"valor\":\"Fuente harness\"}"
+      },
+      {
+        "name": "R4.5: foco tras X + \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"text\":\"Close\",\"isBody\":false,\"insideForm\":false,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "cierre por Escape muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\" (Escape)",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "\"Seguir editando\" (Escape) conserva el formulario",
+        "pass": true,
+        "detail": "{\"valor\":\"Fuente harness\"}"
+      },
+      {
+        "name": "R4.5: foco tras Escape + \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"text\":\"Close\",\"isBody\":false,\"insideForm\":false,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "cierre por backdrop muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\" (backdrop)",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "\"Seguir editando\" (backdrop) conserva el formulario",
+        "pass": true,
+        "detail": "{\"valor\":\"Fuente harness\"}"
+      },
+      {
+        "name": "R4.5: foco tras backdrop + \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"text\":\"Close\",\"isBody\":false,\"insideForm\":false,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "\"Descartar cambios\" cierra el diálogo sin navegar",
+        "pass": true,
+        "detail": "http://localhost:5178/configuracion"
+      },
+      {
+        "name": "0 escrituras de API",
+        "pass": true,
+        "detail": "{\"writes\":0,\"unexpected\":[]}"
+      },
+      {
+        "name": "cierre sin dirty cierra directo sin confirmación",
+        "pass": true,
+        "detail": "{\"alertas\":0,\"dialogos\":0}"
+      },
+      {
+        "name": "cierre sin dirty sin escrituras de API",
+        "pass": true,
+        "detail": "{\"writes\":0}"
+      }
+    ],
+    "error": null,
+    "durationMs": 12835,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "cuenta-nav",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "navegación SPA con Cuenta dirty muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "screenshots/ac4-confirm-cuenta-nav-m390-light.png"
+      },
+      {
+        "name": "título ¿Descartar cambios?",
+        "pass": true,
+        "detail": "¿Descartar cambios?"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\"",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "no se navegó (bloqueado)",
+        "pass": true,
+        "detail": "http://localhost:5178/configuracion"
+      },
+      {
+        "name": "\"Seguir editando\" conserva el formulario y no navega",
+        "pass": true,
+        "detail": "{\"valor\":\"Cuenta harness\",\"url\":\"http://localhost:5178/configuracion\",\"dialogoAbierto\":true}"
+      },
+      {
+        "name": "R4.5: foco tras \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"INPUT\",\"id\":\"cuenta-alias\",\"text\":\"\",\"isBody\":false,\"insideForm\":true,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "\"Descartar cambios\" navega a /ingresos",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      },
+      {
+        "name": "descartar no deja diálogos abiertos",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 escrituras de API",
+        "pass": true,
+        "detail": "{\"writes\":0,\"unexpected\":[]}"
+      }
+    ],
+    "error": null,
+    "durationMs": 7135,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "cuenta-close",
+    "theme": "dark",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "cierre por X muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\" (X)",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "\"Seguir editando\" (X) conserva el formulario",
+        "pass": true,
+        "detail": "{\"valor\":\"Cuenta harness\"}"
+      },
+      {
+        "name": "R4.5: foco tras X + \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"text\":\"Close\",\"isBody\":false,\"insideForm\":false,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "cierre por Escape muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\" (Escape)",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "\"Seguir editando\" (Escape) conserva el formulario",
+        "pass": true,
+        "detail": "{\"valor\":\"Cuenta harness\"}"
+      },
+      {
+        "name": "R4.5: foco tras Escape + \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"text\":\"Close\",\"isBody\":false,\"insideForm\":false,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "cierre por backdrop muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\" (backdrop)",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "\"Seguir editando\" (backdrop) conserva el formulario",
+        "pass": true,
+        "detail": "{\"valor\":\"Cuenta harness\"}"
+      },
+      {
+        "name": "R4.5: foco tras backdrop + \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"text\":\"Close\",\"isBody\":false,\"insideForm\":false,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "\"Descartar cambios\" cierra el diálogo sin navegar",
+        "pass": true,
+        "detail": "http://localhost:5178/configuracion"
+      },
+      {
+        "name": "0 escrituras de API",
+        "pass": true,
+        "detail": "{\"writes\":0,\"unexpected\":[]}"
+      },
+      {
+        "name": "cierre sin dirty cierra directo sin confirmación",
+        "pass": true,
+        "detail": "{\"alertas\":0,\"dialogos\":0}"
+      },
+      {
+        "name": "cierre sin dirty sin escrituras de API",
+        "pass": true,
+        "detail": "{\"writes\":0}"
+      }
+    ],
+    "error": null,
+    "durationMs": 13069,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "tasa-nav",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "navegación SPA con Tasa dirty muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "screenshots/ac4-confirm-tasa-nav-m390-light.png"
+      },
+      {
+        "name": "título ¿Descartar cambios?",
+        "pass": true,
+        "detail": "¿Descartar cambios?"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\"",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "no se navegó (bloqueado)",
+        "pass": true,
+        "detail": "http://localhost:5178/configuracion"
+      },
+      {
+        "name": "\"Seguir editando\" conserva el formulario y no navega",
+        "pass": true,
+        "detail": "{\"valor\":\"9,99\",\"url\":\"http://localhost:5178/configuracion\",\"dialogoAbierto\":true}"
+      },
+      {
+        "name": "R4.5: foco tras \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"INPUT\",\"id\":\"tasa-2\",\"text\":\"\",\"isBody\":false,\"insideForm\":true,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "\"Descartar cambios\" navega a /ingresos",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      },
+      {
+        "name": "descartar no deja diálogos abiertos",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "0 escrituras de API",
+        "pass": true,
+        "detail": "{\"writes\":0,\"unexpected\":[]}"
+      }
+    ],
+    "error": null,
+    "durationMs": 6590,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "tasa-close",
+    "theme": "dark",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "cierre por X muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\" (X)",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "\"Seguir editando\" (X) conserva el formulario",
+        "pass": true,
+        "detail": "{\"valor\":\"9,99\"}"
+      },
+      {
+        "name": "R4.5: foco tras X + \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"text\":\"Close\",\"isBody\":false,\"insideForm\":false,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "cierre por Escape muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\" (Escape)",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "\"Seguir editando\" (Escape) conserva el formulario",
+        "pass": true,
+        "detail": "{\"valor\":\"9,99\"}"
+      },
+      {
+        "name": "R4.5: foco tras Escape + \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"text\":\"Close\",\"isBody\":false,\"insideForm\":false,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "cierre por backdrop muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\" (backdrop)",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "\"Seguir editando\" (backdrop) conserva el formulario",
+        "pass": true,
+        "detail": "{\"valor\":\"9,99\"}"
+      },
+      {
+        "name": "R4.5: foco tras backdrop + \"Seguir editando\" en el form/diálogo (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"text\":\"Close\",\"isBody\":false,\"insideForm\":false,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "\"Descartar cambios\" cierra el diálogo sin navegar",
+        "pass": true,
+        "detail": "http://localhost:5178/configuracion"
+      },
+      {
+        "name": "0 escrituras de API",
+        "pass": true,
+        "detail": "{\"writes\":0,\"unexpected\":[]}"
+      },
+      {
+        "name": "cierre sin dirty cierra directo sin confirmación",
+        "pass": true,
+        "detail": "{\"alertas\":0,\"dialogos\":0}"
+      },
+      {
+        "name": "cierre sin dirty sin escrituras de API",
+        "pass": true,
+        "detail": "{\"writes\":0}"
+      }
+    ],
+    "error": null,
+    "durationMs": 12724,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2564,7 +3072,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2793,
+    "durationMs": 2854,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2592,7 +3100,7 @@
       }
     ],
     "error": null,
-    "durationMs": 6980,
+    "durationMs": 6757,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2621,7 +3129,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2926,
+    "durationMs": 2830,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2679,7 +3187,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4655,
+    "durationMs": 4890,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2742,7 +3250,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4787,
+    "durationMs": 4629,
     "console": [],
     "mockedNetwork": [
       {
@@ -2790,7 +3298,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5389,
+    "durationMs": 5353,
     "console": [],
     "mockedNetwork": [
       {
@@ -2846,7 +3354,7 @@
       }
     ],
     "error": null,
-    "durationMs": 7755,
+    "durationMs": 7848,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2884,7 +3392,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5491,
+    "durationMs": 5627,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2932,7 +3440,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4445,
+    "durationMs": 4398,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3026,7 +3534,7 @@
       }
     ],
     "error": null,
-    "durationMs": 8392,
+    "durationMs": 8048,
     "console": [],
     "mockedNetwork": [
       {
@@ -3122,7 +3630,7 @@
       }
     ],
     "error": null,
-    "durationMs": 6989,
+    "durationMs": 6937,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3150,7 +3658,7 @@
       }
     ],
     "error": null,
-    "durationMs": 18637,
+    "durationMs": 18666,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3188,7 +3696,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4729,
+    "durationMs": 4779,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3221,7 +3729,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4945,
+    "durationMs": 4616,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],

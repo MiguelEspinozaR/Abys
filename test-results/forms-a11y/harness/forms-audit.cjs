@@ -285,6 +285,61 @@ async function focusInfo(page) {
   return { ...data, indicator }
 }
 
+
+/** Estado del foco: distingue BODY, form y diálogo (para R4.5). */
+async function focusState(page) {
+  return page.evaluate(() => {
+    const el = document.activeElement
+    if (!el) return { tag: 'NONE', id: '', text: '', isBody: true, insideForm: false, inDialog: null }
+    const dlg = el.closest('[data-slot=dialog-content], [data-slot=alert-dialog-content]')
+    return {
+      tag: el.tagName,
+      id: el.id || '',
+      text: (el.textContent || '').trim().slice(0, 40),
+      isBody: el === document.body || el === document.documentElement,
+      insideForm: !!el.closest('form'),
+      inDialog: dlg ? dlg.getAttribute('data-slot') : null,
+    }
+  })
+}
+/** R4.5: tras "Seguir editando" el foco no debe quedar en BODY y sí en el form o el diálogo. */
+function focusInsideFormOrDialog(fs) {
+  return !!fs && fs.isBody === false && (fs.insideForm === true || fs.inDialog === 'dialog-content')
+}
+const FOCUS_DETAIL = (fs) => JSON.stringify(fs)
+
+/** Abre el diálogo dirty de Fuente/Cuenta/Tasa y devuelve el selector del campo a ensuciar. */
+async function openDiscardForm(env, kind) {
+  const { page } = env
+  await goto(page, '/configuracion', 1200)
+  if (kind === 'fuente') {
+    await page.getByRole('tab', { name: 'Fuentes' }).click()
+    await page.waitForTimeout(500)
+    await page.getByRole('button', { name: 'Nueva fuente' }).click()
+  } else {
+    await page.getByRole('tab', { name: 'Cuentas' }).click()
+    await page.waitForTimeout(500)
+    if (kind === 'cuenta') await page.getByRole('button', { name: 'Nueva cuenta' }).click()
+    else await page.locator('button[aria-label^="Editar tasa de"]').first().click()
+  }
+  await page.locator('[data-slot=dialog-content]').first().waitFor({ state: 'visible', timeout: 5000 })
+  await page.waitForTimeout(400)
+  if (kind === 'tasa') {
+    const id = await page.evaluate(() => (document.querySelector('[data-slot=dialog-content] input[id^=tasa-]:not([type=checkbox])') || {}).id)
+    if (!id) throw new Error('input de tasa no encontrado')
+    return '#' + id
+  }
+  return kind === 'fuente' ? '#fuente-alias' : '#cuenta-alias'
+}
+
+/** Espera la confirmación de descarte y valida el foco inicial en la acción segura. */
+async function waitDiscardConfirm(page) {
+  await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
+  await page.waitForTimeout(150)
+  const foco = await activeDesc(page)
+  return { ok: !!(foco && foco.text === 'Seguir editando'), foco }
+}
+
 async function activeDesc(page) {
   return page.evaluate(() => {
     const el = document.activeElement
@@ -1201,6 +1256,8 @@ async function ac4(browser) {
       const dlgClosed = (await page.locator('[data-slot=alert-dialog-content]').count()) === 0
       const monto = await page.inputValue('#monto')
       checks.push(CHECK('"Seguir editando" conserva los cambios', dlgClosed && monto === '100,00' && page.url().includes('/registrar'), `dialog closed=${dlgClosed}, monto=${monto}`))
+      const focoSeguir = await focusState(page)
+      checks.push(CHECK('R4.5: foco tras "Seguir editando" en el form (no BODY)', focusInsideFormOrDialog(focoSeguir) && focoSeguir.insideForm === true, FOCUS_DETAIL(focoSeguir)))
       // Segundo intento: descartar.
       await page.evaluate(() => document.querySelector('a[href="/ingresos"]').click())
       await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
@@ -1268,6 +1325,8 @@ async function ac4(browser) {
       await page.waitForTimeout(400)
       const monto = await page.inputValue('#edit-monto')
       checks.push(CHECK('"Seguir editando" conserva los cambios', monto === '300,00' && (await page.locator('[data-slot=dialog-content]').count()) >= 1, 'monto=' + monto))
+      const focoCerrar = await focusState(page)
+      checks.push(CHECK('R4.5: foco tras "Seguir editando" en el diálogo (no BODY)', focusInsideFormOrDialog(focoCerrar), FOCUS_DETAIL(focoCerrar)))
       // Cancelar también confirma.
       await page.getByRole('button', { name: 'Cancelar' }).click()
       await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
@@ -1302,6 +1361,8 @@ async function ac4(browser) {
       const editStill = await page.locator('[data-slot=dialog-content]').count()
       const monto = await page.inputValue('#edit-monto')
       checks.push(CHECK('Escape en la confirmación = seguir editando', confirmClosed && editStill >= 1 && monto === '300,00', `confirm closed=${confirmClosed}, edit open=${editStill >= 1}, monto=${monto}`))
+      const focoEscape = await focusState(page)
+      checks.push(CHECK('R4.5: foco tras Escape seguro en el diálogo (no BODY)', focusInsideFormOrDialog(focoEscape), FOCUS_DETAIL(focoEscape)))
       return checks
     },
   })
@@ -1318,6 +1379,13 @@ async function ac4(browser) {
       await page.evaluate(() => document.querySelector('a[href="/splits"]').click())
       await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
       checks.push(CHECK('navegación SPA con diálogo abierto y sucio muestra confirmación', true))
+      await page.getByRole('button', { name: 'Seguir editando' }).click()
+      await page.waitForTimeout(500)
+      const focoNav = await focusState(page)
+      checks.push(CHECK('R4.5: foco tras "Seguir editando" (nav) en el diálogo (no BODY)', focusInsideFormOrDialog(focoNav) && page.url().includes('/ingresos'), FOCUS_DETAIL(focoNav) + ' url=' + page.url()))
+      // Segundo intento: descartar.
+      await page.evaluate(() => document.querySelector('a[href="/splits"]').click())
+      await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
       await page.getByRole('button', { name: 'Descartar cambios' }).click()
       await page.waitForTimeout(900)
       checks.push(CHECK('descartar navega a /splits', page.url().includes('/splits'), page.url()))
@@ -1344,9 +1412,110 @@ async function ac4(browser) {
       await page.getByRole('button', { name: 'Seguir editando' }).click()
       await page.waitForTimeout(400)
       checks.push(CHECK('seguir editando conserva el formulario', page.url().includes('/registrar') && (await page.inputValue('#monto')) === '265,00'))
+      const focoOcr = await focusState(page)
+      checks.push(CHECK('R4.5: foco tras "Seguir editando" (OCR) en el form (no BODY)', focusInsideFormOrDialog(focoOcr) && focoOcr.insideForm === true, FOCUS_DETAIL(focoOcr)))
       return checks
     },
   })
+
+  // ------------------------------------------------------------------------
+  // AC4 ampliado: dirty + navegación SPA y dirty + cierre en Fuente/Cuenta/Tasa
+  // (diálogos con más de un campo, R4.3/R4.5). El "backdrop" es el overlay del
+  // diálogo del formulario, no el de la confirmación (AlertDialog no se cierra
+  // al pulsar fuera por diseño de Radix).
+  // ------------------------------------------------------------------------
+  const discardForms = [
+    { kind: 'fuente', nombre: 'Fuente', valor: 'Fuente harness' },
+    { kind: 'cuenta', nombre: 'Cuenta', valor: 'Cuenta harness' },
+    { kind: 'tasa', nombre: 'Tasa', valor: '9,99' },
+  ]
+
+  for (const form of discardForms) {
+    // (a) dirty + intento de navegación SPA.
+    await runCase(browser, {
+      ac: 'ac4', id: form.kind + '-nav', theme: 'light',
+      run: async (env) => {
+        const { page } = env
+        const field = await openDiscardForm(env, form.kind)
+        const checks = []
+        await page.fill(field, form.valor)
+        await page.waitForTimeout(300)
+        await page.evaluate(() => document.querySelector('a[href="/ingresos"]').click())
+        const conf = await waitDiscardConfirm(page)
+        const snap = await shot(page, `ac4-confirm-${form.kind}-nav-m390-light`)
+        checks.push(CHECK(`navegación SPA con ${form.nombre} dirty muestra ConfirmarDescarte`, conf.ok, snap))
+        const title = (await page.textContent('[data-slot=alert-dialog-title]') || '').trim()
+        checks.push(CHECK('título ¿Descartar cambios?', /Descartar cambios/i.test(title), title))
+        checks.push(CHECK('foco inicial en "Seguir editando"', conf.ok, JSON.stringify(conf.foco)))
+        checks.push(CHECK('no se navegó (bloqueado)', page.url().includes('/configuracion'), page.url()))
+        await page.getByRole('button', { name: 'Seguir editando' }).click()
+        await page.waitForTimeout(600)
+        const fs = await focusState(page)
+        const valor = await page.inputValue(field)
+        const dialogoAbierto = (await page.locator('[data-slot=dialog-content]').count()) >= 1
+        checks.push(CHECK('"Seguir editando" conserva el formulario y no navega', dialogoAbierto && valor === form.valor && page.url().includes('/configuracion'), JSON.stringify({ valor, url: page.url(), dialogoAbierto })))
+        checks.push(CHECK('R4.5: foco tras "Seguir editando" en el form/diálogo (no BODY)', focusInsideFormOrDialog(fs), FOCUS_DETAIL(fs)))
+        // Segundo intento: descartar navega.
+        await page.evaluate(() => document.querySelector('a[href="/ingresos"]').click())
+        await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
+        await page.getByRole('button', { name: 'Descartar cambios' }).click()
+        await page.waitForTimeout(900)
+        checks.push(CHECK('"Descartar cambios" navega a /ingresos', page.url().includes('/ingresos'), page.url()))
+        checks.push(CHECK('descartar no deja diálogos abiertos', (await page.locator('[data-slot=dialog-content]').count()) === 0 && (await page.locator('[data-slot=alert-dialog-content]').count()) === 0))
+        checks.push(CHECK('0 escrituras de API', env.st.requests.length === 0 && env.st.unexpected.length === 0, JSON.stringify({ writes: env.st.requests.length, unexpected: env.st.unexpected })))
+        return checks
+      },
+    })
+
+    // (b) dirty + cierre (X, Escape, backdrop) = seguir editando con foco; descartar cierra sin navegar.
+    await runCase(browser, {
+      ac: 'ac4', id: form.kind + '-close', theme: 'dark',
+      run: async (env) => {
+        const { page } = env
+        const field = await openDiscardForm(env, form.kind)
+        const checks = []
+        await page.fill(field, form.valor)
+        await page.waitForTimeout(300)
+        const seguirConFoco = async (via) => {
+          const conf = await waitDiscardConfirm(page)
+          checks.push(CHECK(`cierre por ${via} muestra ConfirmarDescarte`, conf.ok, JSON.stringify(conf.foco)))
+          checks.push(CHECK(`foco inicial en "Seguir editando" (${via})`, conf.ok, JSON.stringify(conf.foco)))
+          if (via === 'X') await shot(page, `ac4-confirm-${form.kind}-close-m390-dark`)
+          await page.getByRole('button', { name: 'Seguir editando' }).click()
+          await page.waitForTimeout(600)
+          const fs = await focusState(page)
+          const valor = await page.inputValue(field)
+          checks.push(CHECK(`"Seguir editando" (${via}) conserva el formulario`, valor === form.valor && (await page.locator('[data-slot=dialog-content]').count()) >= 1, JSON.stringify({ valor })))
+          checks.push(CHECK(`R4.5: foco tras ${via} + "Seguir editando" en el form/diálogo (no BODY)`, focusInsideFormOrDialog(fs), FOCUS_DETAIL(fs)))
+        }
+        // X del diálogo.
+        await page.locator('[data-slot=dialog-close]').first().click()
+        await seguirConFoco('X')
+        // Escape del diálogo.
+        await page.keyboard.press('Escape')
+        await seguirConFoco('Escape')
+        // Backdrop (overlay del diálogo del formulario).
+        await page.mouse.click(8, 80)
+        await seguirConFoco('backdrop')
+        // Descartar desde un cierre: cierra el diálogo sin navegar.
+        await page.locator('[data-slot=dialog-close]').first().click()
+        await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
+        await page.getByRole('button', { name: 'Descartar cambios' }).click()
+        await page.waitForTimeout(700)
+        checks.push(CHECK('"Descartar cambios" cierra el diálogo sin navegar', page.url().includes('/configuracion') && (await page.locator('[data-slot=dialog-content]').count()) === 0 && (await page.locator('[data-slot=alert-dialog-content]').count()) === 0, page.url()))
+        checks.push(CHECK('0 escrituras de API', env.st.requests.length === 0 && env.st.unexpected.length === 0, JSON.stringify({ writes: env.st.requests.length, unexpected: env.st.unexpected })))
+        // Reapertura limpia: cerrar sin dirty no debe pedir confirmación.
+        await openDiscardForm(env, form.kind)
+        await page.locator('[data-slot=dialog-close]').first().click()
+        await page.waitForTimeout(700)
+        const alertasLimpias = await page.locator('[data-slot=alert-dialog-content]').count()
+        const dialogosLimpios = await page.locator('[data-slot=dialog-content]').count()
+        checks.push(CHECK('cierre sin dirty cierra directo sin confirmación', alertasLimpias === 0 && dialogosLimpios === 0, JSON.stringify({ alertas: alertasLimpias, dialogos: dialogosLimpios })))
+        checks.push(CHECK('cierre sin dirty sin escrituras de API', env.st.requests.length === 0 && env.st.unexpected.length === 0, JSON.stringify({ writes: env.st.requests.length })))
+        return checks
+      },
+    })
+  }
 }
 
 /* ==========================================================================
@@ -2342,7 +2511,7 @@ async function main() {
     ac1: { ...acSummary('ac1'), detail: 'nombre accesible por campo, Enter envía inputs / abre Selects, 0 forms en SplitsTab' },
     ac2: { ...acSummary('ac2'), detail: 'errores inline + aria-invalid/aria-describedby (incl. fieldset del calendario y método inválido en #edit-metodo) + resumen role=alert + foco en primer inválido; notas ≤500 y >500 vía OCR' },
     ac3: { ...acSummary('ac3'), detail: '400/409/422/500 por formulario: error inline/resumen, diálogo abierto, datos persistentes, 0 toasts, 0 unhandled' },
-    ac4: { ...acSummary('ac4'), detail: 'guardia de descarte en nav SPA, X/Cancelar/Escape; beforeunload fuera de alcance (R4.9)' },
+    ac4: { ...acSummary('ac4'), detail: 'guardia de descarte con dirty en nav SPA y cierre por X/Cancelar/Escape/backdrop (Registrar, Editar, Fuente, Cuenta, Tasa); R4.5 foco no-BODY tras Seguir editando; cierre sin dirty directo; beforeunload fuera de alcance (R4.9)' },
     ac5: { ...acSummary('ac5'), detail: 'PDF/11MB rechazados sin request; nombre/tamaño solo en comprobante; progreso anunciado; post-pago bloqueado (sin re-POST, OCR sin efecto, reintento solo del upload); QR válido con POST mockeado' },
     ac6: { ...acSummary('ac6'), detail: 'flujo completo por teclado, walk de Tab con indicador ≥3:1, trampas de foco, autoguardado por teclado' },
     ac7: ac7Res,
@@ -2392,7 +2561,7 @@ async function main() {
   console.log(`ac7: ${metrics.ac7.pass ? 'PASS' : 'FAIL'} (${metrics.ac7.routeDefaults.length} rutas × tema/viewport + ${metrics.ac7.formStates.length} estados)`)
   console.log(`ac8: ${metrics.ac8.pass ? 'PASS' : 'FAIL'} | ac9: ${metrics.ac9.pass ? 'PASS' : 'FAIL'} | ac10: ${metrics.ac10.pass ? 'PASS' : 'FAIL'}`)
   const globalPass = totalPass && metrics.ac7.pass && metrics.ac8.pass && metrics.ac9.pass && metrics.ac10.pass
-  console.log(`TOTAL casos: ${results.length}, todos los casos ${totalPass ? 'PASS' : 'HAY FALLOS'} — veredicto global: ${globalPass ? 'PASS' : 'FAIL (ver AC7)'} — ver test-results/forms-a11y/report.md`)
+  console.log(`TOTAL casos: ${results.length}, todos los casos ${totalPass ? 'PASS' : 'HAY FALLOS'} — veredicto global: ${globalPass ? 'PASS' : 'FAIL'} — ver test-results/forms-a11y/report.md`)
 }
 
 main().catch(e => { console.error('FATAL', e); process.exit(1) })

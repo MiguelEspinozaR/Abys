@@ -587,6 +587,66 @@
       "mockedNetwork": []
     },
     {
+      "ac": "ac4",
+      "id": "fuente-nav",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "fuente-close",
+      "theme": "dark",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "cuenta-nav",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "cuenta-close",
+      "theme": "dark",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "tasa-nav",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
+      "id": "tasa-close",
+      "theme": "dark",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
       "ac": "ac5",
       "id": "comprobante-pdf",
       "theme": "light",

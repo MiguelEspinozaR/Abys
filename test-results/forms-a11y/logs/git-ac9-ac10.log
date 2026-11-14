@@ -2,7 +2,7 @@ $ git branch --show-current
 feat/forms-a11y
 
 $ git rev-parse HEAD
-7a545a263e1cf1599b310467ee35056d850da852
+c5fdc8f5240f9b8db14a38f3fb65b46df4272512
 
 $ git diff --stat 490de51..HEAD -- web/package.json backend/go.mod
 (vacío)
@@ -28,6 +28,7 @@ test-results/forms-a11y/metrics-after.json
 test-results/forms-a11y/metrics-before.json
 test-results/forms-a11y/report.md
 test-results/forms-a11y/screenshots/ac2-editar-invalido-m390-light.png
+test-results/forms-a11y/screenshots/ac2-editar-metodo-invalido-m390-light.png
 test-results/forms-a11y/screenshots/ac2-fuente-invalido-m390-light.png
 test-results/forms-a11y/screenshots/ac2-registrar-invalido-m390-dark.png
 test-results/forms-a11y/screenshots/ac2-registrar-invalido-m390-light.png
@@ -40,6 +41,8 @@ test-results/forms-a11y/screenshots/ac4-confirm-editar-m390-dark.png
 test-results/forms-a11y/screenshots/ac4-confirm-registrar-m390-light.png
 test-results/forms-a11y/screenshots/ac5-comprobante-11mb-m390-light.png
 test-results/forms-a11y/screenshots/ac5-comprobante-reintentar-m390-light.png
+test-results/forms-a11y/screenshots/ac5-post-pago-bloqueado-m390-light.png
+test-results/forms-a11y/screenshots/ac5-qr-valido-m390-light.png
 test-results/forms-a11y/screenshots/ac7-cuenta-dialog-m390-light.png
 test-results/forms-a11y/screenshots/ac7-editar-confirm-m390-light.png
 test-results/forms-a11y/screenshots/ac7-editar-invalido-m390-light.png
@@ -87,34 +90,35 @@ web/src/services/hooks.ts
 archivos fuera de alcance: (ninguno)
 
 $ git ls-remote --heads origin feat/forms-a11y
-7a545a263e1cf1599b310467ee35056d850da852	refs/heads/feat/forms-a11y
+c5fdc8f5240f9b8db14a38f3fb65b46df4272512	refs/heads/feat/forms-a11y
 [exit 0]
 
-HEAD local = 7a545a263e1cf1599b310467ee35056d850da852
+HEAD local = c5fdc8f5240f9b8db14a38f3fb65b46df4272512
 
 coincidencia HEAD==origin/feat/forms-a11y: sí
 
 $ git status --porcelain
-M test-results/forms-a11y/harness/forms-audit.cjs
+M test-results/forms-a11y/console-log.json
+ M test-results/forms-a11y/harness/forms-audit.cjs
+ M test-results/forms-a11y/logs/ac4.md
  M test-results/forms-a11y/logs/build.log
+ M test-results/forms-a11y/logs/git-ac9-ac10.log
+ M test-results/forms-a11y/logs/matrix.json
  M test-results/forms-a11y/logs/npm-test.log
- M test-results/forms-a11y/screenshots/ac2-editar-invalido-m390-light.png
- M test-results/forms-a11y/screenshots/ac2-fuente-invalido-m390-light.png
+ M test-results/forms-a11y/metrics-after.json
+ M test-results/forms-a11y/report.md
  M test-results/forms-a11y/screenshots/ac2-registrar-invalido-m390-dark.png
- M test-results/forms-a11y/screenshots/ac2-registrar-invalido-m390-light.png
- M test-results/forms-a11y/screenshots/ac2-registrar-notas-ocr-m390-light.png
- M test-results/forms-a11y/screenshots/ac3-editar-422-m390-light.png
- M test-results/forms-a11y/screenshots/ac3-tasa-409-m390-light.png
  M test-results/forms-a11y/screenshots/ac5-comprobante-11mb-m390-light.png
- M test-results/forms-a11y/screenshots/ac7-editar-confirm-m390-light.png
  M test-results/forms-a11y/screenshots/ac7-editar-invalido-m390-light.png
- M test-results/forms-a11y/screenshots/ac7-fuente-invalido-m390-light.png
  M test-results/forms-a11y/screenshots/ac7-registrar-11mb-m390-light.png
  M test-results/forms-a11y/screenshots/ac7-registrar-invalido-m390-dark.png
  M test-results/forms-a11y/screenshots/ac7-registrar-invalido-m390-light.png
  M test-results/forms-a11y/screenshots/ac7-route-registrar-desktop-dark.png
  M test-results/forms-a11y/screenshots/ac7-route-registrar-desktop-light.png
- M test-results/forms-a11y/screenshots/ac7-tasa-invalido-m390-light.png
-?? test-results/forms-a11y/screenshots/ac2-editar-metodo-invalido-m390-light.png
-?? test-results/forms-a11y/screenshots/ac5-post-pago-bloqueado-m390-light.png
-?? test-results/forms-a11y/screenshots/ac5-qr-valido-m390-light.png
+ M test-results/tests/forms-a11y.json
+?? test-results/forms-a11y/screenshots/ac4-confirm-cuenta-close-m390-dark.png
+?? test-results/forms-a11y/screenshots/ac4-confirm-cuenta-nav-m390-light.png
+?? test-results/forms-a11y/screenshots/ac4-confirm-fuente-close-m390-dark.png
+?? test-results/forms-a11y/screenshots/ac4-confirm-fuente-nav-m390-light.png
+?? test-results/forms-a11y/screenshots/ac4-confirm-tasa-close-m390-dark.png
+?? test-results/forms-a11y/screenshots/ac4-confirm-tasa-nav-m390-light.png
