@@ -1,14 +1,14 @@
 {
   "task_id": "forms-a11y-security-scan",
   "feature": "forms-a11y",
-  "commit": "d496d73",
+  "commit": "7149436",
   "base_commit": "490de51",
   "product_diff_base": "490de51",
-  "product_diff_head": "7a545a2",
-  "evidence_commit": "d496d73",
+  "product_diff_head": "c5fdc8f",
+  "evidence_commit": "7149436",
   "scanner": "gitleaks-missing-regex-fallback",
   "hard_blocks": [],
   "findings": [],
-  "summary": "Security scan of diff 490de51..d496d73 for feature forms-a11y. Scope: web/ directory only (evidence in test-results/forms-a11y/). Backend has no changes. No exposed secrets detected via regex patterns (API keys, tokens, passwords, private keys). No SAST vulnerabilities found. No dependency vulnerabilities (web/package.json unchanged between base and HEAD). No insecure configuration changes. No supply-chain issues. No beforeunload usage confirmed in any diff. Gitleaks not available; regex fallback declared advisory. REVIEW fixes in ErrorSummary, button, EditarPagoDialog, CalendarioDias, RegistrarPage — all UI/accessibility/state-management changes, no secrets or credentials introduced.",
+  "summary": "Security scan of diff 490de51..7149436 for feature forms-a11y. Scope: web/ directory only (evidence in test-results/forms-a11y/ and test-results/tests/). Backend has no changes. No exposed secrets detected via regex patterns (API keys, tokens, passwords, private keys). No SAST vulnerabilities found. No dependency vulnerabilities (web/package.json unchanged between base and HEAD). No insecure configuration changes. No supply-chain issues. No beforeunload usage confirmed in any diff. Gitleaks not available; regex fallback declared advisory. NEW in this range: c5fdc8f focus-fix in dialog.tsx (onMouseDown preventDefault on overlay, harmless CSS change), 7149436 AC4 expansion and focus registration — all UI/accessibility changes, no secrets or credentials introduced. Evidence verified: test-results/forms-a11y/ and test-results/tests/forms-a11y.json contain no real secrets, tokens, or credentials.",
   "verdict": "pass"
 }
