@@ -2,13 +2,13 @@
  "task_id": "forms-a11y",
  "feature": "forms-a11y",
  "title": "Formularios accesibles: semántica, errores inline y guardia de cambios (bloque B)",
- "lifecycle_state": "BUILD",
+ "lifecycle_state": "TEST",
  "branch": "feat/forms-a11y",
- "commit": "c5fdc8f5240f9b8db14a38f3fb65b46df4272512",
+ "commit": "062fd4556736e634aa8c967f66f9a12bec64a088",
  "base_commit": "490de51",
- "generated_at": "2026-11-14T01:01:02Z",
+ "generated_at": "2026-11-14T01:35:12Z",
  "status": "pass",
- "status_reason": "AC1-AC10 y AC12 pasan sobre c5fdc8f (HEAD == origin). AC4 se amplió a 13 casos / 104 checks (nav SPA y cierre por X/Cancelar/Escape/backdrop con dirty en Registrar, Editar, Fuente, Cuenta y Tasa, más cierre sin dirty) y todos pasan: fbce42e restaura el foco en X/Cancelar/Escape/nav (Registrar → #monto, Editar → #edit-monto, configuración → control del diálogo) y c5fdc8f evita el blur del overlay con onMouseDown preventDefault, por lo que backdrop + 'Seguir editando' deja el foco dentro del diálogo (nunca BODY); cerrar sin dirty cierra directo sin confirmación y sin escrituras. AC7 PASS (20 rutas + 17 estados, 0 touchFailures, OCR light/dark 0 contraste/0 toasts). AC8: 69 tests, tsc/build/go OK. AC9: 76 archivos (22 producto + 54 evidencia), diffDeps vacío, 0 fuera de alcance. AC10: HEAD == origin. AC11 PENDING (post-release). R4.5-BACKDROP: resuelto.",
+ "status_reason": "AC1-AC10 y AC12 pasan sobre 062fd45 (HEAD == origin) tras REVIEW -> TEST aprobado. Corrida TEST: 68 casos / 455 checks, todos PASS. AC4 se amplió a 14 casos / 118 checks, incluidos editar-backdrop (OBS-1: clic real en overlay de EditarPagoDialog -> confirmación, 'Seguir editando' con foco en #edit-monto, nunca BODY; descartar cierra sin navegar ni PUT; reapertura limpia cierra directo) y registrar-nav con clic real de ratón en desktop (OBS-2: el foco restaurado es el enlace 'Ingresos', no BODY, form/datos intactos y sin navegar; R4.5 se cumple, desviación aceptada documentada). OBS-3: metadatos de este JSON, report.md, metrics-after.json, console-log.json y logs actualizados a TEST/062fd45. AC7 PASS (20 rutas + 17 estados, 0 touchFailures, OCR light/dark 0 contraste/0 toasts). AC8: 69 tests, tsc/build/go OK. AC9: 83 archivos en 490de51..062fd45 (22 producto + 61 evidencia), diffDeps vacío, 0 fuera de alcance. AC10: HEAD == origin. AC11 PENDING (post-release). No se modificó producto ni Git.",
  "environment": {
   "os": "linux",
   "node": "v22.22.1",
@@ -16,7 +16,7 @@
   "browser": "Chrome 156.0.8078.79 via Playwright 1.65.0 (headless, channel=chrome)",
   "backend_url": "http://localhost:18082",
   "frontend_preview_url": "http://localhost:5178",
-  "staging_note": "web/dist reconstruido con VITE_API_URL=http://localhost:18082/api/v1 sobre c5fdc8f y servido por vite preview :5178 (reiniciado tras el build). Backend de auditoría :18082 recibió solo GETs reales; :8081/:8082 no se tocaron. Todas las escrituras API se mockearon con page.route y una red de seguridad 599 HARNESS_BLOCKED_WRITE."
+  "staging_note": "web/dist reconstruido con VITE_API_URL=http://localhost:18082/api/v1 sobre 062fd45 y servido por vite preview :5178 (reiniciado tras el build). Backend de auditoría :18082 recibió solo GETs reales; :8081/:8082 no se tocaron. Todas las escrituras API se mockearon con page.route y una red de seguridad 599 HARNESS_BLOCKED_WRITE."
  },
  "configured_suites": [
   {
@@ -68,7 +68,7 @@
    "command": "node test-results/forms-a11y/harness/forms-audit.cjs",
    "status": "pass",
    "exit_code": 0,
-   "note": "67 casos / 441 checks sobre c5fdc8f, todos PASS. AC4 13/13 (104 checks), incluidos fuente-close/cuenta-close/tasa-close (backdrop → confirmación → 'Seguir editando' con foco dentro del diálogo y cierre sin dirty directo). AC7 PASS (20 rutas + 17 estados). console-log.json: 67/67 casos sin consola, requests fallidos ni escrituras inesperadas.",
+   "note": "68 casos / 455 checks sobre 062fd45, todos PASS. AC4 14/14 (118 checks), incluidos editar-backdrop (OBS-1) y registrar-nav con clic real de ratón en desktop (OBS-2). AC7 PASS (20 rutas + 17 estados). console-log.json: 68/68 casos sin consola, requests fallidos, unhandled ni escrituras inesperadas; 27 respuestas mockeadas.",
    "evidence": "test-results/forms-a11y/metrics-after.json"
   },
   {
@@ -76,7 +76,7 @@
    "command": "node test-results/forms-a11y/harness/forms-audit.cjs (ac4 fuente/cuenta/tasa + foco R4.5)",
    "status": "pass",
    "exit_code": 0,
-   "note": "AC4: 13 casos / 104 checks, todos PASS sobre c5fdc8f. (a) nav SPA con dirty en Fuente/Cuenta/Tasa → confirmación, 'Seguir editando' conserva valores y no navega (foco dentro del diálogo), 'Descartar' navega a /ingresos con 0 escrituras; (b) cierre por X/Cancelar/Escape/backdrop con dirty → confirmación en cada camino, seguir conserva datos, foco dentro del form/diálogo (nunca BODY), descartar cierra sin navegar; (c) cierre sin dirty → cierra directo, 0 confirmaciones y 0 escrituras; (d) R4.5 en Registrar (#monto) y Editar (#edit-monto). El backdrop quedó resuelto por c5fdc8f: onMouseDown preventDefault en el overlay mantiene el foco hasta que la confirmación captura el control previo.",
+   "note": "AC4: 14 casos / 118 checks, todos PASS sobre 062fd45. (a) nav SPA con dirty en Fuente/Cuenta/Tasa -> confirmación, 'Seguir editando' conserva valores y no navega (foco dentro del diálogo), 'Descartar' navega a /ingresos con 0 escrituras; (b) cierre por X/Cancelar/Escape/backdrop con dirty -> confirmación en cada camino, seguir conserva datos, foco dentro del form/diálogo (nunca BODY), descartar cierra sin navegar; (c) cierre sin dirty -> cierra directo, 0 confirmaciones y 0 escrituras; (d) Registrar con clic real de ratón en desktop (OBS-2): el foco restaurado es el enlace disparador, no BODY (desviación aceptada); (e) Editar backdrop (OBS-1): foco en #edit-monto tras seguir; descartar cierra sin navegar ni PUT; (f) R4.5 por teclado/clic SPA en Registrar (#monto) y Editar (#edit-monto). El backdrop quedó resuelto por c5fdc8f.",
    "evidence": "test-results/forms-a11y/logs/ac4.md"
   },
   {
@@ -160,9 +160,9 @@
   },
   "AC4": {
    "status": "pass",
-   "summary": "ConfirmarDescarteDialog con form sucio en Registrar, Editar, Fuente, Cuenta y Tasa: nav SPA, X, Cancelar, Escape y backdrop muestran la confirmación con foco inicial en 'Seguir editando'; seguir conserva datos y no navega; descartar cierra o navega sin escrituras. R4.5 verificado en Registrar (#monto), Editar (#edit-monto) y diálogos de configuración (foco dentro del diálogo) para todos los caminos, incluido backdrop (c5fdc8f). Cierre sin dirty: cierra directo sin confirmación ni escrituras.",
-   "cases": 13,
-   "checks": 104,
+   "summary": "ConfirmarDescarteDialog con form sucio en Registrar, Editar, Fuente, Cuenta y Tasa: nav SPA (clic real de ratón en Registrar desktop y clic SPA en Editar), X, Cancelar, Escape y backdrop muestran la confirmación con foco inicial en 'Seguir editando'; seguir conserva datos y no navega; descartar cierra o navega sin escrituras. R4.5 verificado en Registrar (#monto por teclado/clic SPA), Editar (#edit-monto) y diálogos de configuración para todos los caminos, incluido backdrop (c5fdc8f). Con clic real de puntero en el sidebar, el foco vuelve al enlace disparador (no BODY, OBS-2 aceptado). Cierre sin dirty: cierra directo sin confirmación ni escrituras. editar-backdrop (OBS-1) cubre el overlay de EditarPagoDialog.",
+   "cases": 14,
+   "checks": 118,
    "evidence": "test-results/forms-a11y/logs/ac4.md"
   },
   "AC5": {
@@ -257,19 +257,19 @@
   },
   "AC9": {
    "status": "pass",
-   "summary": "73 archivos cambiados en 490de51..7a545a2 (22 de producto en web/ + 51 de evidencia en test-results/); sin cambios de dependencias ni archivos fuera de alcance.",
-   "changed_files": 73,
+   "summary": "83 archivos cambiados en 490de51..062fd45 (22 de producto en web/ + 61 de evidencia en test-results/); sin cambios de dependencias ni archivos fuera de alcance.",
+   "changed_files": 83,
    "out_of_scope": [],
    "diff_dependencies": "",
    "evidence": "test-results/forms-a11y/metrics-after.json#ac9",
    "product_changed_files": 22,
-   "evidence_changed_files": 51
+   "evidence_changed_files": 61
   },
   "AC10": {
    "status": "pass",
-   "summary": "HEAD local coincide con origin/feat/forms-a11y.",
-   "head": "7a545a263e1cf1599b310467ee35056d850da852",
-   "remote": "7a545a263e1cf1599b310467ee35056d850da852",
+   "summary": "HEAD local coincide con origin/feat/forms-a11y en 062fd45.",
+   "head": "062fd4556736e634aa8c967f66f9a12bec64a088",
+   "remote": "062fd4556736e634aa8c967f66f9a12bec64a088",
    "evidence": "test-results/forms-a11y/logs/git-ac9-ac10.log"
   },
   "AC11": {
@@ -279,9 +279,9 @@
   },
   "AC12": {
    "status": "pass",
-   "summary": "Reporte y bundle de evidencia consolidados: report.md, métricas antes/después, consola, logs por AC, 33 capturas (incluye OCR light/dark, post-pago y QR válido) y harness ejecutable.",
+   "summary": "Reporte y bundle de evidencia consolidados: report.md, métricas antes/después, consola, logs por AC, 40 capturas (incluye editar-backdrop, registrar-nav desktop, OCR light/dark, post-pago y QR válido) y harness ejecutable.",
    "report": "test-results/forms-a11y/report.md",
-   "screenshots": 33,
+   "screenshots": 40,
    "console_failure_cases": 0,
    "evidence": "test-results/forms-a11y/report.md"
   }
@@ -289,11 +289,11 @@
  "coverage": {
   "frontend": {
    "available": false,
-   "reason": "No hay coverage provider ni script de cobertura configurado: @vitest/coverage-v8 no está instalado en web/node_modules y vite.config no define coverage. No se asumió ningún threshold."
+   "reason": "No hay coverage provider ni script de cobertura configurado: no existe script de coverage en package.json ni vitest.config.*, y no se asumió ningún threshold."
   },
   "backend": {
    "available": true,
-   "command": "go test -count=1 -coverprofile=/tmp/opencode/go-cover-c5fdc8f.out ./... && go tool cover -func=/tmp/opencode/go-cover-c5fdc8f.out",
+   "command": "go test ./... -coverprofile=/tmp/opencode/cover-062fd45.out && go tool cover -func=/tmp/opencode/cover-062fd45.out",
    "total_statement_coverage_percent": 7.9,
    "packages": {
     "abys/internal/router": 100.0,
@@ -309,7 +309,7 @@
     "abys/internal/service": 0.0,
     "abys/internal/model": null
    },
-   "note": "Medido sobre c5fdc8f. Los paquetes sin tests reportan 0% o sin cobertura. No se aplicó ni inventó un threshold de proyecto; el gate de coverage no es un criterio de AC."
+   "note": "Medido sobre 062fd45. Los paquetes sin tests reportan 0% o sin cobertura. No se aplicó ni inventó un threshold de proyecto; coverage no es un criterio de AC."
   }
  },
  "findings": [
@@ -415,9 +415,36 @@
    "severity": "low",
    "classification": "review_fix",
    "status": "resolved",
-   "summary": "La cobertura AC4 solo incluía Registrar/Editar y no probaba Fuente/Cuenta/Tasa con dirty. Ampliada a 13 casos/98 checks: nav SPA y cierre por X/Cancelar/Escape/backdrop en los 5 formularios, con foco inicial en 'Seguir editando', conservación de datos, no-navegación, descarte y 0 escrituras.",
+   "summary": "La cobertura AC4 solo incluía Registrar/Editar y no probaba Fuente/Cuenta/Tasa con dirty. Ampliada a 14 casos/118 checks: nav SPA (clic real en Registrar desktop y clic SPA en Editar), cierre por X/Cancelar/Escape/backdrop en los 5 formularios, backdrop de Editar, cierre sin dirty, con foco inicial en \"Seguir editando\", conservación de datos, no-navegación, descarte y 0 escrituras.",
    "resolution": "Harness AC4 (fbce42e): helpers focusState/openDiscardForm/waitDiscardConfirm + 6 casos nuevos (fuente/cuenta/tasa × nav/close) y asserts R4.5 en Registrar/Editar.",
    "evidence": "test-results/forms-a11y/logs/ac4.md"
+  },
+  {
+   "id": "REVIEW-OBS-1",
+   "severity": "low",
+   "classification": "review_observation",
+   "status": "resolved",
+   "summary": "OBS-1: faltaba evidencia del backdrop en EditarPagoDialog (el review solo pudo probarlo con sonda independiente). Añadido el caso editar-backdrop en AC4.",
+   "resolution": "Caso ac4/editar-backdrop: openEditarPago -> #edit-monto=350,00 -> clic real en overlay (8,80) -> ConfirmarDescarte -> 'Seguir editando' con foco en INPUT #edit-monto (no BODY), datos intactos; 'Descartar' cierra sin navegar ni PUT; reapertura limpia cierra con X sin confirmación.",
+   "evidence": "test-results/forms-a11y/logs/ac4.md#editar-backdrop-light-mobile"
+  },
+  {
+   "id": "REVIEW-OBS-2",
+   "severity": "low",
+   "classification": "review_observation",
+   "status": "accepted_documented",
+   "summary": "OBS-2: registrar-nav usaba clic programático. Sustituido por clic real de ratón sobre el enlace visible del sidebar en desktop (1440x900). Con puntero el foco previo es el enlace A[aria-label=Ingresos]; 'Seguir editando' lo restaura (nunca BODY), conserva #monto=100,00 y no navega. R4.5 ('conserva el foco') se cumple, pero el foco queda fuera del formulario.",
+   "resolution": "Caso ac4/registrar-nav actualizado: clic real + asserts de foco real (enlace disparador, no BODY) y navegación bloqueada; limitación documentada en report.md y residual_risks. No se modificó producto para forzar el foco al form.",
+   "evidence": "test-results/forms-a11y/logs/ac4.md#registrar-nav-light-desktop"
+  },
+  {
+   "id": "REVIEW-OBS-3",
+   "severity": "info",
+   "classification": "review_observation",
+   "status": "resolved",
+   "summary": "OBS-3: metadatos desactualizados (commit/lifecycle/notas y AC9/AC10 con SHAs antiguos).",
+   "resolution": "tests JSON, report.md, metrics-after.json, console-log.json y logs regenerados para TEST sobre 062fd45: lifecycle_state=TEST, commit/AC10=062fd4556736..., AC9 83 archivos, status honesto, sin notas de working tree obsoletas.",
+   "evidence": "test-results/tests/forms-a11y.json"
   }
  ],
  "residual_risks": [
@@ -435,6 +462,11 @@
    "id": "PORT-8082-FOREIGN-APP",
    "summary": "El puerto :8082 está ocupado por una aplicación ajena; la auditoría usó :18082 para evitar falsos negativos. :8081 no se tocó.",
    "classification": "environment_constraint"
+  },
+  {
+   "id": "OBS-2-FOCO-FUERA-DEL-FORM",
+   "summary": "Con clic real de puntero en el sidebar, 'Seguir editando' restaura el foco en el enlace disparador (no en el primer campo del formulario). R4.5 se cumple (nunca BODY, datos y ruta intactos); si se desea foco en el form para navegación por puntero, requiere un cambio de UX posterior.",
+   "classification": "accepted_documented"
   }
  ],
  "artifacts": {
@@ -450,11 +482,18 @@
  },
  "git": {
   "mutations_performed": false,
-  "working_tree_note": "Solo test-results/ está modificado/sin trackear; no se hizo commit, tag ni push."
+  "working_tree_note": "Solo test-results/ está modificado/sin trackear (harness, report.md, metrics-after.json, console-log.json, logs y capturas regenerados); no hay cambios de producto y no se hizo commit, tag ni push."
  },
  "deploy": {
   "status": "pending",
-  "note": "AC11 se verifica post-release en test3.mikylab.com tras AWAITING_APPROVAL; fuera de BUILD/M4."
+  "note": "AC11 se verifica post-release en test3.mikylab.com tras aprobación; fuera de TEST."
  },
- "lifecycle_note": "Runtime en BUILD tras REVIEW rechazado (R4.5 + cobertura AC4 incompleta). fbce42e corrige el foco en X/Cancelar/Escape/nav y c5fdc8f el backdrop; AC4 (13/104) y el resto de AC pasan con evidencia sobre c5fdc8f. La transición a TEST corresponde al runtime cuando el re-REVIEW apruebe."
+ "lifecycle_note": "Runtime en TEST sobre 062fd45 tras REVIEW aprobado (review.md). OBS-1/OBS-3 resueltas y OBS-2 documentada como desviación aceptada; 68 casos / 455 checks PASS y AC7-AC10/AC12 PASS. AC11 queda PENDING (post-release). No se modificó producto ni Git.",
+ "totals": {
+  "cases": 68,
+  "checks": 455,
+  "failures": 0,
+  "duration_seconds": 674.957,
+  "note": "AC1-AC6 del harness de aceptación; AC7 20 rutas x tema/viewport + 17 estados; AC8-AC10 checks de calidad/repositorio."
+ }
 }

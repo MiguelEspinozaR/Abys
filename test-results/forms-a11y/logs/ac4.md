@@ -2,11 +2,12 @@
 
 | caso | tema | resultado | checks | detalle de fallos |
 |---|---|---|---|---|
-| registrar-nav | light | PASS | 8 | — |
+| registrar-nav | light | PASS | 10 | — |
 | registrar-limpio | light | PASS | 2 | — |
 | registrar-tras-guardar | light | PASS | 3 | — |
 | editar-close | dark | PASS | 6 | — |
 | editar-escape | light | PASS | 3 | — |
+| editar-backdrop | light | PASS | 12 | — |
 | editar-nav | light | PASS | 3 | — |
 | registrar-ocr-sucio | light | PASS | 4 | — |
 | fuente-nav | light | PASS | 9 | — |
@@ -16,17 +17,19 @@
 | tasa-nav | light | PASS | 9 | — |
 | tasa-close | dark | PASS | 16 | — |
 
-## registrar-nav (light, mobile)
+## registrar-nav (light, desktop)
 
-- [x] navegación con cambios muestra ConfirmarDescarte — ok
+- [x] enlace "Ingresos" visible para clic real — links visibles=1
+- [x] clic real con cambios muestra ConfirmarDescarte — ok
 - [x] título ¿Descartar cambios? — ¿Descartar cambios?
 - [x] foco inicial en "Seguir editando" — {"id":"","tag":"BUTTON","text":"Seguir editando","inDialog":"alert-dialog-content"}
 - [x] no se navegó (bloqueado) — http://localhost:5178/registrar
 - [x] "Seguir editando" conserva los cambios — dialog closed=true, monto=100,00
-- [x] R4.5: foco tras "Seguir editando" en el form (no BODY) — {"tag":"INPUT","id":"monto","text":"","isBody":false,"insideForm":true,"inDialog":null}
+- [x] R4.5: foco tras "Seguir editando" no cae en BODY — {"tag":"A","id":"","text":"Ingresos","isBody":false,"insideForm":false,"inDialog":null}
+- [x] OBS-2: foco restaurado en el enlace disparador (ACEPTADO, fuera del form) — {"tag":"A","id":"","text":"Ingresos","isBody":false,"insideForm":false,"inDialog":null}
 - [x] "Descartar cambios" navega a /ingresos — http://localhost:5178/ingresos
 - [x] descartar NO guarda el pago — POSTs=0
-- captura: screenshots/ac4-confirm-registrar-m390-light.png
+- captura: screenshots/ac4-confirm-registrar-desktop-light.png
 
 ## registrar-limpio (light, mobile)
 
@@ -55,6 +58,22 @@
 - [x] Escape con cambios muestra ConfirmarDescarte — ok
 - [x] Escape en la confirmación = seguir editando — confirm closed=true, edit open=true, monto=300,00
 - [x] R4.5: foco tras Escape seguro en el diálogo (no BODY) — {"tag":"INPUT","id":"edit-monto","text":"","isBody":false,"insideForm":true,"inDialog":"dialog-content"}
+
+## editar-backdrop (light, mobile)
+
+- [x] diálogo Editar no cubre el punto de overlay (8,80) — {"x":16,"y":42.203125,"width":358,"height":759.59375}
+- [x] clic real en overlay con cambios muestra ConfirmarDescarte — ok
+- [x] título ¿Descartar cambios? — ¿Descartar cambios?
+- [x] foco inicial en "Seguir editando" — {"id":"","tag":"BUTTON","text":"Seguir editando","inDialog":"alert-dialog-content"}
+- [x] el diálogo de edición sigue abierto — ok
+- [x] no se navegó (bloqueado) — http://localhost:5178/ingresos
+- [x] "Seguir editando" conserva los cambios — monto=350,00
+- [x] R4.5: foco tras overlay en el form (no BODY) — {"tag":"INPUT","id":"edit-monto","text":"","isBody":false,"insideForm":true,"inDialog":"dialog-content"}
+- [x] "Descartar cambios" cierra el diálogo — ok
+- [x] descartar no navega — http://localhost:5178/ingresos
+- [x] descartar NO guarda (0 PUT) — PUTs=0
+- [x] reapertura limpia cierra con X sin confirmación — dialogs=0, alerts=0
+- captura: screenshots/ac4-confirm-editar-backdrop-m390-light.png
 
 ## editar-nav (light, mobile)
 

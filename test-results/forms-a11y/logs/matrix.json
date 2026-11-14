@@ -52,7 +52,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4071,
+    "durationMs": 3669,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -105,7 +105,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4430,
+    "durationMs": 4449,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -138,7 +138,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4417,
+    "durationMs": 4153,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -171,7 +171,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3480,
+    "durationMs": 3415,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -199,7 +199,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3060,
+    "durationMs": 3209,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -232,7 +232,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3630,
+    "durationMs": 3715,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -275,7 +275,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4550,
+    "durationMs": 4638,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -343,7 +343,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3776,
+    "durationMs": 3654,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -367,7 +367,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2873,
+    "durationMs": 3021,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -411,7 +411,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4290,
+    "durationMs": 4297,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -455,7 +455,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4239,
+    "durationMs": 4396,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -484,7 +484,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3422,
+    "durationMs": 3285,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -527,7 +527,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4936,
+    "durationMs": 5185,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -556,7 +556,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3796,
+    "durationMs": 3577,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -589,7 +589,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3361,
+    "durationMs": 3373,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -627,7 +627,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2904,
+    "durationMs": 2709,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -685,7 +685,7 @@
       }
     ],
     "error": null,
-    "durationMs": 6329,
+    "durationMs": 6599,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -768,7 +768,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5703,
+    "durationMs": 5872,
     "console": [],
     "mockedNetwork": [
       {
@@ -841,7 +841,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5585,
+    "durationMs": 5341,
     "console": [],
     "mockedNetwork": [
       {
@@ -914,7 +914,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5287,
+    "durationMs": 5158,
     "console": [],
     "mockedNetwork": [
       {
@@ -987,7 +987,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5188,
+    "durationMs": 5256,
     "console": [],
     "mockedNetwork": [
       {
@@ -1055,7 +1055,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5132,
+    "durationMs": 5180,
     "console": [],
     "mockedNetwork": [
       {
@@ -1123,7 +1123,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5149,
+    "durationMs": 5203,
     "console": [],
     "mockedNetwork": [
       {
@@ -1191,7 +1191,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5186,
+    "durationMs": 5219,
     "console": [],
     "mockedNetwork": [
       {
@@ -1260,7 +1260,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5126,
+    "durationMs": 5366,
     "console": [],
     "mockedNetwork": [
       {
@@ -1328,7 +1328,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5499,
+    "durationMs": 5349,
     "console": [],
     "mockedNetwork": [
       {
@@ -1396,7 +1396,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5249,
+    "durationMs": 5219,
     "console": [],
     "mockedNetwork": [
       {
@@ -1464,7 +1464,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5268,
+    "durationMs": 5330,
     "console": [],
     "mockedNetwork": [
       {
@@ -1532,7 +1532,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4774,
+    "durationMs": 4864,
     "console": [],
     "mockedNetwork": [
       {
@@ -1600,7 +1600,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4838,
+    "durationMs": 4578,
     "console": [],
     "mockedNetwork": [
       {
@@ -1668,7 +1668,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4664,
+    "durationMs": 4741,
     "console": [],
     "mockedNetwork": [
       {
@@ -1736,7 +1736,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4928,
+    "durationMs": 4954,
     "console": [],
     "mockedNetwork": [
       {
@@ -1804,7 +1804,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4878,
+    "durationMs": 4691,
     "console": [],
     "mockedNetwork": [
       {
@@ -1873,7 +1873,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4681,
+    "durationMs": 4891,
     "console": [],
     "mockedNetwork": [
       {
@@ -1936,7 +1936,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4818,
+    "durationMs": 4736,
     "console": [],
     "mockedNetwork": [
       {
@@ -1999,7 +1999,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4836,
+    "durationMs": 4716,
     "console": [],
     "mockedNetwork": [
       {
@@ -2062,7 +2062,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4731,
+    "durationMs": 4960,
     "console": [],
     "mockedNetwork": [
       {
@@ -2131,7 +2131,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5626,
+    "durationMs": 5456,
     "console": [],
     "mockedNetwork": [
       {
@@ -2199,7 +2199,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5551,
+    "durationMs": 5388,
     "console": [],
     "mockedNetwork": [
       {
@@ -2268,7 +2268,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5377,
+    "durationMs": 5557,
     "console": [],
     "mockedNetwork": [
       {
@@ -2292,10 +2292,15 @@
     "ac": "ac4",
     "id": "registrar-nav",
     "theme": "light",
-    "viewport": "mobile",
+    "viewport": "desktop",
     "checks": [
       {
-        "name": "navegación con cambios muestra ConfirmarDescarte",
+        "name": "enlace \"Ingresos\" visible para clic real",
+        "pass": true,
+        "detail": "links visibles=1"
+      },
+      {
+        "name": "clic real con cambios muestra ConfirmarDescarte",
         "pass": true,
         "detail": "ok"
       },
@@ -2320,9 +2325,14 @@
         "detail": "dialog closed=true, monto=100,00"
       },
       {
-        "name": "R4.5: foco tras \"Seguir editando\" en el form (no BODY)",
+        "name": "R4.5: foco tras \"Seguir editando\" no cae en BODY",
         "pass": true,
-        "detail": "{\"tag\":\"INPUT\",\"id\":\"monto\",\"text\":\"\",\"isBody\":false,\"insideForm\":true,\"inDialog\":null}"
+        "detail": "{\"tag\":\"A\",\"id\":\"\",\"text\":\"Ingresos\",\"isBody\":false,\"insideForm\":false,\"inDialog\":null}"
+      },
+      {
+        "name": "OBS-2: foco restaurado en el enlace disparador (ACEPTADO, fuera del form)",
+        "pass": true,
+        "detail": "{\"tag\":\"A\",\"id\":\"\",\"text\":\"Ingresos\",\"isBody\":false,\"insideForm\":false,\"inDialog\":null}"
       },
       {
         "name": "\"Descartar cambios\" navega a /ingresos",
@@ -2336,7 +2346,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4568,
+    "durationMs": 5555,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2345,7 +2355,7 @@
     "writes": [],
     "unexpectedWrites": [],
     "pass": true,
-    "screenshot": "screenshots/ac4-confirm-registrar-m390-light.png"
+    "screenshot": "screenshots/ac4-confirm-registrar-desktop-light.png"
   },
   {
     "ac": "ac4",
@@ -2365,7 +2375,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3492,
+    "durationMs": 3579,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2398,7 +2408,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4710,
+    "durationMs": 4644,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2451,7 +2461,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5737,
+    "durationMs": 5676,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2485,7 +2495,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4513,
+    "durationMs": 4419,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2494,6 +2504,85 @@
     "writes": [],
     "unexpectedWrites": [],
     "pass": true
+  },
+  {
+    "ac": "ac4",
+    "id": "editar-backdrop",
+    "theme": "light",
+    "viewport": "mobile",
+    "checks": [
+      {
+        "name": "diálogo Editar no cubre el punto de overlay (8,80)",
+        "pass": true,
+        "detail": "{\"x\":16,\"y\":42.203125,\"width\":358,\"height\":759.59375}"
+      },
+      {
+        "name": "clic real en overlay con cambios muestra ConfirmarDescarte",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "título ¿Descartar cambios?",
+        "pass": true,
+        "detail": "¿Descartar cambios?"
+      },
+      {
+        "name": "foco inicial en \"Seguir editando\"",
+        "pass": true,
+        "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"text\":\"Seguir editando\",\"inDialog\":\"alert-dialog-content\"}"
+      },
+      {
+        "name": "el diálogo de edición sigue abierto",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "no se navegó (bloqueado)",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      },
+      {
+        "name": "\"Seguir editando\" conserva los cambios",
+        "pass": true,
+        "detail": "monto=350,00"
+      },
+      {
+        "name": "R4.5: foco tras overlay en el form (no BODY)",
+        "pass": true,
+        "detail": "{\"tag\":\"INPUT\",\"id\":\"edit-monto\",\"text\":\"\",\"isBody\":false,\"insideForm\":true,\"inDialog\":\"dialog-content\"}"
+      },
+      {
+        "name": "\"Descartar cambios\" cierra el diálogo",
+        "pass": true,
+        "detail": "ok"
+      },
+      {
+        "name": "descartar no navega",
+        "pass": true,
+        "detail": "http://localhost:5178/ingresos"
+      },
+      {
+        "name": "descartar NO guarda (0 PUT)",
+        "pass": true,
+        "detail": "PUTs=0"
+      },
+      {
+        "name": "reapertura limpia cierra con X sin confirmación",
+        "pass": true,
+        "detail": "dialogs=0, alerts=0"
+      }
+    ],
+    "error": null,
+    "durationMs": 9846,
+    "console": [],
+    "mockedNetwork": [],
+    "pageErrors": [],
+    "unhandled": [],
+    "failedRequests": [],
+    "writes": [],
+    "unexpectedWrites": [],
+    "pass": true,
+    "screenshot": "screenshots/ac4-confirm-editar-backdrop-m390-light.png"
   },
   {
     "ac": "ac4",
@@ -2518,7 +2607,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5711,
+    "durationMs": 5793,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2556,7 +2645,7 @@
       }
     ],
     "error": null,
-    "durationMs": 3728,
+    "durationMs": 3536,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2619,7 +2708,7 @@
       }
     ],
     "error": null,
-    "durationMs": 6654,
+    "durationMs": 6918,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2717,7 +2806,7 @@
       }
     ],
     "error": null,
-    "durationMs": 12835,
+    "durationMs": 12841,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2780,7 +2869,7 @@
       }
     ],
     "error": null,
-    "durationMs": 7135,
+    "durationMs": 7031,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2878,7 +2967,7 @@
       }
     ],
     "error": null,
-    "durationMs": 13069,
+    "durationMs": 12857,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -2941,7 +3030,7 @@
       }
     ],
     "error": null,
-    "durationMs": 6590,
+    "durationMs": 7086,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3039,7 +3128,7 @@
       }
     ],
     "error": null,
-    "durationMs": 12724,
+    "durationMs": 12826,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3072,7 +3161,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2854,
+    "durationMs": 2690,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3100,7 +3189,7 @@
       }
     ],
     "error": null,
-    "durationMs": 6757,
+    "durationMs": 6412,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3129,7 +3218,7 @@
       }
     ],
     "error": null,
-    "durationMs": 2830,
+    "durationMs": 2758,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3187,7 +3276,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4890,
+    "durationMs": 5061,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3250,7 +3339,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4629,
+    "durationMs": 4977,
     "console": [],
     "mockedNetwork": [
       {
@@ -3298,7 +3387,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5353,
+    "durationMs": 5116,
     "console": [],
     "mockedNetwork": [
       {
@@ -3354,7 +3443,7 @@
       }
     ],
     "error": null,
-    "durationMs": 7848,
+    "durationMs": 8343,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3392,7 +3481,7 @@
       }
     ],
     "error": null,
-    "durationMs": 5627,
+    "durationMs": 5743,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3440,7 +3529,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4398,
+    "durationMs": 4656,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3534,7 +3623,7 @@
       }
     ],
     "error": null,
-    "durationMs": 8048,
+    "durationMs": 7656,
     "console": [],
     "mockedNetwork": [
       {
@@ -3630,7 +3719,7 @@
       }
     ],
     "error": null,
-    "durationMs": 6937,
+    "durationMs": 6821,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3658,7 +3747,7 @@
       }
     ],
     "error": null,
-    "durationMs": 18666,
+    "durationMs": 18514,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3696,7 +3785,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4779,
+    "durationMs": 4644,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],
@@ -3729,7 +3818,7 @@
       }
     ],
     "error": null,
-    "durationMs": 4616,
+    "durationMs": 4474,
     "console": [],
     "mockedNetwork": [],
     "pageErrors": [],

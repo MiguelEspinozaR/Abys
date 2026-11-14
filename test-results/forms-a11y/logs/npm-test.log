@@ -9,11 +9,11 @@ $ npm test (cwd /home/miky/Documentos/finanzasMikyGoRef/web)
 
  Test Files  6 passed (6)
       Tests  69 passed (69)
-   Start at  21:00:09
-   Duration  4.37s (import 68%, transform 21%, tests 8%, worker 3%)
+   Start at  21:34:20
+   Duration  5.32s (import 64%, transform 24%, tests 8%, worker 3%)
 
-    Isolate  6 workers spawned · ~718ms startup each (spawn + environment, per file)
-             at least ~718ms faster with isolate: false — reuses workers across files instead of one per file
+    Isolate  6 workers spawned · ~998ms startup each (spawn + environment, per file)
+             at least ~998ms faster with isolate: false — reuses workers across files instead of one per file
 
 
 [exit 0]

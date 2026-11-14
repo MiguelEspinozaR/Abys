@@ -38,7 +38,7 @@ dist/assets/CalendarioDias-CS3uZFQz.js                      41.44 kB │ gzip:  
 dist/assets/ConfiguracionPage-BJxNAkQi.js                   47.86 kB │ gzip:  12.45 kB
 dist/assets/DashboardPage-B3b_147Z.js                      423.66 kB │ gzip: 122.38 kB
 dist/assets/index-vu6RcwMo.js                              512.56 kB │ gzip: 164.08 kB
-✓ built in 21.91s
+✓ built in 21.50s
 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application

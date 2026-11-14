@@ -1,13 +1,13 @@
 {
   "meta": {
-    "started": "2026-11-14T00:49:57.197Z",
-    "finished": "2026-11-14T01:01:02.270Z",
+    "started": "2026-11-14T01:23:57.794Z",
+    "finished": "2026-11-14T01:35:12.751Z",
     "baseUrl": "http://localhost:5178",
     "apiUrl": "http://localhost:18082/api/v1",
     "chrome": "156.0.8078.79",
     "node": "v22.22.1",
     "playwright": "1.65.0",
-    "commit": "c5fdc8f",
+    "commit": "062fd45",
     "tesseractChunk": "/assets/index-DgvX7Flt.js",
     "nota": "Escrituras de API mockeadas con page.route (red de seguridad 599 HARNESS_BLOCKED_WRITE); backend :18082 solo GETs reales."
   },
@@ -34,9 +34,9 @@
   },
   "ac4": {
     "pass": true,
-    "cases": 13,
+    "cases": 14,
     "failed": [],
-    "checks": 104,
+    "checks": 118,
     "detail": "guardia de descarte con dirty en nav SPA y cierre por X/Cancelar/Escape/backdrop (Registrar, Editar, Fuente, Cuenta, Tasa); R4.5 foco no-BODY tras Seguir editando; cierre sin dirty directo; beforeunload fuera de alcance (R4.9)"
   },
   "ac5": {
@@ -1674,7 +1674,7 @@
       "cmd": "npx tsc -b",
       "cwd": "/home/miky/Documentos/finanzasMikyGoRef/web",
       "status": 0,
-      "durationMs": 20392,
+      "durationMs": 20379,
       "log": "logs/tsc.log",
       "tail": []
     },
@@ -1682,30 +1682,30 @@
       "cmd": "npm test",
       "cwd": "/home/miky/Documentos/finanzasMikyGoRef/web",
       "status": 0,
-      "durationMs": 7486,
+      "durationMs": 8130,
       "log": "logs/npm-test.log",
       "tail": [
         "> vitest run",
         " RUN  v5.0.0 /home/miky/Documentos/finanzasMikyGoRef/web",
         " Test Files  6 passed (6)",
         "      Tests  69 passed (69)",
-        "   Start at  21:00:09",
-        "   Duration  4.37s (import 68%, transform 21%, tests 8%, worker 3%)",
-        "    Isolate  6 workers spawned · ~718ms startup each (spawn + environment, per file)",
-        "             at least ~718ms faster with isolate: false — reuses workers across files instead of one per file"
+        "   Start at  21:34:20",
+        "   Duration  5.32s (import 64%, transform 24%, tests 8%, worker 3%)",
+        "    Isolate  6 workers spawned · ~998ms startup each (spawn + environment, per file)",
+        "             at least ~998ms faster with isolate: false — reuses workers across files instead of one per file"
       ]
     },
     "build": {
       "cmd": "npm run build",
       "cwd": "/home/miky/Documentos/finanzasMikyGoRef/web",
       "status": 0,
-      "durationMs": 43068,
+      "durationMs": 42169,
       "log": "logs/build.log",
       "tail": [
         "dist/assets/ConfiguracionPage-BJxNAkQi.js                   47.86 kB │ gzip:  12.45 kB",
         "dist/assets/DashboardPage-B3b_147Z.js                      423.66 kB │ gzip: 122.38 kB",
         "dist/assets/index-vu6RcwMo.js                              512.56 kB │ gzip: 164.08 kB",
-        "✓ built in 21.91s",
+        "✓ built in 21.50s",
         "(!) Some chunks are larger than 500 kB after minification. Consider:",
         "- Using dynamic import() to code-split the application",
         "- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks",
@@ -1716,7 +1716,7 @@
       "cmd": "go test ./...",
       "cwd": "/home/miky/Documentos/finanzasMikyGoRef/backend",
       "status": 0,
-      "durationMs": 2406,
+      "durationMs": 2016,
       "log": "logs/go-test.log",
       "tail": [
         "?   \tabys/internal/database\t[no test files]",
@@ -1733,7 +1733,7 @@
   },
   "ac9": {
     "branch": "feat/forms-a11y",
-    "head": "c5fdc8f5240f9b8db14a38f3fb65b46df4272512",
+    "head": "062fd4556736e634aa8c967f66f9a12bec64a088",
     "baseCommit": "490de51",
     "diffDeps": "",
     "changedFiles": [
@@ -1755,6 +1755,7 @@
       "test-results/forms-a11y/metrics-after.json",
       "test-results/forms-a11y/metrics-before.json",
       "test-results/forms-a11y/report.md",
+      "test-results/forms-a11y/review.md",
       "test-results/forms-a11y/screenshots/ac2-editar-invalido-m390-light.png",
       "test-results/forms-a11y/screenshots/ac2-editar-metodo-invalido-m390-light.png",
       "test-results/forms-a11y/screenshots/ac2-fuente-invalido-m390-light.png",
@@ -1765,8 +1766,14 @@
       "test-results/forms-a11y/screenshots/ac3-split-500-m390-light.png",
       "test-results/forms-a11y/screenshots/ac3-splits-tab-409-m390-light.png",
       "test-results/forms-a11y/screenshots/ac3-tasa-409-m390-light.png",
+      "test-results/forms-a11y/screenshots/ac4-confirm-cuenta-close-m390-dark.png",
+      "test-results/forms-a11y/screenshots/ac4-confirm-cuenta-nav-m390-light.png",
       "test-results/forms-a11y/screenshots/ac4-confirm-editar-m390-dark.png",
+      "test-results/forms-a11y/screenshots/ac4-confirm-fuente-close-m390-dark.png",
+      "test-results/forms-a11y/screenshots/ac4-confirm-fuente-nav-m390-light.png",
       "test-results/forms-a11y/screenshots/ac4-confirm-registrar-m390-light.png",
+      "test-results/forms-a11y/screenshots/ac4-confirm-tasa-close-m390-dark.png",
+      "test-results/forms-a11y/screenshots/ac4-confirm-tasa-nav-m390-light.png",
       "test-results/forms-a11y/screenshots/ac5-comprobante-11mb-m390-light.png",
       "test-results/forms-a11y/screenshots/ac5-comprobante-reintentar-m390-light.png",
       "test-results/forms-a11y/screenshots/ac5-post-pago-bloqueado-m390-light.png",
@@ -1818,9 +1825,9 @@
     "pass": true
   },
   "ac10": {
-    "remote": "c5fdc8f5240f9b8db14a38f3fb65b46df4272512\trefs/heads/feat/forms-a11y",
-    "remoteSha": "c5fdc8f5240f9b8db14a38f3fb65b46df4272512",
-    "head": "c5fdc8f5240f9b8db14a38f3fb65b46df4272512",
+    "remote": "062fd4556736e634aa8c967f66f9a12bec64a088\trefs/heads/feat/forms-a11y",
+    "remoteSha": "062fd4556736e634aa8c967f66f9a12bec64a088",
+    "head": "062fd4556736e634aa8c967f66f9a12bec64a088",
     "pass": true
   },
   "ac11": {

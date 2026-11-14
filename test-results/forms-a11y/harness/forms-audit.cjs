@@ -1233,18 +1233,23 @@ async function ac3(browser) {
  * AC4 — Guardia de descarte
  * ========================================================================== */
 async function ac4(browser) {
-  // Navegación SPA con formulario sucio (Registrar).
+  // Navegación SPA con formulario sucio (Registrar) mediante clic real de ratón
+  // en el enlace del sidebar (viewport desktop, donde es visible y clicable).
+  // OBS-2: con puntero, el foco previo es el enlace "Ingresos"; R4.5 se cumple
+  // al restaurarlo (nunca BODY, form y datos intactos, sin navegar).
   await runCase(browser, {
-    ac: 'ac4', id: 'registrar-nav', theme: 'light', shot: 'ac4-confirm-registrar-m390-light',
+    ac: 'ac4', id: 'registrar-nav', theme: 'light', vp: VIEWPORTS.desktop, shot: 'ac4-confirm-registrar-desktop-light',
     run: async (env) => {
       const { page } = env
       await goto(page, '/registrar')
       const checks = []
       await page.fill('#monto', '100,00')
       await page.waitForTimeout(300)
-      await page.evaluate(() => document.querySelector('a[href="/ingresos"]').click())
+      const navLink = page.locator('a[aria-label="Ingresos"]:visible').first()
+      checks.push(CHECK('enlace "Ingresos" visible para clic real', await navLink.count() === 1, 'links visibles=' + await page.locator('a[aria-label="Ingresos"]:visible').count()))
+      await navLink.click()
       await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
-      checks.push(CHECK('navegación con cambios muestra ConfirmarDescarte', true))
+      checks.push(CHECK('clic real con cambios muestra ConfirmarDescarte', true))
       const title = (await page.textContent('[data-slot=alert-dialog-title]') || '').trim()
       checks.push(CHECK('título ¿Descartar cambios?', /Descartar cambios/i.test(title), title))
       const focus = await activeDesc(page)
@@ -1252,14 +1257,17 @@ async function ac4(browser) {
       const urlStill = page.url()
       checks.push(CHECK('no se navegó (bloqueado)', urlStill.includes('/registrar'), urlStill))
       await page.getByRole('button', { name: 'Seguir editando' }).click()
-      await page.waitForTimeout(500)
+      await page.waitForTimeout(600)
       const dlgClosed = (await page.locator('[data-slot=alert-dialog-content]').count()) === 0
       const monto = await page.inputValue('#monto')
       checks.push(CHECK('"Seguir editando" conserva los cambios', dlgClosed && monto === '100,00' && page.url().includes('/registrar'), `dialog closed=${dlgClosed}, monto=${monto}`))
       const focoSeguir = await focusState(page)
-      checks.push(CHECK('R4.5: foco tras "Seguir editando" en el form (no BODY)', focusInsideFormOrDialog(focoSeguir) && focoSeguir.insideForm === true, FOCUS_DETAIL(focoSeguir)))
-      // Segundo intento: descartar.
-      await page.evaluate(() => document.querySelector('a[href="/ingresos"]').click())
+      checks.push(CHECK('R4.5: foco tras "Seguir editando" no cae en BODY', !focoSeguir.isBody, FOCUS_DETAIL(focoSeguir)))
+      // OBS-2 (desviación aceptada): con clic real el foco restaurado es el enlace
+      // disparador, no un control del formulario. Se registra el elemento real.
+      checks.push(CHECK('OBS-2: foco restaurado en el enlace disparador (ACEPTADO, fuera del form)', focoSeguir.tag === 'A' && /ingresos/i.test(focoSeguir.aria || focoSeguir.text || ''), FOCUS_DETAIL(focoSeguir)))
+      // Segundo intento: descartar con clic real.
+      await navLink.click()
       await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
       await mockWrite(env, { glob: API + '/pagos', method: 'POST', status: 200, body: MOCK_PAGO_200 })
       await page.getByRole('button', { name: 'Descartar cambios' }).click()
@@ -1363,6 +1371,54 @@ async function ac4(browser) {
       checks.push(CHECK('Escape en la confirmación = seguir editando', confirmClosed && editStill >= 1 && monto === '300,00', `confirm closed=${confirmClosed}, edit open=${editStill >= 1}, monto=${monto}`))
       const focoEscape = await focusState(page)
       checks.push(CHECK('R4.5: foco tras Escape seguro en el diálogo (no BODY)', focusInsideFormOrDialog(focoEscape), FOCUS_DETAIL(focoEscape)))
+      return checks
+    },
+  })
+
+  // Clic real en el overlay del diálogo Editar con cambios (OBS-1).
+  await runCase(browser, {
+    ac: 'ac4', id: 'editar-backdrop', theme: 'light', shot: 'ac4-confirm-editar-backdrop-m390-light',
+    run: async (env) => {
+      const { page } = env
+      await openEditarPago(env, false)
+      const checks = []
+      await page.fill('#edit-monto', '350,00')
+      await page.waitForTimeout(300)
+      const box = await page.locator('[data-slot=dialog-content]').first().boundingBox()
+      checks.push(CHECK('diálogo Editar no cubre el punto de overlay (8,80)', !!box && box.x > 8, JSON.stringify(box)))
+      await page.mouse.click(8, 80)
+      await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
+      checks.push(CHECK('clic real en overlay con cambios muestra ConfirmarDescarte', true))
+      const title = (await page.textContent('[data-slot=alert-dialog-title]') || '').trim()
+      checks.push(CHECK('título ¿Descartar cambios?', /Descartar cambios/i.test(title), title))
+      const focus = await activeDesc(page)
+      checks.push(CHECK('foco inicial en "Seguir editando"', focus && focus.text === 'Seguir editando', JSON.stringify(focus)))
+      const editStill = await page.locator('[data-slot=dialog-content]').count()
+      checks.push(CHECK('el diálogo de edición sigue abierto', editStill >= 1))
+      checks.push(CHECK('no se navegó (bloqueado)', page.url().includes('/ingresos'), page.url()))
+      await page.getByRole('button', { name: 'Seguir editando' }).click()
+      await page.waitForTimeout(600)
+      const monto = await page.inputValue('#edit-monto')
+      const focoBackdrop = await focusState(page)
+      checks.push(CHECK('"Seguir editando" conserva los cambios', monto === '350,00' && (await page.locator('[data-slot=dialog-content]').count()) >= 1, 'monto=' + monto))
+      checks.push(CHECK('R4.5: foco tras overlay en el form (no BODY)', focusInsideFormOrDialog(focoBackdrop) && focoBackdrop.insideForm === true && !focoBackdrop.isBody, FOCUS_DETAIL(focoBackdrop)))
+      // Descartar desde el overlay: cierra sin guardar ni navegar.
+      await page.mouse.click(8, 80)
+      await page.locator('[data-slot=alert-dialog-content]').waitFor({ state: 'visible', timeout: 5000 })
+      await page.getByRole('button', { name: 'Descartar cambios' }).click()
+      await page.waitForTimeout(700)
+      const closed = (await page.locator('[data-slot=dialog-content]').count()) === 0 && (await page.locator('[data-slot=alert-dialog-content]').count()) === 0
+      checks.push(CHECK('"Descartar cambios" cierra el diálogo', closed))
+      checks.push(CHECK('descartar no navega', page.url().includes('/ingresos'), page.url()))
+      const puts = writeCount(env, 'PUT', /\/pagos\/\d+$/)
+      checks.push(CHECK('descartar NO guarda (0 PUT)', puts === 0, 'PUTs=' + puts))
+      // Reapertura limpia: cerrar con X no pide confirmación.
+      await openEditarPago(env, false)
+      await page.locator('[data-slot=dialog-close]').first().click()
+      await page.waitForTimeout(700)
+      const cleanDialogs = await page.locator('[data-slot=dialog-content]').count()
+      const cleanAlerts = await page.locator('[data-slot=alert-dialog-content]').count()
+      checks.push(CHECK('reapertura limpia cierra con X sin confirmación', cleanDialogs === 0 && cleanAlerts === 0, `dialogs=${cleanDialogs}, alerts=${cleanAlerts}`))
       return checks
     },
   })

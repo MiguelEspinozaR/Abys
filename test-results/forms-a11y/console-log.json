@@ -568,6 +568,16 @@
     },
     {
       "ac": "ac4",
+      "id": "editar-backdrop",
+      "theme": "light",
+      "console": [],
+      "failedRequests": [],
+      "unhandled": [],
+      "unexpectedWrites": [],
+      "mockedNetwork": []
+    },
+    {
+      "ac": "ac4",
       "id": "editar-nav",
       "theme": "light",
       "console": [],
