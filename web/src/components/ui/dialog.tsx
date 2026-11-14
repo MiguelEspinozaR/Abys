@@ -43,6 +43,12 @@ function DialogOverlay({
         className
       )}
       {...props}
+      onMouseDown={(e) => {
+        // El mousedown por defecto llevaría el foco a BODY antes de que el
+        // formulario capture su control previo (R4.5). Radix sigue detectando
+        // el cierre por pointerdown/click.
+        e.preventDefault()
+      }}
     />
   )
 }
