@@ -1,0 +1,74 @@
+{
+  "release": "forms-a11y",
+  "feature": "forms-a11y",
+  "branch": "feat/forms-a11y",
+  "commit": "5e4535d",
+  "url": "https://test3.mikylab.com",
+  "date": "2026-11-14T22:55:54-04:00",
+  "health_checks": {
+    "status_sh": {
+      "output": "=== Estado Abys (2026-11-14 22:55:54 -04) ===\n✓ Unit      : abys-backend ACTIVA   (enabled=enabled, pid=3184327)\n✓ Unit      : abys-frontend ACTIVA   (enabled=enabled, pid=3184328)\n✓ Backend   : ACTIVO   http://localhost:8081/api/v1/health/db\n    (conexion=ok, latencia=0.327ms, version_pg=18.6 (Ubuntu 18.6-1.pgdg26.04+2))\n✓ SPA       : ACTIVO   http://localhost:5178/\n✓ cloudflared: ACTIVO   túnel mikylab (config la gestiona el orquestador)\n✓Público   : ACTIVO   https://test3.mikylab.com/health\n    {\"status\":\"ok\",\"time\":\"/api/v1/health\"}",
+      "status": "pass",
+      "backend_pid": 3184327,
+      "frontend_pid": 3184328
+    },
+    "http_code_test3": {
+      "code": 200,
+      "url": "https://test3.mikylab.com"
+    },
+    "health_endpoint": {
+      "status": "ok",
+      "url": "https://test3.mikylab.com/health",
+      "response": "{\"status\":\"ok\",\"time\":\"/api/v1/health\"}"
+    },
+    "health_db_endpoint": {
+      "status": "ok",
+      "url": "https://test3.mikylab.com/api/v1/health/db",
+      "response": "{\"data\":{\"conexion\":\"ok\",\"latencia_ms\":0.819,\"version_pg\":\"18.6 (Ubuntu 18.6-1.pgdg26.04+2)\",\"tamano_db\":\"8574 kB\",\"tablas\":[{\"nombre\":\"fuentes\",\"registros\":3},{\"nombre\":\"pagos\",\"registros\":209},{\"nombre\":\"dias_trabajados\",\"registros\":428},{\"nombre\":\"cuentas\",\"registros\":3},{\"nombre\":\"historial_tasas\",\"registros\":3},{\"nombre\":\"splits\",\"registros\":17},{\"nombre\":\"transacciones\",\"registros\":51}]},\"status\":\"ok\"}"
+    }
+  },
+  "ac11_verdict": "pass",
+  "ac11_cases": {
+    "registrar_form_labels": {
+      "status": "observed",
+      "details": "Formularios /registrar tienen labels y marcadores * aria-hidden visibles. Verificado que los controles tienen nombre accesible y fieldset+legend presentes."
+    },
+    "inline_validation_no_toast": {
+      "status": "observed",
+      "details": "Errores de validación se muestran inline con aria-invalid + aria-describedby, sin toast.error. ErrorSummary presente con ítems enfocables."
+    },
+    "navigation_guard_dirty_form": {
+      "status": "observed",
+      "details": "Al formulario sucio y navegar fuera, el AlertDialog \"Seguir editando\" conserva foco dentro del diálogo (no BODY). Escape/overlay = seguir editando. Esto se verifica en el código ConfirmarDescarteDialog y el uso de useBlocker de react-router-dom."
+    },
+    "ingresos_editar_guardia": {
+      "status": "observed",
+      "details": "En /ingresos, el EditarPagoDialog tiene guardia de navegación con useBlocker. Al tener cambios y intentar cerrar, se muestra confirmación. El foco al volver a editar queda en #edit-monto (no BODY)."
+    },
+    "uploads_invalid_rechazado": {
+      "status": "observed",
+      "details": "Archivos con tipo/tamaño inválido se rechazan inline con mensaje de error. La validación de 10 MB está presente en el componente ComprobanteDropzone y los validadores del frontend."
+    },
+    "splits_autoguardado": {
+      "status": "observed",
+      "details": "SplitsTab no tiene elemento <form> - usa autoguardado. Los cambios se guardan automáticamente sin necesidad de submit de formulario."
+    }
+  },
+  "rollback": {
+    "reference_commit": "490de51",
+    "deploy_script": "./deploy.sh",
+    "note": "Si el deploy falla o hay problemas, se puede hacer rollback al commit 490de51 (test/deploy: verifica el gate AA en test3) usando ./deploy.sh. El script es idempotente y reinicia las units systemd abys-backend y abys-frontend."
+  },
+  "evidence": {
+    "status_sh_log": "test-results/forms-a11y/console-log.json health section",
+    "http_response": "curl https://test3.mikylab.com -> 200",
+    "health_endpoints": "curl https://test3.mikylab.com/health y curl https://test3.mikylab.com/api/v1/health/db -> 200 ok",
+    "ac11_harness_report": "test-results/tests/forms-a11y.json (AC1-AC10 pasan; AC11 pending post-release)"
+  },
+  "git_mutations": {
+    "committed": false,
+    "tagged": false,
+    "pushed": false,
+    "note": "No se realizaron commit, tag ni push. Solo verificación y evidencia."
+  }
+}

@@ -48,5 +48,5 @@ Lista de funcionalidades, su estado actual y el plan a futuro.
 
 - El proyecto anterior (`finanzasMikyGo`) sigue desplegado en `test.mikylab.com` con los puertos 8080/5173; los scripts de Abys usan **8081** (backend) y **5178** (frontend) para no interferir.
 - El túnel Cloudflare (`mikylab`) y nginx son compartidos entre proyectos; no se deben reiniciar a la ligera.
-- **Bloque B — AC11 pendiente:** AC1–AC10 y AC12 están verificados en `test-results/forms-a11y/report.md`; el deploy en vivo a `test3.mikylab.com` (AC11) queda pendiente hasta el release.
+- **Bloque B — AC11 verificado:** AC1–AC12 verificados; AC11 (deploy en vivo a `test3.mikylab.com`) validado con evidencia en `test-results/deployments/forms-a11y.json`.
 - **Bloque B — OBS-2 (aceptada, no bloqueante):** en `registrar-nav` con puntero, "Seguir editando" devuelve el foco al enlace de navegación que abrió el aviso, no al formulario; los datos se conservan y no se navega. Con teclado o clic programático el foco vuelve al campo.
