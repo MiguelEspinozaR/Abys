@@ -62,3 +62,10 @@ Fuente única de las reglas de la aplicación, documentadas en lenguaje natural.
 28. Auditoría, timestamps y soft delete en base de datos, sin comprometer datos históricos: lo eliminado no aparece en listados activos ni en dashboard, pero se conserva en el histórico.
 29. La base de datos es la fuente de verdad; el frontend no duplica datos del servidor.
 30. Seguridad v1: la aplicación se ejecuta **sin login** en la versión estable inicial (riesgo documentado); el login se implementará en una versión posterior.
+
+## Formularios y archivos
+
+31. Las notas de un pago son opcionales y tienen un máximo de **500 caracteres** validado en cliente (regla de producto). Si el OCR deja más de 500, el texto no se trunca: se muestra el contador real y se bloquea el guardado hasta corregirlo. El backend no impone este límite.
+32. Comprobante, logo y QR aceptan imágenes PNG, JPEG, WEBP o GIF de hasta **10 MB**; el límite coincide con `MaxUploadSize` del backend (default 10 MB) y se valida antes de enviar.
+33. Los formularios con cambios sin guardar piden confirmación (`AlertDialog`) al navegar internamente o cerrar un diálogo. Recargar o cerrar la pestaña no se intercepta (sin `beforeunload`): los cambios no guardados se pierden.
+34. Los errores de validación y de API se muestran inline junto al campo o en el resumen del formulario; no se usa `toast.error` para validación de formularios.

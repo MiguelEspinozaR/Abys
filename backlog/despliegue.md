@@ -41,6 +41,7 @@ cloudflared tunnel route dns mikylab <subdominio>.mikylab.com
 - `PORT` — puerto del backend (8081 en despliegue).
 - `CORS_ORIGIN` — orígenes permitidos separados por coma (`http://localhost:5173,https://test3.mikylab.com`).
 - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` — conexión (se leen desde `backend/.env`, no versionado).
+- `MAX_UPLOAD_SIZE` — tamaño máximo de comprobante, logo y QR en MB (default `10`; `MaxUploadSize` en `config.go`). El cliente valida el mismo límite (10×1024×1024 bytes); si se cambia aquí, debe actualizarse `web/src/lib/uploads.ts`.
 - `VITE_API_URL` — base de la API en el build frontend (`/api/v1` en producción, mismo origen).
 
 ## Notas de seguridad

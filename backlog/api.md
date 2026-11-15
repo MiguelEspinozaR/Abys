@@ -84,3 +84,5 @@ Estados usados: 400 (validación), 404 (no encontrado), 409 (conflicto/regla de 
 - Tasas: `tasa_bps` en basis points (2000 = 20%).
 - Zona horaria: `America/La_Paz` (UTC-4).
 - CORS: multi-origen separado por comas (`CORS_ORIGIN`); en producción incluye `https://test3.mikylab.com`.
+- Uploads (`/pagos/:id/comprobante`, `/fuentes/:id/logo`, `/cuentas/:id/qr`): multipart con campo `archivo`; tipos permitidos PNG/JPEG/WEBP/GIF y tamaño máximo **10 MB** (`MAX_UPLOAD_SIZE`, default `MaxUploadSize: 10`). Un archivo inválido responde `VALIDATION_ERROR` (400). El cliente valida el mismo límite (10×1024×1024 bytes) antes de enviar.
+- Errores en formularios: el cliente lanza `ApiRequestError` con `code` y `status`; el mapeo a campo o resumen es explícito por formulario en `web/src/lib/api-errors.ts` (`VALIDATION_ERROR` 400, `BUSINESS_RULE_CONFLICT` 409, `IMMUTABLE_DATA` 422, `NETWORK_ERROR` status 0 con reintento, `INTERNAL_ERROR`/500 y desconocidos al resumen). El mensaje del backend se muestra tal cual y los formularios no lo duplican con `toast.error`; el toast se reserva para acciones fuera de formularios.

@@ -43,7 +43,15 @@ Estructura en `web/src/`:
 - `components/layout/` — sidebar y layout general.
 - `services/` — cliente HTTP (fetch), hooks de TanStack Query, OCR, tipos.
 - `store/` — Zustand (sidebar, tema).
-- `lib/` — utilidades (formato de montos Bs ↔ centavos, fechas) con tests.
+- `lib/` — utilidades (formato de montos Bs ↔ centavos, fechas, validadores de formulario, mapeo de errores de API y validación de uploads) con tests.
+- `components/form/` — `FieldError`, `ErrorSummary` y `ConfirmarDescarteDialog`.
+
+## Formularios
+
+- Los 6 formularios con submit usan `<form noValidate>` con nombre accesible, labels/fieldsets y `*` en obligatorios; la validación corre en `blur`/submit y los errores se muestran inline + resumen (`useFormErrors`). `SplitsTab` sigue siendo un select autoguardado sin `<form>`.
+- **Guardia de cambios:** `useBlocker` de React Router v7 para navegación interna y `ConfirmarDescarteDialog` (`AlertDialog`) para cierre de diálogos. No se registra `beforeunload`: recargar o cerrar la pestaña no se intercepta (limitación aceptada).
+- **Errores de API:** `lib/api-errors.ts` mapea `ApiRequestError` (`code`/`status`) de forma explícita por formulario a un campo o al resumen; los mensajes del backend se muestran tal cual. Los hooks de mutación usados por formularios no emiten `toast.error` (el error va inline); las acciones fuera de formularios conservan el toast.
+- **Uploads:** `lib/uploads.ts` define los tipos permitidos (PNG/JPEG/WEBP/GIF) y `MAX_UPLOAD_MB = 10` (`10 * 1024 * 1024`), alineado con `MaxUploadSize` del backend. El rechazo por tipo/tamaño se valida antes de llamar a la API y se muestra inline en comprobante, logo o QR.
 
 ## Base de datos
 
