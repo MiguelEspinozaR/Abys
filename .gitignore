@@ -37,3 +37,4 @@ cloudflared-*
 # Infraestructura AI / artefactos de auditoría
 .ai/
 web/.playwright-cli/
+web/test-results/

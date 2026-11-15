@@ -1,83 +1,79 @@
 #!/usr/bin/env bash
 #
-# stop.sh — detiene SOLO los procesos Abys (Fase 4)
+# stop.sh — detiene SOLO los servicios Abys (Fase 4, systemd)
 #
 # Qué hace:
-#   1. Mata (SIGTERM) los PIDs guardados en /tmp/abys_pids.txt, si existe.
-#   2. Red de seguridad: fuser -k SOLO sobre :8081/tcp y :5178/tcp.
-#   3. Elimina /tmp/abys_pids.txt.
-#   4. Verifica que los puertos Abys quedaron libres y avisa del estado
-#      del proyecto anterior (8080/5173), que NUNCA se toca.
+#   1. Detiene las units abys-backend y abys-frontend con systemctl.
+#   2. Espera a que queden inactivas (máx. ~10s).
+#   3. Elimina el obsoleto /tmp/abys_pids.txt de despliegues antiguos con nohup.
+#   4. Avisa del estado del proyecto anterior (:8080/:5173), que NUNCA se toca.
 #
 # Reglas de seguridad:
+#   - SOLO actúa sobre las units abys-backend y abys-frontend.
 #   - NUNCA toca :8080 ni :5173 ni procesos de finanzasMikyGo.
-#   - NUNCA usa `pkill -f vite` global (mataría el vite dev del proyecto anterior).
+#   - Requiere sudo para `systemctl stop` (se pedirá contraseña si hace falta).
+#
+# Uso: ./stop.sh
 
 set -uo pipefail
 
-PIDS_FILE=/tmp/abys_pids.txt
+BACKEND_UNIT=abys-backend
+FRONTEND_UNIT=abys-frontend
+LEGACY_PIDS_FILE=/tmp/abys_pids.txt
 BACKEND_PORT=8081
 SPA_PORT=5178
 
-stopped=0
+# Con terminal interactiva sudo pregunta normalmente; sin TTY (CI/pipe) usa -S.
+as_root() {
+  if [ "$(id -u)" -eq 0 ]; then
+    "$@"
+  elif [ -t 0 ]; then
+    sudo "$@"
+  else
+    sudo -S -p '' "$@"
+  fi
+}
 
-# --- 1. PIDs guardados -------------------------------------------------------
-if [ -f "$PIDS_FILE" ]; then
-  echo "[stop] deteniendo procesos Abys listados en $PIDS_FILE:"
-  while read -r pid; do
-    [ -n "$pid" ] || continue
-    if kill -0 "$pid" 2>/dev/null; then
-      if kill "$pid" 2>/dev/null; then
-        echo "  ✓ pid $pid (SIGTERM)"
-        stopped=1
-      else
-        echo "  ✗ no se pudo señalar el pid $pid"
-      fi
-    else
-      echo "  - pid $pid ya no existe"
-    fi
-  done < "$PIDS_FILE"
-else
-  echo "[stop] no existe $PIDS_FILE; no hay PIDs guardados"
-fi
+echo "[stop] deteniendo $BACKEND_UNIT y $FRONTEND_UNIT (systemd)..."
+as_root systemctl stop "$BACKEND_UNIT" "$FRONTEND_UNIT" || {
+  echo "✗ [stop] falló 'systemctl stop'; revisa: systemctl status $BACKEND_UNIT $FRONTEND_UNIT" >&2
+  exit 1
+}
 
-sleep 1
-
-# --- 2. Red de seguridad: solo los puertos Abys ------------------------------
-if fuser -k "${BACKEND_PORT}/tcp" "${SPA_PORT}/tcp" 2>/dev/null; then
-  echo "[stop] red de seguridad: quedaban procesos en :${BACKEND_PORT}/:${SPA_PORT}; SIGKILL aplicado"
-  stopped=1
-fi
-
-# --- 3. Esperar puertos libres (máx. ~5s) y limpiar PIDs ---------------------
-for _ in $(seq 1 10); do
-  if ! fuser "${BACKEND_PORT}/tcp" >/dev/null 2>&1 && ! fuser "${SPA_PORT}/tcp" >/dev/null 2>&1; then
+for _ in $(seq 1 20); do
+  if ! systemctl is-active --quiet "$BACKEND_UNIT" && ! systemctl is-active --quiet "$FRONTEND_UNIT"; then
     break
   fi
   sleep 0.5
 done
 
-rm -f "$PIDS_FILE"
-echo "[stop] $PIDS_FILE eliminado"
-
-# --- 4. Verificaciones finales ------------------------------------------------
-if fuser "${BACKEND_PORT}/tcp" >/dev/null 2>&1 || fuser "${SPA_PORT}/tcp" >/dev/null 2>&1; then
-  echo "✗ [stop] ATENCIÓN: aún hay algo escuchando en :${BACKEND_PORT} o :${SPA_PORT} (proceso ajeno o que no terminó); no se fuerza su cierre"
+if systemctl is-active --quiet "$BACKEND_UNIT" || systemctl is-active --quiet "$FRONTEND_UNIT"; then
+  echo "✗ [stop] ATENCIÓN: las units siguen activas; revisa: systemctl status $BACKEND_UNIT $FRONTEND_UNIT" >&2
   exit 1
 fi
 
-echo "✓ [stop] servicios Abys detenidos (:${BACKEND_PORT} y :${SPA_PORT} libres)"
+echo "✓ [stop] $BACKEND_UNIT y $FRONTEND_UNIT detenidos"
+
+rm -f "$LEGACY_PIDS_FILE"
+echo "[stop] $LEGACY_PIDS_FILE eliminado (si existía)"
+
+# Puerto Abys: solo informativo; no forzamos el cierre de procesos ajenos.
+if fuser "${BACKEND_PORT}/tcp" "${SPA_PORT}/tcp" >/dev/null 2>&1; then
+  echo "✗ [stop] AVISO: algo sigue escuchando en :${BACKEND_PORT}/:${SPA_PORT} (proceso ajeno); no se toca"
+else
+  echo "✓ [stop] puertos Abys libres (:${BACKEND_PORT} y :${SPA_PORT})"
+fi
 
 # Proyecto anterior (solo informativo; nunca lo tocamos).
 if fuser 8080/tcp >/dev/null 2>&1; then
   echo "✓ [stop] proyecto anterior sigue activo en :8080 (intacto)"
 else
-  echo "✗ [stop] AVISO: :8080 ya no escucha (no lo tocamos; era así antes?)"
+  echo "✗ [stop] AVISO: :8080 ya no escucha (no lo tocamos; ¿era así antes?)"
 fi
 if fuser 5173/tcp >/dev/null 2>&1; then
   echo "✓ [stop] proyecto anterior sigue activo en :5173 (intacto)"
 else
-  echo "✗ [stop] AVISO: :5173 ya no escucha (no lo tocamos; era así antes?)"
+  echo "✗ [stop] AVISO: :5173 ya no escucha (no lo tocamos; ¿era así antes?)"
 fi
 
 exit 0
