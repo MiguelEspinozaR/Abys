@@ -51,6 +51,29 @@ export interface PagosFiltros {
   page_size?: number
 }
 
+/** Serializa los filtros de pagos en la query canónica (sin `?`). */
+export function serializarFiltrosPagos(filtros: PagosFiltros = {}): string {
+  const params = new URLSearchParams()
+  if (filtros.fecha_inicio) params.set("fecha_inicio", filtros.fecha_inicio)
+  if (filtros.fecha_fin) params.set("fecha_fin", filtros.fecha_fin)
+  if (filtros.fuente_id) params.set("fuente_id", String(filtros.fuente_id))
+  if (filtros.metodo_pago) params.set("metodo_pago", filtros.metodo_pago)
+  params.set("page", String(filtros.page ?? 1))
+  params.set("page_size", String(filtros.page_size ?? 20))
+  return params.toString()
+}
+
+/** Clave propia del histórico: no colisiona con `usePagos` (`["pagos", ...]`). */
+export function clavePagosPagina(filtros: PagosFiltros = {}) {
+  return ["historial", "pagos", serializarFiltrosPagos(filtros)] as const
+}
+
+/** GET de una página de pagos reutilizable por `usePagosPagina` y el histórico. */
+export function fetchPagosPagina(filtros: PagosFiltros = {}) {
+  const params = serializarFiltrosPagos(filtros)
+  return api.getRaw<{ data: Pago[]; meta: PagosMeta }>(`/pagos?${params}`)
+}
+
 // ---------------------------------------------------------------------------
 // Queries
 // ---------------------------------------------------------------------------
@@ -85,6 +108,24 @@ export function usePagos(filtros: PagosFiltros = {}) {
     queryFn: () =>
       api.getRaw<{ data: Pago[]; meta: PagosMeta }>(`/pagos?${params.toString()}`),
     staleTime: 30_000,
+  })
+}
+
+/**
+ * Página de pagos para el histórico agrupado.
+ *
+ * Key propia (`["historial", "pagos", params]`) y `enabled` para no consultar
+ * años colapsados. No usa `useInfiniteQuery` ni altera `usePagos`.
+ */
+export function usePagosPagina(
+  filtros: PagosFiltros = {},
+  opciones: { enabled?: boolean } = {},
+) {
+  return useQuery({
+    queryKey: clavePagosPagina(filtros),
+    queryFn: () => fetchPagosPagina(filtros),
+    staleTime: 30_000,
+    enabled: opciones.enabled ?? true,
   })
 }
 
@@ -184,10 +225,19 @@ export function useHistorialTasas(cuentaId: number | null) {
 // Mutaciones
 // ---------------------------------------------------------------------------
 
+/**
+ * Invalida el histórico agrupado (`["historial", "pagos", params]`) junto con
+ * las invalidaciones de pagos existentes, sin tocar `usePagos` ni sus claves.
+ */
+function invalidarHistorial(qc: ReturnType<typeof useQueryClient>) {
+  qc.invalidateQueries({ queryKey: ["historial"] })
+}
+
 /** Invalida pagos + dashboard (montos cambian). */
 function invalidarPagosYDashboard(qc: ReturnType<typeof useQueryClient>) {
   qc.invalidateQueries({ queryKey: queryKeys.pagos })
   qc.invalidateQueries({ queryKey: ["dashboard"] })
+  invalidarHistorial(qc)
 }
 
 export function useCrearPago() {
@@ -251,6 +301,7 @@ export function useSubirComprobante() {
     onSuccess: (res) => {
       toast.success(`Comprobante subido a pago #${res.id}`)
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
+      invalidarHistorial(qc)
     },
   })
 }
@@ -262,6 +313,7 @@ export function useGenerarSplit() {
     onSuccess: (split) => {
       toast.success(`Split ${split.modo_calculo} generado`)
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
+      invalidarHistorial(qc)
       qc.invalidateQueries({ queryKey: queryKeys.splits })
     },
   })
@@ -274,6 +326,7 @@ export function useEliminarSplit() {
     onSuccess: () => {
       toast.success("Split eliminado")
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
+      invalidarHistorial(qc)
       qc.invalidateQueries({ queryKey: queryKeys.splits })
       qc.invalidateQueries({ queryKey: ["split"] })
     },
@@ -291,6 +344,7 @@ export function useMarcarRealizada() {
       qc.invalidateQueries({ queryKey: queryKeys.splits })
       qc.invalidateQueries({ queryKey: ["split"] })
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
+      invalidarHistorial(qc)
     },
     onError: (e: Error) => toast.error(e.message),
   })
@@ -328,6 +382,7 @@ export function useCrearFuente() {
       toast.success(`Fuente "${f.alias}" creada`)
       qc.invalidateQueries({ queryKey: queryKeys.fuentes })
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
+      invalidarHistorial(qc)
     },
   })
 }
@@ -341,6 +396,7 @@ export function useActualizarFuente() {
       toast.success("Fuente actualizada")
       qc.invalidateQueries({ queryKey: queryKeys.fuentes })
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
+      invalidarHistorial(qc)
     },
   })
 }
@@ -354,6 +410,7 @@ export function useEliminarFuente() {
       toast.success("Fuente eliminada")
       qc.invalidateQueries({ queryKey: queryKeys.fuentes })
       qc.invalidateQueries({ queryKey: queryKeys.pagos })
+      invalidarHistorial(qc)
     },
     onError: (e: Error) => toast.error(e.message),
   })

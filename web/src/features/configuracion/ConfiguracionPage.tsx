@@ -1,10 +1,13 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SplitSquareHorizontal, WalletCards } from "lucide-react"
+import { useTabUrl } from "@/hooks/useTabUrl"
 import { FuentesTab } from "./FuentesTab"
 import { CuentasTab } from "./CuentasTab"
 import { SplitsTab } from "./SplitsTab"
 
 export default function ConfiguracionPage() {
+  const { tab, setTab } = useTabUrl()
+
   return (
     <div className="mx-auto max-w-6xl space-y-5">
       <header>
@@ -14,7 +17,7 @@ export default function ConfiguracionPage() {
         </p>
       </header>
 
-      <Tabs defaultValue="cuentas">
+      <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="cuentas">
             <WalletCards className="mr-1.5 size-4" aria-hidden />
