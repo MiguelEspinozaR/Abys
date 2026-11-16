@@ -1,0 +1,78 @@
+{
+  "feature": "historial-a11y",
+  "milestone": "M5",
+  "base_branch": "feat/forms-a11y",
+  "branch": "feat/historial-a11y",
+  "head_sha": "ec3c41a37e8b6d94caa99bbd3a3bc9a41b5e5658",
+  "base_sha": "ec3c41a37e8b6d94caa99bbd3a3bc9a41b5e5658",
+  "generated_at": "2026-11-16T00:28:45Z",
+  "limits": {
+    "note": "Post-M1-M4 working tree (uncommitted). Métricas estáticas + verificación final; ver harness-metrics.json para AC1-AC10 runtime.",
+    "transition_all_total": 0,
+    "transition_all_files": 0,
+    "use_search_params_total": 5,
+    "charts_expected": 4,
+    "charts_detected": 4,
+    "chart_render_tags_detected": 4,
+    "accessibility_layer_total": 4,
+    "sr_only_total_dashboard": ">=5 (4 tablas + descripciones sr-only)",
+    "figure_total_dashboard": 4,
+    "aria_labelledby_describedby_total_dashboard": ">=4",
+    "theme_color_present": true
+  },
+  "transition_all": {
+    "total": 0,
+    "files_count": 0,
+    "matches": []
+  },
+  "use_search_params": {
+    "total": 5,
+    "files": [
+      "web/src/hooks/useFiltrosHistorial.ts",
+      "web/src/hooks/useTabUrl.ts"
+    ]
+  },
+  "listados": {
+    "ingresos": {
+      "layout": "histórico agrupado por año con carga bajo demanda (FiltrosRango + HistorialAgrupado/SeccionAnio)",
+      "sections": true,
+      "collapse": true,
+      "on_demand_year_loading": true
+    },
+    "splits": {
+      "layout": "histórico agrupado por año (lista filtrada) con totales globales vía useSplits/useCuentas",
+      "sections": true,
+      "collapse": true,
+      "on_demand_year_loading": true
+    }
+  },
+  "theme_color": {
+    "present": true,
+    "file": "web/index.html",
+    "initial_content": "#0a0a0a",
+    "runtime_sync": "store uiStore + lib/themeColor.ts (observado oklch en harness; ver desviación R5.2)"
+  },
+  "charts": {
+    "components_detected": 4,
+    "accessibility_layer": {
+      "total": 4
+    },
+    "sr_only_tables": {
+      "present": true
+    },
+    "figure_and_caption": {
+      "present": true
+    },
+    "accessible_name_description": {
+      "present": true
+    }
+  },
+  "command_evidence": {
+    "tsc": "logs/tsc.log (exit 0)",
+    "npm_test": "logs/npm-test.log (exit 0, 9 files / 121 tests)",
+    "npm_build": "logs/npm-build.log (exit 0)",
+    "go_test": "logs/go-test.log (exit 0)",
+    "grep_transition_all": "logs/grep-transition-all.log (0 líneas)",
+    "harness": "logs/harness-run.log, logs/harness-metrics.json"
+  }
+}

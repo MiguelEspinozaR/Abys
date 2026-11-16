@@ -1,0 +1,73 @@
+{
+  "generated_at": "2026-11-16T01:39:34.732Z",
+  "commit": "ec3c41a",
+  "note": "Ratios aproximados medidos en navegador (canvas) de tokens chart-* vs --background; AA no textual >= 3:1.",
+  "light": {
+    "theme": "light",
+    "background": {
+      "raw": "oklch(100% 0 0)",
+      "rgb": "rgb(255, 255, 255)"
+    },
+    "charts": {
+      "--chart-1": {
+        "raw": "oklch(55% 0 0)",
+        "rgb": "rgb(113, 113, 113)",
+        "ratio": 4.8807199797883385
+      },
+      "--chart-2": {
+        "raw": "oklch(48% 0 0)",
+        "rgb": "rgb(93, 93, 93)",
+        "ratio": 6.584652797685219
+      },
+      "--chart-3": {
+        "raw": "oklch(41% 0 0)",
+        "rgb": "rgb(74, 74, 74)",
+        "ratio": 8.862392129950917
+      },
+      "--chart-4": {
+        "raw": "oklch(34% 0 0)",
+        "rgb": "rgb(56, 56, 56)",
+        "ratio": 11.725786089779096
+      },
+      "--chart-5": {
+        "raw": "oklch(27% 0 0)",
+        "rgb": "rgb(38, 38, 38)",
+        "ratio": 15.133529408889883
+      }
+    }
+  },
+  "dark": {
+    "theme": "dark",
+    "background": {
+      "raw": "oklch(14.5% 0 0)",
+      "rgb": "rgb(10, 10, 10)"
+    },
+    "charts": {
+      "--chart-1": {
+        "raw": "oklch(87% 0 0)",
+        "rgb": "rgb(212, 212, 212)",
+        "ratio": 13.3566741430142
+      },
+      "--chart-2": {
+        "raw": "oklch(76.5% 0 0)",
+        "rgb": "rgb(178, 178, 178)",
+        "ratio": 9.337205147674492
+      },
+      "--chart-3": {
+        "raw": "oklch(66% 0 0)",
+        "rgb": "rgb(146, 146, 146)",
+        "ratio": 6.362574165713399
+      },
+      "--chart-4": {
+        "raw": "oklch(55.5% 0 0)",
+        "rgb": "rgb(115, 115, 115)",
+        "ratio": 4.175355408197547
+      },
+      "--chart-5": {
+        "raw": "oklch(51% 0 0)",
+        "rgb": "rgb(102, 102, 102)",
+        "ratio": 3.448051119963421
+      }
+    }
+  }
+}

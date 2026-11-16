@@ -1,0 +1,211 @@
+{
+  "feature": "historial-a11y",
+  "milestone": "M0",
+  "base_branch": "feat/forms-a11y",
+  "branch": "feat/historial-a11y",
+  "head_sha": "ec3c41a37e8b6d94caa99bbd3a3bc9a41b5e5658",
+  "base_sha": "ec3c41a37e8b6d94caa99bbd3a3bc9a41b5e5658",
+  "generated_at": "2026-11-15T11:50:24Z",
+  "limits": {
+    "note": "Baseline estático del árbol base @ ec3c41a; sin cambios de producto.",
+    "transition_all_total": 6,
+    "transition_all_files": 6,
+    "use_search_params_total": 0,
+    "charts_expected": 4,
+    "charts_detected": 4,
+    "chart_render_tags_detected": 4,
+    "accessibility_layer_total": 0,
+    "sr_only_total_dashboard": 0,
+    "figure_total_dashboard": 0,
+    "aria_labelledby_describedby_total_dashboard": 0,
+    "theme_color_present": false
+  },
+  "transition_all": {
+    "total": 6,
+    "files_count": 6,
+    "matches": [
+      {
+        "file": "web/src/components/ui/badge.tsx",
+        "line": 7,
+        "text": "\"group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!\","
+      },
+      {
+        "file": "web/src/components/ui/button.tsx",
+        "line": 7,
+        "text": "\"group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none max-md:min-h-11 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\","
+      },
+      {
+        "file": "web/src/components/ui/progress.tsx",
+        "line": 21,
+        "text": "className=\"size-full flex-1 bg-primary transition-all\""
+      },
+      {
+        "file": "web/src/components/ui/switch.tsx",
+        "line": 17,
+        "text": "\"peer group/switch relative inline-flex shrink-0 items-center rounded-full border border-transparent transition-all outline-none group-has-[:focus-visible]/field-label:border-transparent group-has-[:focus-visible]/field-label:ring-0 after:absolute after:-inset-x-3 after:-inset-y-3.5 max-md:after:-inset-y-4 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-[size=default]:h-[18.4px] data-[size=default]:w-[32px] data-[size=sm]:h-[14px] data-[size=sm]:w-[24px] dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:bg-primary data-unchecked:bg-input dark:data-unchecked:bg-input/80 data-disabled:cursor-not-allowed data-disabled:opacity-50\","
+      },
+      {
+        "file": "web/src/components/ui/tabs.tsx",
+        "line": 63,
+        "text": "\"relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all max-md:min-h-11 group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 dark:text-muted-foreground dark:hover:text-foreground group-data-[variant=default]/tabs-list:data-active:shadow-sm group-data-[variant=line]/tabs-list:data-active:shadow-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\","
+      },
+      {
+        "file": "web/src/features/registrar/ComprobanteDropzone.tsx",
+        "line": 167,
+        "text": "className=\"h-full rounded-full bg-primary transition-all\""
+      }
+    ]
+  },
+  "use_search_params": {
+    "total": 0,
+    "matches": []
+  },
+  "listados": {
+    "ingresos": {
+      "file": "web/src/features/ingresos/IngresosPage.tsx",
+      "layout": "listado plano con paginación global",
+      "page_state_lines": [
+        36,
+        38,
+        193,
+        200
+      ],
+      "page_size": 100,
+      "page_size_evidence": [
+        {
+          "file": "web/src/features/ingresos/IngresosPage.tsx",
+          "line": 46,
+          "text": "page_size: 100,"
+        }
+      ],
+      "sections": false,
+      "collapse": false,
+      "on_demand_year_loading": false,
+      "notes": "usePagos({page,page_size:100}) y agrupación visual por año solo de la página actual; no hay secciones colapsables ni carga por año."
+    },
+    "splits": {
+      "file": "web/src/features/splits/SplitsPage.tsx",
+      "layout": "listado plano sin paginación ni secciones",
+      "page_size": 500,
+      "page_size_evidence": [
+        {
+          "file": "web/src/features/splits/SplitsPage.tsx",
+          "line": 224,
+          "text": "const { data: pagosRes, isLoading: pagosLoading } = usePagos({ page_size: 500 })"
+        }
+      ],
+      "sections": false,
+      "collapse": false,
+      "on_demand_year_loading": false,
+      "notes": "usePagos({page_size:500}) de una sola vez; renderiza todos los pagos con split sin agrupar por año (aunque el plan agrupará en M2)."
+    }
+  },
+  "theme_color": {
+    "present": false,
+    "file": "web/index.html",
+    "evidence": []
+  },
+  "charts": {
+    "components_detected": 4,
+    "components": [
+      {
+        "file": "web/src/features/dashboard/HistoryChart.tsx",
+        "line": 24,
+        "component": "HistoryChart"
+      },
+      {
+        "file": "web/src/features/dashboard/MonthlyYearlyCharts.tsx",
+        "line": 15,
+        "component": "MonthlyChart"
+      },
+      {
+        "file": "web/src/features/dashboard/MonthlyYearlyCharts.tsx",
+        "line": 58,
+        "component": "YearlyChart"
+      },
+      {
+        "file": "web/src/features/dashboard/WeeklyChart.tsx",
+        "line": 17,
+        "component": "WeeklyChart"
+      }
+    ],
+    "render_tags": [
+      {
+        "file": "web/src/features/dashboard/HistoryChart.tsx",
+        "line": 57,
+        "chart": "LineChart",
+        "text": "<LineChart data={rows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>"
+      },
+      {
+        "file": "web/src/features/dashboard/MonthlyYearlyCharts.tsx",
+        "line": 25,
+        "chart": "BarChart",
+        "text": "<BarChart data={rows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>"
+      },
+      {
+        "file": "web/src/features/dashboard/MonthlyYearlyCharts.tsx",
+        "line": 72,
+        "chart": "BarChart",
+        "text": "<BarChart data={rows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>"
+      },
+      {
+        "file": "web/src/features/dashboard/WeeklyChart.tsx",
+        "line": 27,
+        "chart": "BarChart",
+        "text": "<BarChart data={rows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>"
+      }
+    ],
+    "accessibility_layer": {
+      "total": 0,
+      "matches": []
+    },
+    "sr_only_tables": {
+      "total": 0,
+      "matches": []
+    },
+    "figure_and_caption": {
+      "total": 0,
+      "matches": []
+    },
+    "accessible_name_description": {
+      "total": 0,
+      "matches": []
+    },
+    "notes": "4 gráficos Recharts (WeeklyChart, MonthlyChart, YearlyChart, HistoryChart) sin accessibilityLayer, sin tabla sr-only ni figure/aria-labelledby/describedby."
+  },
+  "page_size_scan": [
+    {
+      "file": "web/src/features/ingresos/IngresosPage.tsx",
+      "line": 46,
+      "text": "page_size: 100,"
+    },
+    {
+      "file": "web/src/features/splits/SplitsPage.tsx",
+      "line": 224,
+      "text": "const { data: pagosRes, isLoading: pagosLoading } = usePagos({ page_size: 500 })"
+    },
+    {
+      "file": "web/src/services/hooks.ts",
+      "line": 51,
+      "text": "page_size?: number"
+    },
+    {
+      "file": "web/src/services/hooks.ts",
+      "line": 81,
+      "text": "params.set(\"page_size\", String(filtros.page_size ?? 20))"
+    },
+    {
+      "file": "web/src/services/types.ts",
+      "line": 15,
+      "text": "page_size: number"
+    }
+  ],
+  "command_evidence": {
+    "tsc": "logs/tsc.log (exit 0)",
+    "npm_test": "logs/npm-test.log (6 archivos / 69 tests PASS)",
+    "npm_build": "logs/npm-build.log (exit 0)",
+    "go_test": "logs/go-test.log (router y splitcalc OK)",
+    "transition_all_grep": "grep -rn \"transition-all\" web/src",
+    "use_search_params_grep": "grep -rn \"useSearchParams\" web/src"
+  }
+}

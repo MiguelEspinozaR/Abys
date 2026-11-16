@@ -1,0 +1,45 @@
+historial-audit M5 — http://localhost:5178 | api http://localhost:18082/api/v1 | commit ec3c41a
+
+AC1 deep-link /ingresos
+  [PASS] AC1 deep-link — load365=true push=true back=true reload=true
+
+AC2 ?tab= configuracion
+  [PASS] AC2 canon-default — http://localhost:5178/configuracion?tab=cuentas
+  [PASS] AC2 canon-invalid — http://localhost:5178/configuracion?tab=cuentas
+  [PASS] AC2 tab-history — change=true back=true forward=true
+
+AC3 presets y sanitización
+  [PASS] AC3 presets-sanitizacion — canonYtd=true sinDesde=true sinFuenteInvalida=true custom=true
+
+AC4/AC5 secciones y carga bajo demanda
+  [PASS] AC5 carga-bajo-demanda — filas2025Antes=0 filas2025Despues=1 page2=true antes=1 despues=2
+  [PASS] AC4 secciones-anio — 2026=true/true 2025=true/false region2025Hidden=true
+
+AC6 splits filtros/totales
+  [PASS] AC6 splits-filtros-totales — secciones=true totalesGlobales=true antes={"splitsGenerados":"6","pendienteTotal":"795,00 Bs","realizadoTotal":"795,00 Bs","pendientePorCuenta":["795,00 Bs","0,00 Bs","795,00 Bs"]} despues={"splitsGenerados":"6","pendienteTotal":"795,00 Bs","realizadoTotal":"795,00 Bs","pendientePorCuenta":["795,00 Bs","0,00 Bs","795,00 Bs"]} listaSinParlana=true sinSplits2024=true
+
+AC7 reduced-motion
+  [PASS] AC7 reduced-motion — elementosConDuracion>0.02s=0
+
+AC8 theme-color
+  [PASS] AC8 theme-color — dark=rgb(10, 10, 10) toggled=rgb(255, 255, 255) changed=true rgbHex=true
+
+AC9 gráficos a11y
+  [PASS] AC9 graficos-a11y — figs=4 tables=4 descs=4 recharts=4 al=4 minRatio=4.88
+  [PASS] AC9 graficos-contraste-dark — minRatio=3.45
+
+AC10 overflow/consola
+  [PASS] AC10 overflow-consola — overflowPages=0 errors=0 warnings=0 pageErrors=0 failed=0
+
+==== RESUMEN AC1–AC10 (harness) ====
+AC1: PASS
+AC2: PASS
+AC3: PASS
+AC4: PASS
+AC5: PASS
+AC6: PASS
+AC7: PASS
+AC8: PASS
+AC9: PASS
+AC10: PASS
+TOTAL: PASS — contrast.json, console-log.json, logs/harness-metrics.json

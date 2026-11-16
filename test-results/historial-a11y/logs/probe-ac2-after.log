@@ -1,0 +1,34 @@
+
+=== RUN 1 ===
+[HIST] replaceState #1 url=
+    at history.replaceState (<anonymous>:8:152)
+    at UO (http://localhost:5178/assets/index-BaiHflDi.js:204:1922)
+    at zO (http://localhost:5178/assets/index-BaiHflDi.js:204:925)
+    at F_ (http://localhost:5178/assets/index-BaiHflDi.js:207:22450)
+[BEFORE_CLICK] {"len":2,"push":0}
+[HIST] pushState #1 url=/configuracion?tab=fuentes
+    at history.pushState (<anonymous>:7:140)
+    at Object.b [as push] (http://localhost:5178/assets/index-BaiHflDi.js:204:2215)
+    at tn (http://localhost:5178/assets/index-BaiHflDi.js:204:21398)
+    at Nt (http://localhost:5178/assets/index-BaiHflDi.js:204:28495)
+[AFTER_CLICK] {"len":3,"push":1,"href":"http://localhost:5178/configuracion?tab=fuentes","tab":"fuentes"}
+[AFTER_BACK] {"ok":true,"href":"http://localhost:5178/configuracion?tab=cuentas","tab":"cuentas","len":3}
+[AFTER_FORWARD] {"ok":true,"href":"http://localhost:5178/configuracion?tab=fuentes","tab":"fuentes","len":3}
+[DELTA] {"pushDelta":1,"lenDelta":1,"backOk":true,"fwdOk":true}
+
+=== RUN 2 ===
+[HIST] replaceState #1 url=
+    at history.replaceState (<anonymous>:8:152)
+    at UO (http://localhost:5178/assets/index-BaiHflDi.js:204:1922)
+    at zO (http://localhost:5178/assets/index-BaiHflDi.js:204:925)
+    at F_ (http://localhost:5178/assets/index-BaiHflDi.js:207:22450)
+[BEFORE_CLICK] {"len":2,"push":0}
+[HIST] pushState #1 url=/configuracion?tab=fuentes
+    at history.pushState (<anonymous>:7:140)
+    at Object.b [as push] (http://localhost:5178/assets/index-BaiHflDi.js:204:2215)
+    at tn (http://localhost:5178/assets/index-BaiHflDi.js:204:21398)
+    at Nt (http://localhost:5178/assets/index-BaiHflDi.js:204:28495)
+[AFTER_CLICK] {"len":3,"push":1,"href":"http://localhost:5178/configuracion?tab=fuentes","tab":"fuentes"}
+[AFTER_BACK] {"ok":true,"href":"http://localhost:5178/configuracion?tab=cuentas","tab":"cuentas","len":3}
+[AFTER_FORWARD] {"ok":true,"href":"http://localhost:5178/configuracion?tab=fuentes","tab":"fuentes","len":3}
+[DELTA] {"pushDelta":1,"lenDelta":1,"backOk":true,"fwdOk":true}

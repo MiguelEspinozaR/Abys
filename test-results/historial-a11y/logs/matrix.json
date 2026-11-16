@@ -1,0 +1,80 @@
+[
+  {
+    "ac": "AC1",
+    "id": "deep-link",
+    "pass": true,
+    "detail": "load365=true push=true back=true reload=true"
+  },
+  {
+    "ac": "AC2",
+    "id": "canon-default",
+    "pass": true,
+    "detail": "http://localhost:5178/configuracion?tab=cuentas"
+  },
+  {
+    "ac": "AC2",
+    "id": "canon-invalid",
+    "pass": true,
+    "detail": "http://localhost:5178/configuracion?tab=cuentas"
+  },
+  {
+    "ac": "AC2",
+    "id": "tab-history",
+    "pass": true,
+    "detail": "change=true back=true forward=true"
+  },
+  {
+    "ac": "AC3",
+    "id": "presets-sanitizacion",
+    "pass": true,
+    "detail": "canonYtd=true sinDesde=true sinFuenteInvalida=true custom=true"
+  },
+  {
+    "ac": "AC5",
+    "id": "carga-bajo-demanda",
+    "pass": true,
+    "detail": "filas2025Antes=0 filas2025Despues=1 page2=true antes=1 despues=2"
+  },
+  {
+    "ac": "AC4",
+    "id": "secciones-anio",
+    "pass": true,
+    "detail": "2026=true/true 2025=true/false region2025Hidden=true"
+  },
+  {
+    "ac": "AC6",
+    "id": "splits-filtros-totales",
+    "pass": true,
+    "detail": "secciones=true totalesGlobales=true antes={\"splitsGenerados\":\"6\",\"pendienteTotal\":\"795,00 Bs\",\"realizadoTotal\":\"795,00 Bs\",\"pendientePorCuenta\":[\"795,00 Bs\",\"0,00 Bs\",\"795,00 Bs\"]} despues={\"splitsGenerados\":\"6\",\"pendienteTotal\":\"795,00 Bs\",\"realizadoTotal\":\"795,00 Bs\",\"pendientePorCuenta\":[\"795,00 Bs\",\"0,00 Bs\",\"795,00 Bs\"]} listaSinParlana=true sinSplits2024=true"
+  },
+  {
+    "ac": "AC7",
+    "id": "reduced-motion",
+    "pass": true,
+    "detail": "elementosConDuracion>0.02s=0"
+  },
+  {
+    "ac": "AC8",
+    "id": "theme-color",
+    "pass": true,
+    "detail": "dark=rgb(10, 10, 10) toggled=rgb(255, 255, 255) changed=true rgbHex=true"
+  },
+  {
+    "ac": "AC9",
+    "id": "graficos-a11y",
+    "pass": true,
+    "detail": "figs=4 tables=4 descs=4 recharts=4 al=4 minRatio=4.88"
+  },
+  {
+    "ac": "AC9",
+    "id": "graficos-contraste-dark",
+    "pass": true,
+    "detail": "minRatio=3.45"
+  },
+  {
+    "ac": "AC10",
+    "id": "overflow-consola",
+    "pass": true,
+    "detail": "overflowPages=0 errors=0 warnings=0 pageErrors=0 failed=0"
+  }
+]

@@ -1,0 +1,175 @@
+{
+  "task_id": "historial-a11y",
+  "feature": "historial-a11y",
+  "title": "Histórico agrupado por año + URL, theme-color, transition-all y a11y de gráficos (bloque C)",
+  "lifecycle_state": "BUILD",
+  "branch": "feat/historial-a11y",
+  "commit": "ec3c41a37e8b6d94caa99bbd3a3bc9a41b5e5658",
+  "base_commit": "ec3c41a37e8b6d94caa99bbd3a3bc9a41b5e5658",
+  "generated_at": "2026-11-16T01:20:00Z",
+  "status": "partial",
+  "status_reason": "Fix AC2 aplicado en useTabUrl.ts (dedupe por ref evita doble push por onValueChange duplicado): probe instrumentado x2 confirma 1 click=+1 pushState/history, goBack/forward OK; harness AC1–AC10 PASS (exit 0). AC8 theme-color rgb determinístico + themeColor.test.ts; AC9 contraste medido light min 4.88/dark min 3.45; AC6 totales globales inalterados. tsc PASS, vitest 126 PASS, build PASS, grep transition-all=0.",
+  "environment": {
+    "os": "linux",
+    "node": "v22.22.1",
+    "go": "go1.26.8 linux/amd64",
+    "browser": "Chrome 156.0.8078.79 via Playwright 1.65.0 (headless, channel=chrome)",
+    "backend_url": "http://localhost:18082 (no requerido; lecturas/escrituras mockeadas)",
+    "frontend_preview_url": "http://localhost:5178",
+    "staging_note": "web/dist construido con VITE_API_URL=http://localhost:18082/api/v1 y servido por vite preview :5178. Todas las rutas API mockeadas con page.route y safety net 599 HARNESS_BLOCKED_WRITE; sin escrituras reales ni uso de :8081/:8082/test3."
+  },
+  "configured_suites": [
+    {
+      "name": "web-unit",
+      "command": "npm test",
+      "cwd": "web",
+      "runner": "vitest 5.0.0",
+      "status": "pass",
+      "exit_code": 0,
+      "test_files": 9,
+      "tests": 121,
+      "log": "test-results/historial-a11y/logs/npm-test.log"
+    },
+    {
+      "name": "backend-unit",
+      "command": "go test ./...",
+      "cwd": "backend",
+      "status": "pass",
+      "exit_code": 0,
+      "log": "test-results/historial-a11y/logs/go-test.log",
+      "note": "router y splitcalc ok; paquetes sin tests reportan [no test files]"
+    },
+    {
+      "name": "web-typecheck",
+      "command": "npx tsc -b",
+      "cwd": "web",
+      "status": "pass",
+      "exit_code": 0,
+      "log": "test-results/historial-a11y/logs/tsc.log"
+    },
+    {
+      "name": "web-build",
+      "command": "VITE_API_URL=http://localhost:18082/api/v1 npm run build",
+      "cwd": "web",
+      "status": "pass",
+      "exit_code": 0,
+      "log": "test-results/historial-a11y/logs/npm-build.log"
+    }
+  ],
+  "targeted_tests": [
+    {
+      "name": "historial-a11y-acceptance-harness",
+      "command": "node test-results/historial-a11y/harness/historial-audit.cjs",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "Post-fix AC2: AC1–AC10 PASS en entorno limpio con preview 5178. Probe AC2 x2: +1 pushState/+1 history por click, back/forward restauran cuentas↔fuentes.",
+      "evidence": "test-results/historial-a11y/logs/harness-metrics.json"
+    },
+    {
+      "name": "grep-transition-all",
+      "command": "grep -rn \"transition-all\" web/src",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "0 ocurrencias.",
+      "log": "test-results/historial-a11y/logs/grep-transition-all.log"
+    }
+  ],
+  "acceptance_criteria": {
+    "AC1": {
+      "status": "pass",
+      "summary": "Deep-link filtros/rango en /ingresos, Aplicar push, atrás/adelante y recarga conservan estado.",
+      "evidence": "test-results/historial-a11y/logs/harness-metrics.json"
+    },
+    "AC2": {
+      "status": "pass",
+      "summary": "1 click de tab = +1 entrada de historial; back/forward restauran cuentas↔fuentes. Fix: dedupe por ref del último tab solicitado en useTabUrl para ignorar onValueChange duplicados antes del primer push.",
+      "evidence": "test-results/historial-a11y/logs/probe-ac2-after.log"
+    },
+    "AC3": {
+      "status": "pass",
+      "summary": "Sanitización/canonización de params inválidos y preset custom aplicado; unitarios rango/filtrosUrl en suite.",
+      "evidence": "test-results/historial-a11y/logs/harness-metrics.json"
+    },
+    "AC4": {
+      "status": "pass",
+      "summary": "Secciones por año con aria-expanded/aria-controls, solo año actual expandido, orden/colapso correctos.",
+      "evidence": "test-results/historial-a11y/logs/harness-metrics.json"
+    },
+    "AC5": {
+      "status": "pass",
+      "summary": "Carga bajo demanda por año (colapsados sin filas), page_size=500 y Cargar más solicita página siguiente.",
+      "evidence": "test-results/historial-a11y/logs/harness-metrics.json"
+    },
+    "AC6": {
+      "status": "pass",
+      "summary": "Secciones por año y filtros en /splits verificados; totales globales (Splits generados/Pendiente total/Realizado total/Pendiente por cuenta) no cambian al filtrar, lista sí.",
+      "evidence": "test-results/historial-a11y/logs/harness-metrics.json"
+    },
+    "AC7": {
+      "status": "pass",
+      "summary": "0 transition-all en web/src y reduced-motion respetado (duraciones ~0).",
+      "evidence": "test-results/historial-a11y/logs/grep-transition-all.log"
+    },
+    "AC8": {
+      "status": "pass",
+      "summary": "meta theme-color presente y actualizado en rgb al togglear tema: dark=rgb(10,10,10), light=rgb(255,255,255), changed=true.",
+      "evidence": "test-results/historial-a11y/logs/harness-metrics.json"
+    },
+    "AC9": {
+      "status": "pass",
+      "summary": "4 gráficos con figura/nombre/descripción, 4 tablas sr-only, accessibilityLayer activo; contraste AA >=3:1 medido (light min 4.88, dark min 3.45).",
+      "evidence": [
+        "test-results/historial-a11y/logs/harness-metrics.json",
+        "test-results/historial-a11y/contrast.json"
+      ]
+    },
+    "AC10": {
+      "status": "pass",
+      "summary": "Smoke: sin overflow/consola/errors en estados clave móvil.",
+      "evidence": "test-results/historial-a11y/console-log.json"
+    },
+    "AC11": {
+      "status": "pass",
+      "summary": "tsc, vitest (9/121), build y go test en verde.",
+      "evidence": "test-results/historial-a11y/logs/"
+    },
+    "AC12": {
+      "status": "pass",
+      "summary": "Sin diff en deps/lockfiles/go.mod/go.sum ni backend/API/BD; alcance frontend + evidencia/docs.",
+      "evidence": "test-results/historial-a11y/report.md"
+    },
+    "AC13": {
+      "status": "pass",
+      "summary": "Evidencia generada en test-results/historial-a11y/ y draft en test-results/tests/historial-a11y.json.",
+      "evidence": "test-results/historial-a11y/report.md"
+    },
+    "AC14": {
+      "status": "pending",
+      "summary": "Deploy verificado en test3 post-release con aprobación humana.",
+      "evidence": null
+    }
+  },
+  "artifacts": {
+    "test_report": "test-results/tests/historial-a11y.json",
+    "report": "test-results/historial-a11y/report.md",
+    "metrics_before": "test-results/historial-a11y/metrics-before.json",
+    "metrics_after": "test-results/historial-a11y/metrics-after.json",
+    "contrast": "test-results/historial-a11y/contrast.json",
+    "console_log": "test-results/historial-a11y/console-log.json",
+    "harness": "test-results/historial-a11y/harness/historial-audit.cjs",
+    "logs": "test-results/historial-a11y/logs/",
+    "screenshots": "test-results/historial-a11y/screenshots/"
+  },
+  "git": {
+    "mutations_performed": false,
+    "working_tree_note": "M1–M4 producto en web/ y evidencia/docs M5 sin commitear; sin tags/push. git-manager debe commitear según plan."
+  },
+  "deploy": {
+    "status": "pending",
+    "note": "AC14 fuera de BUILD; requiere aprobación humana y deployer."
+  },
+  "lifecycle_note": "Cierre de BUILD/M5 con evidencia draft. SCAN/REVIEW/TEST deben confirmar AC2, AC6, AC8 y contraste AC9 antes de release.",
+  "notes": [
+    "themeColor: oklchToRgb determinístico (acromático y cromático), passthrough hex/rgb, fallback input original; tests puros en web/src/lib/themeColor.test.ts."
+  ]
+}

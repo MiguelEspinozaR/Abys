@@ -1,0 +1,56 @@
+# M0 — baseline historial-a11y
+
+- Fecha (UTC): 2026-11-15
+- Rama: feat/historial-a11y
+- HEAD: ec3c41a37e8b6d94caa99bbd3a3bc9a41b5e5658 (base feat/forms-a11y @ ec3c41a)
+- Árbol de trabajo: limpio al iniciar M0; solo se crean archivos bajo test-results/historial-a11y/
+
+## 1. Sanity del árbol base
+
+| Comando | Log | Resultado | Números clave |
+|---|---|---|---|
+| `(cd web && npx tsc -b)` | `logs/tsc.log` | PASS (exit 0) | sin errores |
+| `(cd web && npm test)` | `logs/npm-test.log` | PASS (exit 0) | vitest 5.0.0: 6 archivos / 69 tests PASS |
+| `(cd web && npm run build)` | `logs/npm-build.log` | PASS (exit 0) | vite 6.4.3; 3286 módulos; built in 21.46s; warning de tamaño de chunk (pre-existente) |
+| `(cd backend && go test ./...)` | `logs/go-test.log` | PASS (exit 0) | `internal/router` ok, `internal/splitcalc` ok; resto sin tests |
+
+No hubo fallos; no se aplicó ninguna corrección.
+
+## 2. Baseline estático — `metrics-before.json`
+
+- `transition-all`: **6** ocurrencias en **6** archivos:
+  - `web/src/components/ui/badge.tsx:7`
+  - `web/src/components/ui/button.tsx:7`
+  - `web/src/components/ui/progress.tsx:21`
+  - `web/src/components/ui/switch.tsx:17`
+  - `web/src/components/ui/tabs.tsx:63`
+  - `web/src/features/registrar/ComprobanteDropzone.tsx:167`
+- `useSearchParams`: **0** ocurrencias en `web/src`.
+- `/ingresos`: listado plano con paginación global (`page` + `page_size: 100`), agrupación visual solo de la página actual; sin secciones colapsables ni carga por año.
+- `/splits`: listado plano sin paginación ni secciones (`page_size: 500`, renderiza todos los pagos con split).
+- `meta[name=theme-color]`: **ausente** en `web/index.html`.
+- Gráficos: **4** componentes (`WeeklyChart`, `MonthlyChart`, `YearlyChart`, `HistoryChart`), 4 tags de render (3 `BarChart` + 1 `LineChart`).
+  - `accessibilityLayer`: **0**
+  - tablas `sr-only` en dashboard: **0**
+  - `figure`/`figcaption` en dashboard: **0**
+  - `aria-labelledby`/`aria-describedby` en dashboard: **0**
+- `generated_at` ISO y HEAD SHA incluidos en `metrics-before.json`.
+- Evidencia grep adicional: `logs/grep-transition-all.log`.
+
+## 3. Harness base
+
+- Archivo: `test-results/historial-a11y/harness/historial-audit.cjs` (esqueleto M0, patrón `forms-audit.cjs`).
+- Playwright del entorno vía caché npx (`/home/miky/.npm/_npx/e41f203b7505f1fb/node_modules/playwright`), Chrome headless `channel: 'chrome'`.
+- Incluye: mocks de lectura con `page.route()` y red de seguridad de menor precedencia que responde HTTP **599 `HARNESS_BLOCKED_WRITE`** a cualquier POST/PUT/DELETE no mockeado.
+- Salidas solo bajo `test-results/historial-a11y/`.
+- Comando ejecutado:
+  ```bash
+  node test-results/historial-a11y/harness/historial-audit.cjs
+  ```
+- Resultado: **PASS (exit 0)**. Navega a placeholder, autochequea la red de seguridad (`POST` no mockeado → 599 `HARNESS_BLOCKED_WRITE`) y escribe `logs/m0-harness.json`.
+- Evidencia de la corrida: 0 errores de consola de la app, 0 `pageerror`, 0 requests fallidos; el único log de consola es el 599 intencional de la red de seguridad (separado como `expectedConsole`).
+- Chrome: 156.0.8078.79. No se agregó `@playwright/test` ni ninguna dependencia.
+
+## 4. Blockers
+
+Ninguno. Entorno con Playwright/Chrome disponibles; sanity y harness en verde.

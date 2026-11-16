@@ -1,0 +1,19 @@
+
+--- PROBE 1: direct /configuracion?tab=cuentas then click Fuentes, back, forward ---
+after load cuentas {"href":"http://localhost:5178/configuracion?tab=cuentas","tabParam":"cuentas","activeTab":"Cuentas","historyLen":2}
+after click Fuentes {"href":"http://localhost:5178/configuracion?tab=fuentes","tabParam":"fuentes","activeTab":"Fuentes","historyLen":4}
+after goBack (TIMEOUT) {"href":"http://localhost:5178/configuracion?tab=fuentes","tabParam":"fuentes","activeTab":"Fuentes","historyLen":4}
+goBack error: timeout esperando tab=cuentas label=Cuentas
+after goForward (ok) {"href":"http://localhost:5178/configuracion?tab=fuentes","tabParam":"fuentes","activeTab":"Fuentes","historyLen":4}
+
+--- PROBE 2: harness-like flow /configuracion, /configuracion?tab=foo, click Fuentes, back, forward ---
+after /configuracion (canon) {"href":"http://localhost:5178/configuracion?tab=cuentas","tabParam":"cuentas","activeTab":"Cuentas","historyLen":2}
+after /configuracion?tab=foo (canon) {"href":"http://localhost:5178/configuracion?tab=cuentas","tabParam":"cuentas","activeTab":"Cuentas","historyLen":3}
+after click Fuentes {"href":"http://localhost:5178/configuracion?tab=fuentes","tabParam":"fuentes","activeTab":"Fuentes","historyLen":5}
+after goBack (TIMEOUT) {"href":"http://localhost:5178/configuracion?tab=fuentes","tabParam":"fuentes","activeTab":"Fuentes","historyLen":5}
+goBack error: timeout esperando tab=cuentas label=Cuentas
+after goForward (TIMEOUT?) {"href":"http://localhost:5178/configuracion?tab=fuentes","tabParam":"fuentes","activeTab":"Fuentes","historyLen":5}
+
+--- PROBE 3: /configuracion (no param) canonization history effect ---
+immediate after domcontentloaded {"href":"http://localhost:5178/configuracion","tabParam":null,"activeTab":null,"historyLen":2}
+after canon settled {"href":"http://localhost:5178/configuracion?tab=cuentas","tabParam":"cuentas","activeTab":"Cuentas","historyLen":2}
