@@ -45,6 +45,7 @@ Estructura en `web/src/`:
 - `store/` — Zustand (sidebar, tema).
 - `lib/` — utilidades (formato de montos Bs ↔ centavos, fechas, validadores de formulario, mapeo de errores de API y validación de uploads) con tests.
 - `components/form/` — `FieldError`, `ErrorSummary` y `ConfirmarDescarteDialog`.
+- **Histórico (bloque C):** en `/ingresos` y `/splits` la URL es fuente de verdad del estado aplicado (`rango`/`desde`/`hasta`/`fuente`/`metodo`; `?tab=` en `/configuracion`). El histórico se agrupa por año en secciones colapsables con carga bajo demanda y “Cargar más” (tope efectivo `page_size` 500). En `/splits` los filtros afectan solo la lista; los totales de cabecera y “Pendiente por cuenta” permanecen globales (D8). El `meta theme-color` se sincroniza dinámicamente con el tema leyendo el token de fondo y escribiéndolo en rgb/hex (valor inicial estático en HTML). Los 4 gráficos del dashboard exponen figura con nombre/descripción, tabla alternativa `sr-only`, `accessibilityLayer` de Recharts, patrones/markers y contraste AA en escala de grises. Limitaciones conocidas: índice de años en `/splits` basado en pagos (D-A, año con pagos sin splits puede mostrarse vacío), tope 500 y harness AA smoke-level.
 
 ## Formularios
 

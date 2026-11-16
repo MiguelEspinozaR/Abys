@@ -22,6 +22,8 @@ Estados usados: 400 (validación), 404 (no encontrado), 409 (conflicto/regla de 
 | POST | `/pagos/:id/comprobante` | Subir imagen de comprobante (el OCR corre en cliente) |
 | GET | `/pagos/:id/split` | Split del pago |
 
+> **Nota (bloque C, frontend):** el histórico de `/ingresos` consume `GET /pagos` con los mismos parámetros y aplica rangos por año en cliente mediante `fecha_inicio`/`fecha_fin`; la carga es bajo demanda por sección con `page_size` efectivo hasta 500 y “Cargar más” cuando hay más páginas. No hay cambios de contrato backend/API.
+
 ## Fuentes
 
 | Método | Ruta | Descripción |
