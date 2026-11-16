@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-16T01:39:34.732Z",
-  "commit": "ec3c41a",
+  "generated_at": "2026-11-16T01:54:22.838Z",
+  "commit": "79253ec",
   "note": "Consola/errores capturados en smoke AC10 (favicon excluido en evaluación). Respuestas 599 HARNESS_BLOCKED_WRITE son intencionales del safety net si aparecen.",
   "console": [],
   "pageErrors": [],

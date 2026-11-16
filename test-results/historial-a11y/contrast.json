@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-16T01:39:34.732Z",
-  "commit": "ec3c41a",
+  "generated_at": "2026-11-16T01:54:22.838Z",
+  "commit": "79253ec",
   "note": "Ratios aproximados medidos en navegador (canvas) de tokens chart-* vs --background; AA no textual >= 3:1.",
   "light": {
     "theme": "light",

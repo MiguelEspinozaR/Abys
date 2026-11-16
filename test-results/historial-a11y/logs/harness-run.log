@@ -1,4 +1,4 @@
-historial-audit M5 — http://localhost:5178 | api http://localhost:18082/api/v1 | commit ec3c41a
+historial-audit M5 — http://localhost:5178 | api http://localhost:18082/api/v1 | commit 79253ec
 
 AC1 deep-link /ingresos
   [PASS] AC1 deep-link — load365=true push=true back=true reload=true

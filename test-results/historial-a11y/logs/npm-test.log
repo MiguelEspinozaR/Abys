@@ -6,11 +6,11 @@
  RUN  v5.0.0 /home/miky/Documentos/finanzasMikyGoRef/web
 
 
- Test Files  9 passed (9)
-      Tests  121 passed (121)
-   Start at  20:25:14
-   Duration  12.96s (import 58%, transform 24%, tests 13%, worker 5%)
+ Test Files  10 passed (10)
+      Tests  126 passed (126)
+   Start at  21:51:38
+   Duration  5.69s (import 61%, transform 24%, tests 10%, worker 5%)
 
-    Isolate  9 workers spawned · ~2.08s startup each (spawn + environment, per file)
-             at least ~4.15s faster with isolate: false — reuses workers across files instead of one per file
+    Isolate  10 workers spawned · ~705ms startup each (spawn + environment, per file)
+             at least ~1.64s faster with isolate: false — reuses workers across files instead of one per file
 
