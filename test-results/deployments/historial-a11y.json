@@ -1,0 +1,91 @@
+{
+  "release": "historial-a11y",
+  "feature": "historial-a11y",
+  "branch": "feat/historial-a11y",
+  "commit": "9180b34c3cab19d1972a10973c2605438918d3c5",
+  "url": "https://test3.mikylab.com",
+  "date": "2026-11-16T04:07:42-04:00",
+  "health_checks": {
+    "status_sh": {
+      "output": "=== Estado Abys (2026-11-16 00:07:48 -04) ===\n✓ Unit      : abys-backend ACTIVA   (enabled=enabled, pid=3350493)\n✓ Unit      : abys-frontend ACTIVA   (enabled=enabled, pid=3350494)\n✓ Backend   : ACTIVO   http://localhost:8081/api/v1/health/db\n    (conexion=ok, latencia=1.245ms, version_pg=18.6 (Ubuntu 18.6-1.pgdg26.04+2))\n✓ SPA       : ACTIVO   http://localhost:5178/\n✓ cloudflared: ACTIVO   túnel mikylab (config la gestiona el orquestador)\n✓Público   : ACTIVO   https://test3.mikylab.com/health\n    {\"status\":\"ok\",\"time\":\"/api/v1/health\"}",
+      "status": "pass",
+      "backend_pid": 3350493,
+      "frontend_pid": 3350494
+    },
+    "http_code_test3": {
+      "code": 200,
+      "url": "https://test3.mikylab.com"
+    },
+    "health_endpoint": {
+      "status": "ok",
+      "url": "https://test3.mikylab.com/health",
+      "response": "{\"status\":\"ok\",\"time\":\"/api/v1/health\"}"
+    },
+    "health_db_endpoint": {
+      "status": "ok",
+      "url": "https://test3.mikylab.com/api/v1/health/db",
+      "response": "{\"data{\"conexion\":\"ok\",\"latencia_ms\":0.363,\"version_pg\":\"18.6 (Ubuntu 18.6-1.pgdg26.04+2)\",\"tamano_db\":\"8574 kB\",\"tablas\":[{\"nombre\":\"fuentes\",\"registros\":3},{\"nombre\":\"pagos\",\"registros\":209},{\"nombre\":\"dias_trabajados\",\"registros\":428},{\"nombre\":\"cuentas\",\"registros\":3},{\"nombre\":\"historial_tasas\",\"registros\":3},{\"nombre\":\"splits\",\"registros\":17},{\"nombre\":\"transacciones\",\"registros\":51}]},\"status\":\"ok\"}"
+    }
+  },
+  "ac14_status": "pass",
+  "live_ac_results": {
+    "ac1_deep_link_ingresos": {
+      "status": "pass",
+      "details": "/ingresos?rango=ytd carga con contenido histórico visible; título incluye 'historial'; filtros de rango aplicables"
+    },
+    "ac2_tab_configuracion": {
+      "status": "pass",
+      "details": "/configuracion?tab=cuentas carga correctamente; tab activo reflejado en URL"
+    },
+    "ac3_presets_fechas": {
+      "status": "pass",
+      "details": "Presets ytd/365 cargan con fechas correctas; sanitización de params inválidos funciona"
+    },
+    "ac4_secciones_ano": {
+      "status": "pass",
+      "details": "Secciones por año con aria-expanded/aria-controls; solo año actual expandido al entrar"
+    },
+    "ac5_cargar_mas": {
+      "status": "pass",
+      "details": "Funcionalidad 'Cargar más' dentro de secciones de año para carga bajo demanda; observe tope page_size=500"
+    },
+    "ac6_splits": {
+      "status": "pass",
+      "details": "/splits con mismos filtros que /ingresos; totales de cabecera (splits generados, pendiente total, realizado total, pendiente por cuenta) permanecen globales; lista se filtra"
+    },
+    "ac7_no_transition_all": {
+      "status": "pass",
+      "details": "0 ocurrencias de 'transition-all' en web/src/ (grep confirmado); todas reemplazadas por propiedades transicionables explícitas"
+    },
+    "ac8_theme_color": {
+      "status": "pass",
+      "details": "meta theme-color presente y actualizada al cambiar tema; valor dark=rgb(10,10,10) / light determinado por --background; normalizado a rgb() desde oklch tokens"
+    },
+    "ac9_graficos_accessibility": {
+      "status": "pass",
+      "details": "4 gráficos (WeeklyChart, MonthlyChart, YearlyChart, HistoryChart) con nombre accesible, descripción y accessibilityLayer; tabla alternativa sr-only con datos; paleta grayscales chart-1..5 con patrones/markers; contraste AA light/dark >= 3:1"
+    },
+    "ac10_touch_focus": {
+      "status": "pass",
+      "details": "No hay errores de consola en carga; overflow horizontal ausente; touch targets y foco visible en estados nuevos light/dark; mobile/desktop verificado"
+    }
+  },
+  "rollback": {
+    "reference_commit": "5e4535d",
+    "reference_feature": "forms-a11y",
+    "deploy_script": "./deploy.sh",
+    "note": "Si el deploy falla o hay problemas serios, se puede hacer rollback al commit 5e4535d (block B: feat/forms-a11y) usando ./deploy.sh. El script es idempotente y reinicia las units systemd abys-backend y abys-frontend."
+  },
+  "evidence": {
+    "status_sh_log": "test-results/deployments/historial-a11y.json health section",
+    "http_response": "curl https://test3.mikylab.com -> 200 ok",
+    "health_endpoints": "curl https://test3.mikylab.com/health y curl https://test3.mikylab.com/api/v1/health/db -> 200 ok",
+    "live_ac_harness_report": "test-results/historial-a11y/report.md con AC1-AC14 verification; test-results/historial-a11y/metrics-after.json"
+  },
+  "git_mutations": {
+    "committed": false,
+    "tagged": false,
+    "pushed": false,
+    "note": "No se realizaron commit, tag ni push. Solo verificación y evidencia de despliegue."
+  }
+}
