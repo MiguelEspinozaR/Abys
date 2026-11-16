@@ -164,7 +164,7 @@ export function ComprobanteDropzone({
               {leyendo && (
                 <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
                   <div
-                    className="h-full rounded-full bg-primary transition-all"
+                    className="h-full rounded-full bg-primary transition-[width]"
                     style={{ width: `${Math.round(progreso * 100)}%` }}
                     role="progressbar"
                     aria-label="Progreso de lectura del comprobante"

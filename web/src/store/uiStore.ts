@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
+import { sincronizarThemeColor } from "@/lib/themeColor"
 
 export type Tema = "light" | "dark"
 
@@ -19,6 +20,7 @@ function aplicarTema(tema: Tema) {
   if (tema === "dark") root.classList.add("dark")
   else root.classList.remove("dark")
   root.style.colorScheme = tema
+  sincronizarThemeColor()
 }
 
 export const useUiStore = create<UiState>()(
