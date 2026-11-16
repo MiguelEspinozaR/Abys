@@ -7,7 +7,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { formatBs, MESES_ABREV } from "@/lib/format"
+import { MESES_ABREV } from "@/lib/format"
 import { useChartColors } from "@/lib/chartTheme"
 import type { HistoryData } from "@/services/types"
 import { ChartTooltip } from "./ChartTooltip"
@@ -19,6 +19,33 @@ function serieTendencia(porMes: { anio: number; mes: number; total_centavos: num
     const prom = ventana.reduce((acc, v) => acc + v.total_centavos, 0) / ventana.length
     return { ...m, tendencia: Math.round(prom) }
   })
+}
+
+export interface FilaHistorial {
+  nombre: string
+  total_centavos: number
+  tendencia: number
+}
+
+/**
+ * Filas del rango visible del histórico. Se comparten con la tabla alternativa
+ * para que el gráfico y la tabla muestren exactamente los mismos valores.
+ */
+export function filasHistorial(
+  data: HistoryData,
+  desde: { anio: number; mes: number },
+  hasta: { anio: number; mes: number },
+): FilaHistorial[] {
+  const visibles = data.por_mes.filter((m) => {
+    const d = m.anio * 100 + m.mes
+    return d >= desde.anio * 100 + desde.mes && d <= hasta.anio * 100 + hasta.mes
+  })
+
+  return serieTendencia(visibles).map((m) => ({
+    nombre: `${m.anio % 100} ${MESES_ABREV[m.mes - 1] ?? ""}`.trim(),
+    total_centavos: m.total_centavos,
+    tendencia: m.tendencia,
+  }))
 }
 
 export function HistoryChart({
@@ -33,16 +60,7 @@ export function HistoryChart({
 }) {
   const c = useChartColors()
 
-  const visibles = data.por_mes.filter((m) => {
-    const d = m.anio * 100 + m.mes
-    return d >= desde.anio * 100 + desde.mes && d <= hasta.anio * 100 + hasta.mes
-  })
-
-  const rows = serieTendencia(visibles).map((m) => ({
-    nombre: `${m.anio % 100} ${MESES_ABREV[m.mes - 1] ?? ""}`.trim(),
-    total_centavos: m.total_centavos,
-    tendencia: m.tendencia,
-  }))
+  const rows = filasHistorial(data, desde, hasta)
 
   if (rows.length === 0) {
     return (
@@ -54,7 +72,11 @@ export function HistoryChart({
 
   return (
     <ResponsiveContainer width="100%" height={240}>
-      <LineChart data={rows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+      <LineChart
+        data={rows}
+        accessibilityLayer
+        margin={{ top: 8, right: 8, left: -14, bottom: 0 }}
+      >
         <CartesianGrid strokeDasharray="3 3" stroke={c.border} vertical={false} />
         <XAxis
           dataKey="nombre"
@@ -71,15 +93,7 @@ export function HistoryChart({
           tickFormatter={(v: number) => `${Math.round(v / 100)}`}
           width={48}
         />
-        <Tooltip
-          content={
-            <ChartTooltip
-              formatter={(v: number, name: string) =>
-                name === "tendencia" ? `Tendencia: ${formatBs(v)}` : formatBs(v)
-              }
-            />
-          }
-        />
+        <Tooltip content={<ChartTooltip />} />
         <Line
           type="monotone"
           dataKey="total_centavos"

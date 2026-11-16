@@ -4,11 +4,12 @@ import { CalendarDays, CircleDollarSign, Clock3, Layers } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useHistory, useMonthly, useSummary, useWeekly, useYearly } from "@/services/hooks"
-import { formatBs, toISODate } from "@/lib/format"
+import { formatBs, formatearFechaEs, MESES_ABREV, toISODate } from "@/lib/format"
 import { ChartCard } from "./ChartCard"
 import { WeeklyChart } from "./WeeklyChart"
 import { MonthlyChart, YearlyChart } from "./MonthlyYearlyCharts"
-import { HistoryChart } from "./HistoryChart"
+import { HistoryChart, filasHistorial } from "./HistoryChart"
+import { TablaDatos } from "./TablaDatos"
 
 function CardResumen({
   titulo,
@@ -86,6 +87,68 @@ export default function DashboardPage() {
     setRangoHist(nuevo)
   }
 
+  const subtituloSemanal = `${format(
+    weekly?.semana_inicio ? new Date(weekly.semana_inicio + "T00:00:00") : semanaInicio,
+    "d MMM",
+  )} – ${format(
+    weekly?.semana_fin ? new Date(weekly.semana_fin + "T00:00:00") : semanaInicio,
+    "d MMM yyyy",
+  )}`
+  const subtituloMensual = `Distribución por semana · ${MES_TITULO(mesView.mes, mesView.anio)}`
+  const subtituloAnual = `Distribución por mes · ${anioView}`
+  const subtituloHistorico = rangoResuelto
+    ? `${MES_TITULO(rangoResuelto.desde.mes, rangoResuelto.desde.anio)} – ${MES_TITULO(rangoResuelto.hasta.mes, rangoResuelto.hasta.anio)}`
+    : "Evolución mensual con tendencia"
+
+  const tablaSemanal = weekly ? (
+    <TablaDatos
+      caption={`Datos del gráfico semanal: ${subtituloSemanal}`}
+      columnas={["Total", "Pagos"]}
+      filas={weekly.dias.map((d) => ({
+        encabezado: formatearFechaEs(d.fecha),
+        celdas: [formatBs(d.total_centavos), String(d.cantidad_pagos)],
+      }))}
+    />
+  ) : undefined
+
+  const tablaMensual = monthly ? (
+    <TablaDatos
+      caption={`Datos del gráfico mensual: ${subtituloMensual}`}
+      columnas={["Total", "Pagos"]}
+      filas={monthly.semanas.map((s) => ({
+        encabezado: `Semana ${s.semana}`,
+        celdas: [formatBs(s.total_centavos), String(s.cantidad_pagos)],
+      }))}
+    />
+  ) : undefined
+
+  const tablaAnual = yearly ? (
+    <TablaDatos
+      caption={`Datos del gráfico anual: ${subtituloAnual}`}
+      columnas={["Total", "Pagos"]}
+      filas={yearly.meses.map((m) => ({
+        encabezado: `${MESES_ABREV[m.mes - 1] ?? m.mes} ${yearly.anio}`,
+        celdas: [formatBs(m.total_centavos), String(m.cantidad_pagos)],
+      }))}
+    />
+  ) : undefined
+
+  const filasHistorico =
+    history && rangoResuelto
+      ? filasHistorial(history, rangoResuelto.desde, rangoResuelto.hasta)
+      : []
+  const tablaHistorico =
+    filasHistorico.length > 0 ? (
+      <TablaDatos
+        caption={`Datos del gráfico histórico: ${subtituloHistorico}`}
+        columnas={["Total", "Tendencia"]}
+        filas={filasHistorico.map((m) => ({
+          encabezado: m.nombre,
+          celdas: [formatBs(m.total_centavos), formatBs(m.tendencia)],
+        }))}
+      />
+    ) : undefined
+
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <header>
@@ -131,7 +194,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard
           titulo="Semanal"
-          subtitulo={`${format(weekly?.semana_inicio ? new Date(weekly.semana_inicio + "T00:00:00") : semanaInicio, "d MMM")} – ${format(weekly?.semana_fin ? new Date(weekly.semana_fin + "T00:00:00") : semanaInicio, "d MMM yyyy")}`}
+          subtitulo={subtituloSemanal}
+          descripcion={`Totales por día de la semana ${subtituloSemanal}. Los mismos datos están disponibles en la tabla siguiente.`}
+          tabla={tablaSemanal}
           onPrev={() => setSemanaInicio((d) => subWeeks(d, 1))}
           onNext={() => setSemanaInicio((d) => addWeeks(d, 1))}
         >
@@ -144,7 +209,9 @@ export default function DashboardPage() {
 
         <ChartCard
           titulo="Mensual"
-          subtitulo={`Distribución por semana · ${MES_TITULO(mesView.mes, mesView.anio)}`}
+          subtitulo={subtituloMensual}
+          descripcion={`Totales por semana del mes. ${subtituloMensual}. Los mismos datos están disponibles en la tabla siguiente.`}
+          tabla={tablaMensual}
           onPrev={() => setMesView((v) => {
             const d = subMonths(new Date(v.anio, v.mes - 1, 1), 1)
             return { mes: d.getMonth() + 1, anio: d.getFullYear() }
@@ -163,7 +230,9 @@ export default function DashboardPage() {
 
         <ChartCard
           titulo="Anual"
-          subtitulo={`Distribución por mes · ${anioView}`}
+          subtitulo={subtituloAnual}
+          descripcion={`Totales por mes del año. ${subtituloAnual}. Los mismos datos están disponibles en la tabla siguiente.`}
+          tabla={tablaAnual}
           onPrev={() => setAnioView((a) => subYears(new Date(a, 0, 1), 1).getFullYear())}
           onNext={() => setAnioView((a) => addYears(new Date(a, 0, 1), 1).getFullYear())}
         >
@@ -176,11 +245,9 @@ export default function DashboardPage() {
 
         <ChartCard
           titulo="Histórico"
-          subtitulo={
-            rangoResuelto
-              ? `${MES_TITULO(rangoResuelto.desde.mes, rangoResuelto.desde.anio)} – ${MES_TITULO(rangoResuelto.hasta.mes, rangoResuelto.hasta.anio)}`
-              : "Evolución mensual con tendencia"
-          }
+          subtitulo={subtituloHistorico}
+          descripcion={`Evolución mensual del total y su tendencia. ${subtituloHistorico}. Los mismos datos están disponibles en la tabla siguiente.`}
+          tabla={tablaHistorico}
           onPrev={() => moverHist(-1)}
           onNext={() => moverHist(1)}
         >

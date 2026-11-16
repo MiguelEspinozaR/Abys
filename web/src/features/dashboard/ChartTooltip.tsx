@@ -22,18 +22,23 @@ export function ChartTooltip({ active, label, payload, formatter, labelFormatter
         <p className="mb-1 font-medium text-popover-foreground">{label}</p>
       )}
       <div className="space-y-0.5">
-        {payload.map((p, i) => (
-          <p key={i} className="flex items-center gap-2 text-foreground">
-            <span
-              className="inline-block size-2 rounded-full"
-              style={{ backgroundColor: p.color }}
-              aria-hidden
-            />
-            {formatter
-              ? formatter(Number(p.value), String(p.name ?? ""))
-              : formatBs(Number(p.value))}
-          </p>
-        ))}
+        {payload.map((p, i) => {
+          const nombre = String(p.name ?? "").trim()
+          const valor = formatter
+            ? formatter(Number(p.value), nombre)
+            : formatBs(Number(p.value))
+
+          return (
+            <p key={i} className="flex items-center gap-2 text-foreground">
+              <span
+                className="inline-block size-2 rounded-full"
+                style={{ backgroundColor: p.color }}
+                aria-hidden
+              />
+              <span>{nombre ? `${nombre}: ${valor}` : valor}</span>
+            </p>
+          )
+        })}
       </div>
     </div>
   )

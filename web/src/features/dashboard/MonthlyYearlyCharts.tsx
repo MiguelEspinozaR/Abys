@@ -7,9 +7,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { formatBs } from "@/lib/format"
 import { useChartColors } from "@/lib/chartTheme"
 import type { MonthlyData, YearlyData } from "@/services/types"
+import { ChartPatterns } from "./ChartPatterns"
 import { ChartTooltip } from "./ChartTooltip"
 
 export function MonthlyChart({ data }: { data: MonthlyData }) {
@@ -22,7 +22,12 @@ export function MonthlyChart({ data }: { data: MonthlyData }) {
 
   return (
     <ResponsiveContainer width="100%" height={240}>
-      <BarChart data={rows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+      <BarChart
+        data={rows}
+        accessibilityLayer
+        margin={{ top: 8, right: 8, left: -14, bottom: 0 }}
+      >
+        <ChartPatterns tipo="mensual" colores={c} />
         <CartesianGrid strokeDasharray="3 3" stroke={c.border} vertical={false} />
         <XAxis
           dataKey="nombre"
@@ -40,7 +45,6 @@ export function MonthlyChart({ data }: { data: MonthlyData }) {
         <Tooltip
           content={
             <ChartTooltip
-              formatter={(v: number) => formatBs(v)}
               labelFormatter={(label, payload) => {
                 const p = payload?.[0]?.payload as { cantidad_pagos?: number } | undefined
                 return `${label} · ${p?.cantidad_pagos ?? 0} pago(s)`
@@ -49,7 +53,15 @@ export function MonthlyChart({ data }: { data: MonthlyData }) {
           }
           cursor={{ fill: c.border, opacity: 0.35 }}
         />
-        <Bar dataKey="total_centavos" fill={c["chart-2"]} radius={[4, 4, 0, 0]} maxBarSize={42} />
+        <Bar
+          dataKey="total_centavos"
+          name="Total"
+          fill="url(#patron-mensual)"
+          stroke={c["muted-foreground"]}
+          strokeWidth={1}
+          radius={[4, 4, 0, 0]}
+          maxBarSize={42}
+        />
       </BarChart>
     </ResponsiveContainer>
   )
@@ -69,7 +81,12 @@ export function YearlyChart({ data }: { data: YearlyData }) {
 
   return (
     <ResponsiveContainer width="100%" height={240}>
-      <BarChart data={rows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+      <BarChart
+        data={rows}
+        accessibilityLayer
+        margin={{ top: 8, right: 8, left: -14, bottom: 0 }}
+      >
+        <ChartPatterns tipo="anual" colores={c} />
         <CartesianGrid strokeDasharray="3 3" stroke={c.border} vertical={false} />
         <XAxis
           dataKey="nombre"
@@ -88,7 +105,6 @@ export function YearlyChart({ data }: { data: YearlyData }) {
         <Tooltip
           content={
             <ChartTooltip
-              formatter={(v: number) => formatBs(v)}
               labelFormatter={(label, payload) => {
                 const p = payload?.[0]?.payload as { cantidad_pagos?: number } | undefined
                 return `${label} · ${p?.cantidad_pagos ?? 0} pago(s)`
@@ -97,7 +113,15 @@ export function YearlyChart({ data }: { data: YearlyData }) {
           }
           cursor={{ fill: c.border, opacity: 0.35 }}
         />
-        <Bar dataKey="total_centavos" fill={c["chart-3"]} radius={[4, 4, 0, 0]} maxBarSize={28} />
+        <Bar
+          dataKey="total_centavos"
+          name="Total"
+          fill="url(#patron-anual)"
+          stroke={c["muted-foreground"]}
+          strokeWidth={1}
+          radius={[4, 4, 0, 0]}
+          maxBarSize={28}
+        />
       </BarChart>
     </ResponsiveContainer>
   )

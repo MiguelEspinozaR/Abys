@@ -9,9 +9,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { formatBs, fromISODate } from "@/lib/format"
+import { fromISODate } from "@/lib/format"
 import { useChartColors } from "@/lib/chartTheme"
 import type { WeeklyData } from "@/services/types"
+import { ChartPatterns } from "./ChartPatterns"
 import { ChartTooltip } from "./ChartTooltip"
 
 export function WeeklyChart({ data }: { data: WeeklyData }) {
@@ -24,7 +25,12 @@ export function WeeklyChart({ data }: { data: WeeklyData }) {
 
   return (
     <ResponsiveContainer width="100%" height={240}>
-      <BarChart data={rows} margin={{ top: 8, right: 8, left: -14, bottom: 0 }}>
+      <BarChart
+        data={rows}
+        accessibilityLayer
+        margin={{ top: 8, right: 8, left: -14, bottom: 0 }}
+      >
+        <ChartPatterns tipo="semanal" colores={c} />
         <CartesianGrid strokeDasharray="3 3" stroke={c.border} vertical={false} />
         <XAxis
           dataKey="nombre"
@@ -42,9 +48,6 @@ export function WeeklyChart({ data }: { data: WeeklyData }) {
         <Tooltip
           content={
             <ChartTooltip
-              formatter={(v: number, name: string) =>
-                name === "total_centavos" ? formatBs(v) : String(v)
-              }
               labelFormatter={(label, payload) => {
                 const p = payload?.[0]?.payload as { cantidad_pagos?: number } | undefined
                 return `${label} · ${p?.cantidad_pagos ?? 0} pago(s)`
@@ -53,7 +56,15 @@ export function WeeklyChart({ data }: { data: WeeklyData }) {
           }
           cursor={{ fill: c.border, opacity: 0.35 }}
         />
-        <Bar dataKey="total_centavos" fill={c["chart-1"]} radius={[4, 4, 0, 0]} maxBarSize={42} />
+        <Bar
+          dataKey="total_centavos"
+          name="Total"
+          fill="url(#patron-semanal)"
+          stroke={c["muted-foreground"]}
+          strokeWidth={1}
+          radius={[4, 4, 0, 0]}
+          maxBarSize={42}
+        />
       </BarChart>
     </ResponsiveContainer>
   )
