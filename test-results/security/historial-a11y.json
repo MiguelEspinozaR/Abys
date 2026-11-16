@@ -1,0 +1,14 @@
+{
+  "task_id": "historial-a11y-security-scan",
+  "feature": "historial-a11y",
+  "commit": "888b954",
+  "base_commit": "ec3c41a",
+  "product_diff_base": "ec3c41a",
+  "product_diff_head": "888b954",
+  "evidence_commit": "888b954",
+  "scanner": "regex-fallback-advisory",
+  "hard_blocks": [],
+  "findings": [],
+  "summary": "Security scan of diff ec3c41a..888b954 for feature historial-a11y. Scope: web/ directory only (evidence in test-results/historial-a11y/ and backlog/backlog.md). Backend has no changes. No exposed secrets detected via regex patterns (API keys, tokens, passwords, private keys). No SAST vulnerabilities found. No dependency vulnerabilities (web/package.json unchanged between base and HEAD). No insecure configuration changes. No supply-chain issues. No beforeunload usage confirmed in any diff. Gitleaks not available; regex fallback declared advisory. All 5 commits in the range are: 888b954 docs: cierra el bloque C en el backlog, 0c06ac1 test(a11y): evidencia del histórico accesible (bloque C), ad07e31 feat(web): hace accesibles los gráficos del dashboard, 8dd580f feat(web): reemplaza transition-all y sincroniza theme-color con el tema, 500d798 feat(web): lleva filtros y rango a la URL y agrupa el histórico por año. New changes in this range: web/ accessibility features for dashboards/charts/chart patterns, historial grouping by year, URL filters, theme-color sync, UI improvements, test files, CSS color adjustments, uiStore theme integration, backlog/backlog.md update. Evidence verified: test-results/historial-a11y/ contains audit logs, metrics, test results, and screenshots — no real secrets, tokens, or credentials. backlog/backlog.md is a documentation entry. No exposed secrets or credentials introduced.",
+  "verdict": "pass"
+}
