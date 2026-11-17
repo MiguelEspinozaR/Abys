@@ -64,9 +64,10 @@ type FiltroPagos struct {
 }
 
 // Crear inserta un pago y sus días trabajados atómicamente.
+// El total del pago se recalcula en la misma transacción como Σ de sus días.
 // pagoID nil → deja que el DB asigne id.
 func (r *PagoRepo) Crear(ctx context.Context, pagoID *int64, fuenteID int64, fechaPago string,
-	monto int64, metodo string, notas *string, dias []string) (int64, error) {
+	monto int64, metodo string, notas *string, dias []model.DiaTrabajadoInput) (int64, error) {
 	tx, err := r.pool.Begin(ctx)
 	if err != nil {
 		return 0, err
@@ -88,11 +89,15 @@ func (r *PagoRepo) Crear(ctx context.Context, pagoID *int64, fuenteID int64, fec
 	if err != nil {
 		return 0, mapPagoErr(err)
 	}
-	for _, f := range dias {
+	for _, d := range dias {
 		if _, err := tx.Exec(ctx,
-			`INSERT INTO dias_trabajados (pago_id, fecha) VALUES ($1, $2)`, id, f); err != nil {
+			`INSERT INTO dias_trabajados (pago_id, fecha, monto_enteros) VALUES ($1, $2, $3)`,
+			id, d.Fecha, d.MontoEnteros); err != nil {
 			return 0, mapPagoErr(err)
 		}
+	}
+	if err := recalcularTotalPago(ctx, tx, id); err != nil {
+		return 0, err
 	}
 	if err := tx.Commit(ctx); err != nil {
 		return 0, err
@@ -101,9 +106,10 @@ func (r *PagoRepo) Crear(ctx context.Context, pagoID *int64, fuenteID int64, fec
 }
 
 // ActualizarConDias actualiza campos y, si diasSet, reemplaza los días
-// trabajados dentro de la misma transacción.
+// trabajados dentro de la misma transacción. El total del pago se recalcula
+// como Σ de sus días.
 func (r *PagoRepo) ActualizarConDias(ctx context.Context, id, fuenteID int64, fechaPago string,
-	monto int64, metodo string, notas *string, dias []string, diasSet bool) error {
+	monto int64, metodo string, notas *string, dias []model.DiaTrabajadoInput, diasSet bool) error {
 	tx, err := r.pool.Begin(ctx)
 	if err != nil {
 		return err
@@ -125,14 +131,29 @@ func (r *PagoRepo) ActualizarConDias(ctx context.Context, id, fuenteID int64, fe
 		if _, err := tx.Exec(ctx, `DELETE FROM dias_trabajados WHERE pago_id = $1`, id); err != nil {
 			return err
 		}
-		for _, f := range dias {
+		for _, d := range dias {
 			if _, err := tx.Exec(ctx,
-				`INSERT INTO dias_trabajados (pago_id, fecha) VALUES ($1, $2)`, id, f); err != nil {
+				`INSERT INTO dias_trabajados (pago_id, fecha, monto_enteros) VALUES ($1, $2, $3)`,
+				id, d.Fecha, d.MontoEnteros); err != nil {
 				return mapPagoErr(err)
 			}
 		}
 	}
+	if err := recalcularTotalPago(ctx, tx, id); err != nil {
+		return err
+	}
 	return tx.Commit(ctx)
+}
+
+// recalcularTotalPago deriva pagos.monto_enteros como Σ de sus días.
+func recalcularTotalPago(ctx context.Context, tx pgx.Tx, pagoID int64) error {
+	_, err := tx.Exec(ctx, `
+		UPDATE pagos
+		SET monto_enteros = (
+			SELECT COALESCE(SUM(monto_enteros), 0) FROM dias_trabajados WHERE pago_id = $1
+		), updated_at = NOW()
+		WHERE id = $1`, pagoID)
+	return err
 }
 
 // GetDetallado devuelve un pago activo con fuente, días y split.
@@ -176,7 +197,8 @@ func (r *PagoRepo) GetPorID(ctx context.Context, id int64) (*model.Pago, error) 
 
 func (r *PagoRepo) diasDePago(ctx context.Context, pagoID int64) ([]model.DiaTrabajado, error) {
 	rows, err := r.pool.Query(ctx,
-		`SELECT id, pago_id, fecha::text FROM dias_trabajados WHERE pago_id = $1 ORDER BY fecha`, pagoID)
+		`SELECT id, pago_id, fecha::text, monto_enteros
+		 FROM dias_trabajados WHERE pago_id = $1 ORDER BY fecha, id`, pagoID)
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +206,7 @@ func (r *PagoRepo) diasDePago(ctx context.Context, pagoID int64) ([]model.DiaTra
 	out := []model.DiaTrabajado{}
 	for rows.Next() {
 		var d model.DiaTrabajado
-		if err := rows.Scan(&d.ID, &d.PagoID, &d.Fecha); err != nil {
+		if err := rows.Scan(&d.ID, &d.PagoID, &d.Fecha, &d.MontoEnteros); err != nil {
 			return nil, err
 		}
 		out = append(out, d)
@@ -264,7 +286,8 @@ func (r *PagoRepo) Listar(ctx context.Context, f FiltroPagos) ([]PagoDetallado, 
 
 	// Días de todos los pagos de la página (una sola consulta).
 	dias, err := r.pool.Query(ctx,
-		`SELECT id, pago_id, fecha::text FROM dias_trabajados WHERE pago_id = ANY($1) ORDER BY pago_id, fecha`,
+		`SELECT id, pago_id, fecha::text, monto_enteros
+		 FROM dias_trabajados WHERE pago_id = ANY($1) ORDER BY pago_id, fecha, id`,
 		ids)
 	if err != nil {
 		return nil, 0, err
@@ -277,7 +300,7 @@ func (r *PagoRepo) Listar(ctx context.Context, f FiltroPagos) ([]PagoDetallado, 
 	}
 	for dias.Next() {
 		var d model.DiaTrabajado
-		if err := dias.Scan(&d.ID, &d.PagoID, &d.Fecha); err != nil {
+		if err := dias.Scan(&d.ID, &d.PagoID, &d.Fecha, &d.MontoEnteros); err != nil {
 			return nil, 0, err
 		}
 		if i, ok := idx[d.PagoID]; ok {
@@ -300,22 +323,40 @@ func (r *PagoRepo) SoftDelete(ctx context.Context, id int64) error {
 	return nil
 }
 
-// AddDia agrega un día trabajado (valida duplicado UNIQUE a nivel DB).
-func (r *PagoRepo) AddDia(ctx context.Context, pagoID int64, fecha string) error {
-	tag, err := r.pool.Exec(ctx,
-		`INSERT INTO dias_trabajados (pago_id, fecha) VALUES ($1, $2)`, pagoID, fecha)
+// AddDia agrega un día trabajado y recalcula el total del pago
+// (valida duplicado UNIQUE a nivel DB).
+func (r *PagoRepo) AddDia(ctx context.Context, pagoID int64, fecha string, monto int64) error {
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	tag, err := tx.Exec(ctx,
+		`INSERT INTO dias_trabajados (pago_id, fecha, monto_enteros) VALUES ($1, $2, $3)`,
+		pagoID, fecha, monto)
 	if err != nil {
 		return mapPagoErr(err)
 	}
 	if tag.RowsAffected() == 0 {
 		return apperr.NewNotFound("pago no encontrado")
 	}
-	return nil
+	if err := recalcularTotalPago(ctx, tx, pagoID); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
 }
 
-// DeleteDia elimina un día; el servicio valida mantener ≥ 1 (BR-002).
+// DeleteDia elimina un día y recalcula el total del pago; el servicio valida
+// mantener ≥ 1 (BR-002).
 func (r *PagoRepo) DeleteDia(ctx context.Context, pagoID, diaID int64) error {
-	tag, err := r.pool.Exec(ctx,
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	tag, err := tx.Exec(ctx,
 		`DELETE FROM dias_trabajados WHERE id=$1 AND pago_id=$2`, diaID, pagoID)
 	if err != nil {
 		return err
@@ -323,7 +364,10 @@ func (r *PagoRepo) DeleteDia(ctx context.Context, pagoID, diaID int64) error {
 	if tag.RowsAffected() == 0 {
 		return apperr.NewNotFound(fmt.Sprintf("día %d no encontrado en pago %d", diaID, pagoID))
 	}
-	return nil
+	if err := recalcularTotalPago(ctx, tx, pagoID); err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
 }
 
 // SetImagenRuta actualiza el comprobante del pago.

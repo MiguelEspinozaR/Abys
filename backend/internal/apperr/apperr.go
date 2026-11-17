@@ -9,11 +9,12 @@ import "fmt"
 type Kind int
 
 const (
-	KindNotFound Kind = iota // 404
-	KindValidation           // 400
-	KindConflict             // 409 (regla de negocio)
-	KindImmutable            // 422 (datos congelados/inmutables)
-	KindInternal             // 500
+	KindNotFound      Kind = iota // 404
+	KindValidation                // 400
+	KindConflict                  // 409 (regla de negocio)
+	KindImmutable                 // 422 (datos congelados/inmutables)
+	KindUnprocessable             // 422 (datos no procesables, p. ej. total desincronizado)
+	KindInternal                  // 500
 )
 
 // Error es un error tipado de las capas de servicio/repositorio.
@@ -25,20 +26,22 @@ type Error struct {
 
 func (e *Error) Error() string {
 	nombre := map[Kind]string{
-		KindNotFound:   "NotFound",
-		KindValidation: "Validation",
-		KindConflict:   "Conflict",
-		KindImmutable:  "Immutable",
-		KindInternal:   "Internal",
+		KindNotFound:      "NotFound",
+		KindValidation:    "Validation",
+		KindConflict:      "Conflict",
+		KindImmutable:     "Immutable",
+		KindUnprocessable: "Unprocessable",
+		KindInternal:      "Internal",
 	}[e.Kind]
 	return fmt.Sprintf("%s: %s", nombre, e.Message)
 }
 
-func NewNotFound(msg string) *Error   { return &Error{Kind: KindNotFound, Message: msg} }
-func NewValidation(msg string) *Error { return &Error{Kind: KindValidation, Message: msg} }
-func NewConflict(msg string) *Error   { return &Error{Kind: KindConflict, Message: msg} }
-func NewImmutable(msg string) *Error  { return &Error{Kind: KindImmutable, Message: msg} }
-func NewInternal(msg string) *Error   { return &Error{Kind: KindInternal, Message: msg} }
+func NewNotFound(msg string) *Error      { return &Error{Kind: KindNotFound, Message: msg} }
+func NewValidation(msg string) *Error    { return &Error{Kind: KindValidation, Message: msg} }
+func NewConflict(msg string) *Error      { return &Error{Kind: KindConflict, Message: msg} }
+func NewImmutable(msg string) *Error     { return &Error{Kind: KindImmutable, Message: msg} }
+func NewUnprocessable(msg string) *Error { return &Error{Kind: KindUnprocessable, Message: msg} }
+func NewInternal(msg string) *Error      { return &Error{Kind: KindInternal, Message: msg} }
 
 // WithDetails adjunta detalles estructurados al error.
 func (e *Error) WithDetails(d any) *Error { e.Details = d; return e }

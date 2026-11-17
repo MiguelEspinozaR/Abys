@@ -13,7 +13,7 @@ import (
 //
 //	{"error":{"code","message","details?"}}
 //
-// Mapeo: NotFound→404, Validation→400, Conflict→409, Immutable→422, resto→500.
+// Mapeo: NotFound→404, Validation→400, Conflict→409, Immutable/Unprocessable→422, resto→500.
 func responderError(c *gin.Context, err error) {
 	var se *apperr.Error
 	if !errors.As(err, &se) {
@@ -30,6 +30,8 @@ func responderError(c *gin.Context, err error) {
 		status, code = http.StatusConflict, "BUSINESS_RULE_CONFLICT"
 	case apperr.KindImmutable:
 		status, code = http.StatusUnprocessableEntity, "IMMUTABLE_DATA"
+	case apperr.KindUnprocessable:
+		status, code = http.StatusUnprocessableEntity, "TOTAL_DESINCRONIZADO"
 	}
 	body := gin.H{"error": gin.H{"code": code, "message": se.Message}}
 	if se.Details != nil {

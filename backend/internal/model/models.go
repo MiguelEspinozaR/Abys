@@ -31,9 +31,16 @@ type Pago struct {
 
 // DiaTrabajado pertenece a un solo pago; fecha única por pago (BR-010).
 type DiaTrabajado struct {
-	ID     int64  `json:"id"`
-	PagoID int64  `json:"pago_id"`
-	Fecha  string `json:"fecha"` // DATE (YYYY-MM-DD)
+	ID           int64  `json:"id"`
+	PagoID       int64  `json:"pago_id"`
+	Fecha        string `json:"fecha"`         // DATE (YYYY-MM-DD)
+	MontoEnteros int64  `json:"monto_enteros"` // centavos (>= 0)
+}
+
+// DiaTrabajadoInput es un día a persistir junto a su monto (sin id).
+type DiaTrabajadoInput struct {
+	Fecha        string `json:"fecha"`
+	MontoEnteros int64  `json:"monto_enteros"`
 }
 
 // Cuenta de distribución (BR-040..BR-043). La tasa vigente NO se almacena

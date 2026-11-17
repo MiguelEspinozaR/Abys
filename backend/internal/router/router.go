@@ -134,6 +134,8 @@ func Setup(cfg *config.Config, pool *pgxpool.Pool) *gin.Engine {
 	api.GET("/dashboard/monthly", dashH.Monthly)
 	api.GET("/dashboard/yearly", dashH.Yearly)
 	api.GET("/dashboard/history", dashH.History)
+	api.GET("/dashboard/distribution/monthly", dashH.DistributionMonthly)
+	api.GET("/dashboard/distribution/yearly", dashH.DistributionYearly)
 
 	// 404 en formato JSON consistente.
 	r.NoRoute(func(c *gin.Context) {

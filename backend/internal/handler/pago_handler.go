@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"abys/internal/model"
 	"abys/internal/repository"
 	"abys/internal/service"
 )
@@ -19,24 +20,47 @@ func NewPagoHandler(svc *service.PagoService, up *Uploader) *PagoHandler {
 	return &PagoHandler{svc: svc, up: up}
 }
 
+// DiaInput es un día trabajado con su monto en centavos.
+type DiaInput struct {
+	Fecha        string `json:"fecha" binding:"required"`
+	MontoEnteros int64  `json:"monto_enteros" binding:"gte=0"`
+}
+
+// AddDiaRequest es el body de POST /api/v1/pagos/:id/dias.
+type AddDiaRequest struct {
+	Fecha        string `json:"fecha" binding:"required"`
+	MontoEnteros int64  `json:"monto_enteros" binding:"gte=0"`
+}
+
 // CreatePagoRequest es el body de POST /api/v1/pagos.
 type CreatePagoRequest struct {
-	FuenteID       int64    `json:"fuente_id" binding:"required"`
-	FechaPago      string   `json:"fecha_pago" binding:"required"`
-	MontoEnteros   int64    `json:"monto_enteros"`
-	MetodoPago     string   `json:"metodo_pago" binding:"required"`
-	Notas          *string  `json:"notas"`
-	DiasTrabajados []string `json:"dias_trabajados" binding:"required,min=1"`
+	FuenteID       int64      `json:"fuente_id" binding:"required"`
+	FechaPago      string     `json:"fecha_pago" binding:"required"`
+	MontoEnteros   int64      `json:"monto_enteros"`
+	MetodoPago     string     `json:"metodo_pago" binding:"required"`
+	Notas          *string    `json:"notas"`
+	DiasTrabajados []DiaInput `json:"dias_trabajados" binding:"required,min=1"`
 }
 
 // UpdatePagoRequest es el body de PUT /api/v1/pagos/:id (dias opcional).
 type UpdatePagoRequest struct {
-	FuenteID       int64    `json:"fuente_id" binding:"required"`
-	FechaPago      string   `json:"fecha_pago" binding:"required"`
-	MontoEnteros   int64    `json:"monto_enteros"`
-	MetodoPago     string   `json:"metodo_pago" binding:"required"`
-	Notas          *string  `json:"notas"`
-	DiasTrabajados []string `json:"dias_trabajados"`
+	FuenteID       int64      `json:"fuente_id" binding:"required"`
+	FechaPago      string     `json:"fecha_pago" binding:"required"`
+	MontoEnteros   int64      `json:"monto_enteros"`
+	MetodoPago     string     `json:"metodo_pago" binding:"required"`
+	Notas          *string    `json:"notas"`
+	DiasTrabajados []DiaInput `json:"dias_trabajados"`
+}
+
+func diasAInput(dias []DiaInput) []model.DiaTrabajadoInput {
+	if dias == nil {
+		return nil
+	}
+	out := make([]model.DiaTrabajadoInput, len(dias))
+	for i, d := range dias {
+		out[i] = model.DiaTrabajadoInput{Fecha: d.Fecha, MontoEnteros: d.MontoEnteros}
+	}
+	return out
 }
 
 // @Summary Crear pago
@@ -48,6 +72,7 @@ type UpdatePagoRequest struct {
 // @Success 201 {object} map[string]any
 // @Failure 400 {object} map[string]any
 // @Failure 409 {object} map[string]any
+// @Failure 422 {object} map[string]any
 // @Router /pagos [post]
 func (h *PagoHandler) Crear(c *gin.Context) {
 	var req CreatePagoRequest
@@ -56,7 +81,7 @@ func (h *PagoHandler) Crear(c *gin.Context) {
 		return
 	}
 	id, err := h.svc.CrearPago(c, nil, req.FuenteID, req.FechaPago, req.MontoEnteros,
-		req.MetodoPago, req.Notas, req.DiasTrabajados)
+		req.MetodoPago, req.Notas, diasAInput(req.DiasTrabajados))
 	if err != nil {
 		responderError(c, err)
 		return
@@ -180,7 +205,7 @@ func (h *PagoHandler) Actualizar(c *gin.Context) {
 		diasSet = true
 	}
 	err := h.svc.ActualizarPago(c, id, req.FuenteID, req.FechaPago, req.MontoEnteros,
-		req.MetodoPago, req.Notas, req.DiasTrabajados, diasSet)
+		req.MetodoPago, req.Notas, diasAInput(req.DiasTrabajados), diasSet)
 	if err != nil {
 		responderError(c, err)
 		return
@@ -214,12 +239,12 @@ func (h *PagoHandler) Eliminar(c *gin.Context) {
 }
 
 // @Summary Agregar día trabajado
-// @Description Agrega un día a un pago (fechas únicas por pago, BR-006/010).
+// @Description Agrega un día con su monto a un pago (fechas únicas por pago, BR-006/010).
 // @Tags pagos
 // @Accept json
 // @Produce json
 // @Param id path int true "ID del pago"
-// @Param body body map[string]string true "{\"fecha\":\"YYYY-MM-DD\"}"
+// @Param body body AddDiaRequest true "Día y monto en centavos"
 // @Success 201 {object} map[string]any
 // @Failure 400 {object} map[string]any
 // @Router /pagos/{id}/dias [post]
@@ -228,18 +253,18 @@ func (h *PagoHandler) AgregarDia(c *gin.Context) {
 	if !ok {
 		return
 	}
-	var body struct {
-		Fecha string `json:"fecha" binding:"required"`
-	}
+	var body AddDiaRequest
 	if err := c.ShouldBindJSON(&body); err != nil {
-		badRequest(c, "body inválido: se requiere {\"fecha\":\"YYYY-MM-DD\"}")
+		badRequest(c, "body inválido: se requiere {\"fecha\":\"YYYY-MM-DD\",\"monto_enteros\":N}")
 		return
 	}
-	if err := h.svc.AgregarDia(c, id, body.Fecha); err != nil {
+	if err := h.svc.AgregarDia(c, id, body.Fecha, body.MontoEnteros); err != nil {
 		responderError(c, err)
 		return
 	}
-	c.JSON(201, gin.H{"data": gin.H{"pago_id": id, "fecha": body.Fecha, "agregado": true}})
+	c.JSON(201, gin.H{"data": gin.H{
+		"pago_id": id, "fecha": body.Fecha, "monto_enteros": body.MontoEnteros, "agregado": true,
+	}})
 }
 
 // @Summary Eliminar día trabajado

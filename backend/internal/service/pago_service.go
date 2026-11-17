@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"abys/internal/apperr"
+	"abys/internal/model"
 	"abys/internal/repository"
 	"abys/internal/splitcalc"
 )
@@ -21,10 +23,12 @@ func NewPagoService(repo *repository.PagoRepo, fuentes *repository.FuenteRepo,
 	return &PagoService{repo: repo, fuentes: fuentes, settings: settings, split: split}
 }
 
-// CrearPago valida y persiste un pago con sus días trabajados.
+// CrearPago valida y persiste un pago con sus días trabajados. El total del
+// pago se deriva de Σ días; si el cliente envía un total > 0 que no cuadra se
+// rechaza con 422 (R3.2).
 func (s *PagoService) CrearPago(ctx context.Context, pagoID *int64, fuenteID int64, fechaPago string,
-	monto int64, metodo string, notas *string, dias []string) (int64, error) {
-	if err := ValidarMontoPago(monto); err != nil {
+	montoCliente int64, metodo string, notas *string, dias []model.DiaTrabajadoInput) (int64, error) {
+	if err := ValidarMontoPago(montoCliente); err != nil {
 		return 0, err
 	}
 	if err := ValidarFechaPago(fechaPago); err != nil {
@@ -36,6 +40,10 @@ func (s *PagoService) CrearPago(ctx context.Context, pagoID *int64, fuenteID int
 	if err := ValidarDiasTrabajados(dias); err != nil {
 		return 0, err
 	}
+	derivado := SumarMontoDias(dias)
+	if err := validarTotalCliente(montoCliente, derivado); err != nil {
+		return 0, err
+	}
 	existe, err := s.repo.ExisteFuente(ctx, fuenteID)
 	if err != nil {
 		return 0, err
@@ -43,7 +51,18 @@ func (s *PagoService) CrearPago(ctx context.Context, pagoID *int64, fuenteID int
 	if !existe {
 		return 0, apperr.NewValidation("la fuente indicada no existe")
 	}
-	return s.repo.Crear(ctx, pagoID, fuenteID, fechaPago, monto, metodo, notas, dias)
+	return s.repo.Crear(ctx, pagoID, fuenteID, fechaPago, derivado, metodo, notas, dias)
+}
+
+// validarTotalCliente exige que un total provisto (> 0) coincida con Σ días.
+// Un total 0/ausente significa "no provisto" y se acepta (R3.2).
+func validarTotalCliente(montoCliente, derivado int64) error {
+	if montoCliente > 0 && montoCliente != derivado {
+		return apperr.NewUnprocessable(fmt.Sprintf(
+			"el total enviado (%d) no coincide con la suma de los días (%d)",
+			montoCliente, derivado))
+	}
+	return nil
 }
 
 // AutoSplit genera un split automático tras crear un pago cuando la fuente
@@ -77,13 +96,15 @@ func (s *PagoService) AutoSplit(ctx context.Context, pagoID, fuenteID int64) (*i
 	return &id, ""
 }
 
-// ActualizarPago valida y actualiza un pago. No permite cambiar el monto si el
-// pago tiene split (para no romper Σ transacciones = monto, BR-081). Si
-// dias != nil reemplaza los días trabajados (puede ser lista vacía solo si
-// viene explícita; la validación exige ≥ 1).
+// ActualizarPago valida y actualiza un pago. El total del pago se deriva de
+// Σ días (o se conserva si los días no vienen en el request); un total del
+// cliente > 0 que no cuadra se rechaza con 422. No permite cambiar el monto
+// derivado si el pago tiene split (para no romper Σ transacciones = monto,
+// BR-081). Si dias != nil reemplaza los días trabajados (puede ser lista vacía
+// solo si viene explícita; la validación exige ≥ 1).
 func (s *PagoService) ActualizarPago(ctx context.Context, id, fuenteID int64, fechaPago string,
-	monto int64, metodo string, notas *string, dias []string, diasSet bool) error {
-	if err := ValidarMontoPago(monto); err != nil {
+	montoCliente int64, metodo string, notas *string, dias []model.DiaTrabajadoInput, diasSet bool) error {
+	if err := ValidarMontoPago(montoCliente); err != nil {
 		return err
 	}
 	if err := ValidarFechaPago(fechaPago); err != nil {
@@ -100,7 +121,19 @@ func (s *PagoService) ActualizarPago(ctx context.Context, id, fuenteID int64, fe
 	if actual == nil {
 		return apperr.NewNotFound("pago no encontrado")
 	}
-	if actual.MontoEnteros != monto {
+
+	derivado := actual.MontoEnteros
+	if diasSet {
+		if err := ValidarDiasTrabajados(dias); err != nil {
+			return err
+		}
+		derivado = SumarMontoDias(dias)
+	}
+	if err := validarTotalCliente(montoCliente, derivado); err != nil {
+		return err
+	}
+
+	if actual.MontoEnteros != derivado {
 		conSplit, err := s.repo.HasSplit(ctx, id)
 		if err != nil {
 			return err
@@ -118,12 +151,7 @@ func (s *PagoService) ActualizarPago(ctx context.Context, id, fuenteID int64, fe
 			return apperr.NewValidation("la fuente indicada no existe")
 		}
 	}
-	if diasSet {
-		if err := ValidarDiasTrabajados(dias); err != nil {
-			return err
-		}
-	}
-	return s.repo.ActualizarConDias(ctx, id, fuenteID, fechaPago, monto, metodo, notas, dias, diasSet)
+	return s.repo.ActualizarConDias(ctx, id, fuenteID, fechaPago, derivado, metodo, notas, dias, diasSet)
 }
 
 // EliminarPago aplica soft delete; rechaza si hay transacciones realizadas (BR-005).
@@ -138,12 +166,16 @@ func (s *PagoService) EliminarPago(ctx context.Context, id int64) error {
 	return s.repo.SoftDelete(ctx, id)
 }
 
-// AgregarDia agrega un día trabajado validando duplicado (BR-006/010).
-func (s *PagoService) AgregarDia(ctx context.Context, pagoID int64, fecha string) error {
+// AgregarDia agrega un día trabajado con su monto validando duplicado
+// (BR-006/010) y recalcula el total del pago.
+func (s *PagoService) AgregarDia(ctx context.Context, pagoID int64, fecha string, monto int64) error {
 	if err := ValidarFechaPago(fecha); err != nil {
 		return err
 	}
-	return s.repo.AddDia(ctx, pagoID, fecha)
+	if monto < 0 {
+		return apperr.NewValidation("el monto del día no puede ser negativo")
+	}
+	return s.repo.AddDia(ctx, pagoID, fecha, monto)
 }
 
 // EliminarDia elimina un día manteniendo ≥ 1 (BR-002).

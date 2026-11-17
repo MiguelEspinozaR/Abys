@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -48,17 +49,24 @@ func TestIntegrationAPI(t *testing.T) {
 
 	r := router.Setup(cfg, pool)
 
-	// ---- POST /pagos ----
+	// ---- POST /pagos con días-object y total derivado ----
 	body := `{"fuente_id":1,"fecha_pago":"2026-06-15","monto_enteros":63300,
 		"metodo_pago":"qr","notas":"test integración",
-		"dias_trabajados":["2026-06-15","2026-06-16"]}`
+		"dias_trabajados":[
+			{"fecha":"2026-06-15","monto_enteros":31650},
+			{"fecha":"2026-06-16","monto_enteros":31650}]}`
 	rec := doReq(t, r, http.MethodPost, "/api/v1/pagos", body, "")
 	if rec.Code != 201 {
 		t.Fatalf("POST /pagos -> %d: %s", rec.Code, rec.Body.String())
 	}
 	var creado struct {
 		Data struct {
-			ID int64 `json:"id"`
+			ID             int64 `json:"id"`
+			MontoEnteros   int64 `json:"monto_enteros"`
+			DiasTrabajados []struct {
+				Fecha        string `json:"fecha"`
+				MontoEnteros int64  `json:"monto_enteros"`
+			} `json:"dias_trabajados"`
 		} `json:"data"`
 	}
 	if err := json.Unmarshal(rec.Body.Bytes(), &creado); err != nil {
@@ -69,6 +77,55 @@ func TestIntegrationAPI(t *testing.T) {
 		t.Fatalf("id de pago inválido: %d", pagoID)
 	}
 	defer cleanup(t, pool, pagoID)
+	if creado.Data.MontoEnteros != 63300 {
+		t.Errorf("total derivado = %d, se esperaba 63300", creado.Data.MontoEnteros)
+	}
+	if len(creado.Data.DiasTrabajados) != 2 ||
+		creado.Data.DiasTrabajados[0].MontoEnteros != 31650 ||
+		creado.Data.DiasTrabajados[1].MontoEnteros != 31650 {
+		t.Errorf("días persistidos inesperados: %+v", creado.Data.DiasTrabajados)
+	}
+
+	// ---- total desincronizado → 422 TOTAL_DESINCRONIZADO ----
+	rec = doReq(t, r, http.MethodPost, "/api/v1/pagos", `{
+		"fuente_id":1,"fecha_pago":"2026-07-01","monto_enteros":1000,
+		"metodo_pago":"efectivo",
+		"dias_trabajados":[{"fecha":"2026-07-01","monto_enteros":900}]}`, "")
+	if rec.Code != http.StatusUnprocessableEntity || !hasCode(t, rec, "TOTAL_DESINCRONIZADO") {
+		t.Errorf("total desincronizado debe dar 422 TOTAL_DESINCRONIZADO, dio %d: %s",
+			rec.Code, rec.Body.String())
+	}
+
+	// ---- total ausente: se deriva de Σ días ----
+	rec = doReq(t, r, http.MethodPost, "/api/v1/pagos", `{
+		"fuente_id":1,"fecha_pago":"2026-07-02","metodo_pago":"efectivo",
+		"dias_trabajados":[
+			{"fecha":"2026-07-02","monto_enteros":1000},
+			{"fecha":"2026-07-03","monto_enteros":2500}]}`, "")
+	if rec.Code != 201 {
+		t.Fatalf("POST /pagos sin total -> %d: %s", rec.Code, rec.Body.String())
+	}
+	var derivado struct {
+		Data struct {
+			ID           int64 `json:"id"`
+			MontoEnteros int64 `json:"monto_enteros"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &derivado); err != nil {
+		t.Fatalf("json: %v", err)
+	}
+	if derivado.Data.MontoEnteros != 3500 {
+		t.Errorf("total derivado = %d, se esperaba 3500", derivado.Data.MontoEnteros)
+	}
+	defer cleanup(t, pool, derivado.Data.ID)
+
+	// ---- monto de día negativo → 400 ----
+	rec = doReq(t, r, http.MethodPost, "/api/v1/pagos", `{
+		"fuente_id":1,"fecha_pago":"2026-07-04","metodo_pago":"efectivo",
+		"dias_trabajados":[{"fecha":"2026-07-04","monto_enteros":-1}]}`, "")
+	if rec.Code != 400 {
+		t.Errorf("monto de día negativo debe dar 400, dio %d: %s", rec.Code, rec.Body.String())
+	}
 
 	// ---- GET /pagos/1 (migrado) ----
 	rec = doReq(t, r, http.MethodGet, "/api/v1/pagos/1", "", "")
@@ -84,7 +141,7 @@ func TestIntegrationAPI(t *testing.T) {
 	}
 	var split struct {
 		Data struct {
-			ID           int64 `json:"id"`
+			ID            int64 `json:"id"`
 			Transacciones []struct {
 				Alias     string `json:"alias_snapshot"`
 				Monto     int64  `json:"monto_enteros"`
@@ -110,6 +167,29 @@ func TestIntegrationAPI(t *testing.T) {
 	}
 	if generalMonto < 0 {
 		t.Error("debe existir la transacción General")
+	}
+
+	// ---- PUT con total del cliente desincronizado → 422 ----
+	putURL := "/api/v1/pagos/" + strconv.FormatInt(pagoID, 10)
+	rec = doReq(t, r, http.MethodPut, putURL, `{
+		"fuente_id":1,"fecha_pago":"2026-06-15","monto_enteros":1,"metodo_pago":"qr",
+		"dias_trabajados":[
+			{"fecha":"2026-06-15","monto_enteros":31650},
+			{"fecha":"2026-06-16","monto_enteros":31650}]}`, "")
+	if rec.Code != http.StatusUnprocessableEntity || !hasCode(t, rec, "TOTAL_DESINCRONIZADO") {
+		t.Errorf("PUT desincronizado debe dar 422 TOTAL_DESINCRONIZADO, dio %d: %s",
+			rec.Code, rec.Body.String())
+	}
+
+	// ---- PUT cambia Σ días de un pago con split → 422 IMMUTABLE_DATA (BR-081) ----
+	rec = doReq(t, r, http.MethodPut, putURL, `{
+		"fuente_id":1,"fecha_pago":"2026-06-15","metodo_pago":"qr",
+		"dias_trabajados":[
+			{"fecha":"2026-06-15","monto_enteros":31650},
+			{"fecha":"2026-06-16","monto_enteros":32650}]}`, "")
+	if rec.Code != http.StatusUnprocessableEntity || !hasCode(t, rec, "IMMUTABLE_DATA") {
+		t.Errorf("cambiar Σ días con split debe dar 422 IMMUTABLE_DATA, dio %d: %s",
+			rec.Code, rec.Body.String())
 	}
 
 	// ---- split duplicado → 409 ----
@@ -244,6 +324,272 @@ func countPagos(t *testing.T, pool *pgxpool.Pool) int64 {
 		t.Fatalf("conteo: %v", err)
 	}
 	return n
+}
+
+// TestDashboardContracts verifica la forma exacta de los 7 endpoints del
+// dashboard y que las fuentes soft-deleted se incluyan (D15/R11.3).
+func TestDashboardContracts(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	cfg, pool := testConfigYPostgres(t)
+	r := router.Setup(cfg, pool)
+	ctx := context.Background()
+
+	var fuenteID, pagoID, pagoEliminadoID int64
+	defer func() {
+		for _, id := range []int64{pagoID, pagoEliminadoID} {
+			if id > 0 {
+				_, _ = pool.Exec(context.Background(), `DELETE FROM pagos WHERE id = $1`, id)
+			}
+		}
+		if fuenteID > 0 {
+			_, _ = pool.Exec(context.Background(), `DELETE FROM fuentes WHERE id = $1`, fuenteID)
+		}
+	}()
+	if err := pool.QueryRow(ctx, `
+		INSERT INTO fuentes (alias, color, deleted_at) VALUES ('Histórica', '#123456', NOW())
+		RETURNING id`).Scan(&fuenteID); err != nil {
+		t.Fatalf("insertar fuente: %v", err)
+	}
+	if err := pool.QueryRow(ctx, `
+		INSERT INTO pagos (fuente_id, fecha_pago, monto_enteros, metodo_pago)
+		VALUES ($1, '2099-01-06', 300, 'efectivo') RETURNING id`, fuenteID).Scan(&pagoID); err != nil {
+		t.Fatalf("insertar pago: %v", err)
+	}
+	if _, err := pool.Exec(ctx, `
+		INSERT INTO dias_trabajados (pago_id, fecha, monto_enteros) VALUES
+			($1, '2099-01-05', 200),
+			($1, '2099-01-06', 100)`, pagoID); err != nil {
+		t.Fatalf("insertar días: %v", err)
+	}
+
+	// Pago soft-deleted: no debe aparecer en ninguna agregación.
+	if err := pool.QueryRow(ctx, `
+		INSERT INTO pagos (fuente_id, fecha_pago, monto_enteros, metodo_pago, deleted_at)
+		VALUES ($1, '2099-01-07', 500, 'efectivo', NOW()) RETURNING id`, fuenteID).Scan(&pagoEliminadoID); err != nil {
+		t.Fatalf("insertar pago soft-deleted: %v", err)
+	}
+	if _, err := pool.Exec(ctx, `
+		INSERT INTO dias_trabajados (pago_id, fecha, monto_enteros)
+		VALUES ($1, '2099-01-07', 500)`, pagoEliminadoID); err != nil {
+		t.Fatalf("insertar día soft-deleted: %v", err)
+	}
+
+	// ---- summary ----
+	rec := doReq(t, r, http.MethodGet, "/api/v1/dashboard/summary", "", "")
+	if rec.Code != 200 {
+		t.Fatalf("GET summary -> %d: %s", rec.Code, rec.Body.String())
+	}
+	var summary struct {
+		Data struct {
+			Total30d       int64 `json:"total_30d_centavos"`
+			TotalHistorico int64 `json:"total_historico_centavos"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &summary); err != nil {
+		t.Fatalf("json summary: %v", err)
+	}
+	if summary.Data.TotalHistorico < 300 {
+		t.Errorf("total histórico = %d, debe incluir los 300 del fixture", summary.Data.TotalHistorico)
+	}
+	if summary.Data.TotalHistorico-summary.Data.Total30d < 300 {
+		t.Errorf("los días de 2099 deben quedar fuera de los últimos 30 días")
+	}
+
+	// ---- weekly ----
+	rec = doReq(t, r, http.MethodGet, "/api/v1/dashboard/weekly?fecha=2099-01-06", "", "")
+	if rec.Code != 200 {
+		t.Fatalf("GET weekly -> %d: %s", rec.Code, rec.Body.String())
+	}
+	type fuenteJSON struct {
+		FuenteID      int64  `json:"fuente_id"`
+		Alias         string `json:"alias"`
+		Color         string `json:"color"`
+		TotalCentavos int64  `json:"total_centavos"`
+	}
+	var weekly struct {
+		Data struct {
+			SemanaInicio string `json:"semana_inicio"`
+			SemanaFin    string `json:"semana_fin"`
+			Dias         []struct {
+				Fecha         string       `json:"fecha"`
+				TotalCentavos int64        `json:"total_centavos"`
+				PorFuente     []fuenteJSON `json:"por_fuente"`
+			} `json:"dias"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &weekly); err != nil {
+		t.Fatalf("json weekly: %v", err)
+	}
+	if weekly.Data.SemanaInicio != "2099-01-05" || weekly.Data.SemanaFin != "2099-01-11" {
+		t.Errorf("semana = %s..%s", weekly.Data.SemanaInicio, weekly.Data.SemanaFin)
+	}
+	if len(weekly.Data.Dias) != 7 {
+		t.Fatalf("días = %d, se esperaban 7", len(weekly.Data.Dias))
+	}
+	dias := map[string]struct {
+		Total     int64
+		PorFuente []fuenteJSON
+	}{}
+	for _, d := range weekly.Data.Dias {
+		dias[d.Fecha] = struct {
+			Total     int64
+			PorFuente []fuenteJSON
+		}{d.TotalCentavos, d.PorFuente}
+	}
+	if d := dias["2099-01-05"]; d.Total != 200 || len(d.PorFuente) != 1 ||
+		d.PorFuente[0].FuenteID != fuenteID || d.PorFuente[0].Alias != "Histórica" ||
+		d.PorFuente[0].Color != "#123456" {
+		t.Errorf("weekly 2099-01-05 inesperado: %+v", d)
+	}
+	if d := dias["2099-01-06"]; d.Total != 100 || len(d.PorFuente) != 1 {
+		t.Errorf("weekly 2099-01-06 inesperado: %+v", d)
+	}
+
+	// ---- monthly ----
+	rec = doReq(t, r, http.MethodGet, "/api/v1/dashboard/monthly?mes=1&anio=2099", "", "")
+	if rec.Code != 200 {
+		t.Fatalf("GET monthly -> %d: %s", rec.Code, rec.Body.String())
+	}
+	var monthly struct {
+		Data struct {
+			Mes     int `json:"mes"`
+			Anio    int `json:"anio"`
+			Bloques []struct {
+				Bloque        int    `json:"bloque"`
+				Inicio        string `json:"inicio"`
+				Fin           string `json:"fin"`
+				TotalCentavos int64  `json:"total_centavos"`
+			} `json:"bloques"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &monthly); err != nil {
+		t.Fatalf("json monthly: %v", err)
+	}
+	if monthly.Data.Mes != 1 || monthly.Data.Anio != 2099 || len(monthly.Data.Bloques) != 5 {
+		t.Fatalf("monthly inesperado: %+v", monthly.Data)
+	}
+	if b := monthly.Data.Bloques[0]; b.Bloque != 1 || b.Inicio != "2099-01-01" ||
+		b.Fin != "2099-01-07" || b.TotalCentavos != 300 {
+		t.Errorf("bloque 1 inesperado: %+v", b)
+	}
+
+	// ---- yearly ----
+	rec = doReq(t, r, http.MethodGet, "/api/v1/dashboard/yearly?anio=2099", "", "")
+	if rec.Code != 200 {
+		t.Fatalf("GET yearly -> %d: %s", rec.Code, rec.Body.String())
+	}
+	var yearly struct {
+		Data struct {
+			Anio  int `json:"anio"`
+			Meses []struct {
+				Mes           int   `json:"mes"`
+				TotalCentavos int64 `json:"total_centavos"`
+			} `json:"meses"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &yearly); err != nil {
+		t.Fatalf("json yearly: %v", err)
+	}
+	if yearly.Data.Anio != 2099 || len(yearly.Data.Meses) != 12 {
+		t.Fatalf("yearly inesperado: %+v", yearly.Data)
+	}
+	for _, m := range yearly.Data.Meses {
+		esperado := int64(0)
+		if m.Mes == 1 {
+			esperado = 300
+		}
+		if m.TotalCentavos != esperado {
+			t.Errorf("mes %d = %d, se esperaba %d", m.Mes, m.TotalCentavos, esperado)
+		}
+	}
+
+	// ---- history (sin tendencia) ----
+	rec = doReq(t, r, http.MethodGet, "/api/v1/dashboard/history", "", "")
+	if rec.Code != 200 {
+		t.Fatalf("GET history -> %d: %s", rec.Code, rec.Body.String())
+	}
+	if strings.Contains(string(rec.Body.Bytes()), "tendencia") {
+		t.Error("history no debe incluir tendencia")
+	}
+	var history struct {
+		Data struct {
+			PorMes []struct {
+				Anio          int   `json:"anio"`
+				Mes           int   `json:"mes"`
+				TotalCentavos int64 `json:"total_centavos"`
+			} `json:"por_mes"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &history); err != nil {
+		t.Fatalf("json history: %v", err)
+	}
+	var encontrado bool
+	for _, p := range history.Data.PorMes {
+		if p.Anio == 2099 && p.Mes == 1 && p.TotalCentavos == 300 {
+			encontrado = true
+		}
+	}
+	if !encontrado {
+		t.Errorf("history no incluye 2099-01 con 300: %+v", history.Data.PorMes)
+	}
+
+	// ---- distribution monthly / yearly (fuente soft-deleted incluida) ----
+	for _, path := range []string{
+		"/api/v1/dashboard/distribution/monthly?mes=1&anio=2099",
+		"/api/v1/dashboard/distribution/yearly?anio=2099",
+	} {
+		rec = doReq(t, r, http.MethodGet, path, "", "")
+		if rec.Code != 200 {
+			t.Fatalf("GET %s -> %d: %s", path, rec.Code, rec.Body.String())
+		}
+		var dist struct {
+			Data struct {
+				TotalCentavos int64        `json:"total_centavos"`
+				PorFuente     []fuenteJSON `json:"por_fuente"`
+			} `json:"data"`
+		}
+		if err := json.Unmarshal(rec.Body.Bytes(), &dist); err != nil {
+			t.Fatalf("json %s: %v", path, err)
+		}
+		if dist.Data.TotalCentavos != 300 || len(dist.Data.PorFuente) != 1 {
+			t.Errorf("%s inesperado: %+v", path, dist.Data)
+			continue
+		}
+		f := dist.Data.PorFuente[0]
+		if f.FuenteID != fuenteID || f.Alias != "Histórica" || f.Color != "#123456" ||
+			f.TotalCentavos != 300 {
+			t.Errorf("%s no incluye la fuente soft-deleted: %+v", path, f)
+		}
+	}
+
+	// ---- distribución vacía: por_fuente = [] ----
+	rec = doReq(t, r, http.MethodGet, "/api/v1/dashboard/distribution/monthly?mes=2&anio=2099", "", "")
+	if rec.Code != 200 {
+		t.Fatalf("GET distribución vacía -> %d: %s", rec.Code, rec.Body.String())
+	}
+	if !strings.Contains(string(rec.Body.Bytes()), `"por_fuente":[]`) {
+		t.Errorf("distribución vacía debe serializar por_fuente=[]: %s", rec.Body.String())
+	}
+}
+
+func testConfigYPostgres(t *testing.T) (*config.Config, *pgxpool.Pool) {
+	t.Helper()
+	_ = godotenv.Load("../../.env")
+	if os.Getenv("DB_PASSWORD") == "" {
+		t.Skip("DB_PASSWORD no disponible en el entorno")
+	}
+	cfg, err := config.Load()
+	if err != nil {
+		t.Fatalf("config: %v", err)
+	}
+	cfg.DBName = "abys_test"
+	cfg.CORSOrigins = []string{"http://localhost:5173"}
+	pool, err := database.Connect(context.Background(), cfg)
+	if err != nil {
+		t.Fatalf("conexión a abys_test: %v", err)
+	}
+	t.Cleanup(pool.Close)
+	return cfg, pool
 }
 
 func doReq(t *testing.T, r http.Handler, method, path, body, origin string) *httptest.ResponseRecorder {

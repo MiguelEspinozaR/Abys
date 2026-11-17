@@ -8,191 +8,293 @@ import (
 	"abys/internal/repository"
 )
 
-// DashboardService da forma a las 4 vistas del dashboard.
-type DashboardService struct {
-	repo *repository.DashboardRepo
+const fechaLayout = "2006-01-02"
+
+// dashboardReader define las agregaciones que consume el servicio. Permite
+// testear el formateo de períodos sin base de datos.
+type dashboardReader interface {
+	Resumen(ctx context.Context, desde, hasta string) (repository.ResumenTotales, error)
+	SemanaPorFuente(ctx context.Context, inicio, fin string) ([]repository.DiaFuenteTotal, error)
+	BloquesMes(ctx context.Context, inicio, fin string) ([]repository.BloqueTotal, error)
+	AnioTotales(ctx context.Context, inicio, fin string) ([]repository.MesTotal, error)
+	HistorialMeses(ctx context.Context) ([]repository.PuntoHistorial, error)
+	Distribucion(ctx context.Context, inicio, fin string) ([]repository.FuenteTotal, error)
 }
 
-func NewDashboardService(repo *repository.DashboardRepo) *DashboardService {
+// DashboardService da forma a las vistas del dashboard (montos en centavos,
+// agrupados por dias_trabajados.fecha).
+type DashboardService struct {
+	repo dashboardReader
+}
+
+func NewDashboardService(repo dashboardReader) *DashboardService {
 	return &DashboardService{repo: repo}
 }
 
-// SummaryResultado agrega la vista summary de un mes.
+// SummaryResultado son los totales de 30 días y el histórico completo.
 type SummaryResultado struct {
-	Mes            int   `json:"mes"`
-	Anio           int   `json:"anio"`
-	TotalCentavos  int64 `json:"total_centavos"`
-	CantidadPagos  int64 `json:"cantidad_pagos"`
-	DiasTrabajados int64 `json:"dias_trabajados"`
+	Total30dCentavos       int64 `json:"total_30d_centavos"`
+	TotalHistoricoCentavos int64 `json:"total_historico_centavos"`
 }
 
-func (s *DashboardService) Summary(ctx context.Context, mes, anio int) (*SummaryResultado, error) {
-	sum, err := s.repo.Summary(ctx, mes, anio)
+// Summary calcula Σ días de los últimos 30 días calendario (La Paz) y el total
+// histórico.
+func (s *DashboardService) Summary(ctx context.Context) (*SummaryResultado, error) {
+	desde, hasta := rangoUltimos30(time.Now())
+	totales, err := s.repo.Resumen(ctx, desde, hasta)
 	if err != nil {
 		return nil, err
 	}
 	return &SummaryResultado{
-		Mes: mes, Anio: anio,
-		TotalCentavos: sum.TotalCentavos, CantidadPagos: sum.CantidadPagos,
-		DiasTrabajados: sum.DiasTrabajados,
+		Total30dCentavos:       totales.Total30dCentavos,
+		TotalHistoricoCentavos: totales.TotalHistoricoCentavos,
 	}, nil
 }
 
-// WeeklyResultado agrega la vista semanal (7 días, lunes a domingo).
-type WeeklyResultado struct {
-	SemanaInicio string                 `json:"semana_inicio"`
-	SemanaFin    string                 `json:"semana_fin"`
-	Dias         []repository.DiaIngreso `json:"dias"`
+// DiaConFuentes es el total de un día con su desglose por fuente.
+type DiaConFuentes struct {
+	Fecha         string                   `json:"fecha"`
+	TotalCentavos int64                    `json:"total_centavos"`
+	PorFuente     []repository.FuenteTotal `json:"por_fuente"`
 }
 
-func (s *DashboardService) Weekly(ctx context.Context, fecha string) (*WeeklyResultado, error) {
-	d, err := time.Parse("2006-01-02", fecha)
-	if err != nil {
-		return nil, apperr.NewValidation("fecha inválida: " + fecha)
-	}
-	loc := LaPaz()
-	offset := (int(d.Weekday()) + 6) % 7 // días desde el lunes (Dom=0 → 6)
-	lunes := d.AddDate(0, 0, -offset)
-	lunes = time.Date(lunes.Year(), lunes.Month(), lunes.Day(), 0, 0, 0, 0, loc)
-	domingo := lunes.AddDate(0, 0, 6)
+// WeeklyResultado es la vista semanal (lunes a domingo, 7 días).
+type WeeklyResultado struct {
+	SemanaInicio string          `json:"semana_inicio"`
+	SemanaFin    string          `json:"semana_fin"`
+	Dias         []DiaConFuentes `json:"dias"`
+}
 
-	dias, err := s.repo.Semana(ctx, lunes.Format("2006-01-02"), domingo.Format("2006-01-02"))
+// Weekly devuelve la semana ISO que contiene fecha, con 7 días rellenados.
+func (s *DashboardService) Weekly(ctx context.Context, fecha string) (*WeeklyResultado, error) {
+	lunes, domingo, err := rangoSemana(fecha)
 	if err != nil {
 		return nil, err
 	}
-	// Rellenar los 7 días con ceros.
-	porFecha := map[string]repository.DiaIngreso{}
-	for _, x := range dias {
-		porFecha[x.Fecha] = x
+	filas, err := s.repo.SemanaPorFuente(ctx, lunes.Format(fechaLayout), domingo.Format(fechaLayout))
+	if err != nil {
+		return nil, err
 	}
-	completos := make([]repository.DiaIngreso, 0, 7)
+	porFecha := map[string][]repository.FuenteTotal{}
+	for _, f := range filas {
+		porFecha[f.Fecha] = append(porFecha[f.Fecha], repository.FuenteTotal{
+			FuenteID: f.FuenteID, Alias: f.Alias, Color: f.Color, TotalCentavos: f.TotalCentavos,
+		})
+	}
+	dias := make([]DiaConFuentes, 0, 7)
 	for i := 0; i < 7; i++ {
-		f := lunes.AddDate(0, 0, i).Format("2006-01-02")
-		if x, ok := porFecha[f]; ok {
-			completos = append(completos, x)
-		} else {
-			completos = append(completos, repository.DiaIngreso{Fecha: f})
+		f := lunes.AddDate(0, 0, i).Format(fechaLayout)
+		fuentes := porFecha[f]
+		if fuentes == nil {
+			fuentes = []repository.FuenteTotal{}
 		}
+		var total int64
+		for _, ff := range fuentes {
+			total += ff.TotalCentavos
+		}
+		dias = append(dias, DiaConFuentes{Fecha: f, TotalCentavos: total, PorFuente: fuentes})
 	}
 	return &WeeklyResultado{
-		SemanaInicio: lunes.Format("2006-01-02"),
-		SemanaFin:    domingo.Format("2006-01-02"),
-		Dias:         completos,
+		SemanaInicio: lunes.Format(fechaLayout),
+		SemanaFin:    domingo.Format(fechaLayout),
+		Dias:         dias,
 	}, nil
 }
 
-// MonthlyResultado agrega la vista mensual por semanas.
-type MonthlyResultado struct {
-	Mes     int                           `json:"mes"`
-	Anio    int                           `json:"anio"`
-	Semanas []repository.SemanaIngreso    `json:"semanas"`
+// BloqueResultado es un bloque de días del mes (1–7, 8–14, ...).
+type BloqueResultado struct {
+	Bloque        int    `json:"bloque"`
+	Inicio        string `json:"inicio"`
+	Fin           string `json:"fin"`
+	TotalCentavos int64  `json:"total_centavos"`
 }
 
+// MonthlyResultado es la vista mensual por bloques del mes.
+type MonthlyResultado struct {
+	Mes     int               `json:"mes"`
+	Anio    int               `json:"anio"`
+	Bloques []BloqueResultado `json:"bloques"`
+}
+
+// Monthly devuelve los bloques 1–7, 8–14, 15–21, 22–28 y 29–fin del mes.
 func (s *DashboardService) Monthly(ctx context.Context, mes, anio int) (*MonthlyResultado, error) {
+	loc := LaPaz()
+	inicioMes := time.Date(anio, time.Month(mes), 1, 0, 0, 0, 0, loc)
+	finMes := inicioMes.AddDate(0, 1, -1)
+
+	filas, err := s.repo.BloquesMes(ctx, inicioMes.Format(fechaLayout), finMes.Format(fechaLayout))
+	if err != nil {
+		return nil, err
+	}
+	porBloque := map[int]int64{}
+	for _, b := range filas {
+		porBloque[b.Bloque] = b.TotalCentavos
+	}
+	rangos := bloquesDelMes(anio, mes)
+	bloques := make([]BloqueResultado, 0, len(rangos))
+	for _, r := range rangos {
+		bloques = append(bloques, BloqueResultado{
+			Bloque:        r.Bloque,
+			Inicio:        r.Inicio.Format(fechaLayout),
+			Fin:           r.Fin.Format(fechaLayout),
+			TotalCentavos: porBloque[r.Bloque],
+		})
+	}
+	return &MonthlyResultado{Mes: mes, Anio: anio, Bloques: bloques}, nil
+}
+
+// MesResultado es el total de un mes del año.
+type MesResultado struct {
+	Mes           int   `json:"mes"`
+	TotalCentavos int64 `json:"total_centavos"`
+}
+
+// YearlyResultado es la vista anual por mes (12 meses).
+type YearlyResultado struct {
+	Anio  int            `json:"anio"`
+	Meses []MesResultado `json:"meses"`
+}
+
+// Yearly devuelve los 12 meses del año, con 0 en los vacíos.
+func (s *DashboardService) Yearly(ctx context.Context, anio int) (*YearlyResultado, error) {
+	loc := LaPaz()
+	inicio := time.Date(anio, time.January, 1, 0, 0, 0, 0, loc)
+	fin := time.Date(anio, time.December, 31, 0, 0, 0, 0, loc)
+
+	filas, err := s.repo.AnioTotales(ctx, inicio.Format(fechaLayout), fin.Format(fechaLayout))
+	if err != nil {
+		return nil, err
+	}
+	porMes := map[int]int64{}
+	for _, m := range filas {
+		porMes[m.Mes] = m.TotalCentavos
+	}
+	meses := make([]MesResultado, 0, 12)
+	for i := 1; i <= 12; i++ {
+		meses = append(meses, MesResultado{Mes: i, TotalCentavos: porMes[i]})
+	}
+	return &YearlyResultado{Anio: anio, Meses: meses}, nil
+}
+
+// HistoryResultado es el histórico mensual completo.
+type HistoryResultado struct {
+	PorMes []repository.PuntoHistorial `json:"por_mes"`
+}
+
+// History devuelve los totales mensuales de todo el histórico.
+func (s *DashboardService) History(ctx context.Context) (*HistoryResultado, error) {
+	puntos, err := s.repo.HistorialMeses(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if puntos == nil {
+		puntos = []repository.PuntoHistorial{}
+	}
+	return &HistoryResultado{PorMes: puntos}, nil
+}
+
+// DistributionMonthlyResultado es la distribución del mes por fuente.
+type DistributionMonthlyResultado struct {
+	Mes           int                      `json:"mes"`
+	Anio          int                      `json:"anio"`
+	TotalCentavos int64                    `json:"total_centavos"`
+	PorFuente     []repository.FuenteTotal `json:"por_fuente"`
+}
+
+// DistributionMonthly devuelve la distribución por fuente del mes.
+func (s *DashboardService) DistributionMonthly(ctx context.Context, mes, anio int) (*DistributionMonthlyResultado, error) {
 	loc := LaPaz()
 	inicio := time.Date(anio, time.Month(mes), 1, 0, 0, 0, 0, loc)
 	fin := inicio.AddDate(0, 1, -1)
-
-	semanas, err := s.repo.MesPorSemana(ctx, inicio.Format("2006-01-02"), fin.Format("2006-01-02"))
+	fuentes, err := s.repo.Distribucion(ctx, inicio.Format(fechaLayout), fin.Format(fechaLayout))
 	if err != nil {
 		return nil, err
 	}
-	// Completar el rango esperado de semanas con inicios/fines.
-	diasDelMes := fin.Day()
-	numSemanas := (diasDelMes-1)/7 + 1
-	porNum := map[int]repository.SemanaIngreso{}
-	for _, w := range semanas {
-		porNum[w.Semana] = w
-	}
-	out := make([]repository.SemanaIngreso, 0, numSemanas)
-	for i := 1; i <= numSemanas; i++ {
-		if w, ok := porNum[i]; ok {
-			w.Inicio = inicio.AddDate(0, 0, (i-1)*7).Format("2006-01-02")
-			finSem := inicio.AddDate(0, 0, i*7-1)
-			if finSem.After(fin) {
-				finSem = fin
-			}
-			w.Fin = finSem.Format("2006-01-02")
-			out = append(out, w)
-		} else {
-			finSem := inicio.AddDate(0, 0, i*7-1)
-			if finSem.After(fin) {
-				finSem = fin
-			}
-			out = append(out, repository.SemanaIngreso{
-				Semana: i,
-				Inicio: inicio.AddDate(0, 0, (i-1)*7).Format("2006-01-02"),
-				Fin:    finSem.Format("2006-01-02"),
-			})
-		}
-	}
-	return &MonthlyResultado{Mes: mes, Anio: anio, Semanas: out}, nil
+	return &DistributionMonthlyResultado{
+		Mes: mes, Anio: anio, TotalCentavos: sumarFuentes(fuentes), PorFuente: fuentesNoNulas(fuentes),
+	}, nil
 }
 
-// YearlyResultado agrega la vista anual por mes.
-type YearlyResultado struct {
-	Anio int                    `json:"anio"`
-	Meses []repository.MesIngreso `json:"meses"`
+// DistributionYearlyResultado es la distribución del año por fuente.
+type DistributionYearlyResultado struct {
+	Anio          int                      `json:"anio"`
+	TotalCentavos int64                    `json:"total_centavos"`
+	PorFuente     []repository.FuenteTotal `json:"por_fuente"`
 }
 
-func (s *DashboardService) Yearly(ctx context.Context, anio int) (*YearlyResultado, error) {
-	meses, err := s.repo.Anio(ctx, anio)
+// DistributionYearly devuelve la distribución por fuente del año.
+func (s *DashboardService) DistributionYearly(ctx context.Context, anio int) (*DistributionYearlyResultado, error) {
+	loc := LaPaz()
+	inicio := time.Date(anio, time.January, 1, 0, 0, 0, 0, loc)
+	fin := time.Date(anio, time.December, 31, 0, 0, 0, 0, loc)
+	fuentes, err := s.repo.Distribucion(ctx, inicio.Format(fechaLayout), fin.Format(fechaLayout))
 	if err != nil {
 		return nil, err
 	}
-	porMes := map[int]repository.MesIngreso{}
-	for _, m := range meses {
-		porMes[m.Mes] = m
-	}
-	out := make([]repository.MesIngreso, 0, 12)
-	for i := 1; i <= 12; i++ {
-		if m, ok := porMes[i]; ok {
-			out = append(out, m)
-		} else {
-			out = append(out, repository.MesIngreso{Mes: i})
-		}
-	}
-	return &YearlyResultado{Anio: anio, Meses: out}, nil
+	return &DistributionYearlyResultado{
+		Anio: anio, TotalCentavos: sumarFuentes(fuentes), PorFuente: fuentesNoNulas(fuentes),
+	}, nil
 }
 
-// HistoryResultado agrega la tendencia histórica con regresión lineal simple.
-type HistoryResultado struct {
-	PorMes  []repository.PuntoHistorial `json:"por_mes"`
-	Tendencia TendenciaResultado        `json:"tendencia"`
+// rangoSemana devuelve lunes y domingo (ISO) de la semana que contiene fecha.
+func rangoSemana(fecha string) (time.Time, time.Time, error) {
+	loc := LaPaz()
+	d, err := time.ParseInLocation(fechaLayout, fecha, loc)
+	if err != nil || d.Format(fechaLayout) != fecha {
+		return time.Time{}, time.Time{}, apperr.NewValidation("fecha inválida: " + fecha)
+	}
+	offset := (int(d.Weekday()) + 6) % 7 // Dom=0 → 6
+	lunes := time.Date(d.Year(), d.Month(), d.Day(), 0, 0, 0, 0, loc).AddDate(0, 0, -offset)
+	return lunes, lunes.AddDate(0, 0, 6), nil
 }
 
-type TendenciaResultado struct {
-	Pendiente      float64 `json:"pendiente"`
-	Interseccion   float64 `json:"interseccion"`
-	ProxMesEst     float64 `json:"prox_mes_est"`
-	Creciendo      bool    `json:"creciendo"`
+// rangoUltimos30 devuelve el rango [hoy-29d, hoy] en America/La_Paz.
+func rangoUltimos30(hoy time.Time) (string, string) {
+	loc := LaPaz()
+	h := hoy.In(loc)
+	hoyFecha := time.Date(h.Year(), h.Month(), h.Day(), 0, 0, 0, 0, loc)
+	return hoyFecha.AddDate(0, 0, -29).Format(fechaLayout), hoyFecha.Format(fechaLayout)
 }
 
-func (s *DashboardService) History(ctx context.Context) (*HistoryResultado, error) {
-	puntos, err := s.repo.Historial(ctx)
-	if err != nil {
-		return nil, err
+type rangoBloque struct {
+	Bloque int
+	Inicio time.Time
+	Fin    time.Time
+}
+
+// bloquesDelMes calcula los bloques del mes: 1–7, 8–14, 15–21, 22–28 y
+// 29–fin (este último solo si el mes tiene día 29 o más).
+func bloquesDelMes(anio, mes int) []rangoBloque {
+	loc := LaPaz()
+	inicioMes := time.Date(anio, time.Month(mes), 1, 0, 0, 0, 0, loc)
+	finMes := inicioMes.AddDate(0, 1, -1)
+	out := make([]rangoBloque, 0, 5)
+	for i := 0; i < 4; i++ {
+		inicio := inicioMes.AddDate(0, 0, i*7)
+		out = append(out, rangoBloque{
+			Bloque: i + 1,
+			Inicio: inicio,
+			Fin:    inicio.AddDate(0, 0, 6),
+		})
 	}
-	tend := TendenciaResultado{}
-	n := len(puntos)
-	if n >= 2 {
-		// regresión: x = índice secuencial (0..n-1), y = total_centavos
-		var sumX, sumY, sumXY, sumXX float64
-		for i, p := range puntos {
-			x := float64(i)
-			y := float64(p.TotalCentavos)
-			sumX += x
-			sumY += y
-			sumXY += x * y
-			sumXX += x * x
-		}
-		den := float64(n)*sumXX - sumX*sumX
-		if den != 0 {
-			tend.Pendiente = (float64(n)*sumXY - sumX*sumY) / den
-			tend.Interseccion = (sumY - tend.Pendiente*sumX) / float64(n)
-		}
-		tend.ProxMesEst = tend.Pendiente*float64(n) + tend.Interseccion
-		tend.Creciendo = tend.Pendiente > 0
+	if finMes.Day() >= 29 {
+		inicio := time.Date(anio, time.Month(mes), 29, 0, 0, 0, 0, loc)
+		out = append(out, rangoBloque{Bloque: 5, Inicio: inicio, Fin: finMes})
 	}
-	return &HistoryResultado{PorMes: puntos, Tendencia: tend}, nil
+	return out
+}
+
+func sumarFuentes(fuentes []repository.FuenteTotal) int64 {
+	var total int64
+	for _, f := range fuentes {
+		total += f.TotalCentavos
+	}
+	return total
+}
+
+func fuentesNoNulas(fuentes []repository.FuenteTotal) []repository.FuenteTotal {
+	if fuentes == nil {
+		return []repository.FuenteTotal{}
+	}
+	return fuentes
 }

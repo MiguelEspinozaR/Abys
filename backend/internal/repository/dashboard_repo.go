@@ -6,67 +6,63 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// DashboardRepo agrega métricas para las 4 vistas del dashboard.
+// DashboardRepo agrega métricas del dashboard a partir de días trabajados.
+//
+// Todas las consultas agrupan por dias_trabajados.fecha, unen pagos activos
+// (p.deleted_at IS NULL) y fuentes incluyendo soft-deleted (sin filtro en
+// f.deleted_at) para preservar alias/color históricos (R11.3/D15).
 type DashboardRepo struct {
 	pool *pgxpool.Pool
 }
 
 func NewDashboardRepo(pool *pgxpool.Pool) *DashboardRepo { return &DashboardRepo{pool: pool} }
 
-// Summary es el resumen de un mes (F-001, BR-084: solo pagos activos).
-type Summary struct {
-	TotalCentavos    int64 `json:"total_centavos"`
-	CantidadPagos    int64 `json:"cantidad_pagos"`
-	DiasTrabajados   int64 `json:"dias_trabajados"`
+const dashboardJoin = `
+	FROM dias_trabajados d
+	JOIN pagos p ON p.id = d.pago_id AND p.deleted_at IS NULL
+	JOIN fuentes f ON f.id = p.fuente_id`
+
+// ResumenTotales contiene los totales de 30 días y el histórico completo.
+type ResumenTotales struct {
+	Total30dCentavos       int64
+	TotalHistoricoCentavos int64
 }
 
-func (r *DashboardRepo) Summary(ctx context.Context, mes, anio int) (*Summary, error) {
-	var s Summary
-	// Total y cantidad de pagos del mes (fecha_pago en el mes).
-	if err := r.pool.QueryRow(ctx, `
-		SELECT COALESCE(SUM(monto_enteros),0), count(*)
-		FROM pagos
-		WHERE deleted_at IS NULL
-		  AND EXTRACT(YEAR FROM fecha_pago) = $1
-		  AND EXTRACT(MONTH FROM fecha_pago) = $2`,
-		anio, mes).Scan(&s.TotalCentavos, &s.CantidadPagos); err != nil {
-		return nil, err
-	}
-	// Días trabajados del mes (fecha del día en el mes, pago activo).
-	if err := r.pool.QueryRow(ctx, `
-		SELECT count(DISTINCT d.fecha)
-		FROM dias_trabajados d
-		JOIN pagos p ON p.id = d.pago_id AND p.deleted_at IS NULL
-		WHERE EXTRACT(YEAR FROM d.fecha) = $1
-		  AND EXTRACT(MONTH FROM d.fecha) = $2`,
-		anio, mes).Scan(&s.DiasTrabajados); err != nil {
-		return nil, err
-	}
-	return &s, nil
+// Resumen suma los días en [desde, hasta] y el histórico completo.
+func (r *DashboardRepo) Resumen(ctx context.Context, desde, hasta string) (ResumenTotales, error) {
+	var out ResumenTotales
+	err := r.pool.QueryRow(ctx, `
+		SELECT
+			COALESCE(SUM(CASE WHEN d.fecha BETWEEN $1 AND $2 THEN d.monto_enteros ELSE 0 END), 0),
+			COALESCE(SUM(d.monto_enteros), 0)`+dashboardJoin,
+		desde, hasta).Scan(&out.Total30dCentavos, &out.TotalHistoricoCentavos)
+	return out, err
 }
 
-// DiaIngreso es el total por fecha para la vista semanal/diaria.
-type DiaIngreso struct {
-	Fecha         string `json:"fecha"`
-	TotalCentavos int64  `json:"total_centavos"`
-	CantidadPagos int64  `json:"cantidad_pagos"`
+// DiaFuenteTotal es el total de un día desglosado por fuente.
+type DiaFuenteTotal struct {
+	Fecha         string
+	FuenteID      int64
+	Alias         string
+	Color         string
+	TotalCentavos int64
 }
 
-// Semana devuelve los ingresos de la semana que contiene fecha (lunes a domingo).
-func (r *DashboardRepo) Semana(ctx context.Context, lunes, domingo string) ([]DiaIngreso, error) {
+// SemanaPorFuente devuelve los totales por fecha y fuente en [inicio, fin].
+func (r *DashboardRepo) SemanaPorFuente(ctx context.Context, inicio, fin string) ([]DiaFuenteTotal, error) {
 	rows, err := r.pool.Query(ctx, `
-		SELECT fecha_pago::text, SUM(monto_enteros), count(*)
-		FROM pagos
-		WHERE deleted_at IS NULL AND fecha_pago BETWEEN $1 AND $2
-		GROUP BY fecha_pago ORDER BY fecha_pago`, lunes, domingo)
+		SELECT d.fecha::text, f.id, f.alias, f.color, SUM(d.monto_enteros)`+dashboardJoin+`
+		WHERE d.fecha BETWEEN $1 AND $2
+		GROUP BY d.fecha, f.id, f.alias, f.color
+		ORDER BY d.fecha, SUM(d.monto_enteros) DESC, f.id`, inicio, fin)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	out := []DiaIngreso{}
+	out := []DiaFuenteTotal{}
 	for rows.Next() {
-		var d DiaIngreso
-		if err := rows.Scan(&d.Fecha, &d.TotalCentavos, &d.CantidadPagos); err != nil {
+		var d DiaFuenteTotal
+		if err := rows.Scan(&d.Fecha, &d.FuenteID, &d.Alias, &d.Color, &d.TotalCentavos); err != nil {
 			return nil, err
 		}
 		out = append(out, d)
@@ -74,73 +70,54 @@ func (r *DashboardRepo) Semana(ctx context.Context, lunes, domingo string) ([]Di
 	return out, rows.Err()
 }
 
-// MesPorSemana agrupa el mes en semanas de 7 días desde el día 1.
-type SemanaIngreso struct {
-	Semana        int    `json:"semana"`
-	Inicio        string `json:"inicio"`
-	Fin           string `json:"fin"`
-	TotalCentavos int64  `json:"total_centavos"`
-	CantidadPagos int64  `json:"cantidad_pagos"`
+// BloqueTotal es el total de un bloque de días del mes (1–7, 8–14, ...).
+type BloqueTotal struct {
+	Bloque        int
+	TotalCentavos int64
 }
 
-func (r *DashboardRepo) MesPorSemana(ctx context.Context, inicioMes, finMes string) ([]SemanaIngreso, error) {
+// BloquesMes agrupa los días de [inicio, fin] en bloques de 7 días.
+func (r *DashboardRepo) BloquesMes(ctx context.Context, inicio, fin string) ([]BloqueTotal, error) {
 	rows, err := r.pool.Query(ctx, `
-		SELECT to_char(fecha_pago, 'YYYY-MM-DD'),
-		       (EXTRACT(DAY FROM fecha_pago)::int - 1) / 7 + 1,
-		       SUM(monto_enteros), count(*)
-		FROM pagos
-		WHERE deleted_at IS NULL AND fecha_pago BETWEEN $1 AND $2
-		GROUP BY fecha_pago ORDER BY fecha_pago`, inicioMes, finMes)
+		SELECT ((EXTRACT(DAY FROM d.fecha)::int - 1) / 7 + 1) AS bloque,
+		       SUM(d.monto_enteros)`+dashboardJoin+`
+		WHERE d.fecha BETWEEN $1 AND $2
+		GROUP BY 1 ORDER BY 1`, inicio, fin)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	semanas := map[int]*SemanaIngreso{}
-	orden := []int{}
+	out := []BloqueTotal{}
 	for rows.Next() {
-		var fecha string
-		var semana int
-		var s SemanaIngreso
-		if err := rows.Scan(&fecha, &semana, &s.TotalCentavos, &s.CantidadPagos); err != nil {
+		var b BloqueTotal
+		if err := rows.Scan(&b.Bloque, &b.TotalCentavos); err != nil {
 			return nil, err
 		}
-		if _, ok := semanas[semana]; !ok {
-			semana := semana
-			semanas[semana] = &SemanaIngreso{Semana: semana}
-			orden = append(orden, semana)
-		}
-		// acumular
-		semanas[semana].TotalCentavos += s.TotalCentavos
-		semanas[semana].CantidadPagos += s.CantidadPagos
-	}
-	out := make([]SemanaIngreso, 0, len(orden))
-	for _, s := range orden {
-		out = append(out, *semanas[s])
+		out = append(out, b)
 	}
 	return out, rows.Err()
 }
 
-// MesIngreso es el total por mes del año.
-type MesIngreso struct {
-	Mes           int    `json:"mes"`
-	TotalCentavos int64  `json:"total_centavos"`
-	CantidadPagos int64  `json:"cantidad_pagos"`
+// MesTotal es el total de un mes del año.
+type MesTotal struct {
+	Mes           int
+	TotalCentavos int64
 }
 
-func (r *DashboardRepo) Anio(ctx context.Context, anio int) ([]MesIngreso, error) {
+// AnioTotales agrupa por mes los días de [inicio, fin] (rango de un año).
+func (r *DashboardRepo) AnioTotales(ctx context.Context, inicio, fin string) ([]MesTotal, error) {
 	rows, err := r.pool.Query(ctx, `
-		SELECT EXTRACT(MONTH FROM fecha_pago)::int, SUM(monto_enteros), count(*)
-		FROM pagos
-		WHERE deleted_at IS NULL AND EXTRACT(YEAR FROM fecha_pago) = $1
-		GROUP BY 1 ORDER BY 1`, anio)
+		SELECT EXTRACT(MONTH FROM d.fecha)::int, SUM(d.monto_enteros)`+dashboardJoin+`
+		WHERE d.fecha BETWEEN $1 AND $2
+		GROUP BY 1 ORDER BY 1`, inicio, fin)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	out := []MesIngreso{}
+	out := []MesTotal{}
 	for rows.Next() {
-		var m MesIngreso
-		if err := rows.Scan(&m.Mes, &m.TotalCentavos, &m.CantidadPagos); err != nil {
+		var m MesTotal
+		if err := rows.Scan(&m.Mes, &m.TotalCentavos); err != nil {
 			return nil, err
 		}
 		out = append(out, m)
@@ -148,20 +125,18 @@ func (r *DashboardRepo) Anio(ctx context.Context, anio int) ([]MesIngreso, error
 	return out, rows.Err()
 }
 
-// PuntoHistorial es un total mensual para la vista histórica.
+// PuntoHistorial es un total mensual para la vista histórica (sin tendencia).
 type PuntoHistorial struct {
-	Anio          int    `json:"anio"`
-	Mes           int    `json:"mes"`
-	TotalCentavos int64  `json:"total_centavos"`
-	CantidadPagos int64  `json:"cantidad_pagos"`
+	Anio          int   `json:"anio"`
+	Mes           int   `json:"mes"`
+	TotalCentavos int64 `json:"total_centavos"`
 }
 
-func (r *DashboardRepo) Historial(ctx context.Context) ([]PuntoHistorial, error) {
+// HistorialMeses devuelve los totales mensuales de todo el histórico.
+func (r *DashboardRepo) HistorialMeses(ctx context.Context) ([]PuntoHistorial, error) {
 	rows, err := r.pool.Query(ctx, `
-		SELECT EXTRACT(YEAR FROM fecha_pago)::int, EXTRACT(MONTH FROM fecha_pago)::int,
-		       SUM(monto_enteros), count(*)
-		FROM pagos
-		WHERE deleted_at IS NULL
+		SELECT EXTRACT(YEAR FROM d.fecha)::int, EXTRACT(MONTH FROM d.fecha)::int,
+		       SUM(d.monto_enteros)`+dashboardJoin+`
 		GROUP BY 1, 2 ORDER BY 1, 2`)
 	if err != nil {
 		return nil, err
@@ -170,10 +145,41 @@ func (r *DashboardRepo) Historial(ctx context.Context) ([]PuntoHistorial, error)
 	out := []PuntoHistorial{}
 	for rows.Next() {
 		var p PuntoHistorial
-		if err := rows.Scan(&p.Anio, &p.Mes, &p.TotalCentavos, &p.CantidadPagos); err != nil {
+		if err := rows.Scan(&p.Anio, &p.Mes, &p.TotalCentavos); err != nil {
 			return nil, err
 		}
 		out = append(out, p)
+	}
+	return out, rows.Err()
+}
+
+// FuenteTotal es el total de una fuente en un período.
+type FuenteTotal struct {
+	FuenteID      int64  `json:"fuente_id"`
+	Alias         string `json:"alias"`
+	Color         string `json:"color"`
+	TotalCentavos int64  `json:"total_centavos"`
+}
+
+// Distribucion agrupa los días de [inicio, fin] por fuente (incluye fuentes
+// soft-deleted). Orden: total desc, fuente_id.
+func (r *DashboardRepo) Distribucion(ctx context.Context, inicio, fin string) ([]FuenteTotal, error) {
+	rows, err := r.pool.Query(ctx, `
+		SELECT f.id, f.alias, f.color, SUM(d.monto_enteros)`+dashboardJoin+`
+		WHERE d.fecha BETWEEN $1 AND $2
+		GROUP BY f.id, f.alias, f.color
+		ORDER BY SUM(d.monto_enteros) DESC, f.id`, inicio, fin)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []FuenteTotal{}
+	for rows.Next() {
+		var f FuenteTotal
+		if err := rows.Scan(&f.FuenteID, &f.Alias, &f.Color, &f.TotalCentavos); err != nil {
+			return nil, err
+		}
+		out = append(out, f)
 	}
 	return out, rows.Err()
 }
