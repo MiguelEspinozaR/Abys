@@ -86,7 +86,7 @@ Todos los importes están en **centavos** y se agrupan por `dias_trabajados.fech
 |---|---|---|
 | GET | `/dashboard/summary` (sin parámetros) | `{ total_30d_centavos, total_historico_centavos }` — 30 días calendario en `America/La_Paz` (incluye hoy) y Σ histórica de días |
 | GET | `/dashboard/weekly?fecha=` | `{ semana_inicio, semana_fin, dias: [{ fecha, total_centavos, por_fuente: [{ fuente_id, alias, color, total_centavos }] }] }` — lunes–domingo, 7 días rellenados |
-| GET | `/dashboard/monthly?mes=&anio=` | `{ mes, anio, bloques: [{ bloque, inicio, fin, total_centavos }] }` — bloques 1–7, 8–14, 15–21, 22–28, 29–31 |
+| GET | `/dashboard/monthly?mes=&anio=` | `{ mes, anio, bloques: [{ bloque, inicio, fin, total_centavos }] }` — bloques 1–7, 8–14, 15–21, 22–28, 29–fin de mes (29–31 en meses de 31 días) |
 | GET | `/dashboard/yearly?anio=` | `{ anio, meses: [{ mes, total_centavos }] }` — 12 meses |
 | GET | `/dashboard/history` | `{ por_mes: [{ anio, mes, total_centavos }] }` — totales mensuales, **sin tendencia** |
 | GET | `/dashboard/distribution/monthly?mes=&anio=` | `{ mes, anio, total_centavos, por_fuente: [{ fuente_id, alias, color, total_centavos }] }` |

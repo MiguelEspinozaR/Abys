@@ -55,7 +55,7 @@ src/
 
 - Montos **siempre en centavos** hacia/desde la API; la UI muestra `Bs` con `formatBs()`.
 - React Query para server state; Zustand solo UI state (sidebar, tema).
-- Errores de la API (`{error:{code,message}}`) se muestran como toasts Sonner.
+- Errores de la API (`{error:{code,message}}`): en formularios se muestran inline vía `lib/api-errors.ts` (`ApiRequestError` con `code`/`status` mapeado a campo o resumen); `toast.error` de Sonner se reserva para acciones fuera de formularios.
 - Tema light/dark con tokens CSS de shadcn; clase `.dark` en `<html>`, persistido en localStorage.
 
 ## Branding
