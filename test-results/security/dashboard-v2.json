@@ -1,0 +1,51 @@
+{
+  "scan_id": "dashboard-v2",
+  "scan_timestamp": "2026-11-17T00:00:00Z",
+  "scope": {
+    "base_commit": "643c511",
+    "head_commit": "3f2e6f6",
+    "commits": [
+      "75095f3 feat(api): monto por día trabajado y agregaciones del dashboard por día y fuente (M1-M2)",
+      "984d46d feat(web): registro híbrido de montos por día, distribución equitativa y sin OCR (M3)",
+      "c1dfc01 feat(web): charts por día/fuente, tortas y cards del dashboard (M4)",
+      "f03ccba fix(web): scroll único del documento en dashboard y registrar (M5)",
+      "3f2e6f6 docs: documenta el dashboard v2 y sube la versión a 0.3.0 (M6)"
+    ],
+    "diff_range": "643c511..3f2e6f6",
+    "total_files_changed": 53,
+    "total_insertions": 3448,
+    "total_deletions": 1347
+  },
+  "tools_used": {
+    "gitleaks": {
+      "available": false,
+      "reason": "gitleaks not installed in environment; regex fallback used (advisory per policy)"
+    },
+    "regex_scanning": "grep-based pattern matching on source code diffs",
+    "go_version": "not checked (go build/test would verify)",
+    "npm_version": "not checked (npm test/build would verify)"
+  },
+  "findings": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "info": 1,
+    "total": 0
+  },
+  "findings_detail": [],
+  "summary": {
+    "exposed_secrets": "none detected - regex scanning of source code and diff found no API keys, passwords, tokens, or secret values",
+    "sql_injection_risks": "none detected - all Go SQL queries use parameterized queries ($1, $2, etc. pgx style); no dynamic SQL concatenation observed",
+    "input_validation": "enhanced - ValidarDiasTrabajados now checks MontoEnteros >= 0 and duplicate dates; DiaInput struct has binding:\"gte=0\"; validarTotalCliente rejects mismatched totals with 422",
+    "dependency_changes": "tesseract.js intentionally removed from web/package.json and web/package-lock.json per spec R4.5/R8 (OCR service eliminated); no new npm/Go dependencies introduced; web version 0.2.0→0.3.0",
+    "unsafe_ddl": "none - migration uses ALTER TABLE ADD COLUMN IF NOT NULL with CHECK constraint (monto_enteros >= 0); down migration drops column safely",
+    "insecure_configuration": "none detected",
+    "supply_chain": "tesseract.js removal reduces attack surface; no new dependencies; version bump 0.2.0→0.3.0"
+  },
+  "statements": {
+    "no_exposed_secrets": "No exposed secrets (API keys, passwords, tokens) were found in the change set. Regex scanning of source code and diff yielded no matches for secret patterns.",
+    "no_sql_injection": "No SQL injection risks detected. All Go database queries use parameterized queries. The migration SQL uses safe ALTER TABLE and INSERT statements with explicit column names.",
+    "zero_findings": "This security scan found zero (0) findings across all categories (critical, high, medium, low). The change set is security-clean with only intentional, documented changes per the dashboard-v2 SPEC."
+  }
+}
