@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react"
 import type { FormEvent } from "react"
 import { useBlocker, useNavigate } from "react-router-dom"
-import { Loader2, Save, ScanText, X } from "lucide-react"
+import { Loader2, Save } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,7 +24,6 @@ import { useCrearPago, useFuentes, usePagos, useSubirComprobante } from "@/servi
 import { ApiRequestError } from "@/services/api"
 import { ERRORES_API_REGISTRAR, resolverErrorApi } from "@/lib/api-errors"
 import { bsToCents, formatBs, formatearFechaEs, METODOS_PAGO, toISODate } from "@/lib/format"
-import { motionBehavior } from "@/lib/a11y"
 import {
   MAX_NOTAS,
   validarDiasTrabajados,
@@ -34,12 +33,20 @@ import {
   validarMonto,
   validarNotas,
 } from "@/lib/validators"
-import type { MetodoPago } from "@/services/types"
+import type { DiaTrabajadoInput, MetodoPago } from "@/services/types"
+import {
+  distribuir,
+  MODOS_DISTRIBUCION,
+  type ModoDistribucion,
+} from "@/lib/distribuir"
 import { CalendarioDias, type Herramienta } from "./CalendarioDias"
 import { ComprobanteDropzone } from "./ComprobanteDropzone"
 
 /** Campos con reglas de validación en /registrar (R2). */
 type Campo = "dias" | "fecha" | "fuente" | "metodo" | "monto" | "notas"
+
+/** Modo de carga de montos: por día o total a distribuir (R4.1/R4.2). */
+type ModoRegistro = "detallado" | "distribuido"
 
 /** id del control (o fieldset) de cada campo, para foco programático (R2.5). */
 const IDS_Campos: Record<Campo, string> = {
@@ -47,9 +54,14 @@ const IDS_Campos: Record<Campo, string> = {
   fecha: "registrar-dias",
   fuente: "fuente",
   metodo: "metodo",
-  monto: "monto",
+  monto: "registrar-montos",
   notas: "notas",
 }
+
+const MODOS_REGISTRO: { valor: ModoRegistro; label: string }[] = [
+  { valor: "detallado", label: "Detallado" },
+  { valor: "distribuido", label: "Distribuido" },
+]
 
 /** Marca visual de obligatorio (D12): `*` aria-hidden; la semántica va en aria-required. */
 const Obligatorio = () => (
@@ -78,22 +90,18 @@ export default function RegistrarPage() {
 
   const [herramienta, setHerramienta] = useState<Herramienta>("trabajo")
   const [diasTrabajados, setDiasTrabajados] = useState<Set<string>>(new Set())
+  const [modoRegistro, setModoRegistro] = useState<ModoRegistro>("detallado")
+  const [montosDia, setMontosDia] = useState<Record<string, string>>({})
+  const [totalDistribuidoStr, setTotalDistribuidoStr] = useState("")
+  const [modoRedondeo, setModoRedondeo] = useState<ModoDistribucion>("preciso")
   const [fechaPago, setFechaPago] = useState<string>(toISODate(new Date()))
   const [fuenteId, setFuenteId] = useState<string>("")
   const [metodo, setMetodo] = useState<MetodoPago>("efectivo")
-  const [montoStr, setMontoStr] = useState("")
   const [notas, setNotas] = useState("")
   const [comprobante, setComprobante] = useState<File | null>(null)
   const [comprobanteError, setComprobanteError] = useState<string | null>(null)
   const [pagoGuardado, setPagoGuardado] = useState(false)
-  const [ocrResumen, setOcrResumen] = useState<{
-    monto?: number
-    fecha?: string
-    descripcion?: string
-  } | null>(null)
 
-  const montoInputRef = useRef<HTMLInputElement>(null)
-  const calendarioRef = useRef<HTMLDivElement>(null)
   /** Pago ya creado: los reintentos de comprobante nunca vuelven a hacer POST /pagos (D16). */
   const pagoIdRef = useRef<number | null>(null)
 
@@ -106,7 +114,10 @@ export default function RegistrarPage() {
     fechaPago,
     fuenteId,
     metodo,
-    montoStr,
+    modoRegistro,
+    montosDia,
+    totalDistribuidoStr,
+    modoRedondeo,
     notas,
     comprobante: comprobante
       ? `${comprobante.name}:${comprobante.size}:${comprobante.lastModified}`
@@ -124,7 +135,47 @@ export default function RegistrarPage() {
 
   const enviandoRef = useRef(false)
 
-  const montoCents = bsToCents(montoStr)
+  const diasOrdenados = useMemo(() => [...diasTrabajados].sort(), [diasTrabajados])
+  const totalDistribuidoCents = bsToCents(totalDistribuidoStr)
+
+  const montosDistribuidos = useMemo(() => {
+    if (modoRegistro !== "distribuido") return []
+    if (diasOrdenados.length === 0 || totalDistribuidoCents == null) return []
+    return distribuir(totalDistribuidoCents, diasOrdenados.length, modoRedondeo)
+  }, [modoRegistro, diasOrdenados, totalDistribuidoCents, modoRedondeo])
+
+  const montosDetallados = useMemo(
+    () => diasOrdenados.map((fecha) => bsToCents(montosDia[fecha] ?? "")),
+    [diasOrdenados, montosDia],
+  )
+  const totalDetalladoCents = montosDetallados.reduce<number>(
+    (acc, cents) => acc + (cents ?? 0),
+    0,
+  )
+
+  /** Días con su monto: en distribuido se calcula con `lib/distribuir.ts`. */
+  const diasPayload = useMemo<DiaTrabajadoInput[]>(() => {
+    if (modoRegistro === "distribuido") {
+      if (montosDistribuidos.length !== diasOrdenados.length) return []
+      return diasOrdenados.map((fecha, i) => ({
+        fecha,
+        monto_enteros: montosDistribuidos[i],
+      }))
+    }
+    const out: DiaTrabajadoInput[] = []
+    for (let i = 0; i < diasOrdenados.length; i++) {
+      const cents = montosDetallados[i]
+      if (cents == null) return []
+      out.push({ fecha: diasOrdenados[i], monto_enteros: cents })
+    }
+    return out
+  }, [modoRegistro, diasOrdenados, montosDistribuidos, montosDetallados])
+
+  const totalCents = useMemo(
+    () => diasPayload.reduce((acc, d) => acc + d.monto_enteros, 0),
+    [diasPayload],
+  )
+
   const validacion = useFormErrors<Campo>()
 
   const idsFuentes = useMemo(
@@ -137,11 +188,40 @@ export default function RegistrarPage() {
     document.getElementById(IDS_Campos[campo])?.focus()
   }
 
+  /** Valida los montos: por día (detallado) o total (distribuido). */
+  const validarMontos = (): string | null => {
+    if (diasOrdenados.length === 0) return null
+    if (modoRegistro === "distribuido") {
+      return validarMonto(totalDistribuidoStr)
+    }
+    for (const fecha of diasOrdenados) {
+      if (bsToCents(montosDia[fecha] ?? "") == null) {
+        return "Ingresa el monto de cada día seleccionado, p. ej. 150,00"
+      }
+    }
+    if (totalDetalladoCents <= 0) return "El total del pago debe ser mayor a 0"
+    return null
+  }
+
+  const eliminarMonto = (fecha: string) => {
+    setMontosDia((prev) => {
+      if (!(fecha in prev)) return prev
+      const next = { ...prev }
+      delete next[fecha]
+      return next
+    })
+  }
+
   const marcarDia = (fecha: string) => {
     if (herramienta === "trabajo") {
       const next = new Set(diasTrabajados)
-      if (next.has(fecha)) next.delete(fecha)
-      else next.add(fecha)
+      if (next.has(fecha)) {
+        next.delete(fecha)
+        eliminarMonto(fecha)
+      } else {
+        next.add(fecha)
+        setMontosDia((prev) => ({ ...prev, [fecha]: prev[fecha] ?? "" }))
+      }
       setDiasTrabajados(next)
       validacion.validarChange("dias", () => validarDiasTrabajados(next))
     } else if (herramienta === "pago") {
@@ -151,6 +231,7 @@ export default function RegistrarPage() {
       const next = new Set(diasTrabajados)
       next.delete(fecha)
       setDiasTrabajados(next)
+      eliminarMonto(fecha)
       validacion.validarChange("dias", () => validarDiasTrabajados(next))
       if (fechaPago === fecha) {
         setFechaPago("")
@@ -189,7 +270,7 @@ export default function RegistrarPage() {
       },
       {
         campo: "monto",
-        validar: () => validarMonto(montoStr),
+        validar: validarMontos,
         enfocar: () => enfocarCampo("monto"),
       },
       {
@@ -203,7 +284,7 @@ export default function RegistrarPage() {
 
   // Defensa interna: la validez la explica el formulario, no un botón gris (D2).
   const puedeGuardar =
-    fuenteValida && fechaPago !== "" && montoCents != null && montoCents > 0 && diasTrabajados.size >= 1
+    fuenteValida && fechaPago !== "" && diasPayload.length >= 1 && totalCents > 0
 
   const mensajeErrorSubida = (e: unknown): string => {
     if (e instanceof ApiRequestError) {
@@ -242,7 +323,7 @@ export default function RegistrarPage() {
     // El pago ya se creó: solo se permite reintentar el comprobante (D16). Un submit
     // tardío nunca debe reenviar ni descartar los cambios bloqueados.
     if (pagoGuardado) return
-    if (!puedeGuardar || montoCents == null || !fuenteValida) return
+    if (!puedeGuardar || !fuenteValida) return
     if (validarNotas(notas) != null) {
       validacion.validarBlur("notas", () => validarNotas(notas))
       return
@@ -258,10 +339,9 @@ export default function RegistrarPage() {
         const res = await crearPago.mutateAsync({
           fuente_id: Number(fuenteId),
           fecha_pago: fechaPago,
-          monto_enteros: montoCents,
           metodo_pago: metodo,
           notas: notas.trim() ? notas.trim() : null,
-          dias_trabajados: [...diasTrabajados].sort(),
+          dias_trabajados: diasPayload,
         })
         pagoId = res.data.id
         pagoIdRef.current = pagoId
@@ -316,55 +396,6 @@ export default function RegistrarPage() {
     navigate("/ingresos")
   }
 
-  const aplicarOcr = (r: {
-    monto_enteros?: number
-    fecha?: string
-    referencia?: string
-    descripcion?: string
-  }) => {
-    // Con el pago ya creado los campos están bloqueados: el OCR de un comprobante
-    // nuevo solo sirve para reintentar la subida, no para editar el pago guardado.
-    if (pagoGuardado) return
-    if (r.monto_enteros != null) {
-      setMontoStr(
-        (r.monto_enteros / 100).toLocaleString("es-BO", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }),
-      )
-    }
-    if (r.fecha) setFechaPago(r.fecha)
-
-    const textoNotas = [r.referencia, r.descripcion].filter(Boolean).join(" — ")
-    let nuevasNotas = notas
-    if (textoNotas) {
-      nuevasNotas = notas.split("\n").includes(textoNotas)
-        ? notas
-        : notas
-          ? `${notas}\n${textoNotas}`
-          : textoNotas
-      setNotas(nuevasNotas)
-    }
-    // R2.8: valida programáticamente; el OCR puede dejar notas >500 sin pasar por maxLength.
-    validacion.validarBlur("notas", () => validarNotas(nuevasNotas))
-
-    setOcrResumen({
-      monto: r.monto_enteros,
-      fecha: r.fecha,
-      descripcion: [r.referencia, r.descripcion].filter(Boolean).join(" — ") || undefined,
-    })
-
-    // Lleva la vista al primer campo autocompletado (antes quedaba fuera de pantalla).
-    if (r.monto_enteros != null) {
-      setTimeout(() => montoInputRef.current?.focus(), 0)
-    } else if (r.fecha) {
-      setTimeout(
-        () => calendarioRef.current?.scrollIntoView({ behavior: motionBehavior(), block: "center" }),
-        0,
-      )
-    }
-  }
-
   const enviando = crearPago.isPending || subirComprobante.isPending
 
   return (
@@ -374,7 +405,7 @@ export default function RegistrarPage() {
           Registrar pago
         </h1>
         <p className="text-sm text-muted-foreground">
-          Marca los días trabajados en el calendario y completa el resto del formulario.
+          Marca los días trabajados en el calendario y elige cómo cargar los montos.
         </p>
       </header>
 
@@ -396,7 +427,7 @@ export default function RegistrarPage() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Calendario */}
-          <div ref={calendarioRef}>
+          <div>
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm font-medium">Calendario</CardTitle>
@@ -498,7 +529,7 @@ export default function RegistrarPage() {
                   </legend>
                   <div
                     className="grid grid-cols-3 gap-1 rounded-lg border bg-muted/40 p-1"
-                    role="radiogroup"
+                    role="group"
                     aria-label="Método de pago"
                   >
                     {METODOS_PAGO.map((m) => (
@@ -523,42 +554,200 @@ export default function RegistrarPage() {
                   <FieldError id="metodo-error" error={validacion.errores.metodo} />
                 </fieldset>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="monto">
-                    Monto (Bs) <Obligatorio />
-                  </Label>
-                  <Input
-                    id="monto"
-                    ref={montoInputRef}
-                    inputMode="decimal"
-                    placeholder="Ej: 1.234,56"
-                    value={montoStr}
-                    disabled={pagoGuardado}
-                    aria-required="true"
-                    aria-invalid={validacion.errores.monto ? true : undefined}
-                    aria-describedby={
-                      validacion.errores.monto
-                        ? "monto-ayuda monto-separadores monto-error"
-                        : "monto-ayuda monto-separadores"
-                    }
-                    onChange={(e) => {
-                      setMontoStr(e.target.value)
-                      validacion.validarChange("monto", () => validarMonto(e.target.value))
-                    }}
-                    onBlur={(e) =>
-                      validacion.validarBlur("monto", () => validarMonto(e.target.value))
-                    }
-                  />
-                  <p id="monto-ayuda" className="text-xs text-muted-foreground">
-                    {montoCents != null
-                      ? `= ${montoCents} centavos (${(montoCents / 100).toLocaleString("es-BO", { minimumFractionDigits: 2 })} Bs)`
-                      : "Ingresa un monto válido, p. ej. 265,00"}
+                <fieldset
+                  id="registrar-modo"
+                  className="m-0 min-w-0 space-y-1.5 border-0 p-0"
+                >
+                  <legend className="px-0 text-sm leading-none font-medium">
+                    Modo de registro
+                  </legend>
+                  <div
+                    className="grid grid-cols-2 gap-1 rounded-lg border bg-muted/40 p-1"
+                    role="group"
+                    aria-label="Modo de registro"
+                  >
+                    {MODOS_REGISTRO.map((m) => (
+                      <Button
+                        key={m.valor}
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setModoRegistro(m.valor)}
+                        disabled={pagoGuardado}
+                        aria-pressed={modoRegistro === m.valor}
+                        className={
+                          modoRegistro === m.valor
+                            ? "bg-background text-foreground shadow-sm"
+                            : "text-muted-foreground"
+                        }
+                      >
+                        {m.label}
+                      </Button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {modoRegistro === "detallado"
+                      ? "Ingresa el monto de cada día; el total se calcula solo."
+                      : "Ingresa el total y el sistema lo reparte entre los días."}
                   </p>
-                  <p id="monto-separadores" className="text-xs text-muted-foreground">
+                </fieldset>
+
+                <fieldset
+                  id="registrar-montos"
+                  tabIndex={-1}
+                  className="m-0 min-w-0 space-y-2 border-0 p-0"
+                  aria-describedby={validacion.errores.monto ? "monto-ayuda monto-error" : "monto-ayuda"}
+                  aria-invalid={validacion.errores.monto ? true : undefined}
+                >
+                  <legend className="px-0 text-sm leading-none font-medium">
+                    {modoRegistro === "detallado"
+                      ? "Monto por día (Bs)"
+                      : "Total a distribuir (Bs)"}{" "}
+                    <Obligatorio />
+                  </legend>
+
+                  {modoRegistro === "detallado" ? (
+                    diasOrdenados.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">
+                        Selecciona al menos un día en el calendario.
+                      </p>
+                    ) : (
+                      <div className="space-y-2">
+                        {diasOrdenados.map((fecha) => {
+                          const inputId = `monto-dia-${fecha}`
+                          return (
+                            <div
+                              key={fecha}
+                              className="flex flex-wrap items-center justify-between gap-2"
+                            >
+                              <Label htmlFor={inputId} className="text-sm font-normal">
+                                {formatearFechaEs(fecha)}
+                              </Label>
+                              <Input
+                                id={inputId}
+                                inputMode="decimal"
+                                placeholder="0,00"
+                                value={montosDia[fecha] ?? ""}
+                                disabled={pagoGuardado}
+                                aria-required="true"
+                                aria-invalid={validacion.errores.monto ? true : undefined}
+                                aria-describedby={
+                                  validacion.errores.monto ? "monto-error" : undefined
+                                }
+                                className="w-32"
+                                onChange={(e) => {
+                                  const valor = e.target.value
+                                  setMontosDia((prev) => ({ ...prev, [fecha]: valor }))
+                                  validacion.validarChange("monto", validarMontos)
+                                }}
+                                onBlur={() =>
+                                  validacion.validarBlur("monto", validarMontos)
+                                }
+                              />
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="monto-total">Total (Bs)</Label>
+                        <Input
+                          id="monto-total"
+                          inputMode="decimal"
+                          placeholder="Ej: 1.234,56"
+                          value={totalDistribuidoStr}
+                          disabled={pagoGuardado}
+                          aria-required="true"
+                          aria-invalid={validacion.errores.monto ? true : undefined}
+                          aria-describedby={
+                            validacion.errores.monto ? "monto-error" : undefined
+                          }
+                          onChange={(e) => {
+                            setTotalDistribuidoStr(e.target.value)
+                            validacion.validarChange("monto", validarMontos)
+                          }}
+                          onBlur={() =>
+                            validacion.validarBlur("monto", validarMontos)
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="modo-redondeo">Redondeo</Label>
+                        <Select
+                          value={modoRedondeo}
+                          disabled={pagoGuardado}
+                          onValueChange={(v) => setModoRedondeo(v as ModoDistribucion)}
+                        >
+                          <SelectTrigger
+                            id="modo-redondeo"
+                            className="w-full"
+                            aria-describedby="modo-redondeo-ayuda"
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {MODOS_DISTRIBUCION.map((m) => (
+                              <SelectItem key={m.value} value={m.value}>
+                                {m.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p id="modo-redondeo-ayuda" className="text-xs text-muted-foreground">
+                          El sobrante se asigna al último día.
+                        </p>
+                      </div>
+
+                      {diasOrdenados.length > 0 &&
+                      montosDistribuidos.length === diasOrdenados.length ? (
+                        <div>
+                          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                            Vista previa
+                          </p>
+                          <ul className="mt-1 space-y-1">
+                            {diasOrdenados.map((fecha, i) => (
+                              <li
+                                key={fecha}
+                                className="flex items-center justify-between gap-2 text-sm"
+                              >
+                                <span>{formatearFechaEs(fecha)}</span>
+                                <span className="font-medium tabular-nums">
+                                  {formatBs(montosDistribuidos[i])}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">
+                          Ingresa un total válido para ver la vista previa.
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="rounded-md border bg-muted/30 px-3 py-2 text-sm">
+                    <span className="text-muted-foreground">Total del pago: </span>
+                    <span className="font-semibold tabular-nums">
+                      {formatBs(
+                        modoRegistro === "distribuido"
+                          ? (totalDistribuidoCents ?? 0)
+                          : totalDetalladoCents,
+                      )}
+                    </span>
+                  </div>
+                  <p id="monto-ayuda" className="text-xs text-muted-foreground">
+                    {modoRegistro === "detallado"
+                      ? "El total es la suma de los montos por día."
+                      : "El total se reparte equitativamente entre los días seleccionados."}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
                     Usa coma decimal y punto para miles: 1.234,56.
                   </p>
                   <FieldError id="monto-error" error={validacion.errores.monto} />
-                </div>
+                </fieldset>
 
                 <div className="space-y-1.5">
                   <Label htmlFor="notas">Notas</Label>
@@ -600,7 +789,6 @@ export default function RegistrarPage() {
                     setComprobante(f)
                     setComprobanteError(null)
                   }}
-                  onResultadoOcr={aplicarOcr}
                   errorSubida={comprobanteError}
                 />
                 {/* Con el pago creado solo quedan estas salidas: reintentar el
@@ -626,76 +814,6 @@ export default function RegistrarPage() {
                 )}
               </CardContent>
             </Card>
-
-            {ocrResumen && (
-              <Card className="border-primary/40 bg-primary/5">
-                <CardContent className="space-y-3 pt-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="flex items-center gap-1.5 text-sm font-medium">
-                      <ScanText className="size-4 text-primary" aria-hidden />
-                      Detectado en el comprobante
-                    </p>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="size-7 max-md:min-h-11 max-md:min-w-11"
-                      aria-label="Ocultar resumen del comprobante"
-                      onClick={() => setOcrResumen(null)}
-                    >
-                      <X className="size-4" aria-hidden />
-                    </Button>
-                  </div>
-                  <dl className="grid grid-cols-1 gap-1.5 text-sm sm:grid-cols-2">
-                    <div className="flex items-center justify-between gap-2 sm:justify-start">
-                      <dt className="text-card-foreground">Monto:</dt>
-                      <dd className="font-medium">
-                        {ocrResumen.monto != null ? formatBs(ocrResumen.monto) : "no detectado"}
-                      </dd>
-                    </div>
-                    <div className="flex items-center justify-between gap-2 sm:justify-start">
-                      <dt className="text-card-foreground">Fecha:</dt>
-                      <dd className="font-medium">
-                        {ocrResumen.fecha ? formatearFechaEs(ocrResumen.fecha) : "no detectada"}
-                      </dd>
-                    </div>
-                    {ocrResumen.descripcion && (
-                      <div className="flex items-start justify-between gap-2 sm:col-span-2 sm:justify-start">
-                        <dt className="text-card-foreground">Descripción:</dt>
-                        <dd className="min-w-0 flex-1 break-words">{ocrResumen.descripcion}</dd>
-                      </div>
-                    )}
-                  </dl>
-                  <div className="flex flex-wrap gap-2">
-                    {ocrResumen.monto != null && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => montoInputRef.current?.focus()}
-                      >
-                        Editar monto
-                      </Button>
-                    )}
-                    {ocrResumen.fecha && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="secondary"
-                        onClick={() =>
-                          calendarioRef.current?.scrollIntoView({
-                            behavior: motionBehavior(),
-                            block: "center",
-                          })
-                        }
-                      >
-                        Ver fecha en el calendario
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             {!pagoGuardado && (
               <Button

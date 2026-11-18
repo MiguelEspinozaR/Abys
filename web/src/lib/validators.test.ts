@@ -112,7 +112,7 @@ describe("validarNotas", () => {
     expect(validarNotas("a".repeat(500))).toBeNull()
   })
 
-  it("rechaza más de 500 caracteres (incluye OCR programático)", () => {
+  it("rechaza más de 500 caracteres (valores programáticos)", () => {
     expect(validarNotas("a".repeat(501))).toBe("Máximo 500 caracteres")
     expect(validarNotas("a".repeat(600))).toBe("Máximo 500 caracteres")
     expect(MAX_NOTAS).toBe(500)

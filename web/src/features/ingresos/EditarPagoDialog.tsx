@@ -32,17 +32,16 @@ import { useFormDirty } from "@/hooks/useFormDirty"
 import { useActualizarPago, useFuentes } from "@/services/hooks"
 import { ApiRequestError } from "@/services/api"
 import { ERRORES_API_EDITAR_PAGO, resolverErrorApi } from "@/lib/api-errors"
-import { bsToCents, METODOS_PAGO } from "@/lib/format"
+import { bsToCents, formatBs, formatearFechaEs, METODOS_PAGO } from "@/lib/format"
 import {
   MAX_NOTAS,
   validarDiasTrabajados,
   validarFechaPago,
   validarFuente,
   validarMetodoPago,
-  validarMonto,
   validarNotas,
 } from "@/lib/validators"
-import type { MetodoPago, Pago } from "@/services/types"
+import type { DiaTrabajadoInput, MetodoPago, Pago } from "@/services/types"
 import { CalendarioDias, type Herramienta } from "@/features/registrar/CalendarioDias"
 
 interface Props {
@@ -57,10 +56,24 @@ type Campo = "dias" | "fuente" | "monto" | "metodo" | "fecha" | "notas"
 const IDS_Campos: Record<Campo, string> = {
   dias: "edit-calendario",
   fuente: "edit-fuente",
-  monto: "edit-monto",
+  monto: "edit-montos",
   metodo: "edit-metodo",
   fecha: "edit-fecha",
   notas: "edit-notas",
+}
+
+/** Centavos → texto editable en Bs (sin símbolo). */
+function centsToBsInput(cents: number): string {
+  return (cents / 100).toLocaleString("es-BO", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+}
+
+function montosIniciales(pago: Pago): Record<string, string> {
+  return Object.fromEntries(
+    pago.dias_trabajados.map((d) => [d.fecha, centsToBsInput(d.monto_enteros)]),
+  )
 }
 
 const Obligatorio = () => (
@@ -93,9 +106,9 @@ export function EditarPagoDialog({ pago, children }: Props) {
   const [fuenteId, setFuenteId] = useState(String(pago.fuente_id))
   const [fechaPago, setFechaPago] = useState(pago.fecha_pago)
   const [dias, setDias] = useState<Set<string>>(new Set(pago.dias_trabajados.map((d) => d.fecha)))
+  const [montosDia, setMontosDia] = useState<Record<string, string>>(() => montosIniciales(pago))
   const [herramienta, setHerramienta] = useState<Herramienta>("trabajo")
   const [metodo, setMetodo] = useState<MetodoPago>(pago.metodo_pago)
-  const [montoStr, setMontoStr] = useState((pago.monto_enteros / 100).toLocaleString("es-BO", { minimumFractionDigits: 2 }))
   const [notas, setNotas] = useState(pago.notas ?? "")
 
   /** Valores originales del pago: se restauran al descartar (R4.5). */
@@ -104,10 +117,8 @@ export function EditarPagoDialog({ pago, children }: Props) {
       fuenteId: String(pago.fuente_id),
       fechaPago: pago.fecha_pago,
       dias: [...pago.dias_trabajados.map((d) => d.fecha)].sort(),
+      montosDia: montosIniciales(pago),
       metodo: pago.metodo_pago,
-      montoStr: (pago.monto_enteros / 100).toLocaleString("es-BO", {
-        minimumFractionDigits: 2,
-      }),
       notas: pago.notas ?? "",
     }),
     [pago],
@@ -117,8 +128,8 @@ export function EditarPagoDialog({ pago, children }: Props) {
     fuenteId,
     fechaPago,
     dias: [...dias].sort(),
+    montosDia,
     metodo,
-    montoStr,
     notas,
   }
   const { sucio, resetear } = useFormDirty(snapshot)
@@ -133,9 +144,38 @@ export function EditarPagoDialog({ pago, children }: Props) {
     setBloqueoPendiente(true)
   }, [])
 
-  const montoCents = bsToCents(montoStr)
+  const diasOrdenados = useMemo(() => [...dias].sort(), [dias])
+  const montosDetallados = useMemo(
+    () => diasOrdenados.map((fecha) => bsToCents(montosDia[fecha] ?? "")),
+    [diasOrdenados, montosDia],
+  )
+  const totalCents = montosDetallados.reduce<number>(
+    (acc, cents) => acc + (cents ?? 0),
+    0,
+  )
+  const diasPayload = useMemo<DiaTrabajadoInput[]>(() => {
+    const out: DiaTrabajadoInput[] = []
+    for (let i = 0; i < diasOrdenados.length; i++) {
+      const cents = montosDetallados[i]
+      if (cents == null) return []
+      out.push({ fecha: diasOrdenados[i], monto_enteros: cents })
+    }
+    return out
+  }, [diasOrdenados, montosDetallados])
+
   const conSplit = pago.split_id != null
   const validacion = useFormErrors<Campo>()
+
+  const validarMontos = (): string | null => {
+    if (diasOrdenados.length === 0) return null
+    for (const fecha of diasOrdenados) {
+      if (bsToCents(montosDia[fecha] ?? "") == null) {
+        return "Ingresa el monto de cada día seleccionado, p. ej. 150,00"
+      }
+    }
+    if (totalCents <= 0) return "El total del pago debe ser mayor a 0"
+    return null
+  }
 
   const idsFuentes = useMemo(
     () => new Set((fuentes ?? []).map((f) => String(f.id))),
@@ -150,8 +190,8 @@ export function EditarPagoDialog({ pago, children }: Props) {
     setFuenteId(estadoInicial.fuenteId)
     setFechaPago(estadoInicial.fechaPago)
     setDias(new Set(estadoInicial.dias))
+    setMontosDia(estadoInicial.montosDia)
     setMetodo(estadoInicial.metodo)
-    setMontoStr(estadoInicial.montoStr)
     setNotas(estadoInicial.notas)
     setHerramienta("trabajo")
   }
@@ -192,11 +232,25 @@ export function EditarPagoDialog({ pago, children }: Props) {
     }
   }
 
+  const eliminarMonto = (fecha: string) => {
+    setMontosDia((prev) => {
+      if (!(fecha in prev)) return prev
+      const next = { ...prev }
+      delete next[fecha]
+      return next
+    })
+  }
+
   const marcarDia = (fecha: string) => {
     if (herramienta === "trabajo") {
       const next = new Set(dias)
-      if (next.has(fecha)) next.delete(fecha)
-      else next.add(fecha)
+      if (next.has(fecha)) {
+        next.delete(fecha)
+        eliminarMonto(fecha)
+      } else {
+        next.add(fecha)
+        setMontosDia((prev) => ({ ...prev, [fecha]: prev[fecha] ?? "" }))
+      }
       setDias(next)
       validacion.validarChange("dias", () => validarDiasTrabajados(next))
     } else if (herramienta === "pago") {
@@ -206,6 +260,7 @@ export function EditarPagoDialog({ pago, children }: Props) {
       const next = new Set(dias)
       next.delete(fecha)
       setDias(next)
+      eliminarMonto(fecha)
       validacion.validarChange("dias", () => validarDiasTrabajados(next))
     }
   }
@@ -228,7 +283,7 @@ export function EditarPagoDialog({ pago, children }: Props) {
       },
       {
         campo: "monto",
-        validar: () => validarMonto(montoStr),
+        validar: validarMontos,
         enfocar: () => enfocarCampo("monto"),
       },
       {
@@ -251,7 +306,7 @@ export function EditarPagoDialog({ pago, children }: Props) {
   }
 
   const guardar = async () => {
-    if (montoCents == null || montoCents <= 0 || dias.size < 1 || fechaPago === "") return
+    if (diasPayload.length < 1 || totalCents <= 0 || fechaPago === "") return
     if (actualizar.isPending) return
     try {
       await actualizar.mutateAsync({
@@ -259,10 +314,9 @@ export function EditarPagoDialog({ pago, children }: Props) {
         payload: {
           fuente_id: Number(fuenteId),
           fecha_pago: fechaPago,
-          monto_enteros: montoCents,
           metodo_pago: metodo,
           notas: notas.trim() ? notas.trim() : null,
-          dias_trabajados: [...dias].sort(),
+          dias_trabajados: diasPayload,
         },
       })
       // Tras guardar: sin confirmación y sin bloqueo (R4.6).
@@ -342,6 +396,70 @@ export function EditarPagoDialog({ pago, children }: Props) {
               />
             </div>
 
+            <fieldset
+              id="edit-montos"
+              tabIndex={-1}
+              className="m-0 min-w-0 space-y-2 border-0 p-0 md:col-span-2"
+              aria-describedby={
+                validacion.errores.monto
+                  ? "edit-monto-ayuda edit-monto-error"
+                  : "edit-monto-ayuda"
+              }
+              aria-invalid={validacion.errores.monto ? true : undefined}
+            >
+              <legend className="px-0 text-sm leading-none font-medium">
+                Monto por día (Bs) <Obligatorio />
+              </legend>
+              {diasOrdenados.length === 0 ? (
+                <p className="text-xs text-muted-foreground">
+                  Selecciona al menos un día en el calendario.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {diasOrdenados.map((fecha) => {
+                    const inputId = `edit-monto-dia-${fecha}`
+                    return (
+                      <div
+                        key={fecha}
+                        className="flex flex-wrap items-center justify-between gap-2"
+                      >
+                        <Label htmlFor={inputId} className="text-sm font-normal">
+                          {formatearFechaEs(fecha)}
+                        </Label>
+                        <Input
+                          id={inputId}
+                          inputMode="decimal"
+                          placeholder="0,00"
+                          value={montosDia[fecha] ?? ""}
+                          disabled={conSplit}
+                          aria-required="true"
+                          aria-invalid={validacion.errores.monto ? true : undefined}
+                          aria-describedby={
+                            validacion.errores.monto ? "edit-monto-error" : undefined
+                          }
+                          className="w-32"
+                          onChange={(e) => {
+                            const valor = e.target.value
+                            setMontosDia((prev) => ({ ...prev, [fecha]: valor }))
+                            validacion.validarChange("monto", validarMontos)
+                          }}
+                          onBlur={() => validacion.validarBlur("monto", validarMontos)}
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+              <div className="rounded-md border bg-muted/30 px-3 py-2 text-sm">
+                <span className="text-muted-foreground">Total del pago: </span>
+                <span className="font-semibold tabular-nums">{formatBs(totalCents)}</span>
+              </div>
+              <p id="edit-monto-ayuda" className="text-xs text-muted-foreground">
+                El total es la suma de los montos por día.
+              </p>
+              <FieldError id="edit-monto-error" error={validacion.errores.monto} />
+            </fieldset>
+
             <div className="space-y-2">
               <Label htmlFor="edit-fuente">
                 Fuente <Obligatorio />
@@ -372,29 +490,6 @@ export function EditarPagoDialog({ pago, children }: Props) {
                 </SelectContent>
               </Select>
               <FieldError id="edit-fuente-error" error={validacion.errores.fuente} />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-monto">
-                Monto (Bs) <Obligatorio />
-              </Label>
-              <Input
-                id="edit-monto"
-                inputMode="decimal"
-                value={montoStr}
-                disabled={conSplit}
-                aria-required="true"
-                aria-invalid={validacion.errores.monto ? true : undefined}
-                aria-describedby={validacion.errores.monto ? "edit-monto-error" : undefined}
-                onChange={(e) => {
-                  setMontoStr(e.target.value)
-                  validacion.validarChange("monto", () => validarMonto(e.target.value))
-                }}
-                onBlur={(e) =>
-                  validacion.validarBlur("monto", () => validarMonto(e.target.value))
-                }
-              />
-              <FieldError id="edit-monto-error" error={validacion.errores.monto} />
             </div>
 
             <div className="space-y-2">

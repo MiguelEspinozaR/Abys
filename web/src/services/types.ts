@@ -54,6 +54,13 @@ export interface DiaTrabajado {
   id: number
   pago_id: number
   fecha: string // YYYY-MM-DD
+  monto_enteros: number // centavos (>= 0)
+}
+
+/** Día trabajado enviado en POST/PUT (sin id). */
+export interface DiaTrabajadoInput {
+  fecha: string // YYYY-MM-DD
+  monto_enteros: number // centavos (>= 0)
 }
 
 export interface Pago {
@@ -175,14 +182,15 @@ export interface CambioTasaResponse {
   registrado: boolean
 }
 
-/** Body de POST/PUT de pagos (sin id). */
+/** Body de POST/PUT de pagos (sin id). El total se deriva de Σ días. */
 export interface PagoPayload {
   fuente_id: number
   fecha_pago: string
-  monto_enteros: number
+  /** Opcional: el backend deriva el total de Σ días; omitirlo evita 422 por desajuste (R3.2). */
+  monto_enteros?: number
   metodo_pago: MetodoPago
   notas?: string | null
-  dias_trabajados?: string[]
+  dias_trabajados: DiaTrabajadoInput[]
 }
 
 export interface FuentePayload {

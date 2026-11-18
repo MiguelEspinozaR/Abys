@@ -63,7 +63,7 @@ export function validarMetodoPago(metodo: string): string | null {
   return null
 }
 
-/** notas: opcionales, máximo 500 caracteres; cubre valores programáticos/OCR (R2.8/R2.9). */
+/** notas: opcionales, máximo 500 caracteres; cubre valores programáticos (R2.8/R2.9). */
 export function validarNotas(notas: string): string | null {
   if (notas.length > MAX_NOTAS) return `Máximo ${MAX_NOTAS} caracteres`
   return null
