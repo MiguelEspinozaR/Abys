@@ -6,10 +6,19 @@ interface Props {
   payload?: Array<{ value: unknown; name?: string; color?: string }>
   formatter?: (value: number, name: string) => string
   labelFormatter?: (label: string, payload?: Array<Record<string, unknown>>) => string
+  /** Color real de cada serie por nombre; evita swatches con `url(#patron)`. */
+  colorPorSerie?: Record<string, string>
 }
 
 /** Tooltip compartido para los charts del dashboard. */
-export function ChartTooltip({ active, label, payload, formatter, labelFormatter }: Props) {
+export function ChartTooltip({
+  active,
+  label,
+  payload,
+  formatter,
+  labelFormatter,
+  colorPorSerie,
+}: Props) {
   if (!active || !payload || payload.length === 0) return null
 
   return (
@@ -27,12 +36,15 @@ export function ChartTooltip({ active, label, payload, formatter, labelFormatter
           const valor = formatter
             ? formatter(Number(p.value), nombre)
             : formatBs(Number(p.value))
+          const colorPintado = String(p.color ?? "")
+          const color = colorPorSerie?.[nombre] ??
+            (colorPintado.startsWith("url(") ? undefined : colorPintado)
 
           return (
             <p key={i} className="flex items-center gap-2 text-foreground">
               <span
                 className="inline-block size-2 rounded-full"
-                style={{ backgroundColor: p.color }}
+                style={{ backgroundColor: color ?? "currentColor" }}
                 aria-hidden
               />
               <span>{nombre ? `${nombre}: ${valor}` : valor}</span>

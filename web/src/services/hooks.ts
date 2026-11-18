@@ -7,6 +7,8 @@ import type {
   Cuenta,
   CuentaPayload,
   DashboardSummary,
+  DistributionMonthlyData,
+  DistributionYearlyData,
   Fuente,
   FuentePayload,
   GenerarSplitPayload,
@@ -32,11 +34,15 @@ export const queryKeys = {
   split: (pagoId: number) => ["split", pagoId] as const,
   splits: ["splits"] as const,
   splitSettings: ["settings", "split"] as const,
-  summary: (mes: number, anio: number) => ["dashboard", "summary", mes, anio] as const,
+  summary: ["dashboard", "summary"] as const,
   history: ["dashboard", "history"] as const,
   weekly: (fecha: string) => ["dashboard", "weekly", fecha] as const,
   monthly: (mes: number, anio: number) => ["dashboard", "monthly", mes, anio] as const,
   yearly: (anio: number) => ["dashboard", "yearly", anio] as const,
+  distributionMonthly: (mes: number, anio: number) =>
+    ["dashboard", "distribution", "monthly", mes, anio] as const,
+  distributionYearly: (anio: number) =>
+    ["dashboard", "distribution", "yearly", anio] as const,
   health: ["health"] as const,
   historialTasas: (cuentaId: number) => ["cuentas", cuentaId, "historial-tasas"] as const,
 }
@@ -163,10 +169,10 @@ export function useSplitSettings() {
   })
 }
 
-export function useSummary(mes: number, anio: number) {
+export function useSummary() {
   return useQuery({
-    queryKey: queryKeys.summary(mes, anio),
-    queryFn: () => api.get<DashboardSummary>(`/dashboard/summary?mes=${mes}&anio=${anio}`),
+    queryKey: queryKeys.summary,
+    queryFn: () => api.get<DashboardSummary>("/dashboard/summary"),
     staleTime: 30_000,
   })
 }
@@ -199,6 +205,23 @@ export function useYearly(anio: number) {
   return useQuery({
     queryKey: queryKeys.yearly(anio),
     queryFn: () => api.get<YearlyData>(`/dashboard/yearly?anio=${anio}`),
+    staleTime: 30_000,
+  })
+}
+
+export function useDistributionMonthly(mes: number, anio: number) {
+  return useQuery({
+    queryKey: queryKeys.distributionMonthly(mes, anio),
+    queryFn: () =>
+      api.get<DistributionMonthlyData>(`/dashboard/distribution/monthly?mes=${mes}&anio=${anio}`),
+    staleTime: 30_000,
+  })
+}
+
+export function useDistributionYearly(anio: number) {
+  return useQuery({
+    queryKey: queryKeys.distributionYearly(anio),
+    queryFn: () => api.get<DistributionYearlyData>(`/dashboard/distribution/yearly?anio=${anio}`),
     staleTime: 30_000,
   })
 }

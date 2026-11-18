@@ -1,5 +1,4 @@
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
+import { useMemo } from "react"
 import {
   Bar,
   BarChart,
@@ -9,63 +8,92 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { fromISODate } from "@/lib/format"
+import { formatBs, formatearFechaEs } from "@/lib/format"
 import { useChartColors } from "@/lib/chartTheme"
 import type { WeeklyData } from "@/services/types"
-import { ChartPatterns } from "./ChartPatterns"
+import { claveFuente, filasApiladas, fuentesUnicas, patronFill } from "./chartLogic"
+import { ChartSourcePatterns } from "./ChartPatterns"
+import { ChartLegend } from "./ChartLegend"
 import { ChartTooltip } from "./ChartTooltip"
 
+const PREFIJO = "semanal"
+
+/** Barras apiladas por fuente sobre dias_trabajados.fecha (R6/D9). */
 export function WeeklyChart({ data }: { data: WeeklyData }) {
   const c = useChartColors()
-  const rows = data.dias.map((d) => ({
-    nombre: format(fromISODate(d.fecha), "EEE d", { locale: es }).replace(".", ""),
-    total_centavos: d.total_centavos,
-    cantidad_pagos: d.cantidad_pagos,
-  }))
+  const fuentes = useMemo(
+    () => fuentesUnicas(data.dias.flatMap((dia) => dia.por_fuente)),
+    [data],
+  )
+  const filas = useMemo(() => filasApiladas(data.dias), [data])
+  const coloresPorSerie = useMemo(
+    () => Object.fromEntries(fuentes.map((f) => [f.alias, f.color])),
+    [fuentes],
+  )
+
+  if (fuentes.length === 0) {
+    return (
+      <div className="flex h-[240px] items-center justify-center text-sm text-muted-foreground">
+        Sin datos en la semana
+      </div>
+    )
+  }
 
   return (
-    <ResponsiveContainer width="100%" height={240}>
-      <BarChart
-        data={rows}
-        accessibilityLayer
-        margin={{ top: 8, right: 8, left: -14, bottom: 0 }}
-      >
-        <ChartPatterns tipo="semanal" colores={c} />
-        <CartesianGrid strokeDasharray="3 3" stroke={c.border} vertical={false} />
-        <XAxis
-          dataKey="nombre"
-          tick={{ fontSize: 12, fill: c["muted-foreground"] }}
-          axisLine={{ stroke: c.border }}
-          tickLine={false}
-        />
-        <YAxis
-          tick={{ fontSize: 11, fill: c["muted-foreground"] }}
-          axisLine={false}
-          tickLine={false}
-          tickFormatter={(v: number) => `${Math.round(v / 100)}`}
-          width={48}
-        />
-        <Tooltip
-          content={
-            <ChartTooltip
-              labelFormatter={(label, payload) => {
-                const p = payload?.[0]?.payload as { cantidad_pagos?: number } | undefined
-                return `${label} · ${p?.cantidad_pagos ?? 0} pago(s)`
-              }}
+    <div>
+      <ResponsiveContainer width="100%" height={240}>
+        <BarChart
+          data={filas}
+          accessibilityLayer
+          margin={{ top: 8, right: 8, left: -14, bottom: 0 }}
+        >
+          <ChartSourcePatterns fuentes={fuentes} colores={c} prefijo={PREFIJO} />
+          <CartesianGrid strokeDasharray="3 3" stroke={c.border} vertical={false} />
+          <XAxis
+            dataKey="nombre"
+            tick={{ fontSize: 12, fill: c["muted-foreground"] }}
+            axisLine={{ stroke: c.border }}
+            tickLine={false}
+          />
+          <YAxis
+            tick={{ fontSize: 11, fill: c["muted-foreground"] }}
+            axisLine={false}
+            tickLine={false}
+            tickFormatter={(v: number) => `${Math.round(v / 100)}`}
+            width={48}
+          />
+          <Tooltip
+            content={
+              <ChartTooltip
+                colorPorSerie={coloresPorSerie}
+                labelFormatter={(label, payload) => {
+                  const fila = payload?.[0]?.payload as
+                    | { fecha?: string; total_centavos?: number }
+                    | undefined
+                  const fecha = fila?.fecha ? ` · ${formatearFechaEs(fila.fecha)}` : ""
+                  return `${label}${fecha} · Total del día: ${formatBs(fila?.total_centavos ?? 0)}`
+                }}
+              />
+            }
+            cursor={{ fill: c.border, opacity: 0.35 }}
+          />
+          {fuentes.map((fuente, indice) => (
+            <Bar
+              key={fuente.fuente_id}
+              dataKey={claveFuente(fuente.fuente_id)}
+              name={fuente.alias}
+              stackId="total"
+              fill={patronFill(PREFIJO, fuente.fuente_id)}
+              stroke={c["muted-foreground"]}
+              strokeWidth={1}
+              radius={indice === fuentes.length - 1 ? [4, 4, 0, 0] : undefined}
+              maxBarSize={42}
+              isAnimationActive={false}
             />
-          }
-          cursor={{ fill: c.border, opacity: 0.35 }}
-        />
-        <Bar
-          dataKey="total_centavos"
-          name="Total"
-          fill="url(#patron-semanal)"
-          stroke={c["muted-foreground"]}
-          strokeWidth={1}
-          radius={[4, 4, 0, 0]}
-          maxBarSize={42}
-        />
-      </BarChart>
-    </ResponsiveContainer>
+          ))}
+        </BarChart>
+      </ResponsiveContainer>
+      <ChartLegend fuentes={fuentes} />
+    </div>
   )
 }

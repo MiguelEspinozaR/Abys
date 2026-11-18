@@ -18,6 +18,7 @@ export function useChartColors(): Record<string, string> {
       "chart-4",
       "chart-5",
       "primary",
+      "foreground",
       "muted-foreground",
       "border",
       "background",

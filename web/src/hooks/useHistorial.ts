@@ -69,7 +69,9 @@ export function useCandidatosAnio({
 
     const conDatos = new Set(
       (history?.por_mes ?? [])
-        .filter((mes) => mes.cantidad_pagos > 0)
+        // El contrato R11.2 ya no incluye `cantidad_pagos`: un mes con datos
+        // tiene total positivo (todos los importes son centavos >= 0).
+        .filter((mes) => mes.total_centavos > 0)
         .map((mes) => mes.anio),
     )
     if (conDatos.size === 0) return [Number(hoyEnLaPaz().slice(0, 4))]

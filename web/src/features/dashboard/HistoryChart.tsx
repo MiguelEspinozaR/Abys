@@ -7,62 +7,25 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { MESES_ABREV } from "@/lib/format"
 import { useChartColors } from "@/lib/chartTheme"
 import type { HistoryData } from "@/services/types"
+import { filasHistorial } from "./chartLogic"
 import { ChartTooltip } from "./ChartTooltip"
 
-/** Media móvil simple de 3 meses para la línea de tendencia. */
-function serieTendencia(porMes: { anio: number; mes: number; total_centavos: number }[]) {
-  return porMes.map((m, i) => {
-    const ventana = porMes.slice(Math.max(0, i - 2), i + 1)
-    const prom = ventana.reduce((acc, v) => acc + v.total_centavos, 0) / ventana.length
-    return { ...m, tendencia: Math.round(prom) }
-  })
-}
-
-export interface FilaHistorial {
-  nombre: string
-  total_centavos: number
-  tendencia: number
-}
-
-/**
- * Filas del rango visible del histórico. Se comparten con la tabla alternativa
- * para que el gráfico y la tabla muestren exactamente los mismos valores.
- */
-export function filasHistorial(
-  data: HistoryData,
-  desde: { anio: number; mes: number },
-  hasta: { anio: number; mes: number },
-): FilaHistorial[] {
-  const visibles = data.por_mes.filter((m) => {
-    const d = m.anio * 100 + m.mes
-    return d >= desde.anio * 100 + desde.mes && d <= hasta.anio * 100 + hasta.mes
-  })
-
-  return serieTendencia(visibles).map((m) => ({
-    nombre: `${m.anio % 100} ${MESES_ABREV[m.mes - 1] ?? ""}`.trim(),
-    total_centavos: m.total_centavos,
-    tendencia: m.tendencia,
-  }))
-}
-
+/** Histórico mensual: una sola serie de totales mensuales (R9). */
 export function HistoryChart({
   data,
   desde,
   hasta,
 }: {
   data: HistoryData
-  /** rango visible [anio, mes] inclusive */
   desde: { anio: number; mes: number }
   hasta: { anio: number; mes: number }
 }) {
   const c = useChartColors()
+  const filas = filasHistorial(data, desde, hasta)
 
-  const rows = filasHistorial(data, desde, hasta)
-
-  if (rows.length === 0) {
+  if (filas.length === 0) {
     return (
       <div className="flex h-[240px] items-center justify-center text-sm text-muted-foreground">
         Sin datos en el rango seleccionado
@@ -73,7 +36,7 @@ export function HistoryChart({
   return (
     <ResponsiveContainer width="100%" height={240}>
       <LineChart
-        data={rows}
+        data={filas}
         accessibilityLayer
         margin={{ top: 8, right: 8, left: -14, bottom: 0 }}
       >
@@ -93,7 +56,7 @@ export function HistoryChart({
           tickFormatter={(v: number) => `${Math.round(v / 100)}`}
           width={48}
         />
-        <Tooltip content={<ChartTooltip />} />
+        <Tooltip content={<ChartTooltip colorPorSerie={{ Total: c["chart-1"] }} />} />
         <Line
           type="monotone"
           dataKey="total_centavos"
@@ -102,15 +65,7 @@ export function HistoryChart({
           strokeWidth={2}
           dot={{ r: 2.5, fill: c["chart-1"], strokeWidth: 0 }}
           activeDot={{ r: 4 }}
-        />
-        <Line
-          type="monotone"
-          dataKey="tendencia"
-          name="Tendencia"
-          stroke={c["chart-2"]}
-          strokeWidth={1.5}
-          strokeDasharray="5 4"
-          dot={false}
+          isAnimationActive={false}
         />
       </LineChart>
     </ResponsiveContainer>

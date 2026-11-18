@@ -105,21 +105,33 @@ export interface Split {
   updated_at: string
 }
 
-export interface DashboardSummary {
-  mes: number
-  anio: number
+/**
+ * Contratos del dashboard (R11.2). Todos los montos van en centavos y se
+ * agrupan por `dias_trabajados.fecha`. `por_fuente` incluye fuentes
+ * soft-deleted para preservar alias/colores históricos (D15).
+ */
+
+/** Desglose por fuente presente en weekly y en las distribuciones. */
+export interface FuenteTotal {
+  fuente_id: number
+  alias: string
+  color: string
   total_centavos: number
-  cantidad_pagos: number
-  dias_trabajados: number
+}
+
+/** GET /dashboard/summary (sin parámetros de mes/año). */
+export interface DashboardSummary {
+  total_30d_centavos: number
+  total_historico_centavos: number
 }
 
 export interface HistoryMonth {
   anio: number
   mes: number
   total_centavos: number
-  cantidad_pagos: number
 }
 
+/** GET /dashboard/history (sólo totales mensuales). */
 export interface HistoryData {
   por_mes: HistoryMonth[]
 }
@@ -127,32 +139,56 @@ export interface HistoryData {
 export interface WeeklyDay {
   fecha: string
   total_centavos: number
-  cantidad_pagos: number
+  por_fuente: FuenteTotal[]
 }
 
+/** GET /dashboard/weekly?fecha= */
 export interface WeeklyData {
   semana_inicio: string
   semana_fin: string
   dias: WeeklyDay[]
 }
 
-export interface MonthlyWeek {
-  semana: number
+export interface MonthlyBloque {
+  bloque: number
   inicio: string
   fin: string
   total_centavos: number
-  cantidad_pagos: number
 }
 
+/** GET /dashboard/monthly?mes=&anio= (bloques 1–7, 8–14, …). */
 export interface MonthlyData {
   mes: number
   anio: number
-  semanas: MonthlyWeek[]
+  bloques: MonthlyBloque[]
 }
 
+export interface YearlyMes {
+  mes: number
+  total_centavos: number
+}
+
+/** GET /dashboard/yearly?anio= (12 meses, 0 en los vacíos). */
 export interface YearlyData {
   anio: number
-  meses: { mes: number; total_centavos: number; cantidad_pagos: number }[]
+  meses: YearlyMes[]
+}
+
+/** Común a las dos distribuciones por fuente. */
+export interface DistributionData {
+  total_centavos: number
+  por_fuente: FuenteTotal[]
+}
+
+/** GET /dashboard/distribution/monthly?mes=&anio= */
+export interface DistributionMonthlyData extends DistributionData {
+  mes: number
+  anio: number
+}
+
+/** GET /dashboard/distribution/yearly?anio= */
+export interface DistributionYearlyData extends DistributionData {
+  anio: number
 }
 
 export interface HealthTable {
