@@ -24,28 +24,30 @@ export function TablaDatos({
   filas,
 }: TablaDatosProps) {
   return (
-    <table className="sr-only">
-      <caption>{caption}</caption>
-      <thead>
-        <tr>
-          <th scope="col">{filaEncabezado}</th>
-          {columnas.map((columna) => (
-            <th key={columna} scope="col">
-              {columna}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {filas.map((fila, i) => (
-          <tr key={`${fila.encabezado}-${i}`}>
-            <th scope="row">{fila.encabezado}</th>
-            {fila.celdas.map((celda, j) => (
-              <td key={j}>{celda}</td>
+    <div className="sr-only">
+      <table>
+        <caption>{caption}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{filaEncabezado}</th>
+            {columnas.map((columna) => (
+              <th key={columna} scope="col">
+                {columna}
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {filas.map((fila, i) => (
+            <tr key={`${fila.encabezado}-${i}`}>
+              <th scope="row">{fila.encabezado}</th>
+              {fila.celdas.map((celda, j) => (
+                <td key={j}>{celda}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

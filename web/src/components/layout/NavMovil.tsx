@@ -18,7 +18,7 @@ export function TopBarMovil() {
 
   return (
     <header
-      className="flex h-14 shrink-0 items-center gap-2.5 border-b border-sidebar-border bg-sidebar px-3 text-sidebar-foreground md:hidden"
+      className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-2.5 border-b border-sidebar-border bg-sidebar px-3 text-sidebar-foreground md:hidden"
       aria-label="Barra superior"
     >
       <DialogPrimitive.Root open={abierto} onOpenChange={setAbierto}>
