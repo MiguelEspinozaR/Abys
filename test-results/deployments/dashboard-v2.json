@@ -1,0 +1,65 @@
+{
+  "release": "0.3.0",
+  "commit": "5760312",
+  "environment": "test3",
+  "branch": "main",
+  "timestamp_start": "2026-11-17T00:00:00-04:00",
+  "timestamp_end": "2026-11-17T23:59:59-04:00",
+  "migration": {
+    "id": "000006_add_monto_dias_trabajados",
+    "applied": true,
+    "idempotent": true,
+    "description": "Add monto_enteros column to dias_trabajados table, synthetic days for payments without days, equitable centavos redistribution",
+    "status": "applied_cleanly",
+    "schema_migrations": [5, 6]
+  },
+  "deploy_steps": {
+    "prerequisites_checked": true,
+    "backend_built": true,
+    "frontend_built": true,
+    "systemd_units_restarted": true,
+    "health_checks_passed": true
+  },
+  "health_checks": {
+    "backend_health_db": {
+      "status": "pass",
+      "url": "http://localhost:8081/api/v1/health/db",
+      "response": "{\"data\":{\"conexion\":\"ok\",\"latencia_ms\":24.196,\"version_pg\":\"18.6 (Ubuntu 18.6-1.pgdg26.04+2)\",\"tamano_db\":\"8670 kB\",\"tablas\":[{\"nombre\":\"fuentes\",\"registros\":3},{\"nombre\":\"pagos\",\"registros\":209},{\"nombre\":\"dias_trabajados\",\"registros\":428},{\"nombre\":\"cuentas\",\"registros\":3},{\"nombre\":\"historial_tasas\",\"registros\":3},{\"nombre\":\"splits\",\"registros\":17},{\"nombre\":\"transacciones\",\"registros\":51}]},\"status\":\"ok\"}"
+    },
+    "spa_load": {
+      "status": "pass",
+      "url": "http://localhost:5178/",
+      "response": "HTML loads successfully - Abys SPA"
+    },
+    "dashboard_summary": {
+      "status": "pass",
+      "url": "http://localhost:8081/api/v1/dashboard/summary?mes=11&anio=2026",
+      "response": "{\"data\":{\"mes\":11,\"anio\":2026,\"total_centavos\":0,\"cantidad_pagos\":0,\"dias_trabajados\":0}}"
+    },
+    "public_health_test3": {
+      "status": "informative",
+      "url": "https://test3.mikylab.com/health",
+      "note": "Informational only; not fatal if unreachable (tunnel/DNS configuration)"
+    }
+  },
+  "deployed_version": {
+    "backend": "abys-server (go build)",
+    "frontend": "Vite build (React 19 + TypeScript)",
+    "commit": "5760312 (main branch)"
+  },
+  "rollback": {
+    "note": "If health fails, perform rollback to last known healthy release when policy permits. Migration 6 is idempotent-safe; do NOT run down migration. Use ./deploy.sh to restart units or apply previous binary/dist.",
+    "reference_commit": "5760312",
+    "down_migration_not_run": true
+  },
+  "git_mutations": {
+    "committed": false,
+    "tagged": false,
+    "pushed": false,
+    "note": "No Git history mutations performed. Only read-only inspection."
+  },
+  "evidence": {
+    "deployment_report": "test-results/deployments/dashboard-v2.json",
+    "note": "Structured deployment evidence recorded."
+  }
+}
