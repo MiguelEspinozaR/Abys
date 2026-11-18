@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-11-18T01:12:45.925Z",
+  "checks": [
+    {
+      "id": "AC2",
+      "verdict": "PASS",
+      "detail": "cards={\"Total últimos 30 días\":true,\"Total histórico\":true,\"Días trabajados\":false,\"Pagos\":false}"
+    },
+    {
+      "id": "AC3",
+      "verdict": "PASS",
+      "detail": "30d=123.456,00 Bs:true, histórico=987.654,00 Bs:true, La Paz:true"
+    },
+    {
+      "id": "AC9",
+      "verdict": "PASS",
+      "detail": "22/10=[\"jue, 22 oct 2026\",\"200,00 Bs\",\"250,00 Bs\",\"450,00 Bs\"] (2 sources, 200+250=450); source patterns present"
+    },
+    {
+      "id": "AC10",
+      "verdict": "PASS",
+      "detail": "monthly blocks=1–7,8–14,15–21,22–28,29–31; nav present"
+    },
+    {
+      "id": "AC11",
+      "verdict": "PASS",
+      "detail": "yearly months=12; nav present"
+    },
+    {
+      "id": "AC12",
+      "verdict": "PASS",
+      "detail": "tendencia text/table header present=false"
+    },
+    {
+      "id": "AC13",
+      "verdict": "PASS",
+      "detail": "distribution nav=4, percent legends=6, pie sectors=8"
+    },
+    {
+      "id": "AC13-empty",
+      "verdict": "PASS",
+      "detail": "empty-state messages rendered=2 (expected >=2)"
+    },
+    {
+      "id": "AC8",
+      "verdict": "PASS",
+      "detail": "OCR text=false, comprobante text=true"
+    },
+    {
+      "id": "AC6",
+      "verdict": "PASS",
+      "detail": "daily inputs=3, total=\"Total del pago: 600,00 Bs\" (expected 600,00 Bs)"
+    },
+    {
+      "id": "AC7",
+      "verdict": "PASS",
+      "detail": "600/3 preview=[\"dom, 1 nov 2026200,00 Bs\",\"lun, 2 nov 2026200,00 Bs\",\"mar, 3 nov 2026200,00 Bs\"]"
+    },
+    {
+      "id": "AC7-residual",
+      "verdict": "PASS",
+      "detail": "600,01/3 preview (residue to last day)=[\"dom, 1 nov 2026200,00 Bs\",\"lun, 2 nov 2026200,00 Bs\",\"mar, 3 nov 2026200,01 Bs\"]"
+    }
+  ],
+  "summary": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0
+  }
+}

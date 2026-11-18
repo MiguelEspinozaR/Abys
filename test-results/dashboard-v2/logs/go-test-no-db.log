@@ -1,0 +1,12 @@
+?   	abys/cmd/server	[no test files]
+?   	abys/docs	[no test files]
+?   	abys/internal/apperr	[no test files]
+?   	abys/internal/config	[no test files]
+ok  	abys/internal/database	0.151s
+?   	abys/internal/handler	[no test files]
+?   	abys/internal/middleware	[no test files]
+?   	abys/internal/model	[no test files]
+ok  	abys/internal/repository	0.139s
+ok  	abys/internal/router	0.224s
+ok  	abys/internal/service	0.009s
+ok  	abys/internal/splitcalc	0.008s

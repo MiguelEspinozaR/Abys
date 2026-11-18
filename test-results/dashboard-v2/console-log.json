@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-11-18T00:58:26.468Z",
+  "feature": "dashboard-v2",
+  "note": "Console errors/warnings and page errors captured during the E2E matrix.",
+  "entries": [],
+  "summary": {
+    "total": 0,
+    "errors": 0,
+    "warnings": 0,
+    "pageerrors": 0,
+    "requestfailed": 0
+  }
+}

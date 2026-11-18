@@ -1,0 +1,1605 @@
+{
+  "generatedAt": "2026-11-18T00:58:26.468Z",
+  "combinations": [
+    {
+      "svgCount": 39,
+      "patternDefCount": 18,
+      "patternFillRefCount": 37,
+      "patternIds": [
+        "semanal-patron-fuente-1",
+        "semanal-patron-fuente-2",
+        "leyenda-_r_b_",
+        "leyenda-_r_c_",
+        "patron-mensual",
+        "patron-anual",
+        "dist-mes-patron-fuente-1",
+        "dist-mes-patron-fuente-2",
+        "dist-mes-patron-fuente-3",
+        "leyenda-_r_g_",
+        "leyenda-_r_h_",
+        "leyenda-_r_i_",
+        "dist-anio-patron-fuente-1",
+        "dist-anio-patron-fuente-2",
+        "dist-anio-patron-fuente-3",
+        "leyenda-_r_j_",
+        "leyenda-_r_k_",
+        "leyenda-_r_l_"
+      ],
+      "srOnlyTableCount": 6,
+      "srOnlyTableHeaders": [
+        [
+          "Periodo",
+          "Athena",
+          "Essencia",
+          "Total del día",
+          "lun, 19 oct 2026",
+          "mar, 20 oct 2026",
+          "mié, 21 oct 2026",
+          "jue, 22 oct 2026"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "1–7",
+          "8–14",
+          "15–21",
+          "22–28",
+          "29–31"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "ene 2026",
+          "feb 2026",
+          "mar 2026",
+          "abr 2026",
+          "may 2026",
+          "jun 2026"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "26 ene",
+          "26 feb",
+          "26 mar",
+          "26 abr",
+          "26 may",
+          "26 jun"
+        ],
+        [
+          "Periodo",
+          "Monto",
+          "Porcentaje",
+          "Athena",
+          "Essencia",
+          "Malnova"
+        ],
+        [
+          "Periodo",
+          "Monto",
+          "Porcentaje",
+          "Athena",
+          "Essencia",
+          "Malnova"
+        ]
+      ],
+      "figureLabels": [
+        {
+          "tag": "header",
+          "label": "Barra superior"
+        },
+        {
+          "tag": "button",
+          "label": "Abrir navegación"
+        },
+        {
+          "tag": "button",
+          "label": "Cambiar a modo oscuro"
+        },
+        {
+          "tag": "main",
+          "label": "Contenido principal"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Semanal"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Semanal"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Mensual"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Mensual"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Anual"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Anual"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Histórico"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Histórico"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Distribución del mes"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Distribución del mes"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Distribución del año"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Distribución del año"
+        }
+      ],
+      "legendTexts": [
+        "AthenaEssencia",
+        "Athena · 500,00 Bs · 47,6 %Essencia · 350,00 Bs · 33,3 %Malnova · 200,00 Bs · 19 %",
+        "Athena · 3.300,00 Bs · 42,3 %Essencia · 2.700,00 Bs · 34,6 %Malnova · 1.800,00 Bs · 23,1 %"
+      ],
+      "aliasTextPresent": {
+        "Athena": true,
+        "Essencia": true,
+        "Malnova": true
+      },
+      "headings": [
+        "Dashboard"
+      ],
+      "toggleLike": [],
+      "visibleControlCount": 15,
+      "hasOCRText": false,
+      "hasTrendText": false,
+      "cardsText": [
+        "Totales diarios apilados por fuente durante 19 oct – 25 oct 2026. La leyenda identifica cada fuente por nombre, color y patrón; los mismos datos están en la tabla siguiente.",
+        "Totales por bloques de días del mes. Bloques del mes · noviembre 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Totales por mes · 2026",
+        "Totales por mes del año. Totales por mes · 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Evolución mensual de los totales. enero 2026 – diciembre 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Porcentaje del total de cada fuente en el mes. Distribución por fuente · noviembre 2026. La leyenda muestra nombre, monto y porcentaje; los mismos datos están en la tabla siguiente.",
+        "Porcentaje del total de cada fuente en el año. Distribución por fuente · 2026. La leyenda muestra nombre, monto y porcentaje; los mismos datos están en la tabla siguiente."
+      ],
+      "combination": "dashboard/m390/light"
+    },
+    {
+      "svgCount": 39,
+      "patternDefCount": 18,
+      "patternFillRefCount": 37,
+      "patternIds": [
+        "semanal-patron-fuente-1",
+        "semanal-patron-fuente-2",
+        "leyenda-_r_b_",
+        "leyenda-_r_c_",
+        "patron-mensual",
+        "patron-anual",
+        "dist-mes-patron-fuente-1",
+        "dist-mes-patron-fuente-2",
+        "dist-mes-patron-fuente-3",
+        "leyenda-_r_i_",
+        "leyenda-_r_j_",
+        "leyenda-_r_k_",
+        "dist-anio-patron-fuente-1",
+        "dist-anio-patron-fuente-2",
+        "dist-anio-patron-fuente-3",
+        "leyenda-_r_l_",
+        "leyenda-_r_m_",
+        "leyenda-_r_n_"
+      ],
+      "srOnlyTableCount": 6,
+      "srOnlyTableHeaders": [
+        [
+          "Periodo",
+          "Athena",
+          "Essencia",
+          "Total del día",
+          "lun, 19 oct 2026",
+          "mar, 20 oct 2026",
+          "mié, 21 oct 2026",
+          "jue, 22 oct 2026"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "1–7",
+          "8–14",
+          "15–21",
+          "22–28",
+          "29–31"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "ene 2026",
+          "feb 2026",
+          "mar 2026",
+          "abr 2026",
+          "may 2026",
+          "jun 2026"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "26 ene",
+          "26 feb",
+          "26 mar",
+          "26 abr",
+          "26 may",
+          "26 jun"
+        ],
+        [
+          "Periodo",
+          "Monto",
+          "Porcentaje",
+          "Athena",
+          "Essencia",
+          "Malnova"
+        ],
+        [
+          "Periodo",
+          "Monto",
+          "Porcentaje",
+          "Athena",
+          "Essencia",
+          "Malnova"
+        ]
+      ],
+      "figureLabels": [
+        {
+          "tag": "header",
+          "label": "Barra superior"
+        },
+        {
+          "tag": "button",
+          "label": "Abrir navegación"
+        },
+        {
+          "tag": "button",
+          "label": "Cambiar a modo claro"
+        },
+        {
+          "tag": "main",
+          "label": "Contenido principal"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Semanal"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Semanal"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Mensual"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Mensual"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Anual"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Anual"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Histórico"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Histórico"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Distribución del mes"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Distribución del mes"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Distribución del año"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Distribución del año"
+        }
+      ],
+      "legendTexts": [
+        "AthenaEssencia",
+        "Athena · 500,00 Bs · 47,6 %Essencia · 350,00 Bs · 33,3 %Malnova · 200,00 Bs · 19 %",
+        "Athena · 3.300,00 Bs · 42,3 %Essencia · 2.700,00 Bs · 34,6 %Malnova · 1.800,00 Bs · 23,1 %"
+      ],
+      "aliasTextPresent": {
+        "Athena": true,
+        "Essencia": true,
+        "Malnova": true
+      },
+      "headings": [
+        "Dashboard"
+      ],
+      "toggleLike": [],
+      "visibleControlCount": 15,
+      "hasOCRText": false,
+      "hasTrendText": false,
+      "cardsText": [
+        "Totales diarios apilados por fuente durante 19 oct – 25 oct 2026. La leyenda identifica cada fuente por nombre, color y patrón; los mismos datos están en la tabla siguiente.",
+        "Totales por bloques de días del mes. Bloques del mes · noviembre 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Totales por mes · 2026",
+        "Totales por mes del año. Totales por mes · 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Evolución mensual de los totales. enero 2026 – diciembre 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Porcentaje del total de cada fuente en el mes. Distribución por fuente · noviembre 2026. La leyenda muestra nombre, monto y porcentaje; los mismos datos están en la tabla siguiente.",
+        "Porcentaje del total de cada fuente en el año. Distribución por fuente · 2026. La leyenda muestra nombre, monto y porcentaje; los mismos datos están en la tabla siguiente."
+      ],
+      "combination": "dashboard/m390/dark"
+    },
+    {
+      "svgCount": 39,
+      "patternDefCount": 18,
+      "patternFillRefCount": 37,
+      "patternIds": [
+        "semanal-patron-fuente-1",
+        "semanal-patron-fuente-2",
+        "leyenda-_r_b_",
+        "leyenda-_r_c_",
+        "patron-mensual",
+        "patron-anual",
+        "dist-mes-patron-fuente-1",
+        "dist-mes-patron-fuente-2",
+        "dist-mes-patron-fuente-3",
+        "leyenda-_r_f_",
+        "leyenda-_r_g_",
+        "leyenda-_r_h_",
+        "dist-anio-patron-fuente-1",
+        "dist-anio-patron-fuente-2",
+        "dist-anio-patron-fuente-3",
+        "leyenda-_r_i_",
+        "leyenda-_r_j_",
+        "leyenda-_r_k_"
+      ],
+      "srOnlyTableCount": 6,
+      "srOnlyTableHeaders": [
+        [
+          "Periodo",
+          "Athena",
+          "Essencia",
+          "Total del día",
+          "lun, 19 oct 2026",
+          "mar, 20 oct 2026",
+          "mié, 21 oct 2026",
+          "jue, 22 oct 2026"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "1–7",
+          "8–14",
+          "15–21",
+          "22–28",
+          "29–31"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "ene 2026",
+          "feb 2026",
+          "mar 2026",
+          "abr 2026",
+          "may 2026",
+          "jun 2026"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "26 ene",
+          "26 feb",
+          "26 mar",
+          "26 abr",
+          "26 may",
+          "26 jun"
+        ],
+        [
+          "Periodo",
+          "Monto",
+          "Porcentaje",
+          "Athena",
+          "Essencia",
+          "Malnova"
+        ],
+        [
+          "Periodo",
+          "Monto",
+          "Porcentaje",
+          "Athena",
+          "Essencia",
+          "Malnova"
+        ]
+      ],
+      "figureLabels": [
+        {
+          "tag": "aside",
+          "label": "Navegación principal"
+        },
+        {
+          "tag": "nav",
+          "label": "Secciones"
+        },
+        {
+          "tag": "a",
+          "label": "Dashboard"
+        },
+        {
+          "tag": "a",
+          "label": "Registrar"
+        },
+        {
+          "tag": "a",
+          "label": "Ingresos"
+        },
+        {
+          "tag": "a",
+          "label": "Splits"
+        },
+        {
+          "tag": "a",
+          "label": "Configuración"
+        },
+        {
+          "tag": "a",
+          "label": "Health"
+        },
+        {
+          "tag": "button",
+          "label": "Cambiar a modo oscuro"
+        },
+        {
+          "tag": "button",
+          "label": "Colapsar sidebar"
+        },
+        {
+          "tag": "main",
+          "label": "Contenido principal"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Semanal"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Semanal"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Mensual"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Mensual"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Anual"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Anual"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Histórico"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Histórico"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Distribución del mes"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Distribución del mes"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Distribución del año"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Distribución del año"
+        }
+      ],
+      "legendTexts": [
+        "AthenaEssencia",
+        "Athena · 500,00 Bs · 47,6 %Essencia · 350,00 Bs · 33,3 %Malnova · 200,00 Bs · 19 %",
+        "Athena · 3.300,00 Bs · 42,3 %Essencia · 2.700,00 Bs · 34,6 %Malnova · 1.800,00 Bs · 23,1 %"
+      ],
+      "aliasTextPresent": {
+        "Athena": true,
+        "Essencia": true,
+        "Malnova": true
+      },
+      "headings": [
+        "Dashboard"
+      ],
+      "toggleLike": [],
+      "visibleControlCount": 21,
+      "hasOCRText": false,
+      "hasTrendText": false,
+      "cardsText": [
+        "Totales diarios apilados por fuente durante 19 oct – 25 oct 2026. La leyenda identifica cada fuente por nombre, color y patrón; los mismos datos están en la tabla siguiente.",
+        "Totales por bloques de días del mes. Bloques del mes · noviembre 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Totales por mes · 2026",
+        "Totales por mes del año. Totales por mes · 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Evolución mensual de los totales. enero 2026 – diciembre 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Porcentaje del total de cada fuente en el mes. Distribución por fuente · noviembre 2026. La leyenda muestra nombre, monto y porcentaje; los mismos datos están en la tabla siguiente.",
+        "Porcentaje del total de cada fuente en el año. Distribución por fuente · 2026. La leyenda muestra nombre, monto y porcentaje; los mismos datos están en la tabla siguiente."
+      ],
+      "combination": "dashboard/d1440/light"
+    },
+    {
+      "svgCount": 39,
+      "patternDefCount": 18,
+      "patternFillRefCount": 37,
+      "patternIds": [
+        "semanal-patron-fuente-1",
+        "semanal-patron-fuente-2",
+        "leyenda-_r_b_",
+        "leyenda-_r_c_",
+        "patron-mensual",
+        "patron-anual",
+        "dist-mes-patron-fuente-1",
+        "dist-mes-patron-fuente-2",
+        "dist-mes-patron-fuente-3",
+        "leyenda-_r_i_",
+        "leyenda-_r_j_",
+        "leyenda-_r_k_",
+        "dist-anio-patron-fuente-1",
+        "dist-anio-patron-fuente-2",
+        "dist-anio-patron-fuente-3",
+        "leyenda-_r_l_",
+        "leyenda-_r_m_",
+        "leyenda-_r_n_"
+      ],
+      "srOnlyTableCount": 6,
+      "srOnlyTableHeaders": [
+        [
+          "Periodo",
+          "Athena",
+          "Essencia",
+          "Total del día",
+          "lun, 19 oct 2026",
+          "mar, 20 oct 2026",
+          "mié, 21 oct 2026",
+          "jue, 22 oct 2026"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "1–7",
+          "8–14",
+          "15–21",
+          "22–28",
+          "29–31"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "ene 2026",
+          "feb 2026",
+          "mar 2026",
+          "abr 2026",
+          "may 2026",
+          "jun 2026"
+        ],
+        [
+          "Periodo",
+          "Total",
+          "26 ene",
+          "26 feb",
+          "26 mar",
+          "26 abr",
+          "26 may",
+          "26 jun"
+        ],
+        [
+          "Periodo",
+          "Monto",
+          "Porcentaje",
+          "Athena",
+          "Essencia",
+          "Malnova"
+        ],
+        [
+          "Periodo",
+          "Monto",
+          "Porcentaje",
+          "Athena",
+          "Essencia",
+          "Malnova"
+        ]
+      ],
+      "figureLabels": [
+        {
+          "tag": "aside",
+          "label": "Navegación principal"
+        },
+        {
+          "tag": "nav",
+          "label": "Secciones"
+        },
+        {
+          "tag": "a",
+          "label": "Dashboard"
+        },
+        {
+          "tag": "a",
+          "label": "Registrar"
+        },
+        {
+          "tag": "a",
+          "label": "Ingresos"
+        },
+        {
+          "tag": "a",
+          "label": "Splits"
+        },
+        {
+          "tag": "a",
+          "label": "Configuración"
+        },
+        {
+          "tag": "a",
+          "label": "Health"
+        },
+        {
+          "tag": "button",
+          "label": "Cambiar a modo claro"
+        },
+        {
+          "tag": "button",
+          "label": "Colapsar sidebar"
+        },
+        {
+          "tag": "main",
+          "label": "Contenido principal"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Semanal"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Semanal"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Mensual"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Mensual"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Anual"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Anual"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Histórico"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Histórico"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Distribución del mes"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Distribución del mes"
+        },
+        {
+          "tag": "button",
+          "label": "Anterior: Distribución del año"
+        },
+        {
+          "tag": "button",
+          "label": "Siguiente: Distribución del año"
+        }
+      ],
+      "legendTexts": [
+        "AthenaEssencia",
+        "Athena · 500,00 Bs · 47,6 %Essencia · 350,00 Bs · 33,3 %Malnova · 200,00 Bs · 19 %",
+        "Athena · 3.300,00 Bs · 42,3 %Essencia · 2.700,00 Bs · 34,6 %Malnova · 1.800,00 Bs · 23,1 %"
+      ],
+      "aliasTextPresent": {
+        "Athena": true,
+        "Essencia": true,
+        "Malnova": true
+      },
+      "headings": [
+        "Dashboard"
+      ],
+      "toggleLike": [],
+      "visibleControlCount": 21,
+      "hasOCRText": false,
+      "hasTrendText": false,
+      "cardsText": [
+        "Totales diarios apilados por fuente durante 19 oct – 25 oct 2026. La leyenda identifica cada fuente por nombre, color y patrón; los mismos datos están en la tabla siguiente.",
+        "Totales por bloques de días del mes. Bloques del mes · noviembre 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Totales por mes · 2026",
+        "Totales por mes del año. Totales por mes · 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Evolución mensual de los totales. enero 2026 – diciembre 2026. Los mismos datos están disponibles en la tabla siguiente.",
+        "Porcentaje del total de cada fuente en el mes. Distribución por fuente · noviembre 2026. La leyenda muestra nombre, monto y porcentaje; los mismos datos están en la tabla siguiente.",
+        "Porcentaje del total de cada fuente en el año. Distribución por fuente · 2026. La leyenda muestra nombre, monto y porcentaje; los mismos datos están en la tabla siguiente."
+      ],
+      "combination": "dashboard/d1440/dark"
+    },
+    {
+      "svgCount": 17,
+      "patternDefCount": 0,
+      "patternFillRefCount": 0,
+      "patternIds": [],
+      "srOnlyTableCount": 0,
+      "srOnlyTableHeaders": [],
+      "figureLabels": [
+        {
+          "tag": "header",
+          "label": "Barra superior"
+        },
+        {
+          "tag": "button",
+          "label": "Abrir navegación"
+        },
+        {
+          "tag": "button",
+          "label": "Cambiar a modo oscuro"
+        },
+        {
+          "tag": "main",
+          "label": "Contenido principal"
+        },
+        {
+          "tag": "div",
+          "label": "Herramientas del calendario"
+        },
+        {
+          "tag": "abbr",
+          "label": "domingo"
+        },
+        {
+          "tag": "abbr",
+          "label": "lunes"
+        },
+        {
+          "tag": "abbr",
+          "label": "martes"
+        },
+        {
+          "tag": "abbr",
+          "label": "miércoles"
+        },
+        {
+          "tag": "abbr",
+          "label": "jueves"
+        },
+        {
+          "tag": "abbr",
+          "label": "viernes"
+        },
+        {
+          "tag": "abbr",
+          "label": "sábado"
+        },
+        {
+          "tag": "abbr",
+          "label": "1 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "2 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "3 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "4 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "5 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "6 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "7 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "8 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "9 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "10 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "11 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "12 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "13 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "14 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "15 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "16 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "17 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "18 de noviembre de 2026"
+        }
+      ],
+      "legendTexts": [],
+      "aliasTextPresent": {
+        "Athena": true,
+        "Essencia": true,
+        "Malnova": true
+      },
+      "headings": [
+        "Registrar pago"
+      ],
+      "toggleLike": [
+        {
+          "tag": "legend",
+          "text": "Días trabajados y fecha de pago *",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Trabajo",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "Pago",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "button",
+          "text": "Quitar",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Método de pago *",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Efectivo",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "QR",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "button",
+          "text": "Transacción",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Modo de registro",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Detallado",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "Distribuido",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Monto por día (Bs) *",
+          "ariaPressed": null
+        }
+      ],
+      "visibleControlCount": 56,
+      "hasOCRText": false,
+      "hasTrendText": false,
+      "cardsText": [
+        "Marca los días trabajados en el calendario y elige cómo cargar los montos.",
+        "Ingresa el monto de cada día; el total se calcula solo.",
+        "El total es la suma de los montos por día."
+      ],
+      "combination": "registrar/m390/light"
+    },
+    {
+      "svgCount": 17,
+      "patternDefCount": 0,
+      "patternFillRefCount": 0,
+      "patternIds": [],
+      "srOnlyTableCount": 0,
+      "srOnlyTableHeaders": [],
+      "figureLabels": [
+        {
+          "tag": "header",
+          "label": "Barra superior"
+        },
+        {
+          "tag": "button",
+          "label": "Abrir navegación"
+        },
+        {
+          "tag": "button",
+          "label": "Cambiar a modo claro"
+        },
+        {
+          "tag": "main",
+          "label": "Contenido principal"
+        },
+        {
+          "tag": "div",
+          "label": "Herramientas del calendario"
+        },
+        {
+          "tag": "abbr",
+          "label": "domingo"
+        },
+        {
+          "tag": "abbr",
+          "label": "lunes"
+        },
+        {
+          "tag": "abbr",
+          "label": "martes"
+        },
+        {
+          "tag": "abbr",
+          "label": "miércoles"
+        },
+        {
+          "tag": "abbr",
+          "label": "jueves"
+        },
+        {
+          "tag": "abbr",
+          "label": "viernes"
+        },
+        {
+          "tag": "abbr",
+          "label": "sábado"
+        },
+        {
+          "tag": "abbr",
+          "label": "1 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "2 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "3 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "4 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "5 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "6 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "7 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "8 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "9 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "10 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "11 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "12 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "13 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "14 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "15 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "16 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "17 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "18 de noviembre de 2026"
+        }
+      ],
+      "legendTexts": [],
+      "aliasTextPresent": {
+        "Athena": true,
+        "Essencia": true,
+        "Malnova": true
+      },
+      "headings": [
+        "Registrar pago"
+      ],
+      "toggleLike": [
+        {
+          "tag": "legend",
+          "text": "Días trabajados y fecha de pago *",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Trabajo",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "Pago",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "button",
+          "text": "Quitar",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Método de pago *",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Efectivo",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "QR",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "button",
+          "text": "Transacción",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Modo de registro",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Detallado",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "Distribuido",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Monto por día (Bs) *",
+          "ariaPressed": null
+        }
+      ],
+      "visibleControlCount": 56,
+      "hasOCRText": false,
+      "hasTrendText": false,
+      "cardsText": [
+        "Marca los días trabajados en el calendario y elige cómo cargar los montos.",
+        "Ingresa el monto de cada día; el total se calcula solo.",
+        "El total es la suma de los montos por día."
+      ],
+      "combination": "registrar/m390/dark"
+    },
+    {
+      "svgCount": 17,
+      "patternDefCount": 0,
+      "patternFillRefCount": 0,
+      "patternIds": [],
+      "srOnlyTableCount": 0,
+      "srOnlyTableHeaders": [],
+      "figureLabels": [
+        {
+          "tag": "aside",
+          "label": "Navegación principal"
+        },
+        {
+          "tag": "nav",
+          "label": "Secciones"
+        },
+        {
+          "tag": "a",
+          "label": "Dashboard"
+        },
+        {
+          "tag": "a",
+          "label": "Registrar"
+        },
+        {
+          "tag": "a",
+          "label": "Ingresos"
+        },
+        {
+          "tag": "a",
+          "label": "Splits"
+        },
+        {
+          "tag": "a",
+          "label": "Configuración"
+        },
+        {
+          "tag": "a",
+          "label": "Health"
+        },
+        {
+          "tag": "button",
+          "label": "Cambiar a modo oscuro"
+        },
+        {
+          "tag": "button",
+          "label": "Colapsar sidebar"
+        },
+        {
+          "tag": "main",
+          "label": "Contenido principal"
+        },
+        {
+          "tag": "div",
+          "label": "Herramientas del calendario"
+        },
+        {
+          "tag": "abbr",
+          "label": "domingo"
+        },
+        {
+          "tag": "abbr",
+          "label": "lunes"
+        },
+        {
+          "tag": "abbr",
+          "label": "martes"
+        },
+        {
+          "tag": "abbr",
+          "label": "miércoles"
+        },
+        {
+          "tag": "abbr",
+          "label": "jueves"
+        },
+        {
+          "tag": "abbr",
+          "label": "viernes"
+        },
+        {
+          "tag": "abbr",
+          "label": "sábado"
+        },
+        {
+          "tag": "abbr",
+          "label": "1 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "2 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "3 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "4 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "5 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "6 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "7 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "8 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "9 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "10 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "11 de noviembre de 2026"
+        }
+      ],
+      "legendTexts": [],
+      "aliasTextPresent": {
+        "Athena": true,
+        "Essencia": true,
+        "Malnova": true
+      },
+      "headings": [
+        "Registrar pago"
+      ],
+      "toggleLike": [
+        {
+          "tag": "legend",
+          "text": "Días trabajados y fecha de pago *",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Trabajo",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "Pago",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "button",
+          "text": "Quitar",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Método de pago *",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Efectivo",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "QR",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "button",
+          "text": "Transacción",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Modo de registro",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Detallado",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "Distribuido",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Monto por día (Bs) *",
+          "ariaPressed": null
+        }
+      ],
+      "visibleControlCount": 62,
+      "hasOCRText": false,
+      "hasTrendText": false,
+      "cardsText": [
+        "Marca los días trabajados en el calendario y elige cómo cargar los montos.",
+        "Ingresa el monto de cada día; el total se calcula solo.",
+        "El total es la suma de los montos por día."
+      ],
+      "combination": "registrar/d1440/light"
+    },
+    {
+      "svgCount": 17,
+      "patternDefCount": 0,
+      "patternFillRefCount": 0,
+      "patternIds": [],
+      "srOnlyTableCount": 0,
+      "srOnlyTableHeaders": [],
+      "figureLabels": [
+        {
+          "tag": "aside",
+          "label": "Navegación principal"
+        },
+        {
+          "tag": "nav",
+          "label": "Secciones"
+        },
+        {
+          "tag": "a",
+          "label": "Dashboard"
+        },
+        {
+          "tag": "a",
+          "label": "Registrar"
+        },
+        {
+          "tag": "a",
+          "label": "Ingresos"
+        },
+        {
+          "tag": "a",
+          "label": "Splits"
+        },
+        {
+          "tag": "a",
+          "label": "Configuración"
+        },
+        {
+          "tag": "a",
+          "label": "Health"
+        },
+        {
+          "tag": "button",
+          "label": "Cambiar a modo claro"
+        },
+        {
+          "tag": "button",
+          "label": "Colapsar sidebar"
+        },
+        {
+          "tag": "main",
+          "label": "Contenido principal"
+        },
+        {
+          "tag": "div",
+          "label": "Herramientas del calendario"
+        },
+        {
+          "tag": "abbr",
+          "label": "domingo"
+        },
+        {
+          "tag": "abbr",
+          "label": "lunes"
+        },
+        {
+          "tag": "abbr",
+          "label": "martes"
+        },
+        {
+          "tag": "abbr",
+          "label": "miércoles"
+        },
+        {
+          "tag": "abbr",
+          "label": "jueves"
+        },
+        {
+          "tag": "abbr",
+          "label": "viernes"
+        },
+        {
+          "tag": "abbr",
+          "label": "sábado"
+        },
+        {
+          "tag": "abbr",
+          "label": "1 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "2 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "3 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "4 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "5 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "6 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "7 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "8 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "9 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "10 de noviembre de 2026"
+        },
+        {
+          "tag": "abbr",
+          "label": "11 de noviembre de 2026"
+        }
+      ],
+      "legendTexts": [],
+      "aliasTextPresent": {
+        "Athena": true,
+        "Essencia": true,
+        "Malnova": true
+      },
+      "headings": [
+        "Registrar pago"
+      ],
+      "toggleLike": [
+        {
+          "tag": "legend",
+          "text": "Días trabajados y fecha de pago *",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Trabajo",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "Pago",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "button",
+          "text": "Quitar",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Método de pago *",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Efectivo",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "QR",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "button",
+          "text": "Transacción",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Modo de registro",
+          "ariaPressed": null
+        },
+        {
+          "tag": "button",
+          "text": "Detallado",
+          "ariaPressed": "true"
+        },
+        {
+          "tag": "button",
+          "text": "Distribuido",
+          "ariaPressed": "false"
+        },
+        {
+          "tag": "legend",
+          "text": "Monto por día (Bs) *",
+          "ariaPressed": null
+        }
+      ],
+      "visibleControlCount": 62,
+      "hasOCRText": false,
+      "hasTrendText": false,
+      "cardsText": [
+        "Marca los días trabajados en el calendario y elige cómo cargar los montos.",
+        "Ingresa el monto de cada día; el total se calcula solo.",
+        "El total es la suma de los montos por día."
+      ],
+      "combination": "registrar/d1440/dark"
+    }
+  ]
+}

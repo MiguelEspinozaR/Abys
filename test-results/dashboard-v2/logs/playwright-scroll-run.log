@@ -1,0 +1,9 @@
+dashboard/m390/light: scrollers=0 nested=0 docOverflow=true hOverflow=false/false renderMarker=1
+dashboard/m390/dark: scrollers=0 nested=0 docOverflow=true hOverflow=false/false renderMarker=1
+dashboard/d1440/light: scrollers=0 nested=0 docOverflow=true hOverflow=false/false renderMarker=1
+dashboard/d1440/dark: scrollers=0 nested=0 docOverflow=true hOverflow=false/false renderMarker=1
+registrar/m390/light: scrollers=0 nested=0 docOverflow=true hOverflow=false/false renderMarker=3
+registrar/m390/dark: scrollers=0 nested=0 docOverflow=true hOverflow=false/false renderMarker=3
+registrar/d1440/light: scrollers=0 nested=0 docOverflow=true hOverflow=false/false renderMarker=3
+registrar/d1440/dark: scrollers=0 nested=0 docOverflow=true hOverflow=false/false renderMarker=3
+CONSOLE SUMMARY: {"total":0,"errors":0,"warnings":0,"pageerrors":0,"requestfailed":0}

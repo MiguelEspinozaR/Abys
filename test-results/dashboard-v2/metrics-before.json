@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-11-18T01:12:00Z",
+  "feature": "dashboard-v2",
+  "commitRange": "643c511..e9faeea",
+  "baseCommit": "643c511",
+  "headCommit": "e9faeea",
+  "measurementMode": "static-baseline",
+  "note": "Baseline facts recovered read-only from the base commit with git show/git grep/git ls-tree. No live browser scroll measurement at the base commit was performed: checkout/worktree changes were disallowed because this task only writes evidence under test-results/. Like-for-like live scroll metrics therefore do not exist; do not treat these structural counts as scroll metrics.",
+  "baseline": {
+    "app_shell": {
+      "file": "web/src/components/layout/AppLayout.tsx",
+      "root_markers": ["h-dvh", "overflow-hidden"],
+      "sidebar_marker": "hidden md:flex",
+      "main_marker": "flex-1 overflow-y-auto p-4 outline-none md:p-6",
+      "computed_scroll_markers": {
+        "h-dvh": 1,
+        "overflow-hidden": 1,
+        "overflow-y-auto": 1
+      }
+    },
+    "cards": {
+      "file": "web/src/features/dashboard/DashboardPage.tsx",
+      "titles": ["Total del mes", "Pagos", "Días trabajados", "Total histórico"],
+      "count": 4
+    },
+    "charts": {
+      "files": [
+        "web/src/features/dashboard/WeeklyChart.tsx",
+        "web/src/features/dashboard/MonthlyYearlyCharts.tsx",
+        "web/src/features/dashboard/HistoryChart.tsx"
+      ],
+      "chart_count": 4,
+      "trend_present": true,
+      "trend_source_files": [
+        "web/src/features/dashboard/DashboardPage.tsx",
+        "web/src/features/dashboard/HistoryChart.tsx"
+      ],
+      "pie_chart_source_files": ["web/src/lib/nav.ts"],
+      "pie_chart_ui_component_present": false
+    },
+    "ocr": {
+      "files": ["web/src/services/ocr.ts", "web/src/services/ocr.test.ts"],
+      "dependency": "tesseract.js ^6.0.0",
+      "dependency_line": 42,
+      "source_and_dependency_reference_count": 7
+    },
+    "backend": {
+      "migration_files": 10,
+      "migration_versions": 5,
+      "dias_trabajados_contract": "string[] (sin monto por día)"
+    },
+    "version": {
+      "web_package_json": "0.2.0",
+      "changelog_latest": "0.2.0"
+    }
+  },
+  "post_change_reference": {
+    "app_shell": {
+      "file": "web/src/components/layout/AppLayout.tsx",
+      "root_markers": ["min-h-dvh w-full"],
+      "sidebar_marker": "sticky top-0 hidden h-dvh self-start md:flex",
+      "main_marker": "min-h-0 flex-1 p-4 outline-none md:p-6",
+      "computed_scroll_markers": {
+        "h-dvh": 2,
+        "overflow-hidden": 0,
+        "overflow-y-auto": 0
+      }
+    },
+    "live_metrics": "test-results/dashboard-v2/metrics-after.json"
+  }
+}

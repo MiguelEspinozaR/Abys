@@ -1,0 +1,9 @@
+dashboard/m390/light: PASS | text=0 ui=0 focus=0 touch=0 names=0 keyboardTrap=false reducedMotionOffenders=0 chartAlone=true
+dashboard/m390/dark: PASS | text=0 ui=0 focus=0 touch=0 names=0 keyboardTrap=false reducedMotionOffenders=0 chartAlone=true
+dashboard/d1440/light: PASS | text=0 ui=0 focus=0 touch=n/a(mobile-only) names=0 keyboardTrap=false reducedMotionOffenders=0 chartAlone=true
+dashboard/d1440/dark: PASS | text=0 ui=0 focus=0 touch=n/a(mobile-only) names=0 keyboardTrap=false reducedMotionOffenders=0 chartAlone=true
+registrar/m390/light: FAIL | text=0 ui=3 focus=0 touch=0 names=0 keyboardTrap=false reducedMotionOffenders=0 chartAlone=true
+registrar/m390/dark: FAIL | text=0 ui=3 focus=0 touch=0 names=0 keyboardTrap=false reducedMotionOffenders=0 chartAlone=true
+registrar/d1440/light: FAIL | text=0 ui=3 focus=0 touch=n/a(mobile-only) names=0 keyboardTrap=false reducedMotionOffenders=0 chartAlone=true
+registrar/d1440/dark: FAIL | text=0 ui=3 focus=0 touch=n/a(mobile-only) names=0 keyboardTrap=false reducedMotionOffenders=0 chartAlone=true
+AA OVERALL: FAIL failures: ["registrar/m390/light:uiContrast","registrar/m390/dark:uiContrast","registrar/d1440/light:uiContrast","registrar/d1440/dark:uiContrast"]

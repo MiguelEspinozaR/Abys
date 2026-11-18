@@ -1,0 +1,413 @@
+{
+  "task_id": "dashboard-v2",
+  "feature": "dashboard-v2",
+  "title": "Dashboard v2: monto por día, charts por fuente, tortas y scroll único",
+  "lifecycle_state": "TEST",
+  "branch": "feat/dashboard-v2",
+  "commit": "e9faeea5e497b08f2f0471724264944619342f5a",
+  "base_commit": "643c511",
+  "commit_range": "643c511..e9faeea",
+  "generated_at": "2026-11-18T01:15:00Z",
+  "status": "fail",
+  "status_reason": "Suites y targeted tests funcionales en verde, pero AC15 falla el gate AA duro: 12 fallos individuales de contraste de borde en /registrar (3 controles × 4 combinaciones tema/viewport). La entrega no es aprobable hasta corregirlos y re-ejecutar el harness AA. AC19 queda bloqueado para Release.",
+  "release_ready": false,
+  "review_reopen_required": true,
+  "environment": {
+    "os": "linux",
+    "node": "v22.22.1",
+    "go": "go1.26.8 linux/amd64",
+    "browser": "Google Chrome 156.0.8078.79",
+    "playwright": "/home/miky/.npm/_npx/e41f203b7505f1fb/node_modules/playwright",
+    "frontend_preview_url": "http://127.0.0.1:5178",
+    "database": "PostgreSQL local, base aislada abys_test",
+    "secret_handling": "DB_PASSWORD se exportó desde backend/.env sin imprimirlo; log de BD saneado; 0 valores secretos persistidos."
+  },
+  "configured_suites": [
+    {
+      "name": "web-typecheck",
+      "command": "npx tsc -b",
+      "cwd": "web",
+      "status": "pass",
+      "exit_code": 0,
+      "log": "test-results/dashboard-v2/logs/web-tsc.log"
+    },
+    {
+      "name": "web-unit",
+      "command": "npm test",
+      "cwd": "web",
+      "runner": "vitest 5.0.0",
+      "status": "pass",
+      "exit_code": 0,
+      "test_files": 11,
+      "tests": 144,
+      "duration_seconds": 11.38,
+      "log": "test-results/dashboard-v2/logs/web-npm-test.log"
+    },
+    {
+      "name": "web-build",
+      "command": "npm run build",
+      "cwd": "web",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "Warning no bloqueante: chunks >500 kB.",
+      "log": "test-results/dashboard-v2/logs/web-npm-build.log"
+    },
+    {
+      "name": "backend-vet",
+      "command": "go vet ./...",
+      "cwd": "backend",
+      "status": "pass",
+      "exit_code": 0,
+      "log": "test-results/dashboard-v2/logs/go-vet.log"
+    },
+    {
+      "name": "backend-build",
+      "command": "go build -o /tmp/abys-server ./cmd/server",
+      "cwd": "backend",
+      "status": "pass",
+      "exit_code": 0,
+      "log": "test-results/dashboard-v2/logs/go-build.log"
+    },
+    {
+      "name": "backend-unit-no-db",
+      "command": "go test ./... -count=1",
+      "cwd": "backend",
+      "status": "pass",
+      "exit_code": 0,
+      "note": "Sin DB_PASSWORD: los tests dependientes de BD se omiten en esta pasada.",
+      "log": "test-results/dashboard-v2/logs/go-test-no-db.log"
+    },
+    {
+      "name": "backend-with-test-db",
+      "command": "go test ./... -count=1 -v",
+      "cwd": "backend",
+      "status": "pass",
+      "exit_code": 0,
+      "named_tests_passed": 28,
+      "skipped": 0,
+      "log": "test-results/dashboard-v2/logs/go-test-db.log",
+      "db_tests_executed": [
+        "TestMigration000006Backfill",
+        "TestPagoRepoMontoPorDia",
+        "TestIntegrationAPI",
+        "TestDashboardContracts"
+      ],
+      "http_evidence": [
+        "POST /api/v1/pagos -> 201",
+        "POST /api/v1/pagos -> 422 por total desincronizado",
+        "PUT /api/v1/pagos/:id -> 422",
+        "DELETE /api/v1/pagos/:id -> 409",
+        "GET /api/v1/no-existe -> 404",
+        "GET /api/v1/health/db -> 200"
+      ]
+    }
+  ],
+  "targeted_tests": [
+    {
+      "name": "scroll-metrics-harness",
+      "command": "node test-results/dashboard-v2/harness/dashboard-v2-audit.cjs",
+      "status": "pass",
+      "exit_code": 0,
+      "combinations": 8,
+      "nested_scrollers": 0,
+      "horizontal_overflow": 0,
+      "note": "Verificación por métricas, sin screenshots. document.scrollingElement = html en las 8 combinaciones.",
+      "log": "test-results/dashboard-v2/logs/playwright-scroll-run.log",
+      "evidence": [
+        "test-results/dashboard-v2/metrics-after.json",
+        "test-results/dashboard-v2/console-log.json"
+      ]
+    },
+    {
+      "name": "functional-dom-harness",
+      "command": "node test-results/dashboard-v2/harness/ac-functional.cjs",
+      "status": "pass",
+      "exit_code": 0,
+      "checks": 12,
+      "passed": 12,
+      "failed": 0,
+      "covers": ["AC2", "AC3", "AC6", "AC7", "AC8", "AC9", "AC10", "AC11", "AC12", "AC13"],
+      "log": "test-results/dashboard-v2/logs/playwright-ac-functional.log",
+      "evidence": "test-results/dashboard-v2/harness/ac-functional.json"
+    },
+    {
+      "name": "aa-hard-gate-harness",
+      "command": "node test-results/dashboard-v2/harness/aa-audit.cjs",
+      "status": "fail",
+      "exit_code": 0,
+      "combinations": 8,
+      "failing_combinations": 4,
+      "failing_checks": [
+        "registrar/m390/light:uiContrast",
+        "registrar/m390/dark:uiContrast",
+        "registrar/d1440/light:uiContrast",
+        "registrar/d1440/dark:uiContrast"
+      ],
+      "note": "El proceso termina con exit 0 porque escribe su JSON; el veredicto interno del harness es FAIL.",
+      "log": "test-results/dashboard-v2/logs/playwright-aa-run.log",
+      "evidence": "test-results/dashboard-v2/harness/aa-results.json"
+    },
+    {
+      "name": "swagger-regeneration",
+      "command": "cd backend && \"$(go env GOPATH)/bin/swag\" init -g cmd/server/main.go -o docs",
+      "status": "pass",
+      "exit_code": 0,
+      "cli_version": "swag version v1.16.4",
+      "declared_module_version": "github.com/swaggo/swag v1.16.6",
+      "note": "go run falló por go.sum incompleto; swag init sin -g falló porque main.go está en cmd/server. Sin cambios en go.mod/go.sum.",
+      "log": "test-results/dashboard-v2/logs/swagger-generation.log",
+      "evidence": "test-results/dashboard-v2/swagger.json"
+    },
+    {
+      "name": "static-greps",
+      "status": "pass",
+      "checks": {
+        "ocr_tesseract_web_matches": 0,
+        "tendencia_web_matches": 0,
+        "git_tags": 0
+      }
+    }
+  ],
+  "acceptance_criteria": {
+    "AC1": {
+      "status": "pass",
+      "summary": "Un único scroll vertical del documento en /dashboard y /registrar, 390×844 y 1440×900, light/dark; sin scroll horizontal ni anidado.",
+      "evidence": ["test-results/dashboard-v2/metrics-after.json", "test-results/dashboard-v2/console-log.json"]
+    },
+    "AC2": {
+      "status": "pass",
+      "summary": "Solo 'Total últimos 30 días' y 'Total histórico'; ausentes 'Días trabajados' y 'Pagos'.",
+      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC2"
+    },
+    "AC3": {
+      "status": "pass",
+      "summary": "TestSummaryUsaRangoDe30Dias con BD + Playwright: 123.456,00 Bs y 987.654,00 Bs, detalle La Paz.",
+      "evidence": ["test-results/dashboard-v2/logs/go-test-db.log", "test-results/dashboard-v2/harness/ac-functional.json#AC3"]
+    },
+    "AC4": {
+      "status": "pass",
+      "summary": "Columna monto_enteros, total derivado y rechazo 422 verificados con tests de repo/servicio e integración HTTP.",
+      "evidence": "test-results/dashboard-v2/logs/go-test-db.log"
+    },
+    "AC5": {
+      "status": "pass",
+      "summary": "TestMigration000006Backfill ejecutado con BD; backfill, día sintético y down verificados.",
+      "evidence": "test-results/dashboard-v2/logs/go-test-db.log"
+    },
+    "AC6": {
+      "status": "pass",
+      "summary": "Tres días con 150/200/250 Bs producen 'Total del pago: 600,00 Bs' en Playwright.",
+      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC6"
+    },
+    "AC7": {
+      "status": "pass",
+      "summary": "600/3 = 200/200/200 y 600,01/3 = 200/200/200,01 (residuo al último día) en Playwright; suite Vitest en verde.",
+      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC7"
+    },
+    "AC8": {
+      "status": "pass",
+      "summary": "0 coincidencias de OCR/tesseract en web/src y package.json; comprobante conservado en DOM.",
+      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC8"
+    },
+    "AC9": {
+      "status": "pass",
+      "summary": "Patrones por fuente, leyenda, tabla sr-only y 22/10 con Athena 200,00 + Essencia 250,00 = 450,00 Bs.",
+      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC9"
+    },
+    "AC10": {
+      "status": "pass",
+      "summary": "Bloques 1–7, 8–14, 15–21, 22–28 y 29–31 verificados en DOM.",
+      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC10"
+    },
+    "AC11": {
+      "status": "pass",
+      "summary": "12 meses de 2026 y navegación ‹ › verificados en DOM.",
+      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC11"
+    },
+    "AC12": {
+      "status": "pass",
+      "summary": "Sin texto 'tendencia' ni columna de tendencia; 0 coincidencias en web/src.",
+      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC12"
+    },
+    "AC13": {
+      "status": "pass",
+      "summary": "Dos tortas con %, leyenda, patrones, navegación ‹ › y estado vacío 'Sin datos en el período'.",
+      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC13"
+    },
+    "AC14": {
+      "status": "pass",
+      "summary": "Contratos R11.2 y 422 verificados con BD; Swagger regenerado con 7 endpoints y DiaInput correcto.",
+      "limitation": "backend/docs/ permanece gitignored y no versionado; se documenta el comando reproducible como convención del bloque.",
+      "evidence": ["test-results/dashboard-v2/swagger.json", "test-results/dashboard-v2/logs/go-test-db.log"]
+    },
+    "AC15": {
+      "status": "fail",
+      "summary": "Gate AA duro en rojo. Dashboard pasa 4/4 combinaciones; /registrar falla 4/4 por uiContrast en 3 controles por combinación.",
+      "failures": [
+        {
+          "theme": "light",
+          "controls": ["button#fuente", "textarea#notas", "dropzone button"],
+          "border": "oklch(0.922 0 0)",
+          "background": "rgb(255,255,255)",
+          "ratio": 1.26,
+          "expected": 3
+        },
+        {
+          "theme": "dark",
+          "controls": ["button#fuente", "textarea#notas"],
+          "border": "oklch(1 0 0 / 0.15)",
+          "background": "rgb(23,23,23)",
+          "ratio": 1.57,
+          "expected": 3
+        },
+        {
+          "theme": "dark",
+          "controls": ["dropzone button"],
+          "border": "oklch(1 0 0 / 0.1)",
+          "background": "rgb(23,23,23)",
+          "ratio": 1.33,
+          "expected": 3
+        }
+      ],
+      "passed_checks": [
+        "text-contrast-AA",
+        "focus-indicator-3:1",
+        "touch-44px (mobile)",
+        "accessible-names",
+        "keyboard-no-trap",
+        "prefers-reduced-motion",
+        "charts-not-color-alone"
+      ],
+      "note": "Los touch targets <44 px en desktop se registran como información: la política §5 exige 44×44 px en móvil y el harness marca desktop como n/a(mobile-only).",
+      "evidence": "test-results/dashboard-v2/harness/aa-results.json"
+    },
+    "AC16": {
+      "status": "pass",
+      "summary": "tsc, 144 tests Vitest, build, go vet, go build y go test en verde.",
+      "evidence": "test-results/dashboard-v2/logs/"
+    },
+    "AC17": {
+      "status": "pass",
+      "summary": "CHANGELOG.md y web/package.json en 0.3.0; git show-ref --tags sin tags.",
+      "evidence": ["CHANGELOG.md", "web/package.json"]
+    },
+    "AC18": {
+      "status": "pass",
+      "summary": "Evidencia completa en test-results/dashboard-v2/ y test-results/tests/dashboard-v2.json.",
+      "evidence": ["test-results/dashboard-v2/report.md", "test-results/tests/dashboard-v2.json"]
+    },
+    "AC19": {
+      "status": "blocked",
+      "summary": "Deploy a test3 es post-release y requiere aprobación humana; fuera de TEST.",
+      "evidence": null,
+      "expected_evidence": "test-results/deployments/dashboard-v2.json"
+    }
+  },
+  "coverage": {
+    "code_coverage_measured": false,
+    "code_coverage_percent": null,
+    "coverage_threshold": null,
+    "note": "No se ejecutó go test -cover ni instrumentación frontend. No se declara umbral de cobertura: la política del proyecto no define uno para este bloque.",
+    "acceptance_coverage": {
+      "total": 19,
+      "pass": 17,
+      "fail": 1,
+      "blocked": 1,
+      "failed_ids": ["AC15"],
+      "blocked_ids": ["AC19"]
+    }
+  },
+  "review_blockers": [
+    {
+      "id": "B1",
+      "status": "resolved",
+      "summary": "Evidencia obligatoria generada: report, métricas, console log, logs, harness y JSON estructurado."
+    },
+    {
+      "id": "B2",
+      "status": "open",
+      "summary": "Gate AA ahora medido, pero con fallo real de uiContrast en /registrar.",
+      "evidence": "test-results/dashboard-v2/harness/aa-results.json"
+    },
+    {
+      "id": "B3",
+      "status": "resolved",
+      "summary": "Scroll único medido en 8 combinaciones por métricas, sin screenshots."
+    },
+    {
+      "id": "B4",
+      "status": "resolved_by_documented_generation",
+      "summary": "Swagger regenerado con comando verificable; backend/docs sigue gitignored y no se mutó Git.",
+      "evidence": "test-results/dashboard-v2/swagger.json"
+    },
+    {
+      "id": "B5",
+      "status": "resolved",
+      "summary": "Integraciones con BD ejecutadas contra abys_test; 0 skips.",
+      "evidence": "test-results/dashboard-v2/logs/go-test-db.log"
+    }
+  ],
+  "findings": [
+    {
+      "id": "F-AA-001",
+      "severity": "hard",
+      "classification": "aa_gate",
+      "status": "open",
+      "summary": "Contraste de borde <3:1 en selector de fuente, textarea de notas y dropzone de /registrar, en light y dark.",
+      "required_action": "Ajustar los bordes a ≥3:1 contra el fondo en ambos temas y re-ejecutar el harness AA.",
+      "evidence": "test-results/dashboard-v2/harness/aa-results.json"
+    },
+    {
+      "id": "F-DOCS-001",
+      "severity": "medium",
+      "classification": "delivery",
+      "status": "documented_limitation",
+      "summary": "backend/docs/ es gitignored; el Swagger regenerado no entra en el diff.",
+      "resolution": "Generación reproducible documentada con el comando exacto y CLI disponible; sin cambios en .gitignore ni Git."
+    },
+    {
+      "id": "F-DEPLOY-001",
+      "severity": "info",
+      "classification": "release",
+      "status": "pending",
+      "summary": "AC19 requiere aprobación humana y deploy posterior a Release."
+    },
+    {
+      "id": "F-BASELINE-001",
+      "severity": "info",
+      "classification": "methodology",
+      "status": "documented_limitation",
+      "summary": "metrics-before.json es estático (git show/grep desde 643c511); no se capturaron métricas live previas sin checkout/worktree."
+    },
+    {
+      "id": "F-BUILD-001",
+      "severity": "info",
+      "classification": "advisory",
+      "status": "documented",
+      "summary": "npm run build avisa de chunks >500 kB; no bloquea."
+    }
+  ],
+  "artifacts": {
+    "test_report": "test-results/tests/dashboard-v2.json",
+    "report": "test-results/dashboard-v2/report.md",
+    "metrics_before": "test-results/dashboard-v2/metrics-before.json",
+    "metrics_after": "test-results/dashboard-v2/metrics-after.json",
+    "console_log": "test-results/dashboard-v2/console-log.json",
+    "swagger_verification": "test-results/dashboard-v2/swagger.json",
+    "harness_scroll": "test-results/dashboard-v2/harness/dashboard-v2-audit.cjs",
+    "harness_aa": "test-results/dashboard-v2/harness/aa-audit.cjs",
+    "harness_functional": "test-results/dashboard-v2/harness/ac-functional.cjs",
+    "harness_fixtures": "test-results/dashboard-v2/harness/fixtures.cjs",
+    "aa_results": "test-results/dashboard-v2/harness/aa-results.json",
+    "functional_results": "test-results/dashboard-v2/harness/ac-functional.json",
+    "dom_inventory": "test-results/dashboard-v2/harness/dom-inventory.json",
+    "logs": "test-results/dashboard-v2/logs/",
+    "review": "test-results/dashboard-v2/review.md",
+    "security": ["test-results/security/dashboard-v2.json", "test-results/security/dashboard-v2.md"],
+    "screenshots": []
+  },
+  "git": {
+    "mutations_performed": false,
+    "working_tree_note": "Solo test-results/ quedó sin trackear. No se hicieron add, commit, tag ni push. backend/docs regenerado permanece gitignored."
+  }
+}

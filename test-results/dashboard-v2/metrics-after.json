@@ -1,0 +1,385 @@
+{
+  "generatedAt": "2026-11-18T00:58:26.468Z",
+  "feature": "dashboard-v2",
+  "commitRange": "643c511..e9faeea",
+  "baseUrl": "http://127.0.0.1:5178",
+  "note": "Live post-change metrics at HEAD e9faeea. Metrics-only: NO screenshots taken. All API calls mocked; all writes blocked with 599 HARNESS_BLOCKED_WRITE. The viewport scroller (document.scrollingElement = html) is counted as the document scroll container by actual overflow because its computed overflow-y is \"visible\" in standards mode; nested scrollers are detected via computed overflow-y in {auto,scroll} AND scrollHeight > clientHeight + 1.",
+  "combinations": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1
+      },
+      "document": {
+        "scrollingElement": "html",
+        "scrollHeight": 3040,
+        "clientHeight": 844,
+        "innerHeight": 844,
+        "bodyScrollHeight": 3040,
+        "documentElementScrollHeight": 3040,
+        "overflowY": "visible",
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "computedOverflowY": {
+        "html": "visible",
+        "body": "visible",
+        "main_contenido": "visible",
+        "main_contenido_present": true
+      },
+      "scrollContainers": {
+        "total": 0,
+        "documentLevel": 0,
+        "nested": 0,
+        "documentActuallyOverflows": true,
+        "items": []
+      },
+      "horizontalOverflow": {
+        "documentElement": false,
+        "body": false
+      },
+      "combination": "dashboard/m390/light",
+      "route": "/dashboard",
+      "theme": "light",
+      "renderMarkerCount": 1,
+      "httpStatus": 200,
+      "verdict": {
+        "documentScrollerActive": true,
+        "nestedScrollers": 0,
+        "exactlyOneVerticalScrollContainer": true,
+        "singleDocumentScrollNoNesting": true,
+        "noHorizontalOverflow": true
+      }
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1
+      },
+      "document": {
+        "scrollingElement": "html.dark",
+        "scrollHeight": 3040,
+        "clientHeight": 844,
+        "innerHeight": 844,
+        "bodyScrollHeight": 3040,
+        "documentElementScrollHeight": 3040,
+        "overflowY": "visible",
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "computedOverflowY": {
+        "html": "visible",
+        "body": "visible",
+        "main_contenido": "visible",
+        "main_contenido_present": true
+      },
+      "scrollContainers": {
+        "total": 0,
+        "documentLevel": 0,
+        "nested": 0,
+        "documentActuallyOverflows": true,
+        "items": []
+      },
+      "horizontalOverflow": {
+        "documentElement": false,
+        "body": false
+      },
+      "combination": "dashboard/m390/dark",
+      "route": "/dashboard",
+      "theme": "dark",
+      "renderMarkerCount": 1,
+      "httpStatus": 200,
+      "verdict": {
+        "documentScrollerActive": true,
+        "nestedScrollers": 0,
+        "exactlyOneVerticalScrollContainer": true,
+        "singleDocumentScrollNoNesting": true,
+        "noHorizontalOverflow": true
+      }
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "document": {
+        "scrollingElement": "html",
+        "scrollHeight": 1500,
+        "clientHeight": 900,
+        "innerHeight": 900,
+        "bodyScrollHeight": 1500,
+        "documentElementScrollHeight": 1500,
+        "overflowY": "visible",
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      },
+      "computedOverflowY": {
+        "html": "visible",
+        "body": "visible",
+        "main_contenido": "visible",
+        "main_contenido_present": true
+      },
+      "scrollContainers": {
+        "total": 0,
+        "documentLevel": 0,
+        "nested": 0,
+        "documentActuallyOverflows": true,
+        "items": []
+      },
+      "horizontalOverflow": {
+        "documentElement": false,
+        "body": false
+      },
+      "combination": "dashboard/d1440/light",
+      "route": "/dashboard",
+      "theme": "light",
+      "renderMarkerCount": 1,
+      "httpStatus": 200,
+      "verdict": {
+        "documentScrollerActive": true,
+        "nestedScrollers": 0,
+        "exactlyOneVerticalScrollContainer": true,
+        "singleDocumentScrollNoNesting": true,
+        "noHorizontalOverflow": true
+      }
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "document": {
+        "scrollingElement": "html.dark",
+        "scrollHeight": 1500,
+        "clientHeight": 900,
+        "innerHeight": 900,
+        "bodyScrollHeight": 1500,
+        "documentElementScrollHeight": 1500,
+        "overflowY": "visible",
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      },
+      "computedOverflowY": {
+        "html": "visible",
+        "body": "visible",
+        "main_contenido": "visible",
+        "main_contenido_present": true
+      },
+      "scrollContainers": {
+        "total": 0,
+        "documentLevel": 0,
+        "nested": 0,
+        "documentActuallyOverflows": true,
+        "items": []
+      },
+      "horizontalOverflow": {
+        "documentElement": false,
+        "body": false
+      },
+      "combination": "dashboard/d1440/dark",
+      "route": "/dashboard",
+      "theme": "dark",
+      "renderMarkerCount": 1,
+      "httpStatus": 200,
+      "verdict": {
+        "documentScrollerActive": true,
+        "nestedScrollers": 0,
+        "exactlyOneVerticalScrollContainer": true,
+        "singleDocumentScrollNoNesting": true,
+        "noHorizontalOverflow": true
+      }
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1
+      },
+      "document": {
+        "scrollingElement": "html",
+        "scrollHeight": 1638,
+        "clientHeight": 844,
+        "innerHeight": 844,
+        "bodyScrollHeight": 1638,
+        "documentElementScrollHeight": 1638,
+        "overflowY": "visible",
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "computedOverflowY": {
+        "html": "visible",
+        "body": "visible",
+        "main_contenido": "visible",
+        "main_contenido_present": true
+      },
+      "scrollContainers": {
+        "total": 0,
+        "documentLevel": 0,
+        "nested": 0,
+        "documentActuallyOverflows": true,
+        "items": []
+      },
+      "horizontalOverflow": {
+        "documentElement": false,
+        "body": false
+      },
+      "combination": "registrar/m390/light",
+      "route": "/registrar",
+      "theme": "light",
+      "renderMarkerCount": 3,
+      "httpStatus": 200,
+      "verdict": {
+        "documentScrollerActive": true,
+        "nestedScrollers": 0,
+        "exactlyOneVerticalScrollContainer": true,
+        "singleDocumentScrollNoNesting": true,
+        "noHorizontalOverflow": true
+      }
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1
+      },
+      "document": {
+        "scrollingElement": "html.dark",
+        "scrollHeight": 1638,
+        "clientHeight": 844,
+        "innerHeight": 844,
+        "bodyScrollHeight": 1638,
+        "documentElementScrollHeight": 1638,
+        "overflowY": "visible",
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "computedOverflowY": {
+        "html": "visible",
+        "body": "visible",
+        "main_contenido": "visible",
+        "main_contenido_present": true
+      },
+      "scrollContainers": {
+        "total": 0,
+        "documentLevel": 0,
+        "nested": 0,
+        "documentActuallyOverflows": true,
+        "items": []
+      },
+      "horizontalOverflow": {
+        "documentElement": false,
+        "body": false
+      },
+      "combination": "registrar/m390/dark",
+      "route": "/registrar",
+      "theme": "dark",
+      "renderMarkerCount": 3,
+      "httpStatus": 200,
+      "verdict": {
+        "documentScrollerActive": true,
+        "nestedScrollers": 0,
+        "exactlyOneVerticalScrollContainer": true,
+        "singleDocumentScrollNoNesting": true,
+        "noHorizontalOverflow": true
+      }
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "document": {
+        "scrollingElement": "html",
+        "scrollHeight": 932,
+        "clientHeight": 900,
+        "innerHeight": 900,
+        "bodyScrollHeight": 932,
+        "documentElementScrollHeight": 932,
+        "overflowY": "visible",
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      },
+      "computedOverflowY": {
+        "html": "visible",
+        "body": "visible",
+        "main_contenido": "visible",
+        "main_contenido_present": true
+      },
+      "scrollContainers": {
+        "total": 0,
+        "documentLevel": 0,
+        "nested": 0,
+        "documentActuallyOverflows": true,
+        "items": []
+      },
+      "horizontalOverflow": {
+        "documentElement": false,
+        "body": false
+      },
+      "combination": "registrar/d1440/light",
+      "route": "/registrar",
+      "theme": "light",
+      "renderMarkerCount": 3,
+      "httpStatus": 200,
+      "verdict": {
+        "documentScrollerActive": true,
+        "nestedScrollers": 0,
+        "exactlyOneVerticalScrollContainer": true,
+        "singleDocumentScrollNoNesting": true,
+        "noHorizontalOverflow": true
+      }
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "document": {
+        "scrollingElement": "html.dark",
+        "scrollHeight": 932,
+        "clientHeight": 900,
+        "innerHeight": 900,
+        "bodyScrollHeight": 932,
+        "documentElementScrollHeight": 932,
+        "overflowY": "visible",
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      },
+      "computedOverflowY": {
+        "html": "visible",
+        "body": "visible",
+        "main_contenido": "visible",
+        "main_contenido_present": true
+      },
+      "scrollContainers": {
+        "total": 0,
+        "documentLevel": 0,
+        "nested": 0,
+        "documentActuallyOverflows": true,
+        "items": []
+      },
+      "horizontalOverflow": {
+        "documentElement": false,
+        "body": false
+      },
+      "combination": "registrar/d1440/dark",
+      "route": "/registrar",
+      "theme": "dark",
+      "renderMarkerCount": 3,
+      "httpStatus": 200,
+      "verdict": {
+        "documentScrollerActive": true,
+        "nestedScrollers": 0,
+        "exactlyOneVerticalScrollContainer": true,
+        "singleDocumentScrollNoNesting": true,
+        "noHorizontalOverflow": true
+      }
+    }
+  ]
+}

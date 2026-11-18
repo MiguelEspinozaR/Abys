@@ -1,0 +1,13 @@
+AC2: PASS — cards={"Total últimos 30 días":true,"Total histórico":true,"Días trabajados":false,"Pagos":false}
+AC3: PASS — 30d=123.456,00 Bs:true, histórico=987.654,00 Bs:true, La Paz:true
+AC9: PASS — 22/10=["jue, 22 oct 2026","200,00 Bs","250,00 Bs","450,00 Bs"] (2 sources, 200+250=450); source patterns present
+AC10: PASS — monthly blocks=1–7,8–14,15–21,22–28,29–31; nav present
+AC11: PASS — yearly months=12; nav present
+AC12: PASS — tendencia text/table header present=false
+AC13: PASS — distribution nav=4, percent legends=6, pie sectors=8
+AC13-empty: PASS — empty-state messages rendered=2 (expected >=2)
+AC8: PASS — OCR text=false, comprobante text=true
+AC6: PASS — daily inputs=3, total="Total del pago: 600,00 Bs" (expected 600,00 Bs)
+AC7: PASS — 600/3 preview=["dom, 1 nov 2026200,00 Bs","lun, 2 nov 2026200,00 Bs","mar, 3 nov 2026200,00 Bs"]
+AC7-residual: PASS — 600,01/3 preview (residue to last day)=["dom, 1 nov 2026200,00 Bs","lun, 2 nov 2026200,00 Bs","mar, 3 nov 2026200,01 Bs"]
+SUMMARY {"total":12,"passed":12,"failed":0}

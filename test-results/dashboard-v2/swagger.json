@@ -1,0 +1,81 @@
+{
+  "artifact": "swagger verification evidence — dashboard-v2",
+  "feature": "dashboard-v2",
+  "commit_range": "643c511..e9faeea",
+  "head": "e9faeea5e497b08f2f0471724264944619342f5a",
+  "generated_at_local": "2026-11-17T20:55:43",
+  "command_succeeded": {
+    "exact_command": "cd backend && \"$(go env GOPATH)/bin/swag\" init -g cmd/server/main.go -o docs",
+    "exit_code": 0,
+    "cli_binary": "$(go env GOPATH)/bin/swag",
+    "cli_version": "swag version v1.16.4",
+    "declared_module_version": "github.com/swaggo/swag v1.16.6 (backend/go.mod)",
+    "version_note": "The prebuilt CLI available in the environment is v1.16.4. Generation with v1.16.4 from the same annotations produced a spec consistent with the locally present generated docs; no dependency changes were made."
+  },
+  "attempts": [
+    {
+      "exact_command": "cd backend && go run github.com/swaggo/swag/cmd/swag init",
+      "exit_code": 1,
+      "reason": "missing go.sum entries for sigs.k8s.io/yaml and github.com/urfave/cli/v2 (swag CLI transitive deps); repo go.mod/go.sum intentionally left untouched"
+    },
+    {
+      "exact_command": "cd backend && \"$(go env GOPATH)/bin/swag\" init",
+      "exit_code": 1,
+      "reason": "swag default general-info file is ./main.go; project main is ./cmd/server/main.go"
+    },
+    {
+      "exact_command": "cd backend && \"$(go env GOPATH)/bin/swag\" init -g cmd/server/main.go -o docs",
+      "exit_code": 0,
+      "reason": "success — generated docs/docs.go, docs/swagger.json, docs/swagger.yaml"
+    }
+  ],
+  "generated_files": [
+    "backend/docs/docs.go",
+    "backend/docs/swagger.json",
+    "backend/docs/swagger.yaml"
+  ],
+  "git_tracking": {
+    "backend_docs_is_gitignored": true,
+    "git_ls_files_backend_docs_is_empty": true,
+    "committed": false,
+    "note": "Generated docs are intentionally not committed (backend/docs/ is gitignored). Evidence here verifies reproducible generation from source annotations; this closes the reviewer's B4 requirement without changing .gitignore or Git history."
+  },
+  "dependency_diff": {
+    "backend/go.mod": "no diff",
+    "backend/go.sum": "no diff"
+  },
+  "spec_verification": {
+    "source": "backend/docs/swagger.json (regenerated)",
+    "swagger_version": "2.0",
+    "dashboard_endpoint_count": 7,
+    "dashboard_endpoints": [
+      "GET /dashboard/summary",
+      "GET /dashboard/weekly",
+      "GET /dashboard/monthly",
+      "GET /dashboard/yearly",
+      "GET /dashboard/history",
+      "GET /dashboard/distribution/monthly",
+      "GET /dashboard/distribution/yearly"
+    ],
+    "day_input_schema": {
+      "definition": "handler.DiaInput",
+      "required": ["fecha"],
+      "properties": {
+        "fecha": { "type": "string" },
+        "monto_enteros": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "day_input_schema_verified": true,
+    "related_dashboard_definitions": [
+      "handler.DashboardSummaryResponse",
+      "handler.DashboardWeeklyResponse",
+      "handler.DashboardMonthlyResponse",
+      "handler.DashboardYearlyResponse",
+      "handler.DashboardHistoryResponse",
+      "handler.DashboardDistributionMonthlyResponse",
+      "handler.DashboardDistributionYearlyResponse"
+    ]
+  },
+  "verdict": "PASS",
+  "evidence_log": "test-results/dashboard-v2/logs/swagger-generation.log"
+}
