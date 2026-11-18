@@ -6,6 +6,39 @@ y este proyecto sigue [SemVer](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+## [0.3.0] - 2026-11-17
+
+### Añadido
+
+- **Monto por día trabajado:** cada `dias_trabajados` registra su propio `monto_enteros` (centavos); el total del pago se deriva en el backend como la suma de sus días.
+- **Registro híbrido:** modos "Detallado" (un monto por día, total calculado) y "Distribuido" (un total a repartir) con modos de redondeo `redondeado` / `enteros` / `preciso` y residuo al último día (`lib/distribuir.ts`, espejo de `splitcalc`). El modo es solo estado de UI.
+- **Backfill histórico:** la migración reparte equitativamente el monto de cada pago entre sus días (base = total / n, sobrante al último día por `fecha`, luego `id`) y crea un día sintético en `fecha_pago` para los pagos sin días, de modo que Σ días = total del pago.
+- **Gráficos por día y por fuente (calculados desde `dias_trabajados.fecha`):** semanal con barras apiladas por fuente (color + patrón, leyenda y tooltip desglosado), mensual por bloques del mes (1–7, 8–14, 15–21, 22–28, 29–31) y anual por mes, ambos de barras simples.
+- **Tortas de distribución por fuente** del mes y del año, con porcentajes visibles, leyenda, patrones y navegación ‹ ›; estado vacío cuando el período no tiene datos.
+- **Cards de resumen:** "Total últimos 30 días" (Σ de días en los últimos 30 días calendario, `America/La_Paz`) y "Total histórico".
+- **API del dashboard:** 7 endpoints de agregación (`summary`, `weekly`, `monthly`, `yearly`, `history`, `distribution/monthly`, `distribution/yearly`), en centavos e incluyendo fuentes soft-deleted para preservar alias y colores históricos.
+- **Accesibilidad:** leyenda y patrones por fuente, tooltips textuales y tablas `sr-only` para que ningún gráfico dependa solo del color.
+
+### Cambiado
+
+- `pago.monto_enteros` pasa a ser un valor derivado: el backend ignora el total enviado por el cliente y responde `422` (`TOTAL_DESINCRONIZADO`) si no coincide con la suma de los días.
+- Contrato de días (breaking): `dias_trabajados` viaja como objetos `{ fecha, monto_enteros }` en requests y respuestas (las respuestas añaden `id` y `pago_id`).
+- `GET /dashboard/summary` ya no toma `mes`/`anio` y reporta totales de 30 días e histórico; el histórico deja de incluir la serie de tendencia.
+- Montos por día y distribución equitativa reutilizan la semántica de redondeo de Splits, sin añadir dependencias.
+- Versión del frontend a `0.3.0` (`web/package.json` y `web/package-lock.json`).
+
+### Eliminado
+
+- El **OCR** del registro (servicio, botón, resumen y test) y la dependencia **`tesseract.js`**; se conserva el comprobante adjunto y su reintento.
+- La línea de tendencia (media móvil) del gráfico histórico.
+- Las cards "Días trabajados" y "Pagos" del dashboard.
+
+### Corregido
+
+- Doble scroll anidado en `/dashboard` y `/registrar`: ambos usan un único scroll del documento.
+
+> La versión `0.3.0` se prepara **sin tag ni release en GitHub**; el despliegue a `test3` queda pendiente de aprobación.
+
 ## [0.2.0] - 2026-11-17
 
 ### Añadido

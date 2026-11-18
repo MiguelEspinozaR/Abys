@@ -14,7 +14,6 @@
 | Gráficos | Recharts |
 | Estado | TanStack Query (server state) + Zustand (solo UI) |
 | Notificaciones | Sonner |
-| OCR | Tesseract.js (solo cliente) |
 
 ## Backend
 
@@ -41,11 +40,13 @@ Estructura en `web/src/`:
 - `features/` — una carpeta por vista: `dashboard`, `registrar`, `ingresos`, `splits`, `configuracion`, `health`.
 - `components/ui/` — componentes shadcn/ui.
 - `components/layout/` — sidebar y layout general.
-- `services/` — cliente HTTP (fetch), hooks de TanStack Query, OCR, tipos.
+- `services/` — cliente HTTP (fetch), hooks de TanStack Query y tipos (sin OCR).
 - `store/` — Zustand (sidebar, tema).
-- `lib/` — utilidades (formato de montos Bs ↔ centavos, fechas, validadores de formulario, mapeo de errores de API y validación de uploads) con tests.
+- `lib/` — utilidades (formato de montos Bs ↔ centavos, reparto equitativo `distribuir.ts`, fechas, validadores de formulario, mapeo de errores de API y validación de uploads) con tests.
 - `components/form/` — `FieldError`, `ErrorSummary` y `ConfirmarDescarteDialog`.
-- **Histórico (bloque C):** en `/ingresos` y `/splits` la URL es fuente de verdad del estado aplicado (`rango`/`desde`/`hasta`/`fuente`/`metodo`; `?tab=` en `/configuracion`). El histórico se agrupa por año en secciones colapsables con carga bajo demanda y “Cargar más” (tope efectivo `page_size` 500). En `/splits` los filtros afectan solo la lista; los totales de cabecera y “Pendiente por cuenta” permanecen globales (D8). El `meta theme-color` se sincroniza dinámicamente con el tema leyendo el token de fondo y escribiéndolo en rgb/hex (valor inicial estático en HTML). Los 4 gráficos del dashboard exponen figura con nombre/descripción, tabla alternativa `sr-only`, `accessibilityLayer` de Recharts, patrones/markers y contraste AA en escala de grises. Limitaciones conocidas: índice de años en `/splits` basado en pagos (D-A, año con pagos sin splits puede mostrarse vacío), tope 500 y harness AA smoke-level.
+- **Histórico (bloque C):** en `/ingresos` y `/splits` la URL es fuente de verdad del estado aplicado (`rango`/`desde`/`hasta`/`fuente`/`metodo`; `?tab=` en `/configuracion`). El histórico se agrupa por año en secciones colapsables con carga bajo demanda y “Cargar más” (tope efectivo `page_size` 500). En `/splits` los filtros afectan solo la lista; los totales de cabecera y “Pendiente por cuenta” permanecen globales (D8). El `meta theme-color` se sincroniza dinámicamente con el tema leyendo el token de fondo y escribiéndolo en rgb/hex (valor inicial estático en HTML). Limitaciones conocidas: índice de años en `/splits` basado en pagos (D-A, año con pagos sin splits puede mostrarse vacío), tope 500 y harness AA smoke-level.
+
+- **Dashboard v2 (0.3.0):** los charts se calculan desde `dias_trabajados.monto_enteros` agrupados por `dias_trabajados.fecha` y uniendo `pagos` activos con `fuentes` (incluidas las soft-deleted, para conservar alias/color históricos). Semanal apilado por fuente, mensual por bloques del mes, anual por mes, histórico sin tendencia y tortas de distribución mes/año por fuente. Cada gráfico expone figura con nombre/descripción, tabla alternativa `sr-only`, `accessibilityLayer` de Recharts, patrones por fuente y contraste AA (ninguno depende solo del color). `/dashboard` y `/registrar` usan un único scroll del documento.
 
 ## Formularios
 
@@ -61,6 +62,7 @@ Tablas principales: `fuentes`, `pagos`, `dias_trabajados`, `cuentas`, `historial
 Puntos clave del diseño:
 
 - Montos en **centavos enteros (BIGINT)**; conversión solo al visualizar.
+- `dias_trabajados.monto_enteros` (BIGINT, ≥ 0) guarda el monto de **cada día trabajado**; `pagos.monto_enteros` se **deriva** en el backend como Σ de los días de ese pago (el backend ignora el total del cliente y rechaza con `422` si no coincide). La migración de backfill reparte los montos históricos entre los días y crea un día sintético para pagos sin días.
 - `transacciones` guarda snapshot de alias y tasa al momento de la creación (los datos históricos no dependen del estado actual de la cuenta).
 - Una cuenta `General` permanente absorbe residuos de redondeo y diferencias de recálculo.
 - Soft delete con auditoría; los registros ocultos siguen visibles en histórico.

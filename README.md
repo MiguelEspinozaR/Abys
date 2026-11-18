@@ -8,11 +8,11 @@ Gestor personal de ingresos laborales (bolivianos — BOB). Sucesor de finanzasM
 
 ## Funcionalidades
 
-- **Ingresos:** registro con OCR de monto/descripción, comprobante adjunto y marca de días de pago ya registrados en el calendario.
+- **Ingresos:** registro de pagos con un **monto por cada día trabajado** (el total del pago es la suma de sus días), comprobante adjunto y marca de días ya registrados en el calendario. El alta puede ser **detallada** (monto por día) o **distribuida** (un total repartido con modos `redondeado`/`enteros`/`preciso`). No hay OCR.
 - **Splits:** generación automática por fuente (logo y modo por defecto), pendiente por cuenta y creación desde Ingresos.
 - **Histórico:** agrupación por año con carga bajo demanda y filtros/rango como fuente de verdad en la URL.
-- **Dashboard:** gráficos con alternativa accesible (tabla de datos + patrones) y `theme-color` sincronizado con el tema.
-- **Accesibilidad AA:** foco visible, contraste, áreas táctiles de 44 px, respeto de movimiento reducido y skip link.
+- **Dashboard:** gráficos calculados **por día y por fuente**: semanal apilado por fuente, mensual por bloques del mes, anual por mes, histórico sin tendencia y tortas de distribución mes/año por fuente. Cards de "Total últimos 30 días" y "Total histórico". Alternativa accesible (tabla de datos + patrones) y `theme-color` sincronizado con el tema.
+- **Accesibilidad AA:** foco visible, contraste, áreas táctiles de 44 px, respeto de movimiento reducido, skip link y un único scroll del documento en `/dashboard` y `/registrar`.
 - Tema claro/oscuro y navegación móvil con panel desplegable.
 
 ## Requisitos
@@ -60,7 +60,7 @@ Scripts sobre systemd; ver [`backlog/despliegue.md`](backlog/despliegue.md).
 
 ## Versión
 
-0.2.0 — ver [`CHANGELOG.md`](CHANGELOG.md).
+0.3.0 — ver [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Documentación
 

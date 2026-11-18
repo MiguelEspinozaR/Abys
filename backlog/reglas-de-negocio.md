@@ -9,12 +9,12 @@ Fuente única de las reglas de la aplicación, documentadas en lenguaje natural.
 3. Una misma fecha de trabajo puede pertenecer a varios pagos.
 4. Un pago puede existir sin split, pero no puede tener más de un split.
 5. Un pago con transacciones realizadas no puede eliminarse.
-6. El monto del pago no puede ser negativo; la fecha debe ser válida; no se permiten fechas de trabajo duplicadas dentro del mismo pago.
+6. El monto del pago no puede ser negativo; la fecha debe ser válida; no se permiten fechas de trabajo duplicadas dentro del mismo pago. **`pago.monto_enteros` es derivado**: el backend lo calcula como la suma de los montos de sus días e ignora el total enviado por el cliente; si el cliente envía un total (`> 0`) que no cuadra con esa suma, la operación se rechaza con `422` (`TOTAL_DESINCRONIZADO`).
 7. Métodos de pago fijos: `efectivo`, `qr`, `transacción`.
 
 ## Días trabajados
 
-8. Cada día trabajado pertenece a un solo pago; fecha única por pago; la misma fecha puede repetirse en pagos distintos.
+8. Cada día trabajado pertenece a un solo pago; fecha única por pago; la misma fecha puede repetirse en pagos distintos. **Cada día tiene su propio `monto_enteros` en centavos (BIGINT, ≥ 0)**: el total del pago es la suma de los montos de sus días.
 
 ## Fuentes
 
@@ -65,7 +65,16 @@ Fuente única de las reglas de la aplicación, documentadas en lenguaje natural.
 
 ## Formularios y archivos
 
-31. Las notas de un pago son opcionales y tienen un máximo de **500 caracteres** validado en cliente (regla de producto). Si el OCR deja más de 500, el texto no se trunca: se muestra el contador real y se bloquea el guardado hasta corregirlo. El backend no impone este límite.
+31. Las notas de un pago son opcionales y tienen un máximo de **500 caracteres** validado en cliente (regla de producto). Si el texto supera los 500, no se trunca: se muestra el contador real y se bloquea el guardado hasta corregirlo. El backend no impone este límite.
+
 32. Comprobante, logo y QR aceptan imágenes PNG, JPEG, WEBP o GIF de hasta **10 MB**; el límite coincide con `MaxUploadSize` del backend (default 10 MB) y se valida antes de enviar.
 33. Los formularios con cambios sin guardar piden confirmación (`AlertDialog`) al navegar internamente o cerrar un diálogo. Recargar o cerrar la pestaña no se intercepta (sin `beforeunload`): los cambios no guardados se pierden.
 34. Los errores de validación y de API se muestran inline junto al campo o en el resumen del formulario; no se usa `toast.error` para validación de formularios.
+
+## Montos por día, reparto y resumen (0.3.0)
+
+35. El registro puede ser **detallado** (se ingresa el monto de cada día y el total se calcula, solo lectura) o **distribuido** (se ingresa un total y se reparte entre los días). El modo es estado de la UI y no se persiste en el pago.
+36. En el reparto equitativo, `base = total / n` en centavos para todos los días y el sobrante `total mod n` se asigna al **último día** (por `fecha`, luego `id`), de modo que Σ días = total exactamente. Los modos de redondeo reutilizan la semántica de Splits: `redondeado` (half-up a 1 Bs), `enteros` (truncado a 1 Bs) y `preciso` (centavo exacto); el último día absorbe el residuo y nunca es negativo.
+37. El backfill histórico aplica el mismo criterio a los pagos existentes y crea un día sintético en `fecha_pago` (con el monto completo) para todo pago que no tenga días; no se reescribe `pagos.monto_enteros`.
+38. La card "Total últimos 30 días" suma los montos de los días con `fecha` en los últimos **30 días calendario** (incluye hoy, zona `America/La_Paz`); "Total histórico" suma todos los días. Ambas son independientes de la navegación por mes/año.
+39. El OCR **ya no existe** en el producto: el comprobante se adjunta como archivo (PNG/JPEG/WEBP/GIF, ≤10 MB), sin extracción automática de monto, fecha ni descripción.
