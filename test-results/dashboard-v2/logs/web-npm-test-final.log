@@ -1,0 +1,16 @@
+
+> abys-web@0.3.0 test
+> vitest run
+
+
+ RUN  v5.0.0 /home/miky/Documentos/finanzasMikyGoRef/web
+
+
+ Test Files  11 passed (11)
+      Tests  144 passed (144)
+   Start at  21:23:48
+   Duration  12.03s (import 71%, tests 18%, transform 9%, worker 2%)
+
+    Isolate  11 workers spawned · ~848ms startup each (spawn + environment, per file)
+             at least ~2.26s faster with isolate: false — reuses workers across files instead of one per file
+

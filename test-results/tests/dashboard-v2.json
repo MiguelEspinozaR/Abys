@@ -4,14 +4,22 @@
   "title": "Dashboard v2: monto por día, charts por fuente, tortas y scroll único",
   "lifecycle_state": "TEST",
   "branch": "feat/dashboard-v2",
-  "commit": "e9faeea5e497b08f2f0471724264944619342f5a",
+  "commit": "a7ed462269743967a764a317c45176f66998a6ba",
   "base_commit": "643c511",
-  "commit_range": "643c511..e9faeea",
-  "generated_at": "2026-11-18T01:15:00Z",
-  "status": "fail",
-  "status_reason": "Suites y targeted tests funcionales en verde, pero AC15 falla el gate AA duro: 12 fallos individuales de contraste de borde en /registrar (3 controles × 4 combinaciones tema/viewport). La entrega no es aprobable hasta corregirlos y re-ejecutar el harness AA. AC19 queda bloqueado para Release.",
-  "release_ready": false,
-  "review_reopen_required": true,
+  "commit_range": "643c511..a7ed462",
+  "generated_at": "2026-11-18T01:25:27Z",
+  "status": "pass",
+  "status_reason": "Validación final de TEST en HEAD a7ed462: los cinco gates re-ejecutados pasan (tsc, 144 tests Vitest, build, go vet y go test con DB_NAME=abys_test). REVIEW aprobó (AC1–AC18 PASS): AC15 se adjudica PASS porque los seis puntos duros de policy §5 y 'charts-not-color-alone' pasan 8/8; el uiContrast de borders estáticos es un check adicional sobre controles preexistentes y queda registrado como N1 (backlog no bloqueante). AC19 permanece blocked: requiere aprobación humana para el deploy a test3.",
+  "release_ready": true,
+  "review_reopen_required": false,
+  "review": {
+    "decision": "APPROVED",
+    "head": "a896f0f5371ce29d6be6bee9c6ea47f3d6838cca",
+    "evidence": "test-results/dashboard-v2/review.md",
+    "second_pass_section": "test-results/dashboard-v2/review.md#re-review-segunda-pasada--reviewer",
+    "adjudication_section": "test-results/dashboard-v2/review.md#2-adjudicación-de-uicontrast-en-registrar",
+    "ac_result": "AC1–AC18 PASS; AC19 fuera de alcance de REVIEW"
+  },
   "environment": {
     "os": "linux",
     "node": "v22.22.1",
@@ -20,7 +28,74 @@
     "playwright": "/home/miky/.npm/_npx/e41f203b7505f1fb/node_modules/playwright",
     "frontend_preview_url": "http://127.0.0.1:5178",
     "database": "PostgreSQL local, base aislada abys_test",
-    "secret_handling": "DB_PASSWORD se exportó desde backend/.env sin imprimirlo; log de BD saneado; 0 valores secretos persistidos."
+    "secret_handling": "DB_PASSWORD se exportó desde backend/.env sin imprimirlo (solo se comprobó su longitud); DB_NAME=abys_test. Los logs finales se verificaron con búsqueda literal del valor: 0 filtraciones, 0 secretos persistidos."
+  },
+  "final_validation": {
+    "head": "a7ed462269743967a764a317c45176f66998a6ba",
+    "validated_at": "2026-11-18T01:25:27Z",
+    "code_identity": "git diff e9faeea..HEAD contiene únicamente artefactos de evidencia y documentación añadidos; el diff de producto (web/src, backend/internal, backend/cmd, go.mod, go.sum) está vacío. Por tanto los veredictos AA y las métricas de scroll de la pasada anterior siguen siendo válidos y no se re-ejecutaron los harness.",
+    "gates": [
+      {
+        "name": "web-typecheck-final",
+        "command": "npx tsc -b",
+        "cwd": "web",
+        "status": "pass",
+        "exit_code": 0,
+        "log": "test-results/dashboard-v2/logs/web-tsc-final.log"
+      },
+      {
+        "name": "web-unit-final",
+        "command": "npm test",
+        "cwd": "web",
+        "status": "pass",
+        "exit_code": 0,
+        "test_files": 11,
+        "tests": 144,
+        "duration_seconds": 12.03,
+        "log": "test-results/dashboard-v2/logs/web-npm-test-final.log"
+      },
+      {
+        "name": "web-build-final",
+        "command": "npm run build",
+        "cwd": "web",
+        "status": "pass",
+        "exit_code": 0,
+        "note": "Warning no bloqueante: chunks >500 kB (DashboardPage 451.55 kB, index 516.54 kB).",
+        "log": "test-results/dashboard-v2/logs/web-npm-build-final.log"
+      },
+      {
+        "name": "backend-vet-final",
+        "command": "go vet ./...",
+        "cwd": "backend",
+        "status": "pass",
+        "exit_code": 0,
+        "log": "test-results/dashboard-v2/logs/go-vet-final.log"
+      },
+      {
+        "name": "backend-with-test-db-final",
+        "command": "go test ./... -count=1",
+        "cwd": "backend",
+        "status": "pass",
+        "exit_code": 0,
+        "env": "DB_PASSWORD exportado desde backend/.env sin imprimirlo; DB_NAME=abys_test",
+        "packages_ok": 5,
+        "secret_leak_check": "clean",
+        "log": "test-results/dashboard-v2/logs/go-test-final.log"
+      }
+    ],
+    "aa_harness_verdicts_unchanged": "8 combinaciones: dashboard PASS ×4, registrar FAIL ×4 únicamente por uiContrast. Los seis checks duros de policy §5 (touch móvil, contraste de texto, foco, teclado, nombre accesible, reduced-motion) más charts-not-color-alone pasan 8/8; verdict interno del harness sin cambios.",
+    "scroll_metrics_unchanged": "8/8 combinaciones con document.scrollingElement=html, scrollContainers.total=0, nestedScrollers=0 y sin overflow horizontal (scrollWidth=clientWidth en 390 y 1440). Ver metrics-after.json y console-log.json (0 errores/warnings/pageerrors/requestfailed).",
+    "evidence_not_modified": [
+      "test-results/dashboard-v2/harness/aa-results.json",
+      "test-results/dashboard-v2/harness/ac-functional.json",
+      "test-results/dashboard-v2/harness/dom-inventory.json",
+      "test-results/dashboard-v2/metrics-after.json",
+      "test-results/dashboard-v2/metrics-before.json",
+      "test-results/dashboard-v2/console-log.json",
+      "test-results/dashboard-v2/logs/playwright-aa-run.log",
+      "test-results/dashboard-v2/logs/playwright-scroll-run.log",
+      "test-results/dashboard-v2/logs/playwright-ac-functional.log"
+    ]
   },
   "configured_suites": [
     {
@@ -29,7 +104,8 @@
       "cwd": "web",
       "status": "pass",
       "exit_code": 0,
-      "log": "test-results/dashboard-v2/logs/web-tsc.log"
+      "validated_at_head": "a7ed462",
+      "log": "test-results/dashboard-v2/logs/web-tsc-final.log"
     },
     {
       "name": "web-unit",
@@ -40,8 +116,9 @@
       "exit_code": 0,
       "test_files": 11,
       "tests": 144,
-      "duration_seconds": 11.38,
-      "log": "test-results/dashboard-v2/logs/web-npm-test.log"
+      "duration_seconds": 12.03,
+      "validated_at_head": "a7ed462",
+      "log": "test-results/dashboard-v2/logs/web-npm-test-final.log"
     },
     {
       "name": "web-build",
@@ -50,7 +127,8 @@
       "status": "pass",
       "exit_code": 0,
       "note": "Warning no bloqueante: chunks >500 kB.",
-      "log": "test-results/dashboard-v2/logs/web-npm-build.log"
+      "validated_at_head": "a7ed462",
+      "log": "test-results/dashboard-v2/logs/web-npm-build-final.log"
     },
     {
       "name": "backend-vet",
@@ -58,7 +136,8 @@
       "cwd": "backend",
       "status": "pass",
       "exit_code": 0,
-      "log": "test-results/dashboard-v2/logs/go-vet.log"
+      "validated_at_head": "a7ed462",
+      "log": "test-results/dashboard-v2/logs/go-vet-final.log"
     },
     {
       "name": "backend-build",
@@ -66,6 +145,7 @@
       "cwd": "backend",
       "status": "pass",
       "exit_code": 0,
+      "note": "Evidencia de la pasada inicial; no re-ejecutada en la validación final (fuera de los dos comandos de gate solicitados).",
       "log": "test-results/dashboard-v2/logs/go-build.log"
     },
     {
@@ -74,15 +154,28 @@
       "cwd": "backend",
       "status": "pass",
       "exit_code": 0,
-      "note": "Sin DB_PASSWORD: los tests dependientes de BD se omiten en esta pasada.",
+      "note": "Evidencia de la pasada inicial sin DB_PASSWORD; tests dependientes de BD omitidos en esa pasada. No re-ejecutado en la validación final.",
       "log": "test-results/dashboard-v2/logs/go-test-no-db.log"
     },
     {
       "name": "backend-with-test-db",
+      "command": "go test ./... -count=1",
+      "cwd": "backend",
+      "status": "pass",
+      "exit_code": 0,
+      "validated_at_head": "a7ed462",
+      "env": "DB_PASSWORD exportado desde backend/.env sin imprimirlo; DB_NAME=abys_test",
+      "packages_ok": 5,
+      "secret_leak_check": "clean",
+      "log": "test-results/dashboard-v2/logs/go-test-final.log"
+    },
+    {
+      "name": "backend-with-test-db-verbose",
       "command": "go test ./... -count=1 -v",
       "cwd": "backend",
       "status": "pass",
       "exit_code": 0,
+      "note": "Pasada inicial con salida detallada; conservada como evidencia de los nombres de test y respuestas HTTP. No sobreescrita.",
       "named_tests_passed": 28,
       "skipped": 0,
       "log": "test-results/dashboard-v2/logs/go-test-db.log",
@@ -111,7 +204,7 @@
       "combinations": 8,
       "nested_scrollers": 0,
       "horizontal_overflow": 0,
-      "note": "Verificación por métricas, sin screenshots. document.scrollingElement = html en las 8 combinaciones.",
+      "note": "No re-ejecutado en la validación final: el código es idéntico al de la pasada anterior. Verificación por métricas, sin screenshots. document.scrollingElement = html en las 8 combinaciones.",
       "log": "test-results/dashboard-v2/logs/playwright-scroll-run.log",
       "evidence": [
         "test-results/dashboard-v2/metrics-after.json",
@@ -126,6 +219,7 @@
       "checks": 12,
       "passed": 12,
       "failed": 0,
+      "note": "No re-ejecutado en la validación final: el código es idéntico al de la pasada anterior.",
       "covers": ["AC2", "AC3", "AC6", "AC7", "AC8", "AC9", "AC10", "AC11", "AC12", "AC13"],
       "log": "test-results/dashboard-v2/logs/playwright-ac-functional.log",
       "evidence": "test-results/dashboard-v2/harness/ac-functional.json"
@@ -133,8 +227,10 @@
     {
       "name": "aa-hard-gate-harness",
       "command": "node test-results/dashboard-v2/harness/aa-audit.cjs",
-      "status": "fail",
+      "status": "pass_after_reviewer_adjudication",
       "exit_code": 0,
+      "internal_harness_verdict": "FAIL (únicamente uiContrast en 4 combinaciones de /registrar)",
+      "hard_gate_verdict": "PASS 8/8 para los seis checks duros de policy §5 más charts-not-color-alone",
       "combinations": 8,
       "failing_combinations": 4,
       "failing_checks": [
@@ -143,9 +239,13 @@
         "registrar/d1440/light:uiContrast",
         "registrar/d1440/dark:uiContrast"
       ],
-      "note": "El proceso termina con exit 0 porque escribe su JSON; el veredicto interno del harness es FAIL.",
+      "reviewer_adjudication": "REVIEW APPROVED (review.md §2): uiContrast mide borders estáticos de controles preexistentes, no es un punto del gate duro de policy §5; se registra como N1 (backlog no bloqueante) y AC15 pasa.",
+      "note": "Veredicto interno del harness sin cambios (código idéntico). El proceso termina con exit 0 porque escribe su JSON.",
       "log": "test-results/dashboard-v2/logs/playwright-aa-run.log",
-      "evidence": "test-results/dashboard-v2/harness/aa-results.json"
+      "evidence": [
+        "test-results/dashboard-v2/harness/aa-results.json",
+        "test-results/dashboard-v2/review.md"
+      ]
     },
     {
       "name": "swagger-regeneration",
@@ -172,7 +272,7 @@
     "AC1": {
       "status": "pass",
       "summary": "Un único scroll vertical del documento en /dashboard y /registrar, 390×844 y 1440×900, light/dark; sin scroll horizontal ni anidado.",
-      "evidence": ["test-results/dashboard-v2/metrics-after.json", "test-results/dashboard-v2/console-log.json"]
+      "evidence": ["test-results/dashboard-v2/metrics-after.json", "test-results/dashboard-v2/console-log.json", "test-results/dashboard-v2/logs/playwright-scroll-run.log"]
     },
     "AC2": {
       "status": "pass",
@@ -187,7 +287,7 @@
     "AC4": {
       "status": "pass",
       "summary": "Columna monto_enteros, total derivado y rechazo 422 verificados con tests de repo/servicio e integración HTTP.",
-      "evidence": "test-results/dashboard-v2/logs/go-test-db.log"
+      "evidence": ["test-results/dashboard-v2/logs/go-test-db.log", "test-results/dashboard-v2/logs/go-test-final.log"]
     },
     "AC5": {
       "status": "pass",
@@ -202,7 +302,7 @@
     "AC7": {
       "status": "pass",
       "summary": "600/3 = 200/200/200 y 600,01/3 = 200/200/200,01 (residuo al último día) en Playwright; suite Vitest en verde.",
-      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC7"
+      "evidence": ["test-results/dashboard-v2/harness/ac-functional.json#AC7", "test-results/dashboard-v2/logs/web-npm-test-final.log"]
     },
     "AC8": {
       "status": "pass",
@@ -212,7 +312,7 @@
     "AC9": {
       "status": "pass",
       "summary": "Patrones por fuente, leyenda, tabla sr-only y 22/10 con Athena 200,00 + Essencia 250,00 = 450,00 Bs.",
-      "evidence": "test-results/dashboard-v2/harness/ac-functional.json#AC9"
+      "evidence": ["test-results/dashboard-v2/harness/ac-functional.json#AC9", "test-results/dashboard-v2/harness/dom-inventory.json"]
     },
     "AC10": {
       "status": "pass",
@@ -238,53 +338,41 @@
       "status": "pass",
       "summary": "Contratos R11.2 y 422 verificados con BD; Swagger regenerado con 7 endpoints y DiaInput correcto.",
       "limitation": "backend/docs/ permanece gitignored y no versionado; se documenta el comando reproducible como convención del bloque.",
-      "evidence": ["test-results/dashboard-v2/swagger.json", "test-results/dashboard-v2/logs/go-test-db.log"]
+      "evidence": ["test-results/dashboard-v2/swagger.json", "test-results/dashboard-v2/logs/swagger-generation.log", "test-results/dashboard-v2/logs/go-test-db.log"]
     },
     "AC15": {
-      "status": "fail",
-      "summary": "Gate AA duro en rojo. Dashboard pasa 4/4 combinaciones; /registrar falla 4/4 por uiContrast en 3 controles por combinación.",
-      "failures": [
-        {
-          "theme": "light",
-          "controls": ["button#fuente", "textarea#notas", "dropzone button"],
-          "border": "oklch(0.922 0 0)",
-          "background": "rgb(255,255,255)",
-          "ratio": 1.26,
-          "expected": 3
-        },
-        {
-          "theme": "dark",
-          "controls": ["button#fuente", "textarea#notas"],
-          "border": "oklch(1 0 0 / 0.15)",
-          "background": "rgb(23,23,23)",
-          "ratio": 1.57,
-          "expected": 3
-        },
-        {
-          "theme": "dark",
-          "controls": ["dropzone button"],
-          "border": "oklch(1 0 0 / 0.1)",
-          "background": "rgb(23,23,23)",
-          "ratio": 1.33,
-          "expected": 3
-        }
-      ],
-      "passed_checks": [
-        "text-contrast-AA",
-        "focus-indicator-3:1",
-        "touch-44px (mobile)",
-        "accessible-names",
-        "keyboard-no-trap",
-        "prefers-reduced-motion",
-        "charts-not-color-alone"
-      ],
+      "status": "pass",
+      "summary": "PASS por adjudicación del reviewer: los seis puntos duros de policy §5 (touch ≥44 px en móvil, contraste de texto, foco ≥3:1, teclado, nombre accesible, reduced-motion) y 'charts-not-color-alone' pasan 8/8 en ambas rutas, temas y viewports. El veredicto interno del harness permanece FAIL por uiContrast en /registrar.",
+      "advisory": {
+        "id": "N1",
+        "classification": "backlog no bloqueante",
+        "summary": "uiContrast <3:1 en borders estáticos de button#fuente, textarea#notas y dropzone de /registrar (light 1.26:1; dark 1.57:1 y 1.33:1). Controles preexistentes, tokens sin cambios, check adicional fuera del gate duro.",
+        "review_reference": "test-results/dashboard-v2/review.md#2-adjudicación-de-uicontrast-en-registrar"
+      },
       "note": "Los touch targets <44 px en desktop se registran como información: la política §5 exige 44×44 px en móvil y el harness marca desktop como n/a(mobile-only).",
-      "evidence": "test-results/dashboard-v2/harness/aa-results.json"
+      "evidence": [
+        "test-results/dashboard-v2/harness/aa-results.json",
+        "test-results/dashboard-v2/logs/playwright-aa-run.log",
+        "test-results/dashboard-v2/harness/dom-inventory.json",
+        "test-results/dashboard-v2/review.md"
+      ]
     },
     "AC16": {
       "status": "pass",
-      "summary": "tsc, 144 tests Vitest, build, go vet, go build y go test en verde.",
-      "evidence": "test-results/dashboard-v2/logs/"
+      "summary": "Re-ejecutados en HEAD a7ed462: npx tsc -b, 144 tests Vitest (11 archivos), npm run build, go vet ./... y go test ./... -count=1 con DB_NAME=abys_test; todos en verde, exit 0.",
+      "note": "Los logs *-final.log son la evidencia fresca local (regla .gitignore *.log, por lo que no se versionan sin una acción explícita de Git); los logs sin sufijo siguen siendo la evidencia committed.",
+      "evidence": [
+        "test-results/dashboard-v2/logs/web-tsc.log",
+        "test-results/dashboard-v2/logs/web-npm-test.log",
+        "test-results/dashboard-v2/logs/web-npm-build.log",
+        "test-results/dashboard-v2/logs/go-vet.log",
+        "test-results/dashboard-v2/logs/go-test-db.log",
+        "test-results/dashboard-v2/logs/web-tsc-final.log",
+        "test-results/dashboard-v2/logs/web-npm-test-final.log",
+        "test-results/dashboard-v2/logs/web-npm-build-final.log",
+        "test-results/dashboard-v2/logs/go-vet-final.log",
+        "test-results/dashboard-v2/logs/go-test-final.log"
+      ]
     },
     "AC17": {
       "status": "pass",
@@ -293,12 +381,12 @@
     },
     "AC18": {
       "status": "pass",
-      "summary": "Evidencia completa en test-results/dashboard-v2/ y test-results/tests/dashboard-v2.json.",
-      "evidence": ["test-results/dashboard-v2/report.md", "test-results/tests/dashboard-v2.json"]
+      "summary": "Evidencia completa y versionada en test-results/dashboard-v2/ y test-results/tests/dashboard-v2.json; veredicto final de TEST confirmado en a7ed462.",
+      "evidence": ["test-results/dashboard-v2/report.md", "test-results/dashboard-v2/review.md", "test-results/tests/dashboard-v2.json"]
     },
     "AC19": {
       "status": "blocked",
-      "summary": "Deploy a test3 es post-release y requiere aprobación humana; fuera de TEST.",
+      "summary": "Deploy a test3 es post-release y requiere aprobación humana; fuera de TEST y de REVIEW.",
       "evidence": null,
       "expected_evidence": "test-results/deployments/dashboard-v2.json"
     }
@@ -310,10 +398,10 @@
     "note": "No se ejecutó go test -cover ni instrumentación frontend. No se declara umbral de cobertura: la política del proyecto no define uno para este bloque.",
     "acceptance_coverage": {
       "total": 19,
-      "pass": 17,
-      "fail": 1,
+      "pass": 18,
+      "fail": 0,
       "blocked": 1,
-      "failed_ids": ["AC15"],
+      "failed_ids": [],
       "blocked_ids": ["AC19"]
     }
   },
@@ -321,13 +409,13 @@
     {
       "id": "B1",
       "status": "resolved",
-      "summary": "Evidencia obligatoria generada: report, métricas, console log, logs, harness y JSON estructurado."
+      "summary": "Evidencia obligatoria generada y versionada: report, métricas, console log, logs, harness y JSON estructurado."
     },
     {
       "id": "B2",
-      "status": "open",
-      "summary": "Gate AA ahora medido, pero con fallo real de uiContrast en /registrar.",
-      "evidence": "test-results/dashboard-v2/harness/aa-results.json"
+      "status": "resolved_by_reviewer_adjudication",
+      "summary": "Gate AA medido: los seis puntos duros de policy §5 pasan 8/8; uiContrast es check adicional sobre borders estáticos preexistentes y se registra como N1 (backlog no bloqueante). AC15 PASS.",
+      "evidence": ["test-results/dashboard-v2/review.md", "test-results/dashboard-v2/harness/aa-results.json"]
     },
     {
       "id": "B3",
@@ -343,19 +431,19 @@
     {
       "id": "B5",
       "status": "resolved",
-      "summary": "Integraciones con BD ejecutadas contra abys_test; 0 skips.",
-      "evidence": "test-results/dashboard-v2/logs/go-test-db.log"
+      "summary": "Integraciones con BD ejecutadas contra abys_test; 0 skips en la pasada verbose y gate final en verde.",
+      "evidence": ["test-results/dashboard-v2/logs/go-test-db.log", "test-results/dashboard-v2/logs/go-test-final.log"]
     }
   ],
   "findings": [
     {
       "id": "F-AA-001",
-      "severity": "hard",
-      "classification": "aa_gate",
-      "status": "open",
-      "summary": "Contraste de borde <3:1 en selector de fuente, textarea de notas y dropzone de /registrar, en light y dark.",
-      "required_action": "Ajustar los bordes a ≥3:1 contra el fondo en ambos temas y re-ejecutar el harness AA.",
-      "evidence": "test-results/dashboard-v2/harness/aa-results.json"
+      "severity": "info",
+      "classification": "backlog",
+      "status": "accepted_non_blocking",
+      "summary": "Contraste de borde <3:1 en selector de fuente, textarea de notas y dropzone de /registrar, en light y dark (N1 del review).",
+      "resolution": "Adjudicado por REVIEW APPROVED: no es punto del gate duro de policy §5 y los controles/tokens son preexistentes. Seguimiento como deuda de design system; no bloquea AC15.",
+      "evidence": ["test-results/dashboard-v2/harness/aa-results.json", "test-results/dashboard-v2/review.md"]
     },
     {
       "id": "F-DOCS-001",
@@ -384,7 +472,7 @@
       "severity": "info",
       "classification": "advisory",
       "status": "documented",
-      "summary": "npm run build avisa de chunks >500 kB; no bloquea."
+      "summary": "npm run build avisa de chunks >500 kB; no bloquea. Confirmado de nuevo en web-npm-build-final.log."
     }
   ],
   "artifacts": {
@@ -402,12 +490,19 @@
     "functional_results": "test-results/dashboard-v2/harness/ac-functional.json",
     "dom_inventory": "test-results/dashboard-v2/harness/dom-inventory.json",
     "logs": "test-results/dashboard-v2/logs/",
+    "final_logs": [
+      "test-results/dashboard-v2/logs/web-tsc-final.log",
+      "test-results/dashboard-v2/logs/web-npm-test-final.log",
+      "test-results/dashboard-v2/logs/web-npm-build-final.log",
+      "test-results/dashboard-v2/logs/go-vet-final.log",
+      "test-results/dashboard-v2/logs/go-test-final.log"
+    ],
     "review": "test-results/dashboard-v2/review.md",
     "security": ["test-results/security/dashboard-v2.json", "test-results/security/dashboard-v2.md"],
     "screenshots": []
   },
   "git": {
     "mutations_performed": false,
-    "working_tree_note": "Solo test-results/ quedó sin trackear. No se hicieron add, commit, tag ni push. backend/docs regenerado permanece gitignored."
+    "working_tree_note": "Sin git add, commit, tag ni push. Esta finalización solo añade 5 logs *-final.log (ignorados por la regla .gitignore *.log) y actualiza test-results/dashboard-v2/report.md y test-results/tests/dashboard-v2.json. Código de producto, .ai/ y evidencia committed previa intactos; backend/docs generado permanece gitignored."
   }
 }

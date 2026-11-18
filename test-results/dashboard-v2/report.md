@@ -179,3 +179,23 @@ evidencia está completa y no requiere cambios de código en este rol.
 - `backend/docs/` permanece gitignored: AC14 se cierra con generación reproducible documentada.
 - El deploy a `test3` (AC19) no se ejecutó: requiere aprobación y ocurre en Release.
 - No se hicieron `git add`, `commit`, `tag` ni `push`; solo `test-results/` quedó sin trackear.
+
+---
+
+## Final validation (HEAD a7ed462)
+
+Esta sección cierra el estado **TEST** y supersede el veredicto `FAIL` y el bloqueo de las secciones anteriores. REVIEW aprobó en segunda pasada (`review.md`, HEAD `a896f0f`): AC1–AC18 PASS; AC19 queda bloqueado (deploy `test3` post-release). El código de producto es idéntico al de la ejecución previa: `git diff e9faeea..a7ed462` solo añade evidencia/documentación y está vacío en `web/src`, `backend/internal`, `backend/cmd`, `go.mod` y `go.sum`.
+
+| Gate re-ejecutado en `a7ed462` | Resultado | Log nuevo |
+|---|---|---|
+| `(cd web && npx tsc -b)` | PASS, exit 0 | `logs/web-tsc-final.log` |
+| `(cd web && npm test)` | PASS, 11 archivos / 144 tests, 12.03 s | `logs/web-npm-test-final.log` |
+| `(cd web && npm run build)` | PASS, exit 0; warning de chunks >500 kB (no bloquea) | `logs/web-npm-build-final.log` |
+| `(cd backend && go vet ./...)` | PASS, exit 0 | `logs/go-vet-final.log` |
+| `(cd backend && go test ./... -count=1)` con `DB_PASSWORD` exportado desde `.env` sin imprimirlo y `DB_NAME=abys_test` | PASS, 5 paquetes en `ok`, 0 filtración de secretos | `logs/go-test-final.log` |
+
+Veredictos y métricas sin cambios: `harness/aa-results.json` conserva dashboard PASS ×4 y registrar FAIL ×4 únicamente por `uiContrast` (check adicional sobre borders estáticos de controles preexistentes, adjudicado por el reviewer como **N1** no bloqueante → AC15 PASS). Los seis puntos duros de policy §5 y `charts-not-color-alone` pasan 8/8. `metrics-after.json` conserva 8/8 combinaciones con `document.scrollingElement=html`, `scrollContainers.total=0`, `nestedScrollers=0` y sin overflow horizontal; `console-log.json` sigue con 0 errores, warnings, pageerrors y requestfailed. Los harness no se re-ejecutaron porque el código es idéntico; ningún archivo de evidencia previa fue sobreescrito.
+
+Los logs `*-final.log` quedan en disco; la regla `*.log` de `.gitignore` los excluye del versionado y no se hizo `git add`, por lo que la evidencia committed sigue siendo la de los logs sin sufijo.
+
+**Veredicto final TEST:** `status=pass`, `release_ready=true`, `review_reopen_required=false`; AC1–AC18 PASS, AC19 `blocked`. Sin `git add`, `commit`, `tag` ni `push`.
