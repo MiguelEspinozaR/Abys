@@ -47,6 +47,9 @@ data class PagoEntity(
 
 /**
  * Día trabajado (tabla `dias_trabajados`): fecha única por pago (BR-010).
+ *
+ * Desde la v0.3.0 del API cada día lleva su monto en centavos (`monto_enteros`); el
+ * `montoEnteros` del pago es derivado (Σ de los días).
  */
 @Entity(
     tableName = "dias_trabajados",
@@ -69,6 +72,8 @@ data class DiaTrabajadoEntity(
     val pagoLocalId: String,
     /** `YYYY-MM-DD` */
     val fecha: String,
+    /** Monto del día en centavos (`monto_enteros`, >= 0). */
+    val montoEnteros: Long,
     val syncState: SyncState,
     val updatedAtLocal: Long,
 )

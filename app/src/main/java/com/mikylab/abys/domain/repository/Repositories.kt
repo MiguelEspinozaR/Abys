@@ -3,10 +3,10 @@ package com.mikylab.abys.domain.repository
 import com.mikylab.abys.core.result.AppResult
 import com.mikylab.abys.domain.model.BarraDia
 import com.mikylab.abys.domain.model.BarraMes
-import com.mikylab.abys.domain.model.BarraSemana
+import com.mikylab.abys.domain.model.BloqueMes
 import com.mikylab.abys.domain.model.Cuenta
-import com.mikylab.abys.domain.model.DashboardResumenServidor
 import com.mikylab.abys.domain.model.DashboardSummary
+import com.mikylab.abys.domain.model.Distribucion
 import com.mikylab.abys.domain.model.FiltroPagos
 import com.mikylab.abys.domain.model.Fuente
 import com.mikylab.abys.domain.model.HealthInfo
@@ -99,21 +99,25 @@ interface HealthRepository {
 }
 
 /**
- * Dashboard. Se calcula **localmente** sobre Room con la misma semántica que los endpoints
- * `dashboard` del backend, de modo que funciona sin conexión.
+ * Dashboard (v0.3.0). Se calcula **localmente** sobre Room con la misma semántica que los
+ * endpoints `dashboard` del backend — agrupación por `dias_trabajados.fecha`, montos de
+ * `dias_trabajados.monto_enteros`, `por_fuente` con fuentes activas **y eliminadas** —, de
+ * modo que funciona sin conexión.
  *
- * [consultarServidor] permite contrastar el total local con el del backend para detectar que
- * al espejo local le faltan datos (p. ej. tras instalar la app en otro dispositivo).
+ * [consultarServidor] permite contrastar los totales locales con los del backend para detectar
+ * que al espejo local le faltan datos (p. ej. tras instalar la app en otro dispositivo).
  */
 interface DashboardRepository {
-    fun observeResumen(mes: Int, anio: Int): Flow<DashboardSummary>
+    fun observeResumen(): Flow<DashboardSummary>
     fun observeHistorial(): Flow<List<PuntoHistorial>>
     fun observeSemana(fecha: java.time.LocalDate): Flow<List<BarraDia>>
-    fun observeMes(mes: Int, anio: Int): Flow<List<BarraSemana>>
+    fun observeMes(mes: Int, anio: Int): Flow<List<BloqueMes>>
     fun observeAnio(anio: Int): Flow<List<BarraMes>>
+    fun observeDistribucionMes(mes: Int, anio: Int): Flow<Distribucion>
+    fun observeDistribucionAnio(anio: Int): Flow<Distribucion>
 
-    /** Resumen del mes según el servidor (`GET /dashboard/summary`). */
-    suspend fun consultarServidor(mes: Int, anio: Int): AppResult<DashboardResumenServidor>
+    /** Totales del servidor (`GET /dashboard/summary`, sin parámetros desde 0.3.0). */
+    suspend fun consultarServidor(): AppResult<DashboardSummary>
 }
 
 /** Estado de la sincronización (cola de pendientes y último error). */

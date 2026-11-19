@@ -49,3 +49,20 @@ enum class ModoCalculo(val wire: String, val label: String) {
             entries.firstOrNull { it.wire == value } ?: DEFAULT
     }
 }
+
+/**
+ * Modo de redondeo de la **distribución equitativa** de un total entre días
+ * (`web/src/lib/distribuir.ts`, espeja `splitcalc`): el sobrante se asigna al último día.
+ */
+enum class ModoDistribucion(val wire: String, val label: String) {
+    REDONDEADO("redondeado", "Redondeado (1 Bs)"),
+    ENTEROS("enteros", "Enteros (1 Bs)"),
+    PRECISO("preciso", "Preciso (centavos)");
+
+    companion object {
+        val DEFAULT = PRECISO
+
+        fun fromWire(value: String?): ModoDistribucion =
+            entries.firstOrNull { it.wire == value } ?: DEFAULT
+    }
+}

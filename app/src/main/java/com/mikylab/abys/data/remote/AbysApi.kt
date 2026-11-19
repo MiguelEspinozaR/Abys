@@ -14,6 +14,8 @@ import com.mikylab.abys.data.remote.dto.DashboardMonthlyDto
 import com.mikylab.abys.data.remote.dto.DashboardSummaryDto
 import com.mikylab.abys.data.remote.dto.DashboardWeeklyDto
 import com.mikylab.abys.data.remote.dto.DashboardYearlyDto
+import com.mikylab.abys.data.remote.dto.DistributionMonthlyDto
+import com.mikylab.abys.data.remote.dto.DistributionYearlyDto
 import com.mikylab.abys.data.remote.dto.EliminadoResponse
 import com.mikylab.abys.data.remote.dto.FuenteDto
 import com.mikylab.abys.data.remote.dto.GenerarSplitRequest
@@ -201,10 +203,7 @@ interface AbysApi {
     // ── Dashboard ───────────────────────────────────────────────────────────
 
     @GET("dashboard/summary")
-    suspend fun dashboardSummary(
-        @Query("mes") mes: Int,
-        @Query("anio") anio: Int,
-    ): ApiEnvelope<DashboardSummaryDto>
+    suspend fun dashboardSummary(): ApiEnvelope<DashboardSummaryDto>
 
     @GET("dashboard/weekly")
     suspend fun dashboardWeekly(
@@ -223,6 +222,17 @@ interface AbysApi {
     @GET("dashboard/history")
     suspend fun dashboardHistory(): ApiEnvelope<DashboardHistoryDto>
 
+    @GET("dashboard/distribution/monthly")
+    suspend fun dashboardDistributionMonthly(
+        @Query("mes") mes: Int,
+        @Query("anio") anio: Int,
+    ): ApiEnvelope<DistributionMonthlyDto>
+
+    @GET("dashboard/distribution/yearly")
+    suspend fun dashboardDistributionYearly(
+        @Query("anio") anio: Int,
+    ): ApiEnvelope<DistributionYearlyDto>
+
     // ── Health ──────────────────────────────────────────────────────────────
 
     @GET("health")
@@ -232,11 +242,12 @@ interface AbysApi {
     suspend fun healthDb(): HealthDbResponse
 }
 
-/** Respuesta de `POST /pagos/:id/dias`. */
+/** Respuesta de `POST /pagos/:id/dias` (v0.3.0: con monto). */
 @kotlinx.serialization.Serializable
 data class AgregarDiaResponse(
     @kotlinx.serialization.SerialName("pago_id") val pagoId: Long = 0,
     val fecha: String = "",
+    @kotlinx.serialization.SerialName("monto_enteros") val montoEnteros: Long = 0,
     val agregado: Boolean = false,
 )
 

@@ -16,6 +16,7 @@ import com.mikylab.abys.data.remote.dto.CambiarTasaRequest
 import com.mikylab.abys.data.remote.dto.CrearCuentaRequest
 import com.mikylab.abys.data.remote.dto.CrearFuenteRequest
 import com.mikylab.abys.data.remote.dto.CrearPagoRequest
+import com.mikylab.abys.data.remote.dto.DiaInputRequest
 import com.mikylab.abys.data.remote.dto.GenerarSplitRequest
 import com.mikylab.abys.data.remote.dto.SplitSettingsRequest
 import com.mikylab.abys.domain.model.SyncState
@@ -59,16 +60,16 @@ class PushProcessor @Inject constructor(
         data class Fatal(val mensaje: String) : OpResult
     }
 
-    suspend fun push(): androidx.work.ListenableWorker.Result {
+    suspend fun push(): SyncOutcome {
         val api = try {
             apiProvider.api()
         } catch (e: IllegalArgumentException) {
             // URL del backend inválida: no es reintentable hasta que el usuario la corrija.
             registrarEstado(error = "URL del backend inválida: ${e.message}")
-            return androidx.work.ListenableWorker.Result.failure()
+            return SyncOutcome.FATAL
         } catch (e: Throwable) {
             registrarEstado(error = e.message ?: "No se pudo preparar el cliente HTTP")
-            return androidx.work.ListenableWorker.Result.retry()
+            return SyncOutcome.RETRY
         }
         val ahora = System.currentTimeMillis()
         val operaciones = pendingDao.pendientes(ahora)
@@ -80,7 +81,7 @@ class PushProcessor @Inject constructor(
                     val siguiente = ahora + Operations.backoffMillis(op.intentos)
                     pendingDao.registrarIntento(op.id, resultado.mensaje, siguiente)
                     registrarEstado(error = resultado.mensaje)
-                    return androidx.work.ListenableWorker.Result.retry()
+                    return SyncOutcome.RETRY
                 }
                 is OpResult.Fatal -> {
                     pendingDao.registrarIntento(op.id, resultado.mensaje, ahora + Operations.backoffMillis(op.intentos))
@@ -90,7 +91,7 @@ class PushProcessor @Inject constructor(
             }
         }
         registrarEstado(error = null)
-        return androidx.work.ListenableWorker.Result.success()
+        return SyncOutcome.OK
     }
 
     // ── Despacho por tipo de operación ──────────────────────────────────────
@@ -321,18 +322,21 @@ class PushProcessor @Inject constructor(
             }
 
             else -> {
-                val dias = pagoDao.getDias(pago.localId).map { it.fecha }
+                val dias = pagoDao.getDias(pago.localId)
                 // La fuente debe existir en el servidor antes que el pago (orden de push).
                 val fuente = fuenteDao.getPorId(pago.fuenteLocalId)
                 val fuenteServerId = fuente?.serverId
                     ?: return OpResult.Retry("La fuente del pago aún no existe en el servidor")
+                // v0.3.0: los días llevan su monto y el total es **derivado** (Σ días);
+                // se omite `monto_enteros` para evitar el 422 TOTAL_DESINCRONIZADO (R3.2).
+                val diasInput = dias.map { DiaInputRequest(it.fecha, it.montoEnteros) }
                 val body = CrearPagoRequest(
                     fuenteId = fuenteServerId,
                     fechaPago = pago.fechaPago,
-                    montoEnteros = pago.montoEnteros,
+                    montoEnteros = null,
                     metodoPago = pago.metodoPago,
                     notas = pago.notas,
-                    diasTrabajados = dias,
+                    diasTrabajados = diasInput,
                 )
                 if (pago.serverId == null) {
                     when (val res = call { api.crearPago(body) }) {
@@ -352,34 +356,19 @@ class PushProcessor @Inject constructor(
                                     lastError = null,
                                 ),
                             )
-                            // Días con ids del servidor
-                            val idsPorFecha = dto.diasTrabajados.associate { it.fecha to it.id }
-                            pagoDao.getDias(pago.localId).forEach { dia ->
-                                val serverIdDia = idsPorFecha[dia.fecha]
-                                if (serverIdDia != null) {
-                                    pagoDao.upsertDia(
-                                        dia.copy(
-                                            serverId = serverIdDia,
-                                            syncState = SyncState.SYNCED,
-                                            updatedAtLocal = System.currentTimeMillis(),
-                                        ),
-                                    )
-                                }
-                            }
+                            // Días con ids y montos del servidor
+                            sincronizarDiasLocales(pago.localId, dto.diasTrabajados)
                             OpResult.Done
                         }
                     }
                 } else {
-                    val fuente = fuenteDao.getPorId(pago.fuenteLocalId)
-                    val fuenteServerId = fuente?.serverId
-                        ?: return OpResult.Retry("La fuente del pago aún no existe en el servidor")
                     val bodyUpdate = ActualizarPagoRequest(
                         fuenteId = fuenteServerId,
                         fechaPago = pago.fechaPago,
-                        montoEnteros = pago.montoEnteros,
+                        montoEnteros = null,
                         metodoPago = pago.metodoPago,
                         notas = pago.notas,
-                        diasTrabajados = dias.ifEmpty { null },
+                        diasTrabajados = diasInput.ifEmpty { null },
                     )
                     when (val res = call { api.actualizarPago(pago.serverId, bodyUpdate) }) {
                         is CallResult.Error -> classify(res.error)
@@ -399,25 +388,32 @@ class PushProcessor @Inject constructor(
                                     lastError = null,
                                 ),
                             )
-                            // El backend reemplaza los días: se sincronizan sus ids.
-                            val idsPorFecha = dto.diasTrabajados.associate { it.fecha to it.id }
-                            pagoDao.getDias(pago.localId).forEach { dia ->
-                                val serverIdDia = idsPorFecha[dia.fecha]
-                                if (serverIdDia != null && dia.serverId != serverIdDia) {
-                                    pagoDao.upsertDia(
-                                        dia.copy(
-                                            serverId = serverIdDia,
-                                            syncState = SyncState.SYNCED,
-                                            updatedAtLocal = System.currentTimeMillis(),
-                                        ),
-                                    )
-                                }
-                            }
+                            // El backend reemplaza los días: se sincronizan ids y montos.
+                            sincronizarDiasLocales(pago.localId, dto.diasTrabajados)
                             OpResult.Done
                         }
                     }
                 }
             }
+        }
+    }
+
+    /** Aplica ids y montos de los días del servidor a las filas locales (por fecha). */
+    private suspend fun sincronizarDiasLocales(
+        pagoLocalId: String,
+        diasServidor: List<com.mikylab.abys.data.remote.dto.DiaTrabajadoDto>,
+    ) {
+        val datosPorFecha = diasServidor.associateBy { it.fecha }
+        pagoDao.getDias(pagoLocalId).forEach { dia ->
+            val delServidor = datosPorFecha[dia.fecha] ?: return@forEach
+            pagoDao.upsertDia(
+                dia.copy(
+                    serverId = delServidor.id,
+                    montoEnteros = delServidor.montoEnteros,
+                    syncState = SyncState.SYNCED,
+                    updatedAtLocal = System.currentTimeMillis(),
+                ),
+            )
         }
     }
 

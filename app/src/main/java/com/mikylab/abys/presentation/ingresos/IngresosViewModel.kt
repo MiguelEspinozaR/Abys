@@ -3,12 +3,15 @@ package com.mikylab.abys.presentation.ingresos
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mikylab.abys.core.result.AppResult
+import com.mikylab.abys.core.security.BaseUrlStore
 import com.mikylab.abys.domain.model.FiltroPagos
 import com.mikylab.abys.domain.model.Fuente
 import com.mikylab.abys.domain.model.MetodoPago
+import com.mikylab.abys.domain.model.ModoCalculo
 import com.mikylab.abys.domain.model.Pago
 import com.mikylab.abys.domain.repository.FuenteRepository
 import com.mikylab.abys.domain.repository.PagoRepository
+import com.mikylab.abys.domain.repository.SplitRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,13 +41,18 @@ data class IngresosUiState(
     val fechaFin: LocalDate? = null,
     val fuenteLocalId: String? = null,
     val metodoPago: MetodoPago? = null,
+    /** Error de la última operación (mensaje literal del backend). */
     val error: String? = null,
+    /** Confirmación de la última operación. */
+    val mensaje: String? = null,
 )
 
 @HiltViewModel
 class IngresosViewModel @Inject constructor(
     private val pagoRepository: PagoRepository,
     private val fuenteRepository: FuenteRepository,
+    private val splitRepository: SplitRepository,
+    private val baseUrlStore: BaseUrlStore,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IngresosUiState())
@@ -149,16 +157,71 @@ class IngresosViewModel @Inject constructor(
         estado.copy(expanded = nuevos)
     }
 
-    fun eliminarPago(localId: String) {
+    /**
+     * Actualiza un pago (offline-first: se marca en Room y el worker lo propaga al servidor).
+     *
+     * BR-081 (v0.3.0): no se puede cambiar la suma de los días de un pago con split
+     * (el backend responde 422 `IMMUTABLE_DATA`); el repositorio lo valida en local.
+     */
+    fun actualizarPago(localId: String, draft: com.mikylab.abys.domain.model.PagoDraft) {
         viewModelScope.launch {
-            when (val resultado = pagoRepository.eliminarPago(localId)) {
-                is AppResult.Failure -> _uiState.update { it.copy(error = resultado.error.message) }
-                is AppResult.Success -> _uiState.update { it.copy(error = null) }
+            when (val resultado = pagoRepository.actualizarPago(localId, draft)) {
+                is AppResult.Failure -> _uiState.update {
+                    it.copy(error = resultado.error.message, mensaje = null)
+                }
+
+                is AppResult.Success -> _uiState.update {
+                    it.copy(error = null, mensaje = "Pago actualizado")
+                }
             }
         }
     }
 
+    /**
+     * Elimina un pago (offline-first: se marca en Room y el worker lo propaga al servidor).
+     *
+     * El backend **rechaza** (409) borrar un pago con transacciones realizadas; esa
+     * comprobación se hace también en local para no perder tiempo esperando la red.
+     */
+    fun eliminarPago(localId: String) {
+        viewModelScope.launch {
+            when (val resultado = pagoRepository.eliminarPago(localId)) {
+                is AppResult.Failure -> _uiState.update {
+                    it.copy(error = resultado.error.message, mensaje = null)
+                }
+
+                is AppResult.Success -> _uiState.update {
+                    it.copy(error = null, mensaje = "Pago eliminado")
+                }
+            }
+        }
+    }
+
+    /**
+     * Genera el split de un pago (BR-030: como máximo uno por pago).
+     *
+     * El cálculo es **local** ([SplitCalculator]); el servidor valida y confirma al sincronizar.
+     */
+    fun generarSplit(pagoLocalId: String, modo: ModoCalculo) {
+        viewModelScope.launch {
+            when (val resultado = splitRepository.generarSplit(pagoLocalId, modo.wire)) {
+                is AppResult.Failure -> _uiState.update {
+                    it.copy(error = resultado.error.message, mensaje = null)
+                }
+
+                is AppResult.Success -> _uiState.update {
+                    it.copy(error = null, mensaje = "Split generado")
+                }
+            }
+        }
+    }
+
+    /** URL absoluta del comprobante (`/uploads/...`) para mostrarlo con Coil. */
+    fun urlComprobante(pago: Pago): String? = baseUrlStore.assetUrl(pago.imagenRuta)
+
     fun limpiarError() = _uiState.update { it.copy(error = null) }
+
+    fun limpiarMensaje() = _uiState.update { it.copy(mensaje = null) }
 
     private companion object {
         const val TAMANO_PAGINA = 50

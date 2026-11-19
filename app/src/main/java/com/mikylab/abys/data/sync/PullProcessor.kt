@@ -40,15 +40,15 @@ class PullProcessor @Inject constructor(
     private val splitTransactionsSync: SplitTransactionsSync,
 ) {
 
-    suspend fun pull(): androidx.work.ListenableWorker.Result {
+    suspend fun pull(): SyncOutcome {
         val api = try {
             apiProvider.api()
         } catch (e: IllegalArgumentException) {
             registrarEstado(error = "URL del backend inválida: ${e.message}")
-            return androidx.work.ListenableWorker.Result.failure()
+            return SyncOutcome.FATAL
         } catch (e: Throwable) {
             registrarEstado(error = e.message ?: "No se pudo preparar el cliente HTTP")
-            return androidx.work.ListenableWorker.Result.retry()
+            return SyncOutcome.RETRY
         }
         return try {
             pullFuentes(api)
@@ -59,19 +59,19 @@ class PullProcessor @Inject constructor(
             generalRateHelper.recalcular()
             registrarEstado(error = null)
             android.util.Log.i(TAG, "Pull completado correctamente")
-            androidx.work.ListenableWorker.Result.success()
+            SyncOutcome.OK
         } catch (e: retrofit2.HttpException) {
             android.util.Log.e(TAG, "Pull falló con HTTP ${e.code()}", e)
             registrarEstado(error = "Error HTTP ${e.code()}")
-            androidx.work.ListenableWorker.Result.retry()
+            SyncOutcome.RETRY
         } catch (e: java.io.IOException) {
             android.util.Log.e(TAG, "Pull falló: sin conexión", e)
             registrarEstado(error = "Sin conexión con el servidor")
-            androidx.work.ListenableWorker.Result.retry()
+            SyncOutcome.RETRY
         } catch (e: Throwable) {
             android.util.Log.e(TAG, "Pull falló", e)
             registrarEstado(error = e.message)
-            androidx.work.ListenableWorker.Result.failure()
+            SyncOutcome.FATAL
         }
     }
 
@@ -132,56 +132,85 @@ class PullProcessor @Inject constructor(
     }
 
     private suspend fun pullPagos(api: AbysApi) {
-        val respuesta = api.listarPagos(page = 1, pageSize = PAGINA_MAXIMA)
-        val remoto = respuesta.data ?: return
         val ahora = System.currentTimeMillis()
         val fuentesPorServerId = fuenteDao.getAll().associateBy { it.serverId }
         val locales = pagoDao.getAll()
         val porServerId = locales.mapNotNull { p -> p.serverId?.let { it to p } }.toMap()
         val idsRemotos = mutableSetOf<Long>()
 
-        for (dto in remoto) {
-            idsRemotos += dto.id
-            val fuente = fuentesPorServerId[dto.fuenteId] ?: continue // la fuente aún no está en local
-            val entidad = dto.toEntity(fuente.localId)
-            val existente = porServerId[dto.id]
-            if (existente != null && existente.syncState.isPending) continue
-            val localId = existente?.localId ?: entidad.localId
-            pagoDao.upsert(entidad.copy(localId = localId))
+        // El backend pagina los pagos (`page_size` máx. 500): se descargan **todas** las páginas.
+        var pagina = 1
+        var total = 0
+        var descargados = 0
+        var paginaCompleta = false
 
-            // Días trabajados: se conservan las filas locales cuya fecha no cambia.
-            val diasLocales = pagoDao.getDias(localId).associateBy { it.fecha }
-            val dias = dto.diasTrabajados.map { dia ->
-                val previo = diasLocales[dia.fecha]
-                if (previo != null) {
-                    previo.copy(serverId = dia.id, syncState = SyncState.SYNCED, updatedAtLocal = ahora)
+        while (true) {
+            val respuesta = api.listarPagos(page = pagina, pageSize = PAGINA_MAXIMA)
+            val remoto = respuesta.data ?: break
+            total = respuesta.meta?.total ?: (descargados + remoto.size)
+            if (remoto.isEmpty()) {
+                paginaCompleta = true
+                break
+            }
+
+            for (dto in remoto) {
+                idsRemotos += dto.id
+                val fuente = fuentesPorServerId[dto.fuenteId] ?: continue // la fuente aún no está en local
+                val entidad = dto.toEntity(fuente.localId)
+                val existente = porServerId[dto.id]
+                if (existente != null && existente.syncState.isPending) continue
+                val localId = existente?.localId ?: entidad.localId
+                pagoDao.upsert(entidad.copy(localId = localId))
+
+                // Días trabajados: se conservan las filas locales cuya fecha no cambia
+                // (actualizando id y **monto** del servidor, v0.3.0).
+                val diasLocales = pagoDao.getDias(localId).associateBy { it.fecha }
+                val dias = dto.diasTrabajados.map { dia ->
+                    val previo = diasLocales[dia.fecha]
+                    if (previo != null) {
+                        previo.copy(
+                            serverId = dia.id,
+                            montoEnteros = dia.montoEnteros,
+                            syncState = SyncState.SYNCED,
+                            updatedAtLocal = ahora,
+                        )
+                    } else {
+                        DiaTrabajadoEntity(
+                            localId = RemoteMappers.serverLocalId(dia.id),
+                            serverId = dia.id,
+                            pagoLocalId = localId,
+                            fecha = dia.fecha,
+                            montoEnteros = dia.montoEnteros,
+                            syncState = SyncState.SYNCED,
+                            updatedAtLocal = ahora,
+                        )
+                    }
+                }
+                if (diasLocales.keys != dto.diasTrabajados.map { it.fecha }.toSet()) {
+                    pagoDao.reemplazarDias(localId, dias)
                 } else {
-                    DiaTrabajadoEntity(
-                        localId = RemoteMappers.serverLocalId(dia.id),
-                        serverId = dia.id,
-                        pagoLocalId = localId,
-                        fecha = dia.fecha,
-                        syncState = SyncState.SYNCED,
-                        updatedAtLocal = ahora,
-                    )
+                    pagoDao.upsertDias(dias)
                 }
             }
-            if (diasLocales.keys != dto.diasTrabajados.map { it.fecha }.toSet()) {
-                pagoDao.reemplazarDias(localId, dias)
-            } else {
-                pagoDao.upsertDias(dias)
+
+            descargados += remoto.size
+            if (descargados >= total) {
+                paginaCompleta = true
+                break
             }
+            pagina++
         }
 
-        // Solo se marca como eliminado si la respuesta cubrió **todos** los pagos del servidor
-        // (si hay paginación pendiente, no se puede afirmar que falten filas).
-        val total = respuesta.meta?.total ?: remoto.size
-        if (total <= remoto.size) {
+        // Solo se marca como eliminado si se descargaron **todos** los pagos del servidor.
+        if (paginaCompleta && descargados >= total) {
             locales
                 .filter { it.serverId != null && it.serverId !in idsRemotos && !it.syncState.isPending }
                 .forEach { pagoDao.marcarEliminado(it.localId, ahora, SyncState.SYNCED, ahora) }
         } else {
-            android.util.Log.w(TAG, "Pull de pagos incompleto ($total en el servidor): no se borra nada")
+            android.util.Log.w(
+                TAG,
+                "Pull de pagos incompleto ($descargados de $total en el servidor): no se borra nada",
+            )
         }
     }
 

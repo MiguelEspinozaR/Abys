@@ -1,6 +1,5 @@
 package com.mikylab.abys.domain.usecase
 
-import com.mikylab.abys.core.money.Money
 import com.mikylab.abys.domain.model.MetodoPago
 import com.mikylab.abys.domain.model.PagoDraft
 import java.time.LocalDate
@@ -8,8 +7,8 @@ import java.time.LocalDate
 /**
  * Validación de pagos en cliente (reglas BR-001, BR-002, BR-006, BR-007, BR-010).
  *
- * replica `Abys/backend/internal/service/validations.go`. Los mensajes son los del backend,
- * para que la UI muestre siempre el mismo texto.
+ * Replica `Abys/backend/internal/service/validations.go` (v0.3.0: días con monto). Los
+ * mensajes son los del backend, para que la UI muestre siempre el mismo texto.
  */
 object ValidarPagoUseCase {
 
@@ -21,21 +20,28 @@ object ValidarPagoUseCase {
     private val metodosPermitidos = MetodoPago.entries.map { it.wire }
 
     fun validar(draft: PagoDraft): Resultado {
-        if (draft.monto.centavos < 0) {
-            return Resultado.Error("el monto del pago no puede ser negativo")
+        if (draft.diasTrabajados.isEmpty()) {
+            return Resultado.Error("un pago debe tener al menos un día trabajado")
+        }
+        val duplicados = draft.diasTrabajados
+            .groupingBy { it.fecha }
+            .eachCount()
+            .filterValues { it > 1 }
+        if (duplicados.isNotEmpty()) {
+            return Resultado.Error(
+                "fechas de trabajo duplicadas dentro del mismo pago: ${duplicados.keys.first()}",
+            )
+        }
+        val negativo = draft.diasTrabajados.firstOrNull { it.monto.centavos < 0 }
+        if (negativo != null) {
+            return Resultado.Error("el monto de un día no puede ser negativo")
+        }
+        if (draft.monto.centavos <= 0) {
+            return Resultado.Error("El total del pago debe ser mayor a 0")
         }
         if (!metodosPermitidos.contains(draft.metodoPago.wire)) {
             return Resultado.Error(
                 "método de pago inválido; use: ${metodosPermitidos.joinToString(", ")}",
-            )
-        }
-        if (draft.diasTrabajados.isEmpty()) {
-            return Resultado.Error("un pago debe tener al menos un día trabajado")
-        }
-        val duplicados = draft.diasTrabajados.groupingBy { it }.eachCount().filterValues { it > 1 }
-        if (duplicados.isNotEmpty()) {
-            return Resultado.Error(
-                "fechas de trabajo duplicadas dentro del mismo pago: ${duplicados.keys.first()}",
             )
         }
         return Resultado.Ok(draft)
@@ -47,8 +53,8 @@ object ValidarPagoUseCase {
     /** No se puede eliminar el último día trabajado (BR-002). */
     fun puedeQuitarDia(cantidadActual: Int): Boolean = cantidadActual > 1
 
-    /** El web exige `monto > 0` para habilitar el guardado. */
-    fun montoValido(monto: Money): Boolean = monto.centavos > 0
+    /** El web exige `total > 0` (Σ de los días) para habilitar el guardado. */
+    fun montoValido(totalCentavos: Long): Boolean = totalCentavos > 0
 
     /** Fecha válida y real (rechaza 31/02). */
     fun fechaValida(fecha: LocalDate?): Boolean = fecha != null

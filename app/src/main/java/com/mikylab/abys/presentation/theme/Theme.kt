@@ -41,6 +41,16 @@ object AbysColors {
     val FechaPago = Color(0xFFF59E0B)
 }
 
+/** Parsea `#rrggbb`/`#aarrggbb` de la fuente; `null` o inválido → [fallback]. */
+fun colorDesdeHex(hex: String?, fallback: Color = AbysColors.Chart1): Color {
+    val limpio = hex?.removePrefix("#").orEmpty()
+    if (limpio.length != 6 && limpio.length != 8) return fallback
+    return runCatching {
+        val valor = limpio.toLong(16)
+        if (limpio.length == 6) Color(0xFF000000 or valor) else Color(valor)
+    }.getOrDefault(fallback)
+}
+
 private val LightColors = lightColorScheme(
     primary = AbysColors.Primary,
     onPrimary = Color.White,

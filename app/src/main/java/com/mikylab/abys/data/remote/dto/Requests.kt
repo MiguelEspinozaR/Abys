@@ -3,15 +3,27 @@ package com.mikylab.abys.data.remote.dto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/** Body de `POST /pagos`. */
+/** Día trabajado enviado en POST/PUT de pagos (v0.3.0: con monto en centavos). */
+@Serializable
+data class DiaInputRequest(
+    val fecha: String,
+    @SerialName("monto_enteros") val montoEnteros: Long,
+)
+
+/**
+ * Body de `POST /pagos` (v0.3.0).
+ *
+ * `montoEnteros` es **opcional**: el backend deriva el total de Σ días y **lo ignora**;
+ * omitirlo (`null`) evita el 422 `TOTAL_DESINCRONIZADO` (R3.2 del web).
+ */
 @Serializable
 data class CrearPagoRequest(
     @SerialName("fuente_id") val fuenteId: Long,
     @SerialName("fecha_pago") val fechaPago: String,
-    @SerialName("monto_enteros") val montoEnteros: Long,
+    @SerialName("monto_enteros") val montoEnteros: Long? = null,
     @SerialName("metodo_pago") val metodoPago: String,
     val notas: String? = null,
-    @SerialName("dias_trabajados") val diasTrabajados: List<String>,
+    @SerialName("dias_trabajados") val diasTrabajados: List<DiaInputRequest>,
 )
 
 /**
@@ -19,15 +31,16 @@ data class CrearPagoRequest(
  *
  * `diasTrabajados = null` ⇒ **no se envían** (el backend no toca los días);
  * lista vacía ⇒ el backend responde 400 (debe quedar al menos 1 día).
+ * El total del pago es derivado (Σ días): `montoEnteros` se omite.
  */
 @Serializable
 data class ActualizarPagoRequest(
     @SerialName("fuente_id") val fuenteId: Long,
     @SerialName("fecha_pago") val fechaPago: String,
-    @SerialName("monto_enteros") val montoEnteros: Long,
+    @SerialName("monto_enteros") val montoEnteros: Long? = null,
     @SerialName("metodo_pago") val metodoPago: String,
     val notas: String? = null,
-    @SerialName("dias_trabajados") val diasTrabajados: List<String>? = null,
+    @SerialName("dias_trabajados") val diasTrabajados: List<DiaInputRequest>? = null,
 )
 
 @Serializable
@@ -64,7 +77,9 @@ data class SplitSettingsRequest(
     @SerialName("modo_default") val modoDefault: String,
 )
 
+/** Body de `POST /pagos/:id/dias` (v0.3.0: día con monto en centavos). */
 @Serializable
 data class AgregarDiaRequest(
     val fecha: String,
+    @SerialName("monto_enteros") val montoEnteros: Long,
 )

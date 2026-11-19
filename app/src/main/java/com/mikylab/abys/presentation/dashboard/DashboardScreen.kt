@@ -1,6 +1,8 @@
 package com.mikylab.abys.presentation.dashboard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,15 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Payments
-import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.SyncProblem
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,20 +31,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mikylab.abys.core.money.formatBs
 import com.mikylab.abys.core.time.DateFormats
-import com.mikylab.abys.core.time.mesesAbrev
+import com.mikylab.abys.domain.model.BarraDia
+import com.mikylab.abys.domain.model.Distribucion
+import com.mikylab.abys.domain.model.FuenteTotal
 import com.mikylab.abys.presentation.components.BarChart
+import com.mikylab.abys.presentation.components.DistributionPieChart
+import com.mikylab.abys.presentation.components.FilaApilada
 import com.mikylab.abys.presentation.components.KpiCard
 import com.mikylab.abys.presentation.components.LineChart
-import com.mikylab.abys.presentation.theme.AbysColors
+import com.mikylab.abys.presentation.components.StackedBarChart
+import com.mikylab.abys.presentation.components.SyncStatusChip
+import com.mikylab.abys.presentation.components.etiquetaMes
+import com.mikylab.abys.presentation.theme.colorDesdeHex
+import java.time.LocalDate
+import java.time.YearMonth
 
 /**
- * Dashboard. Replica la pantalla `/` del web:
- * 4 KPIs, gráfico semanal, mensual, anual e histórico.
+ * Dashboard v0.3.0. Replica la pantalla `/` del web (dashboard v2):
+ * cards "Total últimos 30 días" e "Histórico" + 6 charts (Semanal apilado por fuente,
+ * Mensual por bloques, Anual, Histórico, Distribución del mes y del año).
  *
  * Todos los datos se calculan **localmente** sobre Room (ver `DashboardRepositoryImpl`),
  * por lo que funciona sin conexión.
@@ -60,15 +72,28 @@ fun DashboardScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
+            Column {
+                Text(
+                    text = "Dashboard",
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Text(
+                    text = "Montos por día trabajado y su distribución por fuente.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
+        item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = "Resumen del mes de ${DateFormats.mesAnioTitulo(java.time.LocalDate.of(state.anio, state.mes, 1))}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                SyncStatusChip(
+                    pendientes = state.pendientesSync,
+                    ultimoError = state.errorSync,
                 )
                 IconButton(onClick = viewModel::refrescar, enabled = !state.consultandoServidor) {
                     if (state.consultandoServidor) {
@@ -78,6 +103,41 @@ fun DashboardScreen(
                         )
                     } else {
                         Icon(Icons.Filled.Refresh, contentDescription = "Contrastar con el servidor")
+                    }
+                }
+            }
+        }
+
+        state.errorSync?.let { errorSync ->
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                    ),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.SyncProblem,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onErrorContainer,
+                        )
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Error de sincronización",
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                            )
+                            Text(
+                                text = errorSync,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                            )
+                        }
                     }
                 }
             }
@@ -101,8 +161,8 @@ fun DashboardScreen(
                             Text("Faltan datos por sincronizar", style = MaterialTheme.typography.titleSmall)
                             Text(
                                 text = "El servidor tiene " +
-                                    "${state.resumenServidor?.total?.centavos?.formatBs() ?: "—"} " +
-                                    "en este mes y la app tiene menos.",
+                                    "${state.total30dServidor.formatBs()} en los últimos 30 días " +
+                                    "y la app tiene menos.",
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         }
@@ -112,38 +172,20 @@ fun DashboardScreen(
             }
         }
 
+        // Cards resumen: sólo 30 días e histórico (R2), sin mes/año.
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 KpiCard(
-                    titulo = "Total del mes",
-                    valor = state.resumen?.total?.centavos?.formatBs() ?: "—",
-                    detalle = "${diasDelMes(state.mes, state.anio)} días en el período",
+                    titulo = "Total últimos 30 días",
+                    valor = state.resumen?.totalUltimos30Dias?.centavos?.formatBs() ?: "—",
+                    detalle = "Incluye hoy · zona La Paz",
                     icon = Icons.Filled.Payments,
                     modifier = Modifier.weight(1f),
                 )
                 KpiCard(
-                    titulo = "Pagos",
-                    valor = (state.resumen?.cantidadPagos ?: 0).toString(),
-                    detalle = "Pagos registrados en el mes",
-                    icon = Icons.Filled.Layers,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
-
-        item {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                KpiCard(
-                    titulo = "Días trabajados",
-                    valor = (state.resumen?.diasTrabajados ?: 0).toString(),
-                    detalle = "Suma de días pagados",
-                    icon = Icons.Filled.CalendarMonth,
-                    modifier = Modifier.weight(1f),
-                )
-                KpiCard(
                     titulo = "Total histórico",
-                    valor = state.totalHistorico.formatBs(),
-                    detalle = "${state.mesesActividad} meses de actividad",
+                    valor = state.resumen?.totalHistorico?.centavos?.formatBs() ?: "—",
+                    detalle = "Todo el historial registrado",
                     icon = Icons.Filled.Schedule,
                     modifier = Modifier.weight(1f),
                 )
@@ -151,120 +193,204 @@ fun DashboardScreen(
         }
 
         item {
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column {
-                            Text("Semanal", style = MaterialTheme.typography.titleSmall)
-                            Text(
-                                text = state.semana.firstOrNull()?.fecha?.let { inicio ->
-                                    "${DateFormats.fechaCorta(inicio)} – " +
-                                        DateFormats.fechaCorta(state.semana.last().fecha)
-                                } ?: "",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                        Row {
-                            IconButton(onClick = viewModel::semanaAnterior) {
-                                Icon(Icons.Filled.ChevronLeft, contentDescription = "Anterior: Semanal")
-                            }
-                            IconButton(onClick = viewModel::semanaSiguiente) {
-                                Icon(Icons.Filled.ChevronRight, contentDescription = "Siguiente: Semanal")
-                            }
-                        }
-                    }
-                    BarChart(
-                        data = state.semana.map {
-                            DateFormats.diaSemana(it.fecha).take(3) to it.total.centavos
-                        },
-                        color = AbysColors.Chart1,
-                    )
-                }
+            ChartCardSemanal(state.semana, viewModel)
+        }
+
+        item {
+            ChartCard(
+                titulo = "Mensual",
+                subtitulo = "Bloques del mes · ${mesTitulo(state.mes, state.anio)}",
+                onPrev = viewModel::mesAnterior,
+                onNext = viewModel::mesSiguiente,
+            ) {
+                BarChart(
+                    data = state.bloquesDelMes.map { bloque ->
+                        "${bloque.inicio.dayOfMonth}–${bloque.fin.dayOfMonth}" to bloque.total.centavos
+                    },
+                )
             }
         }
 
         item {
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column {
-                            Text("Mensual", style = MaterialTheme.typography.titleSmall)
-                            Text(
-                                text = "Distribución por semana · ${
-                                    DateFormats.mesAnioTitulo(java.time.LocalDate.of(state.anio, state.mes, 1))
-                                }",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                        Row {
-                            IconButton(onClick = viewModel::mesAnterior) {
-                                Icon(Icons.Filled.ChevronLeft, contentDescription = "Anterior: Mensual")
-                            }
-                            IconButton(onClick = viewModel::mesSiguiente) {
-                                Icon(Icons.Filled.ChevronRight, contentDescription = "Siguiente: Mensual")
-                            }
-                        }
-                    }
-                    BarChart(
-                        data = state.semanasDelMes.map { "Sem ${it.semana}" to it.total.centavos },
-                        color = AbysColors.Chart2,
-                    )
-                }
+            ChartCard(
+                titulo = "Anual",
+                subtitulo = "Totales por mes · ${state.anioGrafico}",
+                onPrev = viewModel::anioAnterior,
+                onNext = viewModel::anioSiguiente,
+            ) {
+                BarChart(
+                    data = state.mesesDelAnio.map { mes ->
+                        etiquetaMes(mes.mes) to mes.total.centavos
+                    },
+                )
             }
         }
 
         item {
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text("Anual", style = MaterialTheme.typography.titleSmall)
-                    Text(
-                        text = "Distribución por mes · ${state.anio}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    BarChart(
-                        data = state.mesesDelAnio.map { mesesAbrev[it.mes - 1] to it.total.centavos },
-                        color = AbysColors.Chart3,
-                    )
-                }
+            ChartCard(
+                titulo = "Histórico",
+                subtitulo = state.rangoHistorial?.let { rango ->
+                    "${mesTitulo(rango.desde.monthValue, rango.desde.year)} – " +
+                        mesTitulo(rango.hasta.monthValue, rango.hasta.year)
+                } ?: "Evolución mensual de los totales",
+                onPrev = viewModel::historialAnterior,
+                onNext = viewModel::historialSiguiente,
+            ) {
+                LineChart(
+                    points = state.historial.map { punto ->
+                        "${punto.anio % 100} ${etiquetaMes(punto.mes)}" to punto.total.centavos
+                    },
+                )
             }
         }
 
         item {
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text("Histórico", style = MaterialTheme.typography.titleSmall)
-                    Text(
-                        text = "Evolución mensual con tendencia",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    val puntos = state.historial.map {
-                        "${it.anio % 100} ${mesesAbrev[(it.mes - 1).coerceIn(0, 11)]}" to
-                            it.total.centavos
-                    }
-                    val tendencia = state.historial.map { punto ->
-                        val indice = state.historial.indexOf(punto)
-                        val ventana = state.historial
-                            .subList(maxOf(0, indice - 2), indice + 1)
-                        ventana.map { it.total.centavos }.average().toLong()
-                    }
-                    LineChart(points = puntos, trend = tendencia)
-                }
+            ChartCard(
+                titulo = "Distribución del mes",
+                subtitulo = "Distribución por fuente · ${mesTitulo(state.mes, state.anio)}",
+                onPrev = viewModel::mesAnterior,
+                onNext = viewModel::mesSiguiente,
+            ) {
+                ChartDistribucion(state.distribucionMes)
+            }
+        }
+
+        item {
+            ChartCard(
+                titulo = "Distribución del año",
+                subtitulo = "Distribución por fuente · ${state.anioGrafico}",
+                onPrev = viewModel::anioAnterior,
+                onNext = viewModel::anioSiguiente,
+            ) {
+                ChartDistribucion(state.distribucionAnio)
             }
         }
     }
 }
 
-private fun diasDelMes(mes: Int, anio: Int): Int =
-    java.time.YearMonth.of(anio, mes).lengthOfMonth()
+@Composable
+private fun ChartCardSemanal(semana: List<BarraDia>, viewModel: DashboardViewModel) {
+    val subtitulo = if (semana.isNotEmpty()) {
+        "${DateFormats.fechaCorta(semana.first().fecha)} – " +
+            DateFormats.fechaCorta(semana.last().fecha)
+    } else {
+        ""
+    }
+    ChartCard(
+        titulo = "Semanal",
+        subtitulo = subtitulo,
+        onPrev = viewModel::semanaAnterior,
+        onNext = viewModel::semanaSiguiente,
+    ) {
+        // Serie única por fuente (dedup por alias, como `fuentesUnicas` del web).
+        val fuentes = semana.flatMap { it.porFuente }
+            .distinctBy { it.alias }
+        val coloresPorSerie = fuentes.associate { it.alias to colorDesdeHex(it.color) }
+        StackedBarChart(
+            filas = semana.map { dia ->
+                FilaApilada(
+                    etiqueta = diaSemanaCorto(dia.fecha),
+                    series = fuentes.map { fuente ->
+                        fuente.alias to (
+                            dia.porFuente
+                                .firstOrNull { it.alias == fuente.alias }?.total?.centavos ?: 0L
+                            )
+                    },
+                    totalCentavos = dia.total.centavos,
+                )
+            },
+            coloresPorSerie = coloresPorSerie,
+        )
+        LeyendaFuentes(fuentes)
+    }
+}
+
+@Composable
+private fun ChartDistribucion(distribucion: Distribucion?) {
+    if (distribucion == null) return
+    val coloresPorSerie = distribucion.porFuente.associate {
+        it.alias to colorDesdeHex(it.color)
+    }
+    DistributionPieChart(
+        porFuente = distribucion.porFuente,
+        coloresPorSerie = coloresPorSerie,
+    )
+    LeyendaFuentes(distribucion.porFuente, conMontos = true)
+}
+
+/** Leyenda: color + alias (+ monto y porcentaje en distribuciones). */
+@Composable
+private fun LeyendaFuentes(fuentes: List<FuenteTotal>, conMontos: Boolean = false) {
+    val total = fuentes.sumOf { it.total.centavos }
+    Column(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+        fuentes.take(6).forEach { fuente ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 2.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(end = 6.dp)
+                        .size(10.dp)
+                        .background(colorDesdeHex(fuente.color), CircleShape),
+                )
+                Text(
+                    text = if (conMontos && total > 0) {
+                        val porcentaje = fuente.total.centavos * 100.0 / total
+                        "${fuente.alias} · %.1f %%".format(porcentaje).replace('.', ',')
+                    } else {
+                        fuente.alias
+                    },
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
+        }
+    }
+}
+
+/** Card con título, subtítulo y navegación ‹ › (equivale a `ChartCard` del web). */
+@Composable
+private fun ChartCard(
+    titulo: String,
+    subtitulo: String,
+    onPrev: () -> Unit,
+    onNext: () -> Unit,
+    contenido: @Composable () -> Unit,
+) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(titulo, style = MaterialTheme.typography.titleSmall)
+                    if (subtitulo.isNotEmpty()) {
+                        Text(
+                            text = subtitulo,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                Row {
+                    IconButton(onClick = onPrev) {
+                        Icon(Icons.Filled.ChevronLeft, contentDescription = "Anterior: $titulo")
+                    }
+                    IconButton(onClick = onNext) {
+                        Icon(Icons.Filled.ChevronRight, contentDescription = "Siguiente: $titulo")
+                    }
+                }
+            }
+            contenido()
+        }
+    }
+}
+
+private fun diaSemanaCorto(fecha: LocalDate): String =
+    DateFormats.diaSemana(fecha).take(3) + " " + fecha.dayOfMonth
+
+private fun mesTitulo(mes: Int, anio: Int): String =
+    DateFormats.mesAnioTitulo(YearMonth.of(anio, mes).atDay(1))

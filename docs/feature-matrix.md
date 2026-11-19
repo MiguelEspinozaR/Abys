@@ -52,74 +52,70 @@ Replicar **exactamente** `Abys/web/src/lib/format.ts` (tiene tests en `format.te
 
 ---
 
-## 2. Dashboard — `/`
+## 2. Dashboard — `/` (v0.3.0 · dashboard v2)
 
-| Aspecto | Web | Android |
+| Aspecto | Web | Android (implementado) |
 |---|---|---|
-| KPI 1 | **"Total del mes"** = `formatBs(summary.total_centavos)`, detalle `"{N} días en el período"` | `KpiCard` Compose |
-| KPI 2 | **"Pagos"** = `cantidad_pagos`, detalle `"Pagos registrados en el mes"` | idem |
-| KPI 3 | **"Días trabajados"** = `dias_trabajados`, detalle `"Suma de días pagados"` | idem |
-| KPI 4 | **"Total histórico"** = `Σ history.por_mes[].total_centavos`, detalle `"{n} meses de actividad"` | idem |
-| Gráfico 1 | **"Semanal"** — barras por día (lun–dom), nav ±1 semana, alto 240 px, eje Y en Bs sin decimales, tooltip `"{label} · {n} pago(s)"` | `BarChart` con `Canvas` (altura 240 dp) |
-| Gráfico 2 | **"Mensual"** — barras por semana (etiqueta `"Sem {n}"`), nav ±1 mes | idem |
-| Gráfico 3 | **"Anual"** — barras por mes (etiquetas `ene…dic`), nav ±1 año | idem |
-| Gráfico 4 | **"Histórico"** — línea `monotone` de total + serie "Tendencia" (media móvil 3 meses, `strokeDasharray`), rango por defecto = **últimos 12 meses con datos**, nav ±12 meses; sin datos → `"Sin datos en el rango seleccionado"` | `LineChart` con `Canvas` + overlay de media móvil |
-| Subtítulos | `"Distribución por semana · {mes}"`, `"Distribución por mes · {anio}"`, `"Evolución mensual con tendencia"` | idem |
+| KPI 1 | **"Total últimos 30 días"** = `formatBs(summary.total_30d_centavos)`, detalle `"Incluye hoy · zona La Paz"` | `KpiCard` (icono `Payments`) |
+| KPI 2 | **"Total histórico"** = `formatBs(summary.total_historico_centavos)`, detalle de meses de actividad | `KpiCard` (icono `Schedule`) |
+| Gráfico 1 | **"Semanal"** — barras **apiladas por fuente** (lun–dom), nav ±1 semana, leyenda por alias | `StackedBarChart` + leyenda de fuentes |
+| Gráfico 2 | **"Mensual"** — barras por **bloques** 1–7/8–14/15–21/22–28/29–fin, nav ±1 mes | `BarChart` con etiquetas `"1–7"`, … |
+| Gráfico 3 | **"Anual"** — barras por mes (`ene…dic`), nav ±1 año (independiente del mes) | `BarChart` + año propio |
+| Gráfico 4 | **"Histórico"** — línea de totales mensuales (**sin tendencia**), rango por defecto últimos 12 meses con datos, nav ±12 meses | `LineChart` + navegación de rango |
+| Gráfico 5 | **"Distribución del mes"** — torta por fuente con monto y porcentaje | `DistributionPieChart` + leyenda |
+| Gráfico 6 | **"Distribución del año"** — torta por fuente | idem, año propio |
+| Estado de sync | — (el web siempre está en línea) | `SyncStatusChip` + banner de error + aviso **"Faltan datos por sincronizar"** |
+| Acción extra | — | Botón refrescar: contrasta con `GET /dashboard/summary` y avisa si el servidor tiene más |
 
-**Endpoints**: `GET /dashboard/summary`, `/weekly`, `/monthly`, `/yearly`, `/history`.
+**Endpoints** (solo contraste; opcionales): `GET /dashboard/summary` (sin params),
+`/weekly`, `/monthly`, `/yearly`, `/history`, `/distribution/monthly`, `/distribution/yearly`.
 
-**Estrategia offline**: el dashboard **no consume la API** en Android; se calcula **localmente sobre Room**
-con la misma semántica SQL del backend (§5 de `api-contract.md`):
+**Estrategia offline**: el dashboard **no consume la API** en Android; se calcula **localmente
+sobre Room** con la semántica del backend v0.3.0 (`DashboardDao`), agrupando por
+`dias_trabajados.fecha`:
 
 | Métrica | Cálculo local equivalente |
 |---|---|
-| `total_centavos` | `Σ monto_enteros` de pagos con `fechaPago` en (mes, anio) y `deletedAt == null` |
-| `cantidad_pagos` | `count(*)` de esos pagos |
-| `dias_trabajados` | `count(DISTINCT fecha)` de días trabajados de esos pagos cuya `fecha` cae en el mes |
-| `weekly` | 7 días (lunes→domingo) de la semana que contiene la fecha; se rellenan con ceros |
-| `monthly` | semanas de 7 días desde el día 1; la última se recorta al último día del mes |
+| `summary.total_30d_centavos` | `Σ dias.montoEnteros` con `fecha ∈ [hoy−29, hoy]` (pagos activos) |
+| `summary.total_historico_centavos` | `Σ dias.montoEnteros` de todos los pagos activos |
+| `weekly` | 7 días (lunes→domingo) con `por_fuente` por día; `por_fuente` ordenado por total desc y `fuente_id` |
+| `monthly` | bloques 1–7, 8–14, 15–21, 22–28 y 29–fin de mes |
 | `yearly` | 12 meses rellenados con ceros |
-| `history` | agrupación `(anio, mes)` de pagos activos ordenada ascendentemente |
+| `history` | agrupación `(anio, mes)` de los días activos, sin tendencia |
+| `distribution/monthly\|yearly` | `Σ` por fuente del período (incluye fuentes soft-deleted para alias/color históricos) |
 
-> Beneficio: el dashboard funciona **100 % offline** y no consume 5 endpoints por refresh.
+> Beneficio: el dashboard funciona **100 % offline**; el servidor solo se usa para detectar que
+> faltan datos (comparación del total de 30 días).
 
 ---
 
-## 3. Registrar — `/registrar`
+## 3. Registrar — `/registrar` (v0.3.0 · registro híbrido, sin OCR)
 
-| Elemento | Web | Android |
+| Elemento | Web | Android (implementado) |
 |---|---|---|
-| Título | "Registrar pago" + "Marca los días trabajados en el calendario y completa el resto del formulario." | idem |
-| Layout | 2 columnas (calendario \| formulario) | Columna con calendario arriba y formulario abajo (móvil) |
-| Herramientas del calendario | **Trabajo** (toggle), **Pago** (reemplaza), **Quitar** (borra día; en registrar también limpia la fecha de pago) | `SegmentedButtons` / `FilterChip` |
-| Marcadores | verde = día trabajado nuevo, violeta = día ya registrado, ámbar = fecha de pago ya registrada | `Canvas`/dots en la celda del calendario |
-| Leyenda | "día trabajado (nuevo)", "día ya registrado", "fecha de pago ya registrada" | idem |
-| Contador | `"{n} día(s) · {fechaPago ?? "sin fecha de pago"}"` | idem |
-| Fuente | Select con punto de color + alias; placeholder "Selecciona la fuente"; badge con la fuente elegida | `ExposedDropdownMenuBox` |
-| Método de pago | Segmentado de 3: Efectivo / QR / Transacción (default Efectivo) | `SingleChoiceSegmentedButtonRow` |
-| Monto (Bs) | Input decimal, placeholder "Ej: 1.234,56"; auxiliar `= {cents} centavos ({bs} Bs)` o `"Ingresa un monto válido, p. ej. 265,00"`; exige `> 0` | idem |
-| Notas | Textarea, placeholder "Referencia, período pagado, observaciones…"; vacío → `null` | idem |
-| Comprobante | Dropzone "Arrastra o haz clic para subir el comprobante" / "PNG, JPG o WEBP · opcional · lectura con OCR"; miniatura + "Quitar"; **se sube al guardar** | `PhotoPicker` + preview + "Quitar" |
-| Botón | "Guardar pago" (ancho completo), deshabilitado si falta fuente, fecha, monto>0 o ≥1 día | idem |
+| Título | "Registrar pago" + "Marca los días trabajados en el calendario y elige cómo cargar los montos." | idem |
+| Layout | 2 columnas (calendario \| formulario) | Columna con scroll: calendario arriba y formulario abajo (móvil) |
+| Calendario | 3 herramientas: **Trabajo**, **Pago**, **Quitar** | Toque corto = marcar día trabajado; toque largo = quitar (adaptación móvil) |
+| Marcadores | verde = día trabajado, ámbar = fecha de pago | `Box` con color + leyenda |
+| Fuente | Select con punto de color + alias | `ExposedDropdownMenuBox` |
+| Método de pago | Segmentado de 3: Efectivo / QR / Transacción | `FilterChip`s |
+| **Modo de montos** | **Detallado** (monto por día) o **Distribuido** (total repartido equitativamente) | Chips `ModoRegistro.DETALLADO / DISTRIBUIDO` |
+| Modo Detallado | Input por día; error `"Ingresa el monto de cada día seleccionado, p. ej. 150,00"`; total = Σ | lista fecha + monto (Bs) |
+| Modo Distribuido | Input total + redondeo (`Redondeado (1 Bs)` / `Enteros (1 Bs)` / `Preciso (centavos)`) + vista previa por día; el sobrante va al último día | `DistribuirUseCase` (espejo de `distribuir.ts`) + vista previa |
+| Total | Card **"Total del pago"** derivado (Σ días) | idem, en tiempo real |
+| Ayuda | `"Usa coma decimal y punto para miles: 1.234,56."` | idem |
+| Notas | Textarea, placeholder "Referencia, período pagado, observaciones…" | idem |
+| Comprobante | Dropzone (sin OCR en v0.3.0) | **pendiente**: Photo Picker + multipart (mejora posterior) |
+| Botón | "Guardar pago" (deshabilitado si falta fuente, días, monto o total ≤ 0) | idem |
 
-**Flujo**: `POST /pagos` → si hay comprobante, `POST /pagos/{id}/comprobante` → navegar a Ingresos.
-**Toasts**: "Pago registrado" + "Pago #N creado con split automático." / "Pago #N creado correctamente." /
-warning "Pago #N registrado sin split automático" (descripción = `split_warning`).
+**Flujo**: `PagoRepository.crearPago` escribe en Room con `syncState = PENDING_CREATE` y encola el
+push; el worker envía `POST /pagos` con los días `{fecha, monto_enteros}` y **omite el total**
+(derivado, evita `422 TOTAL_DESINCRONIZADO`). Sin OCR: el comprobante no extrae datos.
 
 ### 3.1 OCR — decisión del proyecto
 
-**Fuera de alcance en Fase 1** (decisión del usuario: *"Sin OCR en Fase 1"*).
-Se replicará en Fase 2 con **ML Kit Text Recognition** (on-device, equivalente a `tesseract.js`).
-Contrato a reimplementar (documentado para la fase futura):
-
-| Extrae | Regla del web (`services/ocr.ts`) |
-|---|---|
-| `monto_enteros` | Rango 1000–10 000 000 centavos; scoring por línea (+3 palabras de contexto, −4 ruido, +2 si "bs/bob", +1 si 2 decimales, +2 si positivos sin ruido); descarta enteros de 7+ dígitos; separador decimal inferido |
-| `fecha` | `YYYY-MM-DD`/`YYYY/MM/DD` → `"DD de mes de YYYY"` → `DD/MM/YYYY` |
-| `referencia` | línea con `referencia|ref.|n°|nº` + número de 4+ dígitos (máx. 80 chars) |
-| `descripcion` | línea con `descripción|detalle|concepto|glosa|comentario|observación|motivo` (máx. 120 chars) |
-
-En Android, la captura de imagen usa **Photo Picker** (`PickVisualMedia`), sin permiso de galería.
+**Eliminado en v0.3.0** (el web dejó de usar OCR: el registro es híbrido y manual).
+No se implementa en Android; la captura de imagen queda como mejora posterior con Photo Picker.
 
 ---
 
@@ -131,7 +127,9 @@ En Android, la captura de imagen usa **Photo Picker** (`PickVisualMedia`), sin p
 | Filtros | "Desde", "Hasta", "Fuente" (Todas), "Método" (Todos) + botones "Aplicar" / "Limpiar" | `FilterChip` + `DatePicker` + bottom sheet "Aplicar filtros" |
 | Agrupación | por año descendente, con pill del nº de pagos del año | `stickyHeader` por año |
 | Fila | punto de color + alias de fuente, fecha (`mié 27 ago 2026`) + notas, badge de método, monto (`1.234,56 Bs`), miniatura de comprobante, 3 acciones (split/editar/eliminar) | `Card` con `Row` + `IconButton`s |
-| Detalle expandido | "Días trabajados (N)" con chips `jueves · 2026-08-27`; "Comprobante" o "Sin comprobante"; "ID #12" (+ " · Split: preciso (#3)") | `AnimatedVisibility` + `FlowRow` de chips |
+| Acciones de fila | split (generar si no tiene) · editar · eliminar | `Edit`, generar split (`CallSplit`) y eliminar (`Delete`); si ya tiene split se muestra el badge y se oculta el botón de split |
+| **Editar pago (v0.3.0)** | Diálogo fuente/método/fecha/notas + días con `fecha` y `monto_enteros`; total derivado; BR-081 bloquea la edición si el pago tiene split | `EditarPagoDialog` (Room-first, mensaje "Pago actualizado") |
+| Detalle expandido | "Días trabajados (N)" con chips `jueves · 2026-08-27` (+ monto en v0.3.0); "Comprobante" o "Sin comprobante"; "ID #12" (+ " · Split: preciso (#3)") | `FlowRow` de chips con fecha y monto |
 | Badge de split | `pago.split_modo ?? "split"` con tooltip "Este pago ya tiene split" | `AssistChip` |
 | Zoom de comprobante | overlay a pantalla completa, cierre con X y `Escape` | `Dialog` a pantalla completa |
 | Vacío | "No hay pagos que coincidan con los criterios." / "Ajusta los filtros o registra un nuevo pago." | idem |
@@ -139,6 +137,11 @@ En Android, la captura de imagen usa **Photo Picker** (`PickVisualMedia`), sin p
 
 **Diálogo de edición**: "Editar pago #{id}", warning "Pago con split" → *"El monto no se puede modificar si el pago tiene split (lo rechaza la API). El resto de campos sí es editable."* (campo monto **deshabilitado**), calendario que **reemplaza** los días, botón "Guardar cambios".
 **Diálogo de borrado**: "¿Eliminar pago #{id}?" + *"Se eliminará el pago de {Bs} de {fuente} del {fecha}. También se eliminará su split pendiente. Esta acción no se puede deshacer."* → "Cancelar" / "Eliminar".
+
+> En Android el **borrado** está implementado (`AlertDialog` con el texto literal del web); el
+> diálogo de **edición** sigue pendiente. El error del backend (p. ej. 409 por tener
+> transacciones realizadas) se muestra en una tarjeta de error y el aviso de éxito en un
+> banner, ambos en la misma pantalla.
 
 **Endpoints**: `GET /pagos` (filtros + `page`/`page_size`), `PUT /pagos/{id}`, `DELETE /pagos/{id}`, `POST /splits`.
 
@@ -162,6 +165,19 @@ En Android, la captura de imagen usa **Photo Picker** (`PickVisualMedia`), sin p
 **Endpoints**: `GET /pagos?page_size=500`, `GET /splits`, `GET /cuentas`, `POST /splits`, `DELETE /splits/{id}`, `PUT /transacciones/{id}/realizar`.
 
 > El "Generar split" vive en **Ingresos** en el web; en Android se conserva ahí y además se ofrece en Splits.
+
+**Implementado en Android** (`presentation/components/SplitDialogs.kt`, reutilizado por ambas pantallas):
+
+| Diálogo | Web | Android |
+|---|---|---|
+| Generar split | "Generar split — pago #{id}", select con 3 modos | `GenerarSplitDialog` (mismos 3 modos con su descripción literal) |
+| Transferir a {alias} | "Transferir a {alias}", caja con banco/número, "Tasa aplicada (snapshot)", QR 160×160 | `RealizarTransaccionDialog` (idéntico, con Coil para el QR) |
+| Ver datos de cuenta | "{alias}", filas Banco / Número / Tasa / Pendiente, QR 176×176 | `CuentaDetalleDialog` (idéntico) |
+| Eliminar split | "¿Eliminar el split del pago #{id}?" | `AlertDialog` con el texto literal; botón **deshabilitado** si hay realizadas (BR-036) |
+
+Además: la fila de cada split muestra "Pago #{id} · {fuente}", "{fecha} · {n} día(s)", el monto y
+el badge "Completo" / "{Bs} pend."; y las transacciones muestran "· reserva" cuando la cuenta es
+General (como `FilaTransaccion` del web).
 
 ---
 
@@ -241,13 +257,18 @@ Tabs: **Cuentas** (default) · **Fuentes** · **Splits**.
 | Fuente de verdad | La UI **solo** lee de Room. Los repositorios exponen `Flow` de Room; la red solo escribe en Room. |
 | Escritura local-first | Toda mutación escribe en Room **y** encola la operación en `pending_operations` **en la misma transacción**. |
 | Push periódico | `SyncPushWorker` (`NetworkType.CONNECTED`), además de push inmediato tras cada mutación local (OneTime, `APPEND_OR_REPLACE`). |
-| Pull periódico | `SyncPullWorker` cada 15 min y al abrir la app; `SyncAllWorker` cada 30 min. |
+| Pull periódico | `SyncPullWorker` cada **15 min** (`ExistingPeriodicWorkPolicy.UPDATE`) y al abrir la app. |
+| Push + pull periódico | `SyncAllWorker` cada **30 min**. |
+| Conectividad recuperada | `ConnectivityMonitor` (callback de `ConnectivityManager`) encola un `SyncAllWorker` en cuanto la red vuelve (`KEEP`: no duplica si ya hay una sync en curso). |
+| Sincronización manual | `SyncStatusRepository.sincronizarAhora()` → `SyncAllWorker` (`REPLACE`), expuesto en Ajustes. |
+| Restricción de red | Todos los trabajos exigen `NetworkType.CONNECTED`: sin red se **aplazan** (no fallan) y se ejecutan al recuperar la conectividad. |
 | Orden de push | `fuentes → cuentas → pagos → días → splits → transacciones → settings`. |
 | Reintentos | Backoff exponencial por operación (`nextAttemptAt`), `Result.retry()` en el worker. A los 5 intentos → `FAILED` (requiere acción del usuario). |
 | Errores 409/422 | No se reintentan: la fila queda `FAILED` y la UI muestra el mensaje literal del backend + acción "Descartar cambio local". |
 | Split calculado offline | `SplitCalculator` (Kotlin) replica `splitcalc.go`; el resultado local es una **vista previa** hasta que el servidor confirma. |
 | Dashboard | Cálculo local sobre Room (no consume `/dashboard/*`). |
 | Health | Siempre remoto (no se cachea). |
+| Resultado de la sync | Los procesadores devuelven `SyncOutcome` (`OK`/`RETRY`/`FATAL`), **independiente de WorkManager**; los workers lo traducen a `Result.success()`/`retry()`/`failure()`. |
 
 ### 8.3 Conflictos (resumen; detalle en `data-model.md` §9)
 
@@ -270,7 +291,7 @@ Los strings marcados como **literales** deben reproducirse tal cual (son la fuen
 | Grupos | "Finanzas", "Sistema" |
 | App | "Abys", "ingresos" |
 | Tema | "Modo claro", "Modo oscuro" |
-| Registrar | "Registrar pago", "Marca los días trabajados en el calendario y completa el resto del formulario.", "Calendario", "Datos del pago", "Comprobante (opcional)", "Guardar pago", "Trabajo", "Pago", "Quitar", "Arrastra o haz clic para subir el comprobante", "PNG, JPG o WEBP · opcional · lectura con OCR", "Leer comprobante", "Quitar" |
+| Registrar | "Registrar pago", "Marca los días trabajados en el calendario y elige cómo cargar los montos.", "Calendario", "Datos del pago", "Modo de registro", "Detallado", "Distribuido", "Monto por día (Bs)", "Total a distribuir (Bs)", "Redondeo", "Redondeado (1 Bs)", "Enteros (1 Bs)", "Preciso (centavos)", "VISTA PREVIA", "Total del pago", "Usa coma decimal y punto para miles: 1.234,56.", "Guardar pago" |
 | Ingresos | "Ingresos", "{n} pagos registrados", "Filtros", "Desde", "Hasta", "Fuente", "Todas", "Método", "Todos", "Aplicar", "Limpiar", "Días trabajados ({n})", "Comprobante", "Sin comprobante", "ID #{id}", "Editar pago #{id}", "Guardar cambios", "¿Eliminar pago #{id}?" |
 | Splits | "Splits", "Splits generados", "Pendiente total", "Realizado total", "Pendiente por cuenta", "Total pendiente", "Ver datos", "No hay splits generados.", "Complet[o]", "{Bs} pend.", "Eliminar split", "¿Eliminar el split del pago #{id}?", "Transferir a {alias}", "Marcar realizada", "Tasa aplicada (snapshot)", "Realizada", "Pendiente", "0 Bs en cuenta no General" |
 | Configuración | "Configuración", "Administra fuentes de ingreso, cuentas de distribución y splits.", "Cuentas", "Fuentes", "Splits", "Nueva cuenta", "Nueva fuente", "Historial de tasas — {alias}", "Modo de cálculo por defecto", "Modo por defecto", "Aplicar a transacciones pendientes", "Residual (derivada)", "= 100% − otras · no configurable" |
@@ -290,4 +311,4 @@ Los strings marcados como **literales** deben reproducirse tal cual (son la fuen
 | **P1** | Splits (listar, generar, realizar, eliminar) | Flujo financiero核心. |
 | **P2** | Configuración (cuentas/fuentes/splits + ajustes de app) | Configuración + ajustes de URL/sync. |
 | **P2** | Health | Diagnóstico. |
-| **P3** | OCR con ML Kit, edición de tasas en historial avanzado, comparador de pagos | Mejoras posteriores. |
+| **P3** | Comprobante con Photo Picker + multipart, zoom de comprobante, edición de tasas avanzada | Mejoras posteriores (OCR eliminado en v0.3.0). |

@@ -319,11 +319,15 @@ Checks manuales mínimos:
 | Feature | Pendiente |
 |---|---|
 | **Registrar** | Subida de comprobante (Photo Picker + multipart), OCR (ML Kit), resumen "Detectado en el comprobante", navegación a Ingresos tras guardar |
-| **Ingresos** | Diálogos de edición/eliminación, "Generar split", zoom de comprobante, paginación, filtro por texto |
-| **Splits** | Diálogos "Generar split" / "Transferir a {alias}" (con QR) / "Ver datos" de cuenta, recálculo, warning de 0 Bs por cuenta no General |
+| **Ingresos** | Diálogo de **edición** (reemplazar días, monto bloqueado si hay split), zoom de comprobante a pantalla completa, filtro por texto |
+| **Splits** | Recálculo de un split ("Recalcular"), "Ver datos" con el QR en alta resolución |
 | **Configuración** | CRUD de fuentes y cuentas (diálogos), cambio de tasa + historial, QR/logo, sección de Ajustes completa (URL, sync, tema) |
-| **Dashboard** | Navegación entre semanas/meses/años en los gráficos, tooltips, rango del histórico |
+| **Dashboard** | Tooltips en los gráficos (valores exactos al tocar una barra/punto) |
 | **OCR** | ML Kit Text Recognition (fase 2, ver `feature-matrix.md` §3.1) |
+
+> Lo que estaba en esta tabla y **ya está implementado** (ver §12): generación de split,
+> borrado de pagos y de splits, diálogos "Transferir a {alias}" y "Ver datos", navegación
+> ±1 año / ±12 meses en los gráficos del dashboard y rango del histórico.
 
 ### 10.3 Partición lista para paralelizar (sin solapamiento de archivos)
 
@@ -347,17 +351,26 @@ Cada lote debe terminar con `./gradlew :app:assembleDebug :app:testDebugUnitTest
 
 ### 10.4 Notas técnicas relevantes para los lotes
 
-- **Los importes de iconos**: `material-icons-extended` 1.7.8 no incluye `CircleDollarSign` ni
-  `Database` (usa `Payments` y `Storage`); el conjunto "core" (49 iconos) cubre `List`, `Settings`,
+- **Los importes de iconos**: `material-icons-extended` 1.7.8 no incluye `CircleDollarSign`,
+  `Database`, `ImageOff` ni `SplitSquareHorizontal`. Equivalentes que **sí** existen:
+  `Payments`, `Storage`, `BrokenImage` / `ImageNotSupported` y `CallSplit`
+  (`Icons.AutoMirrored.Filled.CallSplit`). El conjunto "core" (49 iconos) cubre `List`, `Settings`,
   `Refresh`, `Warning`, `Delete`, `Edit`, `Search`, `Add`, `Close`.
 - **Comments anidados**: Kotlin admite `/*` anidado, así que escribir `` `/dashboard/*` `` dentro de
   un KDoc **comenta el resto del archivo**. Evitar `/*` dentro de comentarios.
 - **Type-safe Room**: los `dao` con `Flow<T>` sobre POJOs (`TotalesRango`, `FilaHistorial`) deben
  _keep_ los POJOs con constructor simple y campos no nulables.
 - **`Result` de WorkManager**: fuera de un `Worker` el tipo es `androidx.work.ListenableWorker.Result`
-  (no existe `androidx.work.Result`).
+  (no existe `androidx.work.Result`). Las **subclases** `Result.Failure` / `Result.Retry` están
+  marcadas `@RestrictTo(LIBRARY_GROUP)`: usarlas fuera de `androidx.work` dispara el error de
+  lint `RestrictedApi`. Por eso los procesadores devuelven `SyncOutcome` (`data/sync/SyncOutcome.kt`)
+  y solo los *workers* los traducen a `Result.success()/retry()/failure()`. Además, comparar
+  `Result` con `==` no es fiable (no sobrescriben `equals`): usa el enum.
 - **`inline` en interfaces**: Kotlin lo prohíbe; las funciones de extensión `map`/`onSuccess`/
   `onFailure` de `AppResult` están fuera de la interfaz.
+- **`combine` de más de 5 flujos**: `kotlinx.coroutines.flow.combine` tiene sobrecargas hasta
+  5 flujos; a partir de ahí usa la variante `vararg` (con `Array<Any?>`), que pierde los tipos.
+  Encadena `combine` anidados en lugar de pasar 6+ flujos a la vez.
 
 ---
 
@@ -414,3 +427,129 @@ Sin cambios de esquema: la versión de Room sigue siendo **1** (no hace falta mi
 
 Tests nuevos (`app/src/test/.../data/repository/`): `PagoRepositoryImplTest` (7),
 `SplitRepositoryImplTest` (5), `DashboardRepositoryImplTest` (3), con MockK sobre los DAOs.
+
+---
+
+## 12. Pasada "UI Dashboard · Ingresos · Splits + WorkManager" — 2026-11-14
+
+Trabajo del arquitecto sobre el scaffold y la capa de datos ya existentes. Objetivo: pantallas
+Compose/M3 **conectadas a los repositorios** y **sincronización automática** con el backend.
+
+### 12.1 Presentación (`presentation/**`)
+
+| Fichero | Cambio |
+|---|---|
+| `components/SplitDialogs.kt` (nuevo) | `GenerarSplitDialog`, `RealizarTransaccionDialog` y `CuentaDetalleDialog`, compartidas por Ingresos y Splits (réplica de los 3 diálogos del web) |
+| `dashboard/DashboardViewModel.kt` | Año del gráfico **Anual** separado del mes seleccionado (±1 año propio); rango del **Histórico** (últimos 12 meses con datos, nav ±12 meses); **tendencia** calculada con `mapIndexed` (antes `indexOf` devolvía el índice equivocado con meses de igual total) |
+| `dashboard/DashboardScreen.kt` | Chips de sincronización (pendientes/error) y banner de error; botones ±1 año en "Anual" y ±12 meses en "Histórico" con el rango en el subtítulo |
+| `ingresos/IngresosViewModel.kt` | `generarSplit(pagoLocalId, modo)`; errores y confirmaciones en el estado (`error` / `mensaje`); `urlComprobante(pago)` |
+| `ingresos/IngresosScreen.kt` | Banner de error y de confirmación; acciones por fila (**generar split** / **eliminar**) con `AlertDialog` de borrado (texto literal del web); miniatura del comprobante con Coil |
+| `splits/SplitsViewModel.kt` | Observa también los **pagos** (fuente, fecha, días, monto) y las **cuentas** (URL del QR); `pagosSinSplit` para generar splits; `SplitConPago` / `CuentaConQr` |
+| `splits/SplitsScreen.kt` | Fila con "Pago #{id} · {fuente}", "{fecha} · {n} día(s)", monto y badge; **Eliminar split** (deshabilitado si hay realizadas); **Transferir a {alias}** con QR; **Ver datos** por cuenta; tarjeta de pagos sin split |
+
+### 12.2 Dominio (`domain/**`)
+
+- `Pago.tieneSplit` pasa a ser un **campo explícito** (`split != null`) en lugar de deducirse de
+  `splitId != null`: un split creado en el dispositivo y aún no sincronizado no tiene `serverId`,
+  y la UI ofrecía "generar split" para un pago que ya lo tenía (violaba BR-030).
+  `splitId` sigue siendo el id **del servidor** (para mostrar "Split: preciso (#3)").
+
+### 12.3 Sincronización (`data/sync/**`, `AbysApplication.kt`)
+
+| Cambio | Detalle |
+|---|---|
+| `SyncOutcome` (nuevo) | Resultado de la sync **independiente de WorkManager** (`OK`/`RETRY`/`FATAL`): elimina el error de lint `RestrictedApi` y la comparación frágil de `Result` con `==` |
+| `ConnectivityMonitor` (nuevo) | `NetworkCallback` de `ConnectivityManager`: encola un push + pull al **recuperar la conectividad** (solo en la transición offline→online) |
+| `SyncScheduler` | Pull periódico cada **15 min** (`ExistingPeriodicWorkPolicy.UPDATE`); `onConnectivityRestored()` con `KEEP`; `schedulePeriodicPull()` |
+| `SyncWorkers` | Traducción explícita `SyncOutcome → Result`; si el push es reintentable se **omite el pull** (sin red no serviría de nada) y se registra en el log |
+| `PullProcessor` | **Paginación real** de `GET /pagos`: se descargan **todas** las páginas (el backend limita `page_size` a 500). Antes solo bajaba la primera |
+| `AbysApplication` | Arranca el monitor de conectividad y programa los dos trabajos periódicos |
+
+### 12.4 Verificación
+
+```bash
+./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug --offline
+```
+
+- **59 tests** en verde (49 previos + 10 nuevos: `DashboardViewModelTest` (7), `SplitsUiStateTest` (3)).
+- **0 errores de lint** (47 warnings preexistentes).
+- APK: `app/build/outputs/apk/debug/app-debug.apk` (~20,9 MB).
+
+> Sigue **pendiente** la validación E2E contra el backend real (§7.3): el entorno no tiene `go`,
+> `docker`, `psql` ni `adb` instalados.
+
+---
+
+## 13. Pasada "Contrato 0.3.0 · dashboard v2 · registro híbrido" — 2026-11-18
+
+Propagación a Android de los commits del web/backend `75095f3` (M1–M2), `984d46d` (M3),
+`c1dfc01` (M4) y `3f2e6f6` (M6): **contrato breaking de días trabajados con monto**,
+**dashboard v2** (agregación por día/fuente, bloques, distribuciones, sin tendencia) y
+**registro híbrido sin OCR**.
+
+### 13.1 Contrato congelado (v0.3.0)
+
+| Cambio | Detalle |
+|---|---|
+| Días con monto | `POST /pagos`, `PUT /pagos/:id` y `POST /pagos/:id/dias` usan `{fecha, monto_enteros}` |
+| Total derivado | El `monto_enteros` del pago = Σ días; el backend **ignora** el total del cliente |
+| Errores | `422 TOTAL_DESINCRONIZADO` (total ≠ Σ) e `422 IMMUTABLE_DATA` (cambiar la suma con split) |
+| Android | Los requests **omiten** `monto_enteros` (R3.2 del web) para no provocar el 422 |
+| Dashboard | `summary` sin parámetros (`total_30d_centavos`, `total_historico_centavos`); `monthly` por **bloques**; `por_fuente` en weekly/distribuciones; nuevos `distribution/monthly|yearly`; `history` sin tendencia |
+| OCR | Eliminado: el comprobante no extrae datos |
+
+### 13.2 Dominio (`domain/**`)
+
+| Fichero | Cambio |
+|---|---|
+| `model/Models.kt` | `DiaTrabajado.monto`; `DiaTrabajadoDraft`; `PagoDraft` sin monto directo (`monto` = Σ días); `DashboardSummary(totalUltimos30Dias, totalHistorico)`; `FuenteTotal`, `BarraDia.porFuente`, `BloqueMes`, `Distribucion`; fuera `BarraSemana`, `DashboardResumenServidor` y la tendencia |
+| `model/SyncState.kt` | `ModoDistribucion` (redondeado / enteros / preciso) |
+| `usecase/DistribuirUseCase.kt` (nuevo) | Reparto equitativo con residuo al último día y ajuste de base (espejo de `web/src/lib/distribuir.ts` / `splitcalc`) |
+| `usecase/ValidarPagoUseCase.kt` | Días con monto ≥ 0, fechas únicas, total Σ > 0; mensajes literales del backend |
+
+### 13.3 Datos (`data/**`)
+
+| Fichero | Cambio |
+|---|---|
+| `local/entity/PagoEntity.kt` | `DiaTrabajadoEntity.montoEnteros` |
+| `local/AbysDatabase.kt` | **v2** + `MIGRATION_1_2` (`ADD COLUMN montoEnteros INTEGER NOT NULL DEFAULT 0`), registrada en `DataModule` |
+| `local/dao/DashboardDao.kt` | Reescrito: `observeTotalDias`, `observeTotalHistorico`, `observeFilasPorDiaFuente` (`FilaDiaFuente`), `observeHistorial` — agrupación por `dias_trabajados.fecha` |
+| `remote/dto/**` | `DiaTrabajadoDto.montoEnteros`; días como objetos en requests; DTOs de dashboard v2 y distribuciones; `summary` sin params |
+| `repository/DashboardRepositoryImpl.kt` | Agregación local v2 (30 días, semana con `por_fuente`, bloques, año, histórico, distribuciones) y contraste por total de 30 días |
+| `repository/PagoRepositoryImpl.kt` | Días con monto al crear/editar; `reconciliarDias` conserva `serverId` y actualiza montos; BR-081 por **suma** de días |
+| `sync/PushProcessor.kt` | `POST/PUT /pagos` con `{fecha, monto_enteros}` y total omitido; `sincronizarDiasLocales` aplica ids + montos |
+| `sync/PullProcessor.kt` | Días con monto del servidor |
+
+### 13.4 Presentación (`presentation/**`)
+
+| Fichero | Cambio |
+|---|---|
+| `components/Charts.kt` | `StackedBarChart` (semanal por fuente), `DistributionPieChart` (monto + %), `BarChart`, `LineChart`, `etiquetaMes` |
+| `components/EditarPagoDialog.kt` (nuevo) | Edición de fuente/método/fecha/notas y días con monto; total derivado; BR-081 bloqueado con aviso |
+| `theme/Theme.kt` | `colorDesdeHex` para los colores de fuente |
+| `dashboard/DashboardViewModel.kt` | Navegación semana/mes/año/rango histórico; flujos intermedios tipados (`Seleccion`, `Datos`) por el límite de `combine`; `refrescar()` compara el total de 30 días |
+| `dashboard/DashboardScreen.kt` | 2 KPI (30 días / histórico) + 6 `ChartCard` con navegación y leyendas |
+| `registrar/RegistrarViewModel.kt` | `ModoRegistro.DETALLADO/DISTRIBUIDO`, `montosDia`, `totalDistribuidoTexto`, `modoRedondeo`, vista previa, `diasPayload`, `errorMontos` y total derivado |
+| `registrar/RegistrarScreen.kt` | Calendario (toque = marcar, toque largo = quitar), chips de modo, montos por día / total + redondeo + vista previa, card "Total del pago"; sin OCR |
+| `ingresos/IngresosViewModel.kt` | `actualizarPago(localId, draft)` → mensaje "Pago actualizado" |
+| `ingresos/IngresosScreen.kt` | Botón **Editar** por fila, `EditarPagoDialog` integrado y chips de días con monto |
+
+### 13.5 Verificación
+
+```powershell
+.\gradlew.bat :app:compileDebugKotlin
+.\gradlew.bat :app:testDebugUnitTest
+.\gradlew.bat :app:assembleDebug :app:lintDebug
+```
+
+- **74 tests** en verde (incluye `DistribuirUseCaseTest` (7) y los tests reescritos de
+  `DashboardRepositoryImplTest` (8), `DashboardViewModelTest` (8), `PagoRepositoryImplTest` (7)
+  y `ValidarPagoUseCaseTest` (9)).
+- **0 errores de lint** (49 warnings).
+- Esquema `app/schemas/com.mikylab.abys.data.local.AbysDatabase/2.json` exportado con
+  `montoEnteros` en `dias_trabajados`.
+- APK: `app/build/outputs/apk/debug/app-debug.apk` (~20,9 MB).
+
+**Pendiente por feature**: comprobante con Photo Picker + multipart y zoom, recalcular split desde
+Splits, tooltips de gráficos y marcas de `yaTrabajados`/`yaFechasPago` en el calendario de
+Registrar. La validación E2E contra backend real sigue bloqueada (§7.3).

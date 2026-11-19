@@ -40,6 +40,7 @@ object DomainMappers {
         localId = localId,
         serverId = serverId,
         fecha = DateFormats.parseIso(fecha) ?: java.time.LocalDate.now(),
+        monto = Money(montoEnteros),
     )
 
     fun PagoEntity.toDomain(
@@ -59,6 +60,7 @@ object DomainMappers {
         diasTrabajados = dias.map { it.toDomain() }.sortedBy { it.fecha },
         splitId = split?.serverId,
         splitModo = split?.modoCalculo?.let { ModoCalculo.fromWire(it) },
+        tieneSplit = split != null,
         syncState = syncState,
         lastError = lastError,
     )

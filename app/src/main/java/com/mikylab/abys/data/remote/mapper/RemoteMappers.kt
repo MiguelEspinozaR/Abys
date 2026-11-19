@@ -74,6 +74,7 @@ object RemoteMappers {
             serverId = id,
             pagoLocalId = pagoLocalId,
             fecha = fecha,
+            montoEnteros = montoEnteros,
             syncState = SyncState.SYNCED,
             updatedAtLocal = System.currentTimeMillis(),
         )

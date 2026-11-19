@@ -47,6 +47,7 @@ object DatabaseModule {
     fun provideDatabase(@ApplicationContext context: Context): AbysDatabase =
         Room.databaseBuilder(context, AbysDatabase::class.java, AbysDatabase.NAME)
             // El histórico es información de negocio: nunca se destruye de forma automática.
+            .addMigrations(AbysDatabase.MIGRATION_1_2)
             .build()
 
     @Provides fun provideFuenteDao(db: AbysDatabase): FuenteDao = db.fuenteDao()

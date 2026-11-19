@@ -12,6 +12,7 @@ import com.mikylab.abys.data.local.entity.PagoEntity
 import com.mikylab.abys.data.local.entity.SplitEntity
 import com.mikylab.abys.data.sync.Operations
 import com.mikylab.abys.domain.model.MetodoPago
+import com.mikylab.abys.domain.model.DiaTrabajadoDraft
 import com.mikylab.abys.domain.model.PagoDraft
 import com.mikylab.abys.domain.model.SyncState
 import io.mockk.Runs
@@ -99,12 +100,12 @@ class PagoRepositoryImplTest {
     )
 
     private fun draft(
-        monto: Long = 26_500L,
-        dias: List<LocalDate> = listOf(LocalDate.of(2026, 8, 27)),
+        dias: List<DiaTrabajadoDraft> = listOf(
+            DiaTrabajadoDraft(LocalDate.of(2026, 8, 27), Money(26_500L)),
+        ),
     ) = PagoDraft(
         fuenteLocalId = "fuente-1",
         fechaPago = LocalDate.of(2026, 8, 27),
-        monto = Money(monto),
         metodoPago = MetodoPago.EFECTIVO,
         notas = null,
         diasTrabajados = dias,
@@ -124,6 +125,7 @@ class PagoRepositoryImplTest {
         assertEquals(26_500L, slotPago.captured.montoEnteros)
         assertEquals(1, slotDias.captured.size)
         assertEquals("2026-08-27", slotDias.captured.first().fecha)
+        assertEquals(26_500L, slotDias.captured.first().montoEnteros)
         coVerify { pendingWriter.encolar(Operations.TIPO_PAGO, slotPago.captured.localId, Operations.OP_UPSERT) }
     }
 
@@ -148,6 +150,7 @@ class PagoRepositoryImplTest {
             serverId = 77L,
             pagoLocalId = "pago-1",
             fecha = "2026-08-27",
+            montoEnteros = 26_500L,
             syncState = SyncState.SYNCED,
             updatedAtLocal = 0L,
         )
@@ -158,7 +161,12 @@ class PagoRepositoryImplTest {
 
         val resultado = repo.actualizarPago(
             "pago-1",
-            draft(dias = listOf(LocalDate.of(2026, 8, 27), LocalDate.of(2026, 8, 28))),
+            draft(
+                dias = listOf(
+                    DiaTrabajadoDraft(LocalDate.of(2026, 8, 27), Money(26_500L)),
+                    DiaTrabajadoDraft(LocalDate.of(2026, 8, 28), Money(4_000L)),
+                ),
+            ),
         )
 
         assertTrue(resultado is AppResult.Success)
@@ -230,7 +238,10 @@ class PagoRepositoryImplTest {
             lastError = null,
         )
 
-        val resultado = repo.actualizarPago("pago-1", draft(monto = 30_000L))
+        val resultado = repo.actualizarPago(
+            "pago-1",
+            draft(dias = listOf(DiaTrabajadoDraft(LocalDate.of(2026, 8, 27), Money(30_000L)))),
+        )
 
         assertTrue(resultado is AppResult.Failure)
         assertTrue((resultado as AppResult.Failure).error.isImmutable)

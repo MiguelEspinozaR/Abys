@@ -15,11 +15,21 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Encola el trabajo de sincronización.
+ * Encola el trabajo de sincronización con **WorkManager**.
  *
- * - [requestPush]: sube las operaciones pendientes (tras cada mutación local).
- * - [requestPull]: refresca Room desde el servidor (al abrir la app y periódicamente).
- * - [requestFullSync]: push + pull + limpieza.
+ * Modelo de sincronización (ver `docs/feature-matrix.md` §8.2):
+ *
+ * | Disparador | Trabajo | Qué hace |
+ * |---|---|---|
+ * | Cada mutación local | [requestPush] | Sube la cola de pendientes (1 shot). |
+ * | App abierta | [requestPull] | Refresca Room desde el servidor. |
+ * | Conectividad recuperada | [onConnectivityRestored] | Push + pull (el device estuvo offline). |
+ * | Manual (Ajustes) | [requestFullSync] | Push + pull. |
+ * | Periódico (15 min) | [schedulePeriodicPull] | Refresca Room desde el servidor. |
+ * | Periódico (30 min) | [schedulePeriodic] | Push + pull. |
+ *
+ * Todos los trabajos exigen `NetworkType.CONNECTED`: si no hay red, WorkManager los **aplaza**
+ * (no fallan) y los ejecuta al recuperar la conectividad.
  */
 @Singleton
 class SyncScheduler @Inject constructor(
@@ -32,12 +42,14 @@ class SyncScheduler @Inject constructor(
         .setRequiredNetworkType(NetworkType.CONNECTED)
         .build()
 
-    /** Push inmediato de la cola de pendientes. */
+    /** Push inmediato de la cola de pendientes (tras cada mutación local). */
     fun requestPush() {
         val request = OneTimeWorkRequestBuilder<SyncPushWorker>()
             .setConstraints(connectedConstraints)
             .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
             .build()
+        // `APPEND_OR_REPLACE`: si ya hay un push en curso, el nuevo se encadena detrás, de modo
+        // que ninguna operación queda sin subir (el worker drena toda la cola en cada pasada).
         workManager.enqueueUniqueWork(WORK_PUSH, ExistingWorkPolicy.APPEND_OR_REPLACE, request)
     }
 
@@ -59,6 +71,20 @@ class SyncScheduler @Inject constructor(
         workManager.enqueueUniqueWork(WORK_ALL, ExistingWorkPolicy.REPLACE, request)
     }
 
+    /**
+     * Sincronización al **recuperar la conectividad**.
+     *
+     * Se usa `KEEP`: si ya hay una sincronización en curso o pendiente, no se encola otra
+     * (la que está en curso ya arrastrará los cambios acumulados).
+     */
+    fun onConnectivityRestored() {
+        val request = OneTimeWorkRequestBuilder<SyncAllWorker>()
+            .setConstraints(connectedConstraints)
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+            .build()
+        workManager.enqueueUniqueWork(WORK_ALL, ExistingWorkPolicy.KEEP, request)
+    }
+
     /** Work periódico (cada 30 min) que hace push + pull. */
     fun schedulePeriodic() {
         val request = PeriodicWorkRequestBuilder<SyncAllWorker>(30, TimeUnit.MINUTES)
@@ -67,7 +93,21 @@ class SyncScheduler @Inject constructor(
             .build()
         workManager.enqueueUniquePeriodicWork(
             WORK_PERIODIC,
-            ExistingPeriodicWorkPolicy.KEEP,
+            // `UPDATE`: al actualizar la app se aplica el nuevo periodo/configuración.
+            ExistingPeriodicWorkPolicy.UPDATE,
+            request,
+        )
+    }
+
+    /** Work periódico de **pull** (cada 15 min): mantiene Room al día con el servidor. */
+    fun schedulePeriodicPull() {
+        val request = PeriodicWorkRequestBuilder<SyncPullWorker>(15, TimeUnit.MINUTES)
+            .setConstraints(connectedConstraints)
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 5, TimeUnit.MINUTES)
+            .build()
+        workManager.enqueueUniquePeriodicWork(
+            WORK_PERIODIC_PULL,
+            ExistingPeriodicWorkPolicy.UPDATE,
             request,
         )
     }
@@ -77,5 +117,6 @@ class SyncScheduler @Inject constructor(
         const val WORK_PULL = "abys-sync-pull"
         const val WORK_ALL = "abys-sync-all"
         const val WORK_PERIODIC = "abys-sync-periodic"
+        const val WORK_PERIODIC_PULL = "abys-sync-periodic-pull"
     }
 }

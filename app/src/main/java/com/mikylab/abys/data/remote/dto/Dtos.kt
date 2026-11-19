@@ -51,6 +51,8 @@ data class DiaTrabajadoDto(
     val id: Long = 0,
     @SerialName("pago_id") val pagoId: Long = 0,
     val fecha: String,
+    /** Monto del día en centavos (v0.3.0). */
+    @SerialName("monto_enteros") val montoEnteros: Long = 0,
 )
 
 @Serializable

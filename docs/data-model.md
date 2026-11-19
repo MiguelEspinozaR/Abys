@@ -31,7 +31,7 @@
 |---|---|---|---|---|
 | `fuentes` | `FuenteEntity` | `localId` (TEXT) | — | `splitAuto`, `splitAutoModo` (nullable) |
 | `pagos` | `PagoEntity` | `localId` (TEXT) | `fuenteId → fuentes.localId` | `montoEnteros: Long`, `fechaPago: String` |
-| `dias_trabajados` | `DiaTrabajadoEntity` | `localId` (TEXT) | `pagoId → pagos.localId` | `UNIQUE(pagoId, fecha)` |
+| `dias_trabajados` | `DiaTrabajadoEntity` | `localId` (TEXT) | `pagoId → pagos.localId` | `montoEnteros: Long`, `UNIQUE(pagoId, fecha)` |
 | `cuentas` | `CuentaEntity` | `localId` (TEXT) | — | `tasaBps` **derivada** (última del historial o General) |
 | `historial_tasas` | `HistorialTasaEntity` | `localId` (TEXT) | `cuentaId → cuentas.localId` | `tasaBps`, `aplicadaDesde` |
 | `splits` | `SplitEntity` | `localId` (TEXT) | `pagoId → pagos.localId` | 0..1 por pago; `modoCalculo` |
@@ -63,7 +63,12 @@ ordenadas por `updatedAtLocal` ascendente. Las dependencias se respetan por el *
 
 ---
 
-## 3. Entidades Room (esquema v1)
+## 3. Entidades Room (esquema v2)
+
+> **v2 (contrato API 0.3.0)**: `dias_trabajados.montoEnteros` — cada día lleva su monto en
+> centavos y el `montoEnteros` del pago es **derivado** (Σ de los días). Migración
+> `MIGRATION_1_2` (`ALTER TABLE dias_trabajados ADD COLUMN montoEnteros INTEGER NOT NULL DEFAULT 0`)
+> registrada en `DataModule`. Los esquemas exportados están en `app/schemas/.../1.json` y `2.json`.
 
 ```kotlin
 // ─────────────────────────── fuentes ───────────────────────────
@@ -133,6 +138,7 @@ data class DiaTrabajadoEntity(
     val serverId: Long?,
     val pagoLocalId: String,
     val fecha: String,                  // "YYYY-MM-DD"
+    val montoEnteros: Long,             // v2: monto del día en centavos (>= 0)
     val syncState: SyncState,
     val updatedAtLocal: Long,
 )
@@ -448,8 +454,8 @@ Reglas que **debe** respetar (idénticas al backend):
 | Eliminar cuenta | `DELETE /cuentas/{id}` | |
 | QR | `POST/DELETE /cuentas/{id}/qr` | Multipart |
 | Cambiar tasa | `PUT /cuentas/{id}/tasa` `{tasa, aplicar_pendientes}` | El backend registra el historial |
-| Crear pago | `POST /pagos` | Incluye `dias_trabajados` (fechas) en el mismo body |
-| Actualizar pago | `PUT /pagos/{id}` | Enviar `dias_trabajados` solo si cambiaron |
+| Crear pago | `POST /pagos` | Días como `{fecha, monto_enteros}` en el mismo body; **se omite el total** (derivado, R3.2) |
+| Actualizar pago | `PUT /pagos/{id}` | Enviar `dias_trabajados` (con monto) solo si cambiaron; total omitido |
 | Eliminar pago | `DELETE /pagos/{id}` | 409 si hay realizadas → la fila queda `FAILED` con el mensaje |
 | Añadir/quitar día | `POST /pagos/{id}/dias`, `DELETE /pagos/{id}/dias/{diaId}` | Solo para pagos ya en servidor |
 | Comprobante | `POST /pagos/{id}/comprobante` (multipart `archivo`) | |
@@ -477,11 +483,13 @@ se degrada a `PENDING_CREATE` (la fila se recrea). Si responde `409`/`422`, la o
 ### 7.3 Pull (servidor → Room)
 
 Orden de refresco: `fuentes → cuentas (+historial) → pagos (+días) → splits (+transacciones) → settings`.
-El dashboard **no** se persiste: se calcula **localmente** sobre `pagos` (misma agregación que el
-backend: `EXTRACT(YEAR/MONTH)`, días distintos, etc.) — así el dashboard funciona offline y no
-requiere 5 endpoints por refresh. El endpoint `GET /dashboard/summary` sí se usa para **contrastar**
-el total local con el del servidor (`DashboardRepository.consultarServidor`): si el servidor tiene
-más, la UI avisa de que faltan datos y se encola una sincronización completa.
+El dashboard **no** se persiste: se calcula **localmente** sobre Room con la semántica v0.3.0
+(`DashboardDao`: `observeTotalDias`, `observeTotalHistorico`, `observeFilasPorDiaFuente`,
+`observeHistorial`) — todo agrupado por `dias_trabajados.fecha`, montos de
+`dias_trabajados.montoEnteros`, `por_fuente` con fuentes soft-deleted — de modo que funciona
+offline. El endpoint `GET /dashboard/summary` (sin parámetros) se usa para **contrastar** el
+total de los últimos 30 días local con el del servidor (`DashboardRepository.consultarServidor`):
+si el servidor tiene más, la UI avisa de que faltan datos y se encola una sincronización completa.
 
 **Identidad de la reconciliación**: la fila local y la remota se emparejan por **`serverId`**
 (nunca por `localId`, porque una fila creada en el dispositivo tiene UUID y la descargada del

@@ -20,11 +20,23 @@ data class Fuente(
     val lastError: String? = null,
 )
 
-/** Día trabajado (pertenece a un único pago, fecha única por pago). */
+/**
+ * Día trabajado (pertenece a un único pago, fecha única por pago).
+ *
+ * Desde la v0.3.0 del API cada día lleva su **monto en centavos** (`monto_enteros`);
+ * el monto del pago es **derivado**: Σ de los días.
+ */
 data class DiaTrabajado(
     val localId: String,
     val serverId: Long?,
     val fecha: LocalDate,
+    val monto: Money,
+)
+
+/** Día trabajado de un borrador (entrada de la UI): fecha + monto en centavos. */
+data class DiaTrabajadoDraft(
+    val fecha: LocalDate,
+    val monto: Money,
 )
 
 /**
@@ -40,12 +52,19 @@ data class Pago(
     val notas: String?,
     val imagenRuta: String?,
     val diasTrabajados: List<DiaTrabajado>,
+    /** Id del split **en el servidor** (`null` si el split es local y aún no se ha subido). */
     val splitId: Long?,
     val splitModo: ModoCalculo?,
+    /**
+     * El pago tiene un split **local** (BR-030: como máximo uno por pago).
+     *
+     * No se deduce de [splitId]: un split creado en el dispositivo y todavía no sincronizado
+     * no tiene `serverId`, pero el pago ya está "bloqueado" para nuevas operaciones.
+     */
+    val tieneSplit: Boolean,
     val syncState: SyncState = SyncState.SYNCED,
     val lastError: String? = null,
 ) {
-    val tieneSplit: Boolean get() = splitId != null
     val esPendienteDeSync: Boolean get() = syncState.isPending || syncState == SyncState.FAILED
 }
 
@@ -53,11 +72,14 @@ data class Pago(
 data class PagoDraft(
     val fuenteLocalId: String,
     val fechaPago: LocalDate,
-    val monto: Money,
     val metodoPago: MetodoPago,
     val notas: String?,
-    val diasTrabajados: List<LocalDate>,
-)
+    /** Días con su monto; el total del pago es **derivado** (Σ de los días, v0.3.0). */
+    val diasTrabajados: List<DiaTrabajadoDraft>,
+) {
+    /** Σ de los montos por día: el total del pago. */
+    val monto: Money get() = Money(diasTrabajados.sumOf { it.monto.centavos })
+}
 
 /** Cuenta de distribución (BR-040..043). */
 data class Cuenta(
@@ -137,13 +159,25 @@ data class FiltroPagos(
     val pageSize: Int = 20,
 )
 
-/** Resumen del dashboard (calculado localmente sobre Room). */
+/**
+ * Resumen del dashboard (v0.3.0, `GET /dashboard/summary` **sin parámetros**).
+ *
+ * Se calcula **localmente** sobre Room y se contrasta con el servidor: si el total de los
+ * últimos 30 días del servidor es mayor, al espejo local le faltan pagos por sincronizar.
+ */
 data class DashboardSummary(
-    val mes: Int,
-    val anio: Int,
+    /** Σ de los montos por día de los últimos 30 días calendario (incluye hoy, zona La Paz). */
+    val totalUltimos30Dias: Money,
+    /** Σ histórica de los días trabajados. */
+    val totalHistorico: Money,
+)
+
+/** Desglose por fuente del weekly y de las distribuciones (v0.3.0). */
+data class FuenteTotal(
+    val fuenteServerId: Long?,
+    val alias: String,
+    val color: String,
     val total: Money,
-    val cantidadPagos: Int,
-    val diasTrabajados: Int,
 )
 
 /** Punto del histórico mensual. */
@@ -151,42 +185,33 @@ data class PuntoHistorial(
     val anio: Int,
     val mes: Int,
     val total: Money,
-    val cantidadPagos: Int,
 )
 
-/**
- * Resumen del mes calculado por el **servidor** (`GET /dashboard/summary`).
- *
- * Se usa para contrastar el resumen local (calculado sobre Room): si difieren, significa que
- * al espejo local le faltan pagos → la app avisa de que hay datos por sincronizar.
- */
-data class DashboardResumenServidor(
-    val mes: Int,
-    val anio: Int,
-    val total: Money,
-    val cantidadPagos: Int,
-    val diasTrabajados: Int,
-)
-
-/** Barras del gráfico semanal (siempre 7 días). */
+/** Barras del gráfico semanal (siempre 7 días, apiladas por fuente). */
 data class BarraDia(
     val fecha: LocalDate,
     val total: Money,
-    val cantidadPagos: Int,
+    /** Desglose por fuente del día (ordenado por total descendente, luego `fuente_id`). */
+    val porFuente: List<FuenteTotal>,
 )
 
-/** Barras del gráfico mensual (semanas de 7 días desde el día 1). */
-data class BarraSemana(
-    val semana: Int,
+/** Bloques del gráfico mensual (v0.3.0): 1–7, 8–14, 15–21, 22–28 y 29–fin de mes. */
+data class BloqueMes(
+    val bloque: Int,
     val inicio: LocalDate,
     val fin: LocalDate,
     val total: Money,
-    val cantidadPagos: Int,
 )
 
 /** Barras del gráfico anual (siempre 12 meses). */
 data class BarraMes(
     val mes: Int,
     val total: Money,
-    val cantidadPagos: Int,
+)
+
+/** Distribución por fuente (mensual o anual, v0.3.0). */
+data class Distribucion(
+    val total: Money,
+    /** Ordenado por total descendente y `fuente_id`. */
+    val porFuente: List<FuenteTotal>,
 )

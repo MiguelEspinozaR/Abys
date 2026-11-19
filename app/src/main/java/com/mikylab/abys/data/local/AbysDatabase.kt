@@ -27,7 +27,8 @@ import com.mikylab.abys.domain.model.SyncState
 /**
  * Base de datos local (Room). Es la **única fuente de verdad** para la UI.
  *
- * Esquema v1 — ver `docs/data-model.md`.
+ * Esquema v2 — ver `docs/data-model.md`. La v2 añade `dias_trabajados.montoEnteros`
+ * (contrato v0.3.0: montos por día trabajado).
  */
 @Database(
     entities = [
@@ -42,7 +43,7 @@ import com.mikylab.abys.domain.model.SyncState
         PendingOperationEntity::class,
         SyncStateEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -58,6 +59,18 @@ abstract class AbysDatabase : RoomDatabase() {
 
     companion object {
         const val NAME = "abys.db"
+
+        /**
+         * v1 → v2: cada día trabajado lleva su monto en centavos. Los datos existentes
+         * (días sin monto) quedan en 0; el próximo pull del pago los corrige con Σ del servidor.
+         */
+        val MIGRATION_1_2 = object : androidx.room.migration.Migration(1, 2) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE dias_trabajados ADD COLUMN montoEnteros INTEGER NOT NULL DEFAULT 0",
+                )
+            }
+        }
     }
 }
 

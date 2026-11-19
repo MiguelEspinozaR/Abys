@@ -118,6 +118,7 @@ class PagoRepositoryImpl @Inject constructor(
             serverId = null,
             fuenteLocalId = draft.fuenteLocalId,
             fechaPago = draft.fechaPago.toString(),
+            // El total del pago es **derivado**: Σ de los días (v0.3.0).
             montoEnteros = draft.monto.centavos,
             metodoPago = draft.metodoPago.wire,
             notas = draft.notas?.takeIf { it.isNotBlank() },
@@ -130,16 +131,20 @@ class PagoRepositoryImpl @Inject constructor(
             updatedAtServer = null,
             lastError = null,
         )
-        val dias = draft.diasTrabajados.distinct().sorted().map { fecha ->
-            DiaTrabajadoEntity(
-                localId = UUID.randomUUID().toString(),
-                serverId = null,
-                pagoLocalId = localId,
-                fecha = fecha.toString(),
-                syncState = SyncState.PENDING_CREATE,
-                updatedAtLocal = ahora,
-            )
-        }
+        val dias = draft.diasTrabajados
+            .distinctBy { it.fecha }
+            .sortedBy { it.fecha }
+            .map { dia ->
+                DiaTrabajadoEntity(
+                    localId = UUID.randomUUID().toString(),
+                    serverId = null,
+                    pagoLocalId = localId,
+                    fecha = dia.fecha.toString(),
+                    montoEnteros = dia.monto.centavos,
+                    syncState = SyncState.PENDING_CREATE,
+                    updatedAtLocal = ahora,
+                )
+            }
 
         transactions.run {
             pagoDao.upsert(entidad)
@@ -166,7 +171,8 @@ class PagoRepositoryImpl @Inject constructor(
                 AppError(AppError.CODE_VALIDATION, "la fuente indicada no existe"),
             )
 
-        // BR-081: el backend no permite cambiar el monto de un pago con split (422).
+        // BR-081 (v0.3.0): no se puede cambiar la **suma de los días** de un pago con split
+        // (el backend responde 422 `IMMUTABLE_DATA`).
         val tieneSplit = splitDao.getPorPago(localId) != null
         if (tieneSplit && existente.montoEnteros != draft.monto.centavos) {
             return AppResult.Failure(
@@ -277,7 +283,8 @@ class PagoRepositoryImpl @Inject constructor(
 
     /**
      * Calcula el diff de días trabajados: las fechas que se mantienen conservan su fila local
-     * (con su `serverId`); las nuevas se insertan y las que desaparecen se descartan.
+     * (con su `serverId`) y **actualizan su monto** con el del borrador; las nuevas se insertan
+     * y las que desaparecen se descartan.
      */
     private suspend fun reconciliarDias(
         existente: PagoEntity,
@@ -285,21 +292,23 @@ class PagoRepositoryImpl @Inject constructor(
         ahora: Long,
     ): Pair<List<DiaTrabajadoEntity>, List<DiaTrabajadoEntity>> {
         val actuales = pagoDao.getDias(existente.localId).associateBy { it.fecha }
-        val deseadas = draft.diasTrabajados.distinct().sorted()
-        val conservados = deseadas.mapNotNull { fecha ->
-            actuales[fecha.toString()]?.copy(
+        val deseados = draft.diasTrabajados.distinctBy { it.fecha }.sortedBy { it.fecha }
+        val conservados = deseados.mapNotNull { dia ->
+            actuales[dia.fecha.toString()]?.copy(
+                montoEnteros = dia.monto.centavos,
                 syncState = SyncState.PENDING_UPDATE,
                 updatedAtLocal = ahora,
             )
         }
-        val nuevas = deseadas
-            .filter { fecha -> actuales[fecha.toString()] == null }
-            .map { fecha ->
+        val nuevas = deseados
+            .filter { dia -> actuales[dia.fecha.toString()] == null }
+            .map { dia ->
                 DiaTrabajadoEntity(
                     localId = UUID.randomUUID().toString(),
                     serverId = null,
                     pagoLocalId = existente.localId,
-                    fecha = fecha.toString(),
+                    fecha = dia.fecha.toString(),
+                    montoEnteros = dia.monto.centavos,
                     syncState = SyncState.PENDING_UPDATE,
                     updatedAtLocal = ahora,
                 )

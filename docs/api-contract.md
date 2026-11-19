@@ -57,7 +57,8 @@
 | 400 | `VALIDATION_ERROR` | Entrada inválida → mostrar mensaje, no reintentar |
 | 404 | `NOT_FOUND` | Recurso inexistente o soft-deleted |
 | 409 | `BUSINESS_RULE_CONFLICT` | Regla de negocio (p. ej. pago ya tiene split) |
-| 422 | `IMMUTABLE_DATA` | Dato inmutable (p. ej. cambiar monto con split existente) |
+| 422 | `IMMUTABLE_DATA` | Dato inmutable (p. ej. cambiar la suma de días con split existente) |
+| 422 | `TOTAL_DESINCRONIZADO` | El `monto_enteros` enviado (> 0) no coincide con Σ de los días (v0.3.0) |
 | 500 | `INTERNAL_ERROR` | Error del servidor → reintentable con backoff |
 | 503 | `DB_UNAVAILABLE` | Solo `GET /health/db` → base de datos caída |
 
@@ -92,6 +93,16 @@ Todos los uploads usan **el mismo nombre de campo: `archivo`**.
 
 ## 1. Pagos y días trabajados
 
+> **Contrato de días trabajados (0.3.0, breaking).** `POST /pagos`, `PUT /pagos/:id` y
+> `POST /pagos/:id/dias` reciben los días como objetos `{fecha, monto_enteros}` (monto en
+> centavos, ≥ 0). El `monto_enteros` del **pago** es **derivado**: el backend persiste
+> Σ de los días e **ignora** el total del cliente. Si el cliente envía un total `> 0`
+> distinto de la suma, responde `422 TOTAL_DESINCRONIZADO`. En respuestas, cada día añade
+> `id`, `pago_id` y `monto_enteros`.
+>
+> **Android**: omite `monto_enteros` en los requests del pago (`null`) — R3.2 del web — para
+> no arriesgar el `422`. El total se calcula localmente como Σ de los días.
+
 ### 1.1 `POST /api/v1/pagos` — Crear pago (201)
 
 Body:
@@ -100,10 +111,13 @@ Body:
 {
   "fuente_id": 3,                    // required, debe existir y estar activa
   "fecha_pago": "2026-08-14",        // required, YYYY-MM-DD real (rechaza 31/02)
-  "monto_enteros": 59100,            // required (binding no lo marca, pero el service valida ≥ 0)
+  "monto_enteros": null,             // opcional: el backend lo deriva de Σ días (se omite)
   "metodo_pago": "qr",               // required, ∈ {efectivo, qr, transaccion}
   "notas": "texto opcional",         // opcional/null
-  "dias_trabajados": ["2026-08-10", "2026-08-11"] // required, min 1, fechas únicas
+  "dias_trabajados": [               // required, min 1, fechas únicas, monto_enteros >= 0
+    { "fecha": "2026-08-10", "monto_enteros": 29550 },
+    { "fecha": "2026-08-11", "monto_enteros": 29550 }
+  ]
 }
 ```
 
@@ -116,14 +130,19 @@ Respuesta `201`:
     "monto_enteros": 59100, "metodo_pago": "qr", "notas": null, "imagen_ruta": null,
     "created_at": "2026-08-14T…-04:00", "updated_at": "2026-08-14T…-04:00",
     "fuente_alias": "Malnova", "fuente_color": "#e4c852",
-    "dias_trabajados": [ { "id": 900, "pago_id": 189, "fecha": "2026-08-10" } ],
+    "dias_trabajados": [
+      { "id": 900, "pago_id": 189, "fecha": "2026-08-10", "monto_enteros": 29550 },
+      { "id": 901, "pago_id": 189, "fecha": "2026-08-11", "monto_enteros": 29550 }
+    ],
     "split_id": 42, "split_modo": "preciso"   // opcionales (omitempty)
   },
   "split_auto": true, "split_id": 42
 }
 ```
 
-Errores: `400` (validación, fecha inválida, método inválido, días duplicados, < 1 día), `404` (fuente inexistente → en la práctica `400`), `409`.
+Errores: `400` (validación, fecha inválida, método inválido, días duplicados, < 1 día),
+`404` (fuente inexistente → en la práctica `400`), `409`,
+`422 TOTAL_DESINCRONIZADO` (total enviado ≠ Σ días).
 
 **Auto-split**: si la `fuente` tiene `split_auto = true`, el backend genera el split con el modo
 `fuente.split_auto_modo` o, si es null, con el modo por defecto global (`settings.split_modo_default`, default `preciso`).
@@ -159,23 +178,28 @@ Devuelve `{ "data": PagoDetallado }` (mismo shape que en el listado, sin `meta`)
 
 ### 1.4 `PUT /api/v1/pagos/{id}` — Actualizar (200 / 400 / 404 / 422)
 
-Body (todos los campos obligatorios salvo `notas` y `dias_trabajados`):
+Body (todos los campos obligatorios salvo `notas`, `monto_enteros` y `dias_trabajados`):
 
 ```jsonc
 {
   "fuente_id": 3,
   "fecha_pago": "2026-08-14",
-  "monto_enteros": 59100,
+  "monto_enteros": null,             // opcional: derivado de Σ días (se omite)
   "metodo_pago": "qr",
   "notas": null,
-  "dias_trabajados": ["2026-08-10", "2026-08-11"]  // opcional
+  "dias_trabajados": [               // opcional; objetos {fecha, monto_enteros}
+    { "fecha": "2026-08-10", "monto_enteros": 29550 },
+    { "fecha": "2026-08-11", "monto_enteros": 29550 }
+  ]
 }
 ```
 
-- Si `dias_trabajados` **está presente** (incluso `[]`): reemplaza el set completo de días (valida ≥ 1).
+- Si `dias_trabajados` **está presente** (incluso `[]`): reemplaza el set completo de días
+  (valida ≥ 1, fechas únicas y `monto_enteros >= 0` por día).
 - Si **se omite**: los días no cambian.
-- `422 IMMUTABLE_DATA` si se cambia `monto_enteros` y el pago **ya tiene split**
+- `422 IMMUTABLE_DATA` si se cambia la **suma de los días** y el pago **ya tiene split**
   (`"no se puede cambiar el monto de un pago con split; elimina o recalcula el split primero"`).
+- `422 TOTAL_DESINCRONIZADO` si `monto_enteros > 0` y no coincide con Σ días.
 - Respuesta `{ "data": PagoDetallado }`.
 
 ### 1.5 `DELETE /api/v1/pagos/{id}` — Eliminar (200 / 404 / 409)
@@ -187,9 +211,10 @@ Respuesta: `{ "data": { "deleted": true, "id": 189 } }`
 
 ### 1.6 `POST /api/v1/pagos/{id}/dias` — Agregar día (201)
 
-Body: `{ "fecha": "2026-08-12" }` → 400 si falta o la fecha es inválida.
+Body: `{ "fecha": "2026-08-12", "monto_enteros": 12000 }` → 400 si falta la fecha o es
+inválida; `monto_enteros` debe ser ≥ 0.
 Fecha duplicada dentro del mismo pago → `400` (constraint `UNIQUE (pago_id, fecha)`).
-Respuesta: `{ "data": { "pago_id": 189, "fecha": "2026-08-12", "agregado": true } }`
+Respuesta: `{ "data": { "pago_id": 189, "fecha": "2026-08-12", "monto_enteros": 12000, "agregado": true } }`
 
 ### 1.7 `DELETE /api/v1/pagos/{id}/dias/{diaId}` — Quitar día (200 / 400 / 404)
 
@@ -384,25 +409,33 @@ Respuesta → `{ "data": Transaccion[] }`.
 
 ---
 
-## 5. Dashboard
+## 5. Dashboard (v0.3.0)
+
+Todos los importes se agrupan por **`dias_trabajados.fecha`** (no por `fecha_pago`) y salen de
+`dias_trabajados.monto_enteros` de pagos **no eliminados**. `por_fuente` incluye fuentes
+**soft-deleted** (para preservar alias/color históricos) y está ordenado por total descendente
+y `fuente_id`. El estado vacío se representa con totales en cero y listas vacías.
 
 | Método | Ruta | Query | Respuesta `data` |
 |---|---|---|---|
-| `GET` | `/dashboard/summary` | `mes` (1–12), `anio` (YYYY) — **ambos requeridos** | `{ mes, anio, total_centavos, cantidad_pagos, dias_trabajados }` |
-| `GET` | `/dashboard/weekly` | `fecha` (YYYY-MM-DD, default = hoy en La Paz) | `{ semana_inicio, semana_fin, dias: [{ fecha, total_centavos, cantidad_pagos }] }` |
-| `GET` | `/dashboard/monthly` | `mes`, `anio` — requeridos | `{ mes, anio, semanas: [{ semana, inicio, fin, total_centavos, cantidad_pagos }] }` |
-| `GET` | `/dashboard/yearly` | `anio` (YYYY) — requerido | `{ anio, meses: [{ mes, total_centavos, cantidad_pagos }] }` |
-| `GET` | `/dashboard/history` | — | `{ por_mes: [{ anio, mes, total_centavos, cantidad_pagos }], tendencia: { pendiente, interseccion, prox_mes_est, creciendo } }` |
+| `GET` | `/dashboard/summary` | **ninguno** | `{ total_30d_centavos, total_historico_centavos }` |
+| `GET` | `/dashboard/weekly` | `fecha` (YYYY-MM-DD, default = hoy en La Paz) | `{ semana_inicio, semana_fin, dias: [{ fecha, total_centavos, por_fuente: [{ fuente_id, alias, color, total_centavos }] }] }` |
+| `GET` | `/dashboard/monthly` | `mes`, `anio` — requeridos | `{ mes, anio, bloques: [{ bloque, inicio, fin, total_centavos }] }` |
+| `GET` | `/dashboard/yearly` | `anio` (YYYY) — requerido | `{ anio, meses: [{ mes, total_centavos }] }` |
+| `GET` | `/dashboard/history` | — | `{ por_mes: [{ anio, mes, total_centavos }] }` |
+| `GET` | `/dashboard/distribution/monthly` | `mes`, `anio` — requeridos | `{ mes, anio, total_centavos, por_fuente: [{ fuente_id, alias, color, total_centavos }] }` |
+| `GET` | `/dashboard/distribution/yearly` | `anio` (YYYY) — requerido | `{ anio, total_centavos, por_fuente: [...] }` |
 
 Semántica:
 
-- `summary.total_centavos` = Σ montos de pagos **no eliminados** con `fecha_pago` en el mes.
-- `summary.dias_trabajados` = nº de **días distintos** trabajados en el mes (por `dias_trabajados.fecha`).
-- `weekly` siempre devuelve **7 días** (lunes→domingo de la semana que contiene `fecha`), rellenando ceros.
-- `monthly` divide el mes en **semanas de 7 días desde el día 1** (semana 1 = días 1–7), recortando la última.
+- `summary.total_30d_centavos` = Σ de los días de los **últimos 30 días calendario**
+  (incluye hoy, zona `America/La_Paz`); `total_historico_centavos` = Σ de todos los días.
+- `weekly` siempre devuelve **7 días** (lunes→domingo de la semana que contiene `fecha`),
+  rellenando ceros, con el desglose `por_fuente` de cada día.
+- `monthly` divide el mes en **bloques**: 1–7, 8–14, 15–21, 22–28 y 29–fin de mes
+  (en febrero de 28 días hay 4 bloques).
 - `yearly` siempre devuelve **12 meses** rellenando ceros.
-- `history.tendencia` es una **regresión lineal simple** sobre `por_mes` (x = índice secuencial, y = `total_centavos`):
-  `pendiente`, `interseccion`, `prox_mes_est` (proyección) y `creciendo` (pendiente > 0). Con < 2 puntos devuelve ceros.
+- `history` devuelve solo totales mensuales: **sin tendencia** desde 0.3.0.
 
 Errores: `400` si `mes`/`anio` son inválidos (`"se requieren mes (1-12) y anio (YYYY) válidos"` / `"se requiere anio (YYYY) válido"`).
 
@@ -472,12 +505,12 @@ Si la DB no responde → **503**:
 
 ## 9. Reglas de negocio que el backend NO valida (responsabilidad de la app)
 
-1. **Monto editable**: la app debe deshabilitar el campo monto si el pago tiene split (el backend responde 422, pero la UI lo evita).
+1. **Monto editable**: la app debe deshabilitar los montos/días si el pago tiene split (el backend responde 422 `IMMUTABLE_DATA`, pero la UI lo evita).
 2. **Días ≥ 1**: la app no debe permitir quitar el último día (el backend responde 400).
 3. **Advertencia de 0 Bs**: una transacción de 0 Bs en una cuenta distinta de General muestra warning visual (BR-013) — el backend la acepta.
 4. **`split_warning`**: el backend avisa (no falla) cuando el auto-split no se pudo generar.
 5. **Tasa General**: no editable; se muestra como derivada (`100% − Σ otras`).
-6. **OCR del comprobante**: corre **solo en cliente** (web usa Tesseract.js). En Android se documenta como *mejora futura* (ML Kit), fuera del contrato de API.
+6. **Comprobante sin OCR** (v0.3.0): el registro es híbrido y el comprobante **no extrae datos**. La subida (multipart) sigue disponible y en Android es una mejora posterior.
 
 ---
 
@@ -514,11 +547,16 @@ go run ./cmd/server            # :8080
 # Smoke tests con la base URL por defecto del emulador Android
 curl -s http://localhost:8080/api/v1/health | jq
 curl -s "http://localhost:8080/api/v1/pagos?page=1&page_size=5" | jq '.meta, (.data|length)'
-curl -s "http://localhost:8080/api/v1/dashboard/summary?mes=8&anio=2026" | jq
+curl -s "http://localhost:8080/api/v1/dashboard/summary" | jq
+curl -s "http://localhost:8080/api/v1/dashboard/distribution/monthly?mes=8&anio=2026" | jq '.data'
 curl -s http://localhost:8080/api/v1/cuentas | jq '.data[]|{id,alias,tasa_bps,es_general}'
 curl -s http://localhost:8080/api/v1/settings/split | jq
 
 # Error tipado (debe devolver 400 + VALIDATION_ERROR)
 curl -s -X POST http://localhost:8080/api/v1/pagos -H 'Content-Type: application/json' \
-  -d '{"fuente_id":1,"fecha_pago":"2026-02-31","monto_enteros":100,"metodo_pago":"efectivo","dias_trabajados":["2026-02-31"]}' | jq
+  -d '{"fuente_id":1,"fecha_pago":"2026-02-31","metodo_pago":"efectivo","dias_trabajados":[{"fecha":"2026-02-31","monto_enteros":100}]}' | jq
+
+# Error 422 TOTAL_DESINCRONIZADO (total ≠ Σ días)
+curl -s -X POST http://localhost:8080/api/v1/pagos -H 'Content-Type: application/json' \
+  -d '{"fuente_id":1,"fecha_pago":"2026-08-14","monto_enteros":999,"metodo_pago":"efectivo","dias_trabajados":[{"fecha":"2026-08-10","monto_enteros":100}]}' | jq
 ```
