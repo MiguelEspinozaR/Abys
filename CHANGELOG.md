@@ -6,6 +6,27 @@ y este proyecto sigue [SemVer](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+## [0.4.0] - 2026-11-20
+
+### Añadido
+
+- **Defaults de registro configurables:** nueva pestaña "Registro" en `/configuracion` con selects de método de pago (`efectivo`/`qr`/`transaccion`) y modo de registro (`detallado`/`distribuido`), autoguardado optimista con reversión en error; respaldados por `GET/PUT /settings/registrar` y replicados en el store local `abys-ui` con fallback cuando el backend no responde.
+- **Puntos por fuente en el calendario:** los días trabajados de `/registrar` muestran hasta 3 puntos del color de sus fuentes (las de mayor monto en el día, desempate por `fuente_id`), conservando verde (selección) y ámbar (fecha de pago) y con leyenda textual accesible.
+- **Pendientes en "Ver datos" (`/splits`):** lista de transacciones pendientes de la cuenta con checkboxes etiquetados y subtotal en vivo de las filas marcadas, separado del "Pendiente" de la cuenta; estado vacío explícito. Marcar no persiste: no se llama a `PUT /transacciones/:id/realizar`.
+- **QR ampliable en `/splits`:** la imagen del QR de "Ver datos" abre un lightbox (`fixed inset-0 z-50`) con cierre por Escape, clic fuera y botón accesible. No se añaden comprobantes a `/splits`.
+
+### Cambiado
+
+- **Permanencia en `/registrar`:** tras guardar un pago (incluida la ruta de reintento de comprobante) ya no se navega a `/ingresos`; la vista se queda en `/registrar` con el formulario limpio, el guard de cambios re-baselineado y el toast de éxito intacto.
+- `/registrar` inicializa método y modo desde los defaults configurables (backend con precedencia, `abys-ui` como fallback) y el modo de redondeo desde `split_modo_default` (`preciso` por defecto), manteniendo el selector editable y el payload de pago sin el modo.
+- Versión del frontend a `0.4.0` (`web/package.json` y ambos campos `version` de `web/package-lock.json`).
+
+### Corregido
+
+- **General excluida de los pendientes:** `SplitsPage` y `splitJSON().total_pendiente` ya no suman las transacciones de la cuenta General (reserva); se resuelve por `es_general` / `cuenta_repo.GetGeneral`, sin id fijo, sin cambio de esquema y sin reescribir transacciones históricas. La fila de General sigue visible con valor informativo.
+
+> La versión `0.4.0` se prepara **sin tag ni release en GitHub**.
+
 ## [0.3.0] - 2026-11-17
 
 ### Añadido
