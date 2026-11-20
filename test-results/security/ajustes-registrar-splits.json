@@ -1,0 +1,87 @@
+{
+  "task_id": "ajustes-registrar-splits",
+  "branch": "feat/ajustes-registrar-splits",
+  "commit": "15771098d467af628b3331faaa0a944ff91adc6c",
+  "scan_timestamp": "2026-11-20T18:08:00Z",
+  "tools": {
+    "gitleaks": {
+      "available": true,
+      "version": "scanned via go binary",
+      "scan_type": "protect --log-opts \"main..HEAD\"",
+      "findings": {
+        "total": 0,
+        "by_severity": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0,
+          "informational": 0
+        },
+        "details": []
+      },
+      "caveats": "Scanned 7 commits from main..HEAD; no gitleaks protect findings. Does not scan runtime secrets or production stores."
+    },
+    "semgrep": {
+      "available": false,
+      "tool_missing": true,
+      "note": "Required by security-scanning priority 2; unavailable. Scan incomplete without SAST analysis."
+    },
+    "bandit": {
+      "available": false,
+      "tool_missing": true,
+      "note": "Python SAST tool; unavailable. This project is Go/TypeScript, so bandit would not apply directly."
+    },
+    "npm_audit": {
+      "available": false,
+      "tool_missing": true,
+      "note": "npm audit not available; dependency vulnerability check incomplete."
+    },
+    "go_audit": {
+      "available": false,
+      "tool_missing": true,
+      "note": "Go dependency audit not available; incomplete."
+    }
+  },
+  "findings_summary": {
+    "secrets": {
+      "scanned_commits": 7,
+      "secrets_found": 0,
+      "files_scanned": []
+    },
+    "sast": {
+      "note": "No project-configured SAST tools available. Code review performed manually.",
+      "manual_review": {
+        "input_validation": "Added whitelist validation for metodo_default (efectivo/qr/transaccion) and modo_default (detallado/distribuido) in SetRegistrar handler (backend/internal/handler/settings_handler.go). Invalid values return 400 VALIDATION_ERROR.",
+        "totales_split_exclusion": "totalesSplit function now excludes General account (idGeneral) from pending calculations per R7.1-R7.5. Fail-safe: idGeneral returns nil if cuentaRepo is nil.",
+        "color_validation": "CalendarioDias ColorSwatch component validates DB colors with esColorHex() before applying as inline style; invalid/absent colors fall back to static BG_FUENTE_FALLBACK class. Prevents CSS injection from DB values."
+      }
+    },
+    "dependencies": {
+      "note": "Cannot run automated dependency audit without trivy, pip-audit, or npm-audit tools. New utility modules added (fuentesDots.ts, subtotal.ts, pagoPayload.ts, settingsFallback.ts) do not introduce external dependencies beyond existing project deps.",
+      "new_modules": [
+        "web/src/lib/fuentesDots.ts - pure function for constructing fontes per day; validates hex colors from DB",
+        "web/src/lib/subtotal.ts - pure function for summing selected transaction amounts",
+        "web/src/lib/pagoPayload.ts - pure function for building dias_trabajados payload; no runtime mode field",
+        "web/src/lib/settingsFallback.ts - pure normalization with whitelisted domains for metodo/modo/redondeo"
+      ]
+    },
+    "configuration_supply_chain": {
+      "migration_000007": {
+        "file": "backend/migrations/000007_add_registrar_settings.up.sql",
+        "action": "INSERT INTO app_settings for registrar_metodo_default ('efectivo') and registrar_modo_default ('detallado') ON CONFLICT DO NOTHING",
+        "risk": "Low - idempotent migration, adds defaults only"
+      },
+      "ui_store_persistence": {
+        "file": "web/src/store/uiStore.ts",
+        "action": "Added registrarMetodoDefault, registrarModoDefault, splitModoDefault to zustand store with localStorage persistence (name: 'abys-ui')",
+        "risk": "Medium - localStorage values could be tampered; mitigated by normalizarRegistrarSettings whitelist validation on read"
+      },
+      "local_storage_replication": {
+        "note": "Settings fallback/localStorage replication (R3.5, D4, AC8) ensures backend values take precedence; local values used only if backend response invalid or missing. normalizarRegistrarSettings is pure (no localStorage read)."
+      }
+    }
+  },
+  "overall_assessment": "scan_dirty",
+  "scan_status": "complete_partial",
+  "notes": "Gitleaks found no exposed secrets in the 7 commits from main..HEAD. Project-configured SAST tools (semgrep, bandit) unavailable per check-security-tools.sh - recorded as tool_missing. Dependency audit incomplete without npm-audit/go-audit. Manual code review performed for input validation, SQL safety, and XSS prevention. No secret values printed per security-scanning rules."
+}
