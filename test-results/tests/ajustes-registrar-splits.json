@@ -4,8 +4,10 @@
   "milestone": "M7",
   "status": "PASS",
   "release_ready": true,
-  "commit": "a6f9c81ad28ddd54e3b671fda03c5ca8a893fffd",
-  "short_commit": "a6f9c81",
+  "commit_sha": "3a3168daea45610aa29d5193cbb6aee2d79c1da5",
+  "commit": "3a3168daea45610aa29d5193cbb6aee2d79c1da5",
+  "short_commit": "3a3168d",
+  "evidence_commit": "a6f9c81ad28ddd54e3b671fda03c5ca8a893fffd",
   "branch": "feat/ajustes-registrar-splits",
   "executor": "tester (opencode/big-pickle)",
   "date": "2026-11-20",
@@ -35,13 +37,14 @@
       "cwd": "backend",
       "command": "set -a && . ./.env >/dev/null 2>&1 && set +a && go vet ./... && go test ./... -count=1 && go build -o /tmp/opencode/abys-server ./cmd/server",
       "exit_code": 0,
-      "duration_seconds": 10.876,
+      "duration_seconds": 16,
       "logs": [
+        "/tmp/opencode/final-validation-logs/backend-chain.log",
+        "/tmp/opencode/final-validation-logs/go-test-verbose.log",
         "/tmp/opencode/m7-logs/backend-chain.log",
         "/tmp/opencode/m7-logs/go-vet.log",
         "/tmp/opencode/m7-logs/go-test.log",
-        "/tmp/opencode/m7-logs/go-build.log",
-        "/tmp/opencode/m7-logs/go-test-verbose.log"
+        "/tmp/opencode/m7-logs/go-build.log"
       ]
     },
     {
@@ -49,8 +52,9 @@
       "cwd": "web",
       "command": "npx --no-install tsc -b && npm test && npm run build",
       "exit_code": 0,
-      "duration_seconds": 79.931,
+      "duration_seconds": 87,
       "logs": [
+        "/tmp/opencode/final-validation-logs/web-chain.log",
         "/tmp/opencode/m7-logs/web-chain.log",
         "/tmp/opencode/m7-logs/web-tsc.log",
         "/tmp/opencode/m7-logs/web-npm-test.log",
@@ -62,9 +66,36 @@
       "cwd": "web",
       "command": "npx --no-install vitest run src/lib/pagoPayload.test.ts src/lib/fuentesDots.test.ts src/lib/subtotal.test.ts src/lib/settingsFallback.test.ts src/lib/filtrosUrl.test.ts --reporter=verbose",
       "exit_code": 0,
-      "logs": ["/tmp/opencode/m7-logs/web-targeted.log"]
+      "duration_seconds": 5,
+      "logs": [
+        "/tmp/opencode/final-validation-logs/web-targeted.log",
+        "/tmp/opencode/m7-logs/web-targeted.log"
+      ]
     }
   ],
+  "final_validation": {
+    "commit_sha": "3a3168daea45610aa29d5193cbb6aee2d79c1da5",
+    "executor": "tester (opencode/big-pickle)",
+    "date": "2026-11-20",
+    "verdict": "PASS",
+    "review": {
+      "verdict": "APPROVED",
+      "reviewed_at": "d8a614889319a4d390ccf29d1f5c6f6bf62beb9a",
+      "blocking_findings": 0,
+      "non_blocking_findings": 7
+    },
+    "product_changes_since_evidence_capture": false,
+    "evidence_commit": "a6f9c81ad28ddd54e3b671fda03c5ca8a893fffd",
+    "reconfirmed": [
+      "git diff --name-status a6f9c81..3a3168d -> only test-results/** evidence files; no product source changes",
+      "go vet ./... && go test ./... -count=1 && go build -o /tmp/opencode/abys-server ./cmd/server -> exit 0; 6 packages ok; 40 PASS; 0 SKIP; 0 FAIL",
+      "npx --no-install tsc -b && npm test && npm run build -> exit 0; 15 files / 173 tests passed; production build ok",
+      "targeted vitest (pagoPayload, fuentesDots, subtotal, settingsFallback, filtrosUrl) -> 5 files / 52 tests passed",
+      "static guards: navigate(\"/ingresos\")=0 (no navigate( calls in registrar), violet/ bg-violet-500 in registrar=0, /realizar in splits=0, es_general present in SplitsPage.tsx (lines 67, 196), version 0.4.0 in CHANGELOG.md:9 + web/package.json:4 + web/package-lock.json:3 and :9, git tags=none",
+      "AC/AA evidence artifacts still present and internally consistent: aa-harness.json overall=PASS, 16/16 combinations, hardFailures=[], nestedKeyboard.pass=true; metrics.json commit=a6f9c81; report.md AC1-AC17 all PASS"
+    ],
+    "note": "Review APPROVED the block with 0 blocking findings (7 non-blocking advisories/info) and no product source changes since evidence capture at a6f9c81; the intermediate commits d8a6148 and 3a3168d only add evidence/review artifacts. The AC/AA results from report.md, aa-harness.json and metrics.json therefore remain valid at 3a3168d and are reused without re-running the browser harness."
+  },
   "suite_counts": {
     "go_packages_ok": 6,
     "go_tests_pass_named": 40,
@@ -183,7 +214,7 @@
     "AC12": { "verdict": "PASS", "evidence": ["checks::AC12", "aa-harness.json::nestedKeyboard"] },
     "AC13": { "verdict": "PASS", "evidence": ["checks::AC13", "go::TestSplitPendienteExcluyeGeneralHTTP", "go::TestTotalesSplit"] },
     "AC14": { "verdict": "PASS", "evidence": ["test-results/ajustes-registrar-splits/aa-harness.json", "test-results/ajustes-registrar-splits/metrics.json"] },
-    "AC15": { "verdict": "PASS", "evidence": ["commands[0]", "commands[1]"] },
+    "AC15": { "verdict": "PASS", "evidence": ["commands[0]", "commands[1]", "final_validation::reconfirmed"] },
     "AC16": { "verdict": "PASS", "evidence": ["artifacts"] },
     "AC17": { "verdict": "PASS", "evidence": ["git show --stat HEAD", "version 0.4.0 in CHANGELOG/README/web package files", "no tags"] }
   },
@@ -247,9 +278,9 @@
     { "path": "test-results/tests/ajustes-registrar-splits.json", "exists": true }
   ],
   "git": {
-    "head": "a6f9c81ad28ddd54e3b671fda03c5ca8a893fffd",
+    "head": "3a3168daea45610aa29d5193cbb6aee2d79c1da5",
     "tags": [],
-    "working_tree": "only untracked test-results/ajustes-registrar-splits/ and test-results/tests/ajustes-registrar-splits.json",
+    "working_tree": "modified evidence files only: test-results/tests/ajustes-registrar-splits.json and test-results/ajustes-registrar-splits/report.md; no product source changes",
     "commit_created": false,
     "tag_created": false,
     "pushed": false,
@@ -260,6 +291,6 @@
   "coverage": {
     "collected": false,
     "threshold": null,
-    "note": "No coverage run or coverage threshold was applied in M7; this report states suite results only."
+    "note": "No coverage run or coverage threshold was applied in M7 or in the final validation at 3a3168d; this report states suite results only."
   }
 }

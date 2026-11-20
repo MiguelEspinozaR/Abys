@@ -126,3 +126,18 @@ Harness AA: 16/16 combinaciones PASS + `nestedKeyboard` PASS. Detalles en los JS
 - `test-results/ajustes-registrar-splits/aa-harness.json`
 - `test-results/ajustes-registrar-splits/metrics.json`
 - `test-results/tests/ajustes-registrar-splits.json`
+
+## Validación final en `3a3168d` (refresh TEST)
+
+Re-ejecutada la matriz en `3a3168daea45610aa29d5193cbb6aee2d79c1da5`: backend `go vet` /
+`go test ./... -count=1` (6 paquetes ok, 40 PASS, 0 SKIP) / `go build` → exit 0 (16 s); web
+`tsc -b` / `npm test` (15 archivos, 173 tests) / `npm run build` → exit 0 (87 s); targeted
+vitest 5 archivos / 52 tests → exit 0. Logs nuevos en `/tmp/opencode/final-validation-logs/`.
+Guardas estáticos y versión `0.4.0` (3 campos) reverificados; sin tags.
+
+`git diff a6f9c81..3a3168d` solo añade artefactos de evidencia/review (`test-results/**`):
+**no hay cambios de código de producto**. Review `APPROVED` en `d8a6148` con 0 hallazgos
+bloqueantes (7 no bloqueantes). La evidencia AC1–AC17 y AA (17/17 = 16 combinaciones + anidado)
+capturada en `a6f9c81` sigue vigente y se reutiliza sin repetir el harness de navegador.
+`status=PASS`, `release_ready=true`. Sin commit, tag, push ni deploy; solo se refrescaron este
+`report.md` y `test-results/tests/ajustes-registrar-splits.json`.
