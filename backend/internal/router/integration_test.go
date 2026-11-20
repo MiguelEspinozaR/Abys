@@ -572,6 +572,160 @@ func TestDashboardContracts(t *testing.T) {
 	}
 }
 
+// TestSplitPendienteExcluyeGeneralHTTP verifica R7.5 sobre HTTP real:
+// solo General pendiente -> total 0; General + otra cuenta -> total = solo la otra;
+// la transacción de General sigue presente con realizado=false (sin reescritura).
+func TestSplitPendienteExcluyeGeneralHTTP(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	if os.Getenv("ABYS_SKIP_INTEGRATION") == "1" {
+		t.Skip("integración desactivada")
+	}
+	cfg, pool := testConfigYPostgres(t)
+	r := router.Setup(cfg, pool)
+	ctx := context.Background()
+
+	var generalID int64
+	if err := pool.QueryRow(ctx, `SELECT id FROM cuentas WHERE es_general AND deleted_at IS NULL ORDER BY id LIMIT 1`).Scan(&generalID); err != nil {
+		t.Fatalf("cuenta General no encontrada: %v", err)
+	}
+	var otraID int64
+	if err := pool.QueryRow(ctx, `SELECT id FROM cuentas WHERE NOT es_general AND deleted_at IS NULL ORDER BY id LIMIT 1`).Scan(&otraID); err != nil {
+		t.Fatalf("cuenta no-general no encontrada: %v", err)
+	}
+	otraAlias := "Otra"
+	_ = pool.QueryRow(ctx, `SELECT alias FROM cuentas WHERE id = $1`, otraID).Scan(&otraAlias)
+
+	crearPago := func(fecha string, monto int64) int64 {
+		t.Helper()
+		var id int64
+		err := pool.QueryRow(ctx, `
+			INSERT INTO pagos (fuente_id, fecha_pago, monto_enteros, metodo_pago)
+			VALUES (1, $1, $2, 'efectivo') RETURNING id`, fecha, monto).Scan(&id)
+		if err != nil {
+			t.Fatalf("insert pago: %v", err)
+		}
+		_, err = pool.Exec(ctx, `
+			INSERT INTO dias_trabajados (pago_id, fecha, monto_enteros) VALUES ($1, $2, $3)`, id, fecha, monto)
+		if err != nil {
+			t.Fatalf("insert día: %v", err)
+		}
+		return id
+	}
+
+	type tx struct {
+		cuentaID *int64
+		monto    int64
+		alias    string
+	}
+	crearSplit := func(pagoID int64, txs []tx) int64 {
+		t.Helper()
+		var splitID int64
+		if err := pool.QueryRow(ctx, `INSERT INTO splits (pago_id, modo_calculo) VALUES ($1, 'preciso') RETURNING id`, pagoID).Scan(&splitID); err != nil {
+			t.Fatalf("insert split: %v", err)
+		}
+		for _, it := range txs {
+			if _, err := pool.Exec(ctx, `
+				INSERT INTO transacciones (split_id, cuenta_id, monto_enteros, tasa_bps, alias_snapshot, realizado)
+				VALUES ($1, $2, $3, 0, $4, false)`, splitID, it.cuentaID, it.monto, it.alias); err != nil {
+				t.Fatalf("insert tx: %v", err)
+			}
+		}
+		return splitID
+	}
+
+	assertSplit := func(splitID int64, pendienteEsperado, generalMonto int64, generalPresente bool) {
+		t.Helper()
+		rec := doReq(t, r, http.MethodGet, "/api/v1/splits/"+strconv.FormatInt(splitID, 10), "", "")
+		if rec.Code != 200 {
+			t.Fatalf("GET /splits/%d -> %d: %s", splitID, rec.Code, rec.Body.String())
+		}
+		var resp struct {
+			Data struct {
+				TotalPendiente int64 `json:"total_pendiente"`
+				TotalRealizado int64 `json:"total_realizado"`
+				Transacciones  []struct {
+					CuentaID  *int64 `json:"cuenta_id"`
+					Monto     int64  `json:"monto_enteros"`
+					Realizado bool   `json:"realizado"`
+				} `json:"transacciones"`
+			} `json:"data"`
+		}
+		if err := json.Unmarshal(rec.Body.Bytes(), &resp); err != nil {
+			t.Fatalf("json: %v", err)
+		}
+		if resp.Data.TotalPendiente != pendienteEsperado {
+			t.Errorf("total_pendiente = %d, se esperaba %d: %s", resp.Data.TotalPendiente, pendienteEsperado, rec.Body.String())
+		}
+		if resp.Data.TotalRealizado != 0 {
+			t.Errorf("total_realizado = %d, se esperaba 0", resp.Data.TotalRealizado)
+		}
+		if generalPresente {
+			found := false
+			for _, tx := range resp.Data.Transacciones {
+				if tx.CuentaID != nil && *tx.CuentaID == generalID {
+					found = true
+					if tx.Realizado {
+						t.Errorf("transacción de General no debe reescribirse a realizada")
+					}
+					if tx.Monto != generalMonto {
+						t.Errorf("monto General = %d, se esperaba %d", tx.Monto, generalMonto)
+					}
+				}
+			}
+			if !found {
+				t.Errorf("la transacción de General debe seguir visible: %s", rec.Body.String())
+			}
+		}
+	}
+
+	// Escenario 1: solo General pendiente -> total 0, fila visible.
+	pago1 := crearPago("2097-11-01", 1000)
+	defer cleanup(t, pool, pago1)
+	split1 := crearSplit(pago1, []tx{{cuentaID: &generalID, monto: 1000, alias: "General"}})
+	assertSplit(split1, 0, 1000, true)
+
+	// Escenario 2: General + otra cuenta -> total = solo la otra, fila General visible.
+	pago2 := crearPago("2097-11-02", 3500)
+	defer cleanup(t, pool, pago2)
+	split2 := crearSplit(pago2, []tx{
+		{cuentaID: &generalID, monto: 1000, alias: "General"},
+		{cuentaID: &otraID, monto: 2500, alias: otraAlias},
+	})
+	assertSplit(split2, 2500, 1000, true)
+
+	// Escenario 3 (regresión): General pendiente no cambia realizado y sigue en transacciones.
+	pago3 := crearPago("2097-11-03", 500)
+	defer cleanup(t, pool, pago3)
+	split3 := crearSplit(pago3, []tx{{cuentaID: &generalID, monto: 500, alias: "General"}})
+	rec := doReq(t, r, http.MethodGet, "/api/v1/splits/"+strconv.FormatInt(split3, 10), "", "")
+	if rec.Code != 200 {
+		t.Fatalf("GET /splits/%d -> %d: %s", split3, rec.Code, rec.Body.String())
+	}
+	var resp struct {
+		Data struct {
+			Transacciones []struct {
+				CuentaID  *int64 `json:"cuenta_id"`
+				Realizado bool   `json:"realizado"`
+			} `json:"transacciones"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("json: %v", err)
+	}
+	found := false
+	for _, tx := range resp.Data.Transacciones {
+		if tx.CuentaID != nil && *tx.CuentaID == generalID {
+			found = true
+			if tx.Realizado {
+				t.Errorf("la transacción de General no debe reescribirse")
+			}
+		}
+	}
+	if !found {
+		t.Errorf("fila de General no visible en escenario 3: %s", rec.Body.String())
+	}
+}
+
 func testConfigYPostgres(t *testing.T) (*config.Config, *pgxpool.Pool) {
 	t.Helper()
 	_ = godotenv.Load("../../.env")

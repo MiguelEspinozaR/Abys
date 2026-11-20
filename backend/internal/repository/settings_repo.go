@@ -10,7 +10,9 @@ import (
 
 // Claves conocidas de app_settings.
 const (
-	SettingSplitModoDefault = "split_modo_default"
+	SettingSplitModoDefault       = "split_modo_default"
+	SettingRegistrarMetodoDefault = "registrar_metodo_default"
+	SettingRegistrarModoDefault   = "registrar_modo_default"
 )
 
 // SettingsRepo persiste ajustes globales de la aplicación (clave/valor).

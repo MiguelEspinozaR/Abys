@@ -76,7 +76,7 @@ func Setup(cfg *config.Config, pool *pgxpool.Pool) *gin.Engine {
 	pagoH := handler.NewPagoHandler(services.Pago, up)
 	fuenteH := handler.NewFuenteHandler(services.Fuente, up)
 	cuentaH := handler.NewCuentaHandler(services.Cuenta, services.Tasa, repos.Cuenta, up)
-	splitH := handler.NewSplitHandler(services.Split, repos.Split)
+	splitH := handler.NewSplitHandler(services.Split, repos.Split, repos.Cuenta)
 	dashH := handler.NewDashboardHandler(services.Dashboard)
 	healthH := handler.NewHealthHandler(repos.Health)
 	settingsH := handler.NewSettingsHandler(repos.Settings)
@@ -127,6 +127,8 @@ func Setup(cfg *config.Config, pool *pgxpool.Pool) *gin.Engine {
 	// Configuración global.
 	api.GET("/settings/split", settingsH.GetSplit)
 	api.PUT("/settings/split", settingsH.SetSplit)
+	api.GET("/settings/registrar", settingsH.GetRegistrar)
+	api.PUT("/settings/registrar", settingsH.SetRegistrar)
 
 	// Dashboard.
 	api.GET("/dashboard/summary", dashH.Summary)

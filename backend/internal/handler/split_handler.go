@@ -12,12 +12,13 @@ import (
 
 // SplitHandler expone splits y transacciones.
 type SplitHandler struct {
-	svc       *service.SplitService
-	splitRepo *repository.SplitRepo
+	svc        *service.SplitService
+	splitRepo  *repository.SplitRepo
+	cuentaRepo *repository.CuentaRepo
 }
 
-func NewSplitHandler(svc *service.SplitService, sr *repository.SplitRepo) *SplitHandler {
-	return &SplitHandler{svc: svc, splitRepo: sr}
+func NewSplitHandler(svc *service.SplitService, sr *repository.SplitRepo, cr *repository.CuentaRepo) *SplitHandler {
+	return &SplitHandler{svc: svc, splitRepo: sr, cuentaRepo: cr}
 }
 
 // GenerarSplitRequest es el body de POST /splits.
@@ -26,17 +27,43 @@ type GenerarSplitRequest struct {
 	ModoCalculo string `json:"modo_calculo"`
 }
 
-func splitJSON(s *model.Split, txs []model.Transaccion) gin.H {
+// totalesSplit calcula los agregados de un split.
+// pendiente excluye transacciones no realizadas de la cuenta General (idGeneral);
+// realizado suma todas las transacciones realizadas. La lista de transacciones no
+// se filtra: la fila de General sigue presente con fines informativos.
+func totalesSplit(txs []model.Transaccion, idGeneral *int64) (pendiente, realizado int64) {
+	for _, t := range txs {
+		if t.Realizado {
+			realizado += t.MontoEnteros
+			continue
+		}
+		if t.CuentaID != nil && idGeneral != nil && *t.CuentaID == *idGeneral {
+			continue
+		}
+		pendiente += t.MontoEnteros
+	}
+	return pendiente, realizado
+}
+
+// idGeneral resuelve el ID de la cuenta General una vez por request.
+// Devuelve nil si no existe o si falla la lectura (fail-safe, sin exclusión).
+func (h *SplitHandler) idGeneral(c *gin.Context) *int64 {
+	if h == nil || h.cuentaRepo == nil {
+		return nil
+	}
+	g, err := h.cuentaRepo.GetGeneral(c.Request.Context())
+	if err != nil || g == nil {
+		return nil
+	}
+	return &g.ID
+}
+
+func splitJSON(s *model.Split, txs []model.Transaccion, idGeneral *int64) gin.H {
 	txList := make([]gin.H, 0, len(txs))
-	totalRealizado, totalPendiente := int64(0), int64(0)
 	for _, t := range txs {
 		txList = append(txList, transaccionJSON(t))
-		if t.Realizado {
-			totalRealizado += t.MontoEnteros
-		} else {
-			totalPendiente += t.MontoEnteros
-		}
 	}
+	pendiente, realizado := totalesSplit(txs, idGeneral)
 	return gin.H{
 		"id":              s.ID,
 		"pago_id":         s.PagoID,
@@ -44,13 +71,13 @@ func splitJSON(s *model.Split, txs []model.Transaccion) gin.H {
 		"created_at":      s.CreatedAt,
 		"updated_at":      s.UpdatedAt,
 		"transacciones":   txList,
-		"total_realizado": totalRealizado,
-		"total_pendiente": totalPendiente,
+		"total_realizado": realizado,
+		"total_pendiente": pendiente,
 	}
 }
 
 // @Summary Generar split
-// @Description Crea el split de un pago atómicamente con tasas vigentes (BR-031/032).
+// @Description Crea el split de un pago atómicamente con tasas vigentes (BR-031/032). total_pendiente excluye la cuenta General (reserva).
 // @Tags splits
 // @Accept json
 // @Produce json
@@ -79,10 +106,11 @@ func (h *SplitHandler) Generar(c *gin.Context) {
 		responderError(c, err)
 		return
 	}
-	c.JSON(201, gin.H{"data": splitJSON(s, txs)})
+	c.JSON(201, gin.H{"data": splitJSON(s, txs, h.idGeneral(c))})
 }
 
 // @Summary Listar splits
+// @Description Lista todos los splits. total_pendiente excluye la cuenta General (reserva).
 // @Tags splits
 // @Produce json
 // @Success 200 {object} map[string]any
@@ -93,6 +121,7 @@ func (h *SplitHandler) Listar(c *gin.Context) {
 		responderError(c, err)
 		return
 	}
+	idGeneral := h.idGeneral(c)
 	out := make([]gin.H, 0, len(splits))
 	for i := range splits {
 		txs, err := h.splitRepo.TransaccionesPorSplit(c, splits[i].ID)
@@ -100,12 +129,13 @@ func (h *SplitHandler) Listar(c *gin.Context) {
 			responderError(c, err)
 			return
 		}
-		out = append(out, splitJSON(&splits[i], txs))
+		out = append(out, splitJSON(&splits[i], txs, idGeneral))
 	}
 	c.JSON(200, gin.H{"data": out})
 }
 
 // @Summary Detalle de split
+// @Description Devuelve el split y sus transacciones. total_pendiente excluye la cuenta General (reserva).
 // @Tags splits
 // @Produce json
 // @Param id path int true "ID del split"
@@ -122,10 +152,11 @@ func (h *SplitHandler) Detalle(c *gin.Context) {
 		responderError(c, err)
 		return
 	}
-	c.JSON(200, gin.H{"data": splitJSON(s, txs)})
+	c.JSON(200, gin.H{"data": splitJSON(s, txs, h.idGeneral(c))})
 }
 
 // @Summary Split de un pago
+// @Description Devuelve el split asociado al pago. total_pendiente excluye la cuenta General (reserva).
 // @Tags splits
 // @Produce json
 // @Param id path int true "ID del pago"
@@ -146,11 +177,11 @@ func (h *SplitHandler) PorPago(c *gin.Context) {
 		c.JSON(200, gin.H{"data": nil})
 		return
 	}
-	c.JSON(200, gin.H{"data": splitJSON(s, txs)})
+	c.JSON(200, gin.H{"data": splitJSON(s, txs, h.idGeneral(c))})
 }
 
 // @Summary Recalcular split
-// @Description Aplica tasas vigentes a pendientes; realizadas congeladas (BR-061).
+// @Description Aplica tasas vigentes a pendientes; realizadas congeladas (BR-061). total_pendiente excluye la cuenta General (reserva).
 // @Tags splits
 // @Param id path int true "ID del split"
 // @Success 200 {object} map[string]any
@@ -172,7 +203,7 @@ func (h *SplitHandler) Recalcular(c *gin.Context) {
 		responderError(c, err)
 		return
 	}
-	c.JSON(200, gin.H{"data": splitJSON(s, txs)})
+	c.JSON(200, gin.H{"data": splitJSON(s, txs, h.idGeneral(c))})
 }
 
 // @Summary Eliminar split
@@ -265,15 +296,15 @@ func (h *SplitHandler) ListarTransacciones(c *gin.Context) {
 
 func transaccionJSON(t model.Transaccion) gin.H {
 	return gin.H{
-		"id":                 t.ID,
-		"split_id":           t.SplitID,
-		"cuenta_id":          t.CuentaID,
-		"monto_enteros":      t.MontoEnteros,
-		"tasa_bps":           t.TasaBps,
-		"alias_snapshot":     t.AliasSnapshot,
-		"realizado":          t.Realizado,
-		"fecha_realizacion":  t.FechaRealizacion,
-		"created_at":         t.CreatedAt,
-		"updated_at":         t.UpdatedAt,
+		"id":                t.ID,
+		"split_id":          t.SplitID,
+		"cuenta_id":         t.CuentaID,
+		"monto_enteros":     t.MontoEnteros,
+		"tasa_bps":          t.TasaBps,
+		"alias_snapshot":    t.AliasSnapshot,
+		"realizado":         t.Realizado,
+		"fecha_realizacion": t.FechaRealizacion,
+		"created_at":        t.CreatedAt,
+		"updated_at":        t.UpdatedAt,
 	}
 }
