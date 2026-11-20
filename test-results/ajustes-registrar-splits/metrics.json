@@ -1,0 +1,301 @@
+{
+  "generated_at": "2026-11-20T22:03:17.771Z",
+  "commit": "a6f9c81ad28ddd54e3b671fda03c5ca8a893fffd",
+  "environment": {
+    "base": "http://127.0.0.1:5178",
+    "api": "http://127.0.0.1:8082 (read-only curl check; API mocked in harness)",
+    "channel": "chrome"
+  },
+  "map_computation": {
+    "input": {
+      "pagos": 500,
+      "dias_por_pago": 3,
+      "dias_totales": 1500,
+      "fuentes": 5,
+      "fechas": 30
+    },
+    "iterations": 60,
+    "map_plus_top3_plus_legend_ms": {
+      "min": 0.4,
+      "median": 0.8,
+      "p95": 4.5,
+      "max": 6.7
+    },
+    "legend_entries": 5,
+    "sample_dates_with_three_sources": 30,
+    "method": "in-page JS port of web/src/lib/fuentesDots.ts (construirFuentesPorDia + top3Fuentes + fuentesParaLeyenda), performance.now()"
+  },
+  "touch_targets": {
+    "threshold": {
+      "width": 44,
+      "height": 44,
+      "source": ".ai/policies/project-policy.md §5"
+    },
+    "sweep": [
+      {
+        "combination": "registrar/d1440/light",
+        "viewport": "1440x900",
+        "checked": 62,
+        "failures": 25,
+        "applicable": false
+      },
+      {
+        "combination": "registrar/d1440/dark",
+        "viewport": "1440x900",
+        "checked": 62,
+        "failures": 25,
+        "applicable": false
+      },
+      {
+        "combination": "registrar/m390/light",
+        "viewport": "390x844",
+        "checked": 56,
+        "failures": 0,
+        "applicable": true
+      },
+      {
+        "combination": "registrar/m390/dark",
+        "viewport": "390x844",
+        "checked": 56,
+        "failures": 0,
+        "applicable": true
+      },
+      {
+        "combination": "config-registro/d1440/light",
+        "viewport": "1440x900",
+        "checked": 12,
+        "failures": 11,
+        "applicable": false
+      },
+      {
+        "combination": "config-registro/d1440/dark",
+        "viewport": "1440x900",
+        "checked": 12,
+        "failures": 11,
+        "applicable": false
+      },
+      {
+        "combination": "config-registro/m390/light",
+        "viewport": "390x844",
+        "checked": 6,
+        "failures": 0,
+        "applicable": true
+      },
+      {
+        "combination": "config-registro/m390/dark",
+        "viewport": "390x844",
+        "checked": 6,
+        "failures": 0,
+        "applicable": true
+      },
+      {
+        "combination": "splits/d1440/light",
+        "viewport": "1440x900",
+        "checked": 20,
+        "failures": 19,
+        "applicable": false
+      },
+      {
+        "combination": "splits/d1440/dark",
+        "viewport": "1440x900",
+        "checked": 20,
+        "failures": 19,
+        "applicable": false
+      },
+      {
+        "combination": "splits/m390/light",
+        "viewport": "390x844",
+        "checked": 14,
+        "failures": 0,
+        "applicable": true
+      },
+      {
+        "combination": "splits/m390/dark",
+        "viewport": "390x844",
+        "checked": 14,
+        "failures": 0,
+        "applicable": true
+      },
+      {
+        "combination": "registrar-select-popups",
+        "viewport": "390x844",
+        "checked": 56,
+        "failures": 0,
+        "applicable": true
+      },
+      {
+        "combination": "config-select-popups",
+        "viewport": "390x844",
+        "checked": 6,
+        "failures": 0,
+        "applicable": true
+      },
+      {
+        "combination": "splits-dialog-checkboxes",
+        "viewport": "390x844",
+        "checked": 17,
+        "failures": 0,
+        "applicable": true
+      },
+      {
+        "combination": "splits-qr-lightbox",
+        "viewport": "390x844",
+        "checked": 17,
+        "failures": 0,
+        "applicable": true
+      }
+    ],
+    "new_controls": [
+      {
+        "state": "registrar",
+        "targets": [
+          {
+            "control": "#fuente",
+            "present": true,
+            "width": 176.3,
+            "height": 44,
+            "pass": true
+          },
+          {
+            "control": "#modo-redondeo",
+            "present": true,
+            "width": 326,
+            "height": 44,
+            "pass": true
+          },
+          {
+            "control": "metodo QR",
+            "present": true,
+            "width": 102.7,
+            "height": 44,
+            "pass": true
+          },
+          {
+            "control": "modo Distribuido",
+            "present": true,
+            "width": 156,
+            "height": 44,
+            "pass": true
+          }
+        ]
+      },
+      {
+        "state": "registrar-select-popup",
+        "targets": [
+          {
+            "control": "opción Preciso (centavos)",
+            "present": true,
+            "width": 321,
+            "height": 44,
+            "pass": true
+          }
+        ]
+      },
+      {
+        "state": "config-registro",
+        "targets": [
+          {
+            "control": "#registrar-metodo-default",
+            "present": true,
+            "width": 326,
+            "height": 44,
+            "pass": true
+          },
+          {
+            "control": "#registrar-modo-default",
+            "present": true,
+            "width": 326,
+            "height": 44,
+            "pass": true
+          }
+        ]
+      },
+      {
+        "state": "config-select-popup",
+        "targets": [
+          {
+            "control": "opción QR",
+            "present": true,
+            "width": 321,
+            "height": 44,
+            "pass": true
+          }
+        ]
+      },
+      {
+        "state": "splits-dialog",
+        "targets": [
+          {
+            "control": "checkbox pendiente",
+            "present": true,
+            "width": 44,
+            "height": 44,
+            "pass": true
+          },
+          {
+            "control": "botón QR",
+            "present": true,
+            "width": 176,
+            "height": 176,
+            "pass": true
+          },
+          {
+            "control": "cerrar dialog",
+            "present": true,
+            "width": 44,
+            "height": 44,
+            "pass": true
+          }
+        ]
+      },
+      {
+        "state": "splits-lightbox",
+        "targets": [
+          {
+            "control": "cerrar lightbox",
+            "present": true,
+            "width": 44,
+            "height": 44,
+            "pass": true
+          }
+        ]
+      }
+    ],
+    "failing_targets": []
+  },
+  "focus_contrast": {
+    "threshold": 3,
+    "samples": 324,
+    "min": 3.19,
+    "max": 20.43,
+    "failures": []
+  },
+  "command_durations": [
+    {
+      "suite": "backend-chain",
+      "start": 1795210211.2797759,
+      "end": 1795210222.1553683,
+      "duration_seconds": 10.876
+    },
+    {
+      "suite": "web-chain",
+      "start": 1795210222.1693945,
+      "end": 1795210302.100609,
+      "duration_seconds": 79.931
+    }
+  ],
+  "web_test_counts": {
+    "files": 15,
+    "tests": 173,
+    "source": "/tmp/opencode/m7-logs/web-npm-test.log"
+  },
+  "functional_checks": {
+    "total": 15,
+    "passed": 15
+  },
+  "aa_combinations": {
+    "total": 16,
+    "passed": 16
+  },
+  "note": "No screenshots for measurable metrics. AA UI boundary contrast remains advisory (not in policy §5 hard gate)."
+}

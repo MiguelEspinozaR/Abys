@@ -1,0 +1,3703 @@
+{
+  "generatedAt": "2026-11-20T22:00:21.940Z",
+  "feature": "ajustes-registrar-splits",
+  "policy": ".ai/policies/project-policy.md §5 (hard gate)",
+  "commit": "a6f9c81ad28ddd54e3b671fda03c5ca8a893fffd",
+  "note": "Playwright environment harness, deterministic mocked API, built SPA on :5178, channel=chrome. No screenshots for measurable metrics.",
+  "checks": [
+    "text-contrast-AA",
+    "focus-indicator-3:1",
+    "touch-44px (mobile + overlays)",
+    "keyboard-no-trap (incl. dialog→lightbox)",
+    "accessible-names",
+    "prefers-reduced-motion"
+  ],
+  "advisory": [
+    "ui-boundary-contrast-3:1 (not in policy §5 hard gate)"
+  ],
+  "combinations": [
+    {
+      "combination": "registrar/d1440/light",
+      "route": "/registrar",
+      "viewport": "1440x900",
+      "theme": "light",
+      "metrics": {
+        "text": {
+          "checked": 99,
+          "failures": []
+        },
+        "touch": {
+          "checked": 62,
+          "failures": [
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Dashboard",
+              "ariaLabel": "Dashboard",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Registrar",
+              "ariaLabel": "Registrar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Ingresos",
+              "ariaLabel": "Ingresos",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Splits",
+              "ariaLabel": "Splits",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Configuración",
+              "ariaLabel": "Configuración",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Health",
+              "ariaLabel": "Health",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Modo claro",
+              "ariaLabel": "Cambiar a modo claro",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Colapsar",
+              "ariaLabel": "Colapsar sidebar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#registrar-dias > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Trabajo",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#registrar-dias > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Pago",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#registrar-dias > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Quitar",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button",
+              "text": "«",
+              "ariaLabel": "",
+              "measured": {
+                "width": 24.5,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev-button",
+              "text": "‹",
+              "ariaLabel": "",
+              "measured": {
+                "width": 21.6,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__label",
+              "text": "noviembre de 2026",
+              "ariaLabel": "",
+              "measured": {
+                "width": 279.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next-button",
+              "text": "›",
+              "ariaLabel": "",
+              "measured": {
+                "width": 21.6,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next2-button",
+              "text": "»",
+              "ariaLabel": "",
+              "measured": {
+                "width": 24.5,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#fuente",
+              "text": "Selecciona la fuente",
+              "ariaLabel": null,
+              "measured": {
+                "width": 176.3,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#metodo > div.grid.grid-cols-3 > button.group/button.inline-flex",
+              "text": "Efectivo",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#metodo > div.grid.grid-cols-3 > button.group/button.inline-flex",
+              "text": "QR",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#metodo > div.grid.grid-cols-3 > button.group/button.inline-flex",
+              "text": "Transacción",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#registrar-modo > div.grid.grid-cols-2 > button.group/button.inline-flex",
+              "text": "Detallado",
+              "ariaLabel": null,
+              "measured": {
+                "width": 195,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#registrar-modo > div.grid.grid-cols-2 > button.group/button.inline-flex",
+              "text": "Distribuido",
+              "ariaLabel": null,
+              "measured": {
+                "width": 195,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "input#monto-total",
+              "text": "",
+              "ariaLabel": null,
+              "measured": {
+                "width": 404,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#modo-redondeo",
+              "text": "Enteros (1 Bs)",
+              "ariaLabel": null,
+              "measured": {
+                "width": 404,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.grid.grid-cols-1 > div.space-y-6 > button.group/button.inline-flex",
+              "text": "Guardar pago",
+              "ariaLabel": null,
+              "measured": {
+                "width": 436,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            }
+          ]
+        },
+        "names": {
+          "checked": 62,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 5,
+          "failures": [
+            {
+              "selector": "button#fuente",
+              "text": "Selecciona la fuente",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "input#monto-total",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#modo-redondeo",
+              "text": "Enteros (1 Bs)",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "textarea#notas",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.space-y-2 > button.flex.w-full",
+              "text": "Arrastra o haz clic para subir el comprobantePNG, JPG, WEBP ",
+              "measured": 1.33,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 45,
+        "uniqueFocusStops": 45,
+        "expectedFocusableCount": 62,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.57,
+          3.57,
+          3.57,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Dashboard",
+          "Registrar",
+          "Ingresos",
+          "Splits",
+          "Configuración",
+          "Health",
+          "Cambiar a modo claro",
+          "Colapsar sidebar",
+          "Trabajo",
+          "Pago",
+          "Quitar",
+          "«",
+          "‹",
+          "noviembre de 2026",
+          "›",
+          "»",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10Fuentes: Athena, Essencia, Malnova",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15Fuentes: Athena, Essencia, Malnova",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 291,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": null,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "registrar/d1440/dark",
+      "route": "/registrar",
+      "viewport": "1440x900",
+      "theme": "dark",
+      "metrics": {
+        "text": {
+          "checked": 99,
+          "failures": []
+        },
+        "touch": {
+          "checked": 62,
+          "failures": [
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Dashboard",
+              "ariaLabel": "Dashboard",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Registrar",
+              "ariaLabel": "Registrar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Ingresos",
+              "ariaLabel": "Ingresos",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Splits",
+              "ariaLabel": "Splits",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Configuración",
+              "ariaLabel": "Configuración",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Health",
+              "ariaLabel": "Health",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Modo claro",
+              "ariaLabel": "Cambiar a modo claro",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Colapsar",
+              "ariaLabel": "Colapsar sidebar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#registrar-dias > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Trabajo",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#registrar-dias > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Pago",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#registrar-dias > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Quitar",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button",
+              "text": "«",
+              "ariaLabel": "",
+              "measured": {
+                "width": 24.5,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__prev-button",
+              "text": "‹",
+              "ariaLabel": "",
+              "measured": {
+                "width": 21.6,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__label",
+              "text": "noviembre de 2026",
+              "ariaLabel": "",
+              "measured": {
+                "width": 279.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next-button",
+              "text": "›",
+              "ariaLabel": "",
+              "measured": {
+                "width": 21.6,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.react-calendar.rounded-xl > div.react-calendar__navigation > button.react-calendar__navigation__arrow.react-calendar__navigation__next2-button",
+              "text": "»",
+              "ariaLabel": "",
+              "measured": {
+                "width": 24.5,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#fuente",
+              "text": "Selecciona la fuente",
+              "ariaLabel": null,
+              "measured": {
+                "width": 176.3,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#metodo > div.grid.grid-cols-3 > button.group/button.inline-flex",
+              "text": "Efectivo",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#metodo > div.grid.grid-cols-3 > button.group/button.inline-flex",
+              "text": "QR",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#metodo > div.grid.grid-cols-3 > button.group/button.inline-flex",
+              "text": "Transacción",
+              "ariaLabel": null,
+              "measured": {
+                "width": 128.7,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#registrar-modo > div.grid.grid-cols-2 > button.group/button.inline-flex",
+              "text": "Detallado",
+              "ariaLabel": null,
+              "measured": {
+                "width": 195,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset#registrar-modo > div.grid.grid-cols-2 > button.group/button.inline-flex",
+              "text": "Distribuido",
+              "ariaLabel": null,
+              "measured": {
+                "width": 195,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "input#monto-total",
+              "text": "",
+              "ariaLabel": null,
+              "measured": {
+                "width": 404,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#modo-redondeo",
+              "text": "Enteros (1 Bs)",
+              "ariaLabel": null,
+              "measured": {
+                "width": 404,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.grid.grid-cols-1 > div.space-y-6 > button.group/button.inline-flex",
+              "text": "Guardar pago",
+              "ariaLabel": null,
+              "measured": {
+                "width": 436,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            }
+          ]
+        },
+        "names": {
+          "checked": 62,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 5,
+          "failures": [
+            {
+              "selector": "button#fuente",
+              "text": "Selecciona la fuente",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "input#monto-total",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#modo-redondeo",
+              "text": "Enteros (1 Bs)",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "textarea#notas",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.space-y-2 > button.flex.w-full",
+              "text": "Arrastra o haz clic para subir el comprobantePNG, JPG, WEBP ",
+              "measured": 1.33,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 45,
+        "uniqueFocusStops": 45,
+        "expectedFocusableCount": 62,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.57,
+          3.57,
+          3.57,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Dashboard",
+          "Registrar",
+          "Ingresos",
+          "Splits",
+          "Configuración",
+          "Health",
+          "Cambiar a modo claro",
+          "Colapsar sidebar",
+          "Trabajo",
+          "Pago",
+          "Quitar",
+          "«",
+          "‹",
+          "noviembre de 2026",
+          "›",
+          "»",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10Fuentes: Athena, Essencia, Malnova",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15Fuentes: Athena, Essencia, Malnova",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 291,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": null,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "registrar/m390/light",
+      "route": "/registrar",
+      "viewport": "390x844",
+      "theme": "light",
+      "metrics": {
+        "text": {
+          "checked": 89,
+          "failures": []
+        },
+        "touch": {
+          "checked": 56,
+          "failures": []
+        },
+        "names": {
+          "checked": 56,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 5,
+          "failures": [
+            {
+              "selector": "button#fuente",
+              "text": "Selecciona la fuente",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "input#monto-total",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#modo-redondeo",
+              "text": "Enteros (1 Bs)",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "textarea#notas",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.space-y-2 > button.flex.w-full",
+              "text": "Arrastra o haz clic para subir el comprobantePNG, JPG, WEBP ",
+              "measured": 1.33,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 45,
+        "uniqueFocusStops": 41,
+        "expectedFocusableCount": 56,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.57,
+          3.57,
+          3.57,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Abrir navegación",
+          "Cambiar a modo claro",
+          "Trabajo",
+          "Pago",
+          "Quitar",
+          "«",
+          "‹",
+          "noviembre de 2026",
+          "›",
+          "»",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10Fuentes: Athena, Essencia, Malnova",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15Fuentes: Athena, Essencia, Malnova",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 246,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": true,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "registrar/m390/dark",
+      "route": "/registrar",
+      "viewport": "390x844",
+      "theme": "dark",
+      "metrics": {
+        "text": {
+          "checked": 89,
+          "failures": []
+        },
+        "touch": {
+          "checked": 56,
+          "failures": []
+        },
+        "names": {
+          "checked": 56,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 5,
+          "failures": [
+            {
+              "selector": "button#fuente",
+              "text": "Selecciona la fuente",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "input#monto-total",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#modo-redondeo",
+              "text": "Enteros (1 Bs)",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "textarea#notas",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.space-y-2 > button.flex.w-full",
+              "text": "Arrastra o haz clic para subir el comprobantePNG, JPG, WEBP ",
+              "measured": 1.33,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 45,
+        "uniqueFocusStops": 41,
+        "expectedFocusableCount": 56,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.57,
+          3.57,
+          3.57,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Abrir navegación",
+          "Cambiar a modo claro",
+          "Trabajo",
+          "Pago",
+          "Quitar",
+          "«",
+          "‹",
+          "noviembre de 2026",
+          "›",
+          "»",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10Fuentes: Athena, Essencia, Malnova",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15Fuentes: Athena, Essencia, Malnova",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 246,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": true,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "config-registro/d1440/light",
+      "route": "/configuracion?tab=registro",
+      "viewport": "1440x900",
+      "theme": "light",
+      "metrics": {
+        "text": {
+          "checked": 22,
+          "failures": []
+        },
+        "touch": {
+          "checked": 12,
+          "failures": [
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Dashboard",
+              "ariaLabel": "Dashboard",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Registrar",
+              "ariaLabel": "Registrar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Ingresos",
+              "ariaLabel": "Ingresos",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Splits",
+              "ariaLabel": "Splits",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Configuración",
+              "ariaLabel": "Configuración",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Health",
+              "ariaLabel": "Health",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Modo claro",
+              "ariaLabel": "Cambiar a modo claro",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Colapsar",
+              "ariaLabel": "Colapsar sidebar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.mx-auto.max-w-6xl > div.group/tabs.flex > div.group/tabs-list.inline-flex",
+              "text": "CuentasFuentesRegistroSplits",
+              "ariaLabel": null,
+              "measured": {
+                "width": 347.1,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#registrar-metodo-default",
+              "text": "QR",
+              "ariaLabel": null,
+              "measured": {
+                "width": 352,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#registrar-modo-default",
+              "text": "Distribuido",
+              "ariaLabel": null,
+              "measured": {
+                "width": 352,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            }
+          ]
+        },
+        "names": {
+          "checked": 14,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 2,
+          "failures": [
+            {
+              "selector": "button#registrar-metodo-default",
+              "text": "QR",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#registrar-modo-default",
+              "text": "Distribuido",
+              "measured": 1.57,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 13,
+        "uniqueFocusStops": 13,
+        "expectedFocusableCount": 12,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.19,
+          4.18,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Dashboard",
+          "Registrar",
+          "Ingresos",
+          "Splits",
+          "Configuración",
+          "Health",
+          "Cambiar a modo claro",
+          "Colapsar sidebar",
+          "Registro",
+          "Defaults al registrar ingresosSe aplican",
+          "QR",
+          "Distribuido"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 110,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": null,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "config-registro/d1440/dark",
+      "route": "/configuracion?tab=registro",
+      "viewport": "1440x900",
+      "theme": "dark",
+      "metrics": {
+        "text": {
+          "checked": 22,
+          "failures": []
+        },
+        "touch": {
+          "checked": 12,
+          "failures": [
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Dashboard",
+              "ariaLabel": "Dashboard",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Registrar",
+              "ariaLabel": "Registrar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Ingresos",
+              "ariaLabel": "Ingresos",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Splits",
+              "ariaLabel": "Splits",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Configuración",
+              "ariaLabel": "Configuración",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Health",
+              "ariaLabel": "Health",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Modo claro",
+              "ariaLabel": "Cambiar a modo claro",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Colapsar",
+              "ariaLabel": "Colapsar sidebar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.mx-auto.max-w-6xl > div.group/tabs.flex > div.group/tabs-list.inline-flex",
+              "text": "CuentasFuentesRegistroSplits",
+              "ariaLabel": null,
+              "measured": {
+                "width": 347.1,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#registrar-metodo-default",
+              "text": "QR",
+              "ariaLabel": null,
+              "measured": {
+                "width": 352,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#registrar-modo-default",
+              "text": "Distribuido",
+              "ariaLabel": null,
+              "measured": {
+                "width": 352,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            }
+          ]
+        },
+        "names": {
+          "checked": 14,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 2,
+          "failures": [
+            {
+              "selector": "button#registrar-metodo-default",
+              "text": "QR",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#registrar-modo-default",
+              "text": "Distribuido",
+              "measured": 1.57,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 13,
+        "uniqueFocusStops": 13,
+        "expectedFocusableCount": 12,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.19,
+          4.18,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Dashboard",
+          "Registrar",
+          "Ingresos",
+          "Splits",
+          "Configuración",
+          "Health",
+          "Cambiar a modo claro",
+          "Colapsar sidebar",
+          "Registro",
+          "Defaults al registrar ingresosSe aplican",
+          "QR",
+          "Distribuido"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 110,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": null,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "config-registro/m390/light",
+      "route": "/configuracion?tab=registro",
+      "viewport": "390x844",
+      "theme": "light",
+      "metrics": {
+        "text": {
+          "checked": 12,
+          "failures": []
+        },
+        "touch": {
+          "checked": 6,
+          "failures": []
+        },
+        "names": {
+          "checked": 8,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 2,
+          "failures": [
+            {
+              "selector": "button#registrar-metodo-default",
+              "text": "QR",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#registrar-modo-default",
+              "text": "Distribuido",
+              "measured": 1.57,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 7,
+        "uniqueFocusStops": 7,
+        "expectedFocusableCount": 6,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.19,
+          4.18,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Abrir navegación",
+          "Cambiar a modo claro",
+          "Registro",
+          "Defaults al registrar ingresosSe aplican",
+          "QR",
+          "Distribuido"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 65,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": true,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "config-registro/m390/dark",
+      "route": "/configuracion?tab=registro",
+      "viewport": "390x844",
+      "theme": "dark",
+      "metrics": {
+        "text": {
+          "checked": 12,
+          "failures": []
+        },
+        "touch": {
+          "checked": 6,
+          "failures": []
+        },
+        "names": {
+          "checked": 8,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 2,
+          "failures": [
+            {
+              "selector": "button#registrar-metodo-default",
+              "text": "QR",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#registrar-modo-default",
+              "text": "Distribuido",
+              "measured": 1.57,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 7,
+        "uniqueFocusStops": 7,
+        "expectedFocusableCount": 6,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.19,
+          4.18,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Abrir navegación",
+          "Cambiar a modo claro",
+          "Registro",
+          "Defaults al registrar ingresosSe aplican",
+          "QR",
+          "Distribuido"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 65,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": true,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "splits/d1440/light",
+      "route": "/splits",
+      "viewport": "1440x900",
+      "theme": "light",
+      "metrics": {
+        "text": {
+          "checked": 45,
+          "failures": []
+        },
+        "touch": {
+          "checked": 20,
+          "failures": [
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Dashboard",
+              "ariaLabel": "Dashboard",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Registrar",
+              "ariaLabel": "Registrar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Ingresos",
+              "ariaLabel": "Ingresos",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Splits",
+              "ariaLabel": "Splits",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Configuración",
+              "ariaLabel": "Configuración",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Health",
+              "ariaLabel": "Health",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Modo claro",
+              "ariaLabel": "Cambiar a modo claro",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Colapsar",
+              "ariaLabel": "Colapsar sidebar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "ariaLabel": null,
+              "measured": {
+                "width": 80.3,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "ariaLabel": null,
+              "measured": {
+                "width": 80.3,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "ariaLabel": null,
+              "measured": {
+                "width": 80.3,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Año actual",
+              "ariaLabel": null,
+              "measured": {
+                "width": 97.2,
+                "height": 34
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Últimos 365 días",
+              "ariaLabel": null,
+              "measured": {
+                "width": 138,
+                "height": 34
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Todo el histórico",
+              "ariaLabel": null,
+              "measured": {
+                "width": 137,
+                "height": 34
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Personalizado",
+              "ariaLabel": null,
+              "measured": {
+                "width": 120.8,
+                "height": 34
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#splits-fuente",
+              "text": "Todas",
+              "ariaLabel": null,
+              "measured": {
+                "width": 271,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#splits-metodo",
+              "text": "Todos",
+              "ariaLabel": null,
+              "measured": {
+                "width": 271,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.mt-3.flex > button.group/button.inline-flex",
+              "text": "Aplicar",
+              "ariaLabel": null,
+              "measured": {
+                "width": 65.2,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.mt-3.flex > button.group/button.inline-flex",
+              "text": "Limpiar",
+              "ariaLabel": null,
+              "measured": {
+                "width": 91.2,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            }
+          ]
+        },
+        "names": {
+          "checked": 20,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 11,
+          "failures": [
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Últimos 365 días",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Todo el histórico",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Personalizado",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-fuente",
+              "text": "Todas",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-metodo",
+              "text": "Todos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.mt-3.flex > button.group/button.inline-flex",
+              "text": "Limpiar",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "h2#splits-anio-2026-titulo > button.flex.min-h-11",
+              "text": "20268",
+              "measured": 1.26,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 20,
+        "uniqueFocusStops": 18,
+        "expectedFocusableCount": 19,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          4.18
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Dashboard",
+          "Registrar",
+          "Ingresos",
+          "Splits",
+          "Configuración",
+          "Health",
+          "Cambiar a modo claro",
+          "Colapsar sidebar",
+          "Ver datos",
+          "Ver datos",
+          "Ver datos",
+          "Año actual",
+          "Últimos 365 días",
+          "Todo el histórico",
+          "Personalizado",
+          "Todas",
+          "Todos",
+          "Aplicar",
+          "20268"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 161,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": null,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "splits/d1440/dark",
+      "route": "/splits",
+      "viewport": "1440x900",
+      "theme": "dark",
+      "metrics": {
+        "text": {
+          "checked": 45,
+          "failures": []
+        },
+        "touch": {
+          "checked": 20,
+          "failures": [
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Dashboard",
+              "ariaLabel": "Dashboard",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Registrar",
+              "ariaLabel": "Registrar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Ingresos",
+              "ariaLabel": "Ingresos",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Splits",
+              "ariaLabel": "Splits",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Configuración",
+              "ariaLabel": "Configuración",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div > div.space-y-0.5 > a.group/nav.flex",
+              "text": "Health",
+              "ariaLabel": "Health",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Modo claro",
+              "ariaLabel": "Cambiar a modo claro",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "aside.flex.h-full > div.shrink-0.space-y-0.5 > button.flex.h-9",
+              "text": "Colapsar",
+              "ariaLabel": "Colapsar sidebar",
+              "measured": {
+                "width": 223,
+                "height": 36
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "ariaLabel": null,
+              "measured": {
+                "width": 80.3,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "ariaLabel": null,
+              "measured": {
+                "width": 80.3,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "ariaLabel": null,
+              "measured": {
+                "width": 80.3,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Año actual",
+              "ariaLabel": null,
+              "measured": {
+                "width": 97.2,
+                "height": 34
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Últimos 365 días",
+              "ariaLabel": null,
+              "measured": {
+                "width": 138,
+                "height": 34
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Todo el histórico",
+              "ariaLabel": null,
+              "measured": {
+                "width": 137,
+                "height": 34
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Personalizado",
+              "ariaLabel": null,
+              "measured": {
+                "width": 120.8,
+                "height": 34
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#splits-fuente",
+              "text": "Todas",
+              "ariaLabel": null,
+              "measured": {
+                "width": 271,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "button#splits-metodo",
+              "text": "Todos",
+              "ariaLabel": null,
+              "measured": {
+                "width": 271,
+                "height": 32
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.mt-3.flex > button.group/button.inline-flex",
+              "text": "Aplicar",
+              "ariaLabel": null,
+              "measured": {
+                "width": 65.2,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.mt-3.flex > button.group/button.inline-flex",
+              "text": "Limpiar",
+              "ariaLabel": null,
+              "measured": {
+                "width": 91.2,
+                "height": 28
+              },
+              "expected": {
+                "width": 44,
+                "height": 44
+              }
+            }
+          ]
+        },
+        "names": {
+          "checked": 20,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 11,
+          "failures": [
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Últimos 365 días",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Todo el histórico",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Personalizado",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-fuente",
+              "text": "Todas",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-metodo",
+              "text": "Todos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.mt-3.flex > button.group/button.inline-flex",
+              "text": "Limpiar",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "h2#splits-anio-2026-titulo > button.flex.min-h-11",
+              "text": "20268",
+              "measured": 1.26,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 20,
+        "uniqueFocusStops": 18,
+        "expectedFocusableCount": 19,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          4.18
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Dashboard",
+          "Registrar",
+          "Ingresos",
+          "Splits",
+          "Configuración",
+          "Health",
+          "Cambiar a modo claro",
+          "Colapsar sidebar",
+          "Ver datos",
+          "Ver datos",
+          "Ver datos",
+          "Año actual",
+          "Últimos 365 días",
+          "Todo el histórico",
+          "Personalizado",
+          "Todas",
+          "Todos",
+          "Aplicar",
+          "20268"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 161,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": null,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "splits/m390/light",
+      "route": "/splits",
+      "viewport": "390x844",
+      "theme": "light",
+      "metrics": {
+        "text": {
+          "checked": 35,
+          "failures": []
+        },
+        "touch": {
+          "checked": 14,
+          "failures": []
+        },
+        "names": {
+          "checked": 14,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 11,
+          "failures": [
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Últimos 365 días",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Todo el histórico",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Personalizado",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-fuente",
+              "text": "Todas",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-metodo",
+              "text": "Todos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.mt-3.flex > button.group/button.inline-flex",
+              "text": "Limpiar",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "h2#splits-anio-2026-titulo > button.flex.min-h-11",
+              "text": "20268",
+              "measured": 1.26,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 14,
+        "uniqueFocusStops": 12,
+        "expectedFocusableCount": 13,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          4.18
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Abrir navegación",
+          "Cambiar a modo claro",
+          "Ver datos",
+          "Ver datos",
+          "Ver datos",
+          "Año actual",
+          "Últimos 365 días",
+          "Todo el histórico",
+          "Personalizado",
+          "Todas",
+          "Todos",
+          "Aplicar",
+          "20268"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 116,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": true,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "splits/m390/dark",
+      "route": "/splits",
+      "viewport": "390x844",
+      "theme": "dark",
+      "metrics": {
+        "text": {
+          "checked": 35,
+          "failures": []
+        },
+        "touch": {
+          "checked": 14,
+          "failures": []
+        },
+        "names": {
+          "checked": 14,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 11,
+          "failures": [
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Últimos 365 días",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Todo el histórico",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Personalizado",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-fuente",
+              "text": "Todas",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-metodo",
+              "text": "Todos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.mt-3.flex > button.group/button.inline-flex",
+              "text": "Limpiar",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "h2#splits-anio-2026-titulo > button.flex.min-h-11",
+              "text": "20268",
+              "measured": 1.26,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 14,
+        "uniqueFocusStops": 12,
+        "expectedFocusableCount": 13,
+        "trapDetected": false,
+        "indicatorRatios": [
+          4.18,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          4.18
+        ],
+        "sequence": [
+          "Saltar al contenido",
+          "Abrir navegación",
+          "Cambiar a modo claro",
+          "Ver datos",
+          "Ver datos",
+          "Ver datos",
+          "Año actual",
+          "Últimos 365 días",
+          "Todo el histórico",
+          "Personalizado",
+          "Todas",
+          "Todos",
+          "Aplicar",
+          "20268"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 116,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": true,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "registrar-select-popups",
+      "route": "/registrar",
+      "viewport": "390x844",
+      "theme": "light",
+      "overlay": true,
+      "metrics": {
+        "text": {
+          "checked": 92,
+          "failures": []
+        },
+        "touch": {
+          "checked": 56,
+          "failures": []
+        },
+        "names": {
+          "checked": 56,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 5,
+          "failures": [
+            {
+              "selector": "button#fuente",
+              "text": "Selecciona la fuente",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "input#monto-total",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#modo-redondeo",
+              "text": "Enteros (1 Bs)",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "textarea#notas",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.space-y-2 > button.flex.w-full",
+              "text": "Arrastra o haz clic para subir el comprobantePNG, JPG, WEBP ",
+              "measured": 1.33,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 9,
+        "uniqueFocusStops": 1,
+        "expectedFocusableCount": 8,
+        "trapDetected": true,
+        "indicatorRatios": [
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "Enteros (1 Bs)",
+          "Enteros (1 Bs)",
+          "Enteros (1 Bs)",
+          "Enteros (1 Bs)",
+          "Enteros (1 Bs)",
+          "Enteros (1 Bs)",
+          "Enteros (1 Bs)",
+          "Enteros (1 Bs)",
+          "Enteros (1 Bs)"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 246,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "legend": {
+        "srTexts": [
+          "Fuentes: Athena, Essencia, Malnova",
+          "Fuentes: Athena, Essencia, Malnova"
+        ],
+        "names": [
+          "Athena",
+          "Essencia",
+          "Malnova",
+          "Aurora",
+          "Boreal"
+        ]
+      },
+      "legendPass": true,
+      "overlayKeyboard": {
+        "ok": true,
+        "detail": "listbox 1->0; focus=modo-redondeo"
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": true,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true,
+        "legend": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "config-select-popups",
+      "route": "/configuracion?tab=registro",
+      "viewport": "390x844",
+      "theme": "dark",
+      "overlay": true,
+      "metrics": {
+        "text": {
+          "checked": 15,
+          "failures": []
+        },
+        "touch": {
+          "checked": 6,
+          "failures": []
+        },
+        "names": {
+          "checked": 8,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 2,
+          "failures": [
+            {
+              "selector": "button#registrar-metodo-default",
+              "text": "QR",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#registrar-modo-default",
+              "text": "Distribuido",
+              "measured": 1.57,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 9,
+        "uniqueFocusStops": 1,
+        "expectedFocusableCount": 8,
+        "trapDetected": true,
+        "indicatorRatios": [
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "QR",
+          "QR",
+          "QR",
+          "QR",
+          "QR",
+          "QR",
+          "QR",
+          "QR",
+          "QR"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 65,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "overlayKeyboard": {
+        "ok": true,
+        "detail": "listbox 1->0; focus=registrar-metodo-default"
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": true,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "splits-dialog-checkboxes",
+      "route": "/splits",
+      "viewport": "390x844",
+      "theme": "light",
+      "overlay": true,
+      "metrics": {
+        "text": {
+          "checked": 52,
+          "failures": []
+        },
+        "touch": {
+          "checked": 17,
+          "failures": []
+        },
+        "names": {
+          "checked": 17,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 12,
+          "failures": [
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Últimos 365 días",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Todo el histórico",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Personalizado",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-fuente",
+              "text": "Todas",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-metodo",
+              "text": "Todos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.mt-3.flex > button.group/button.inline-flex",
+              "text": "Limpiar",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "h2#splits-anio-2026-titulo > button.flex.min-h-11",
+              "text": "20268",
+              "measured": 1.26,
+              "expected": 3
+            },
+            {
+              "selector": "button#pendiente-1-tx-302",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 9,
+        "uniqueFocusStops": 3,
+        "expectedFocusableCount": 8,
+        "trapDetected": true,
+        "indicatorRatios": [
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78,
+          3.78
+        ],
+        "sequence": [
+          "button",
+          "Close",
+          "Ampliar QR de la cuenta Cuenta Ahorros",
+          "button",
+          "Close",
+          "Ampliar QR de la cuenta Cuenta Ahorros",
+          "button",
+          "Close",
+          "Ampliar QR de la cuenta Cuenta Ahorros"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 116,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "overlayKeyboard": {
+        "ok": true,
+        "detail": "dialogGone=true; focus=\"Ver datos\""
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": true,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    },
+    {
+      "combination": "splits-qr-lightbox",
+      "route": "/splits",
+      "viewport": "390x844",
+      "theme": "dark",
+      "overlay": true,
+      "metrics": {
+        "text": {
+          "checked": 52,
+          "failures": []
+        },
+        "touch": {
+          "checked": 17,
+          "failures": []
+        },
+        "names": {
+          "checked": 17,
+          "failures": []
+        },
+        "uiAdvisory": {
+          "checked": 12,
+          "failures": [
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.flex.flex-wrap > div.flex.items-center > button.group/button.inline-flex",
+              "text": "Ver datos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Últimos 365 días",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Todo el histórico",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "fieldset.min-w-0.space-y-2 > div.flex.flex-wrap > button.inline-flex.items-center",
+              "text": "Personalizado",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-fuente",
+              "text": "Todas",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "button#splits-metodo",
+              "text": "Todos",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "div.px-(--card-spacing) > div.mt-3.flex > button.group/button.inline-flex",
+              "text": "Limpiar",
+              "measured": 1.57,
+              "expected": 3
+            },
+            {
+              "selector": "h2#splits-anio-2026-titulo > button.flex.min-h-11",
+              "text": "20268",
+              "measured": 1.26,
+              "expected": 3
+            },
+            {
+              "selector": "button#pendiente-1-tx-302",
+              "text": "",
+              "measured": 1.57,
+              "expected": 3
+            }
+          ],
+          "gate": false,
+          "note": "UI boundary contrast not in policy §5 hard gate"
+        }
+      },
+      "keyboard": {
+        "focusStopsChecked": 9,
+        "uniqueFocusStops": 1,
+        "expectedFocusableCount": 8,
+        "trapDetected": true,
+        "indicatorRatios": [
+          20.43,
+          20.43,
+          20.43,
+          20.43,
+          20.43,
+          20.43,
+          20.43,
+          20.43,
+          20.43
+        ],
+        "sequence": [
+          "Cerrar",
+          "Cerrar",
+          "Cerrar",
+          "Cerrar",
+          "Cerrar",
+          "Cerrar",
+          "Cerrar",
+          "Cerrar",
+          "Cerrar"
+        ],
+        "failures": []
+      },
+      "reduced": {
+        "matchesReducedMotion": true,
+        "checked": 116,
+        "maxAnimationDurationSeconds": 0.00001,
+        "maxTransitionDurationSeconds": 0.00001,
+        "offendingElementCount": 0,
+        "offenders": []
+      },
+      "overlayKeyboard": {
+        "ok": true,
+        "detail": "lightboxClosed=true; dialogs=1; focus=\"Ampliar QR de la cuenta Cuenta Ahorros\""
+      },
+      "state": {
+        "unexpectedWrites": []
+      },
+      "pass": {
+        "textContrast": true,
+        "touchTargets": true,
+        "accessibleNames": true,
+        "focusIndicator": true,
+        "keyboard": true,
+        "reducedMotion": true
+      },
+      "hardFailures": [],
+      "verdict": "PASS"
+    }
+  ],
+  "nestedKeyboard": {
+    "pass": true,
+    "tabsInLightbox": [
+      "Cerrar",
+      "Cerrar",
+      "Cerrar",
+      "Cerrar",
+      "Cerrar"
+    ],
+    "dialogSurvived": true,
+    "lightboxClosed": true,
+    "checkboxFocused": true,
+    "unexpectedWrites": []
+  },
+  "overall": "PASS",
+  "summary": {
+    "combinations": 16,
+    "failingCombinations": [],
+    "hardFailures": [],
+    "advisoryUiFailures": [
+      "registrar/d1440/light:5",
+      "registrar/d1440/dark:5",
+      "registrar/m390/light:5",
+      "registrar/m390/dark:5",
+      "config-registro/d1440/light:2",
+      "config-registro/d1440/dark:2",
+      "config-registro/m390/light:2",
+      "config-registro/m390/dark:2",
+      "splits/d1440/light:10",
+      "splits/d1440/dark:10",
+      "splits/m390/light:10",
+      "splits/m390/dark:10",
+      "registrar-select-popups:5",
+      "config-select-popups:2",
+      "splits-dialog-checkboxes:11",
+      "splits-qr-lightbox:11"
+    ]
+  }
+}

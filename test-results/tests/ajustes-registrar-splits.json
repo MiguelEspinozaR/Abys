@@ -1,0 +1,265 @@
+{
+  "schema_version": "1.0",
+  "task_id": "ajustes-registrar-splits",
+  "milestone": "M7",
+  "status": "PASS",
+  "release_ready": true,
+  "commit": "a6f9c81ad28ddd54e3b671fda03c5ca8a893fffd",
+  "short_commit": "a6f9c81",
+  "branch": "feat/ajustes-registrar-splits",
+  "executor": "tester (opencode/big-pickle)",
+  "date": "2026-11-20",
+  "scope": {
+    "spec": ".ai/specs/ajustes-registrar-splits/spec.md",
+    "plan": ".ai/plans/ajustes-registrar-splits/plan.md",
+    "policy": ".ai/policies/project-policy.md §5 and §6"
+  },
+  "environment": {
+    "frontend": "http://127.0.0.1:5178",
+    "backend_read_only": "http://127.0.0.1:8082",
+    "playwright_channel": "chrome",
+    "playwright_package": "/home/miky/.npm/_npx/e41f203b7505f1fb/node_modules/playwright",
+    "dependency_added_to_web": false,
+    "screenshots_for_metrics": false,
+    "api_strategy": "All **/api/v1/** requests intercepted with page.route(); deterministic GET fixtures; expected writes mocked; any other write answered 599 HARNESS_BLOCKED_WRITE",
+    "unexpected_writes": 0,
+    "read_only_real_backend_checks": [
+      "GET http://127.0.0.1:8082/api/v1/health -> 200",
+      "GET http://127.0.0.1:8082/api/v1/settings/registrar -> 200"
+    ],
+    "note": "The preexisting :5178 build embeds the default http://localhost:8080/api/v1 base URL; no request reached it because all API traffic was intercepted. Ports :8081, :5173 and test3 were not touched."
+  },
+  "commands": [
+    {
+      "suite": "backend-chain",
+      "cwd": "backend",
+      "command": "set -a && . ./.env >/dev/null 2>&1 && set +a && go vet ./... && go test ./... -count=1 && go build -o /tmp/opencode/abys-server ./cmd/server",
+      "exit_code": 0,
+      "duration_seconds": 10.876,
+      "logs": [
+        "/tmp/opencode/m7-logs/backend-chain.log",
+        "/tmp/opencode/m7-logs/go-vet.log",
+        "/tmp/opencode/m7-logs/go-test.log",
+        "/tmp/opencode/m7-logs/go-build.log",
+        "/tmp/opencode/m7-logs/go-test-verbose.log"
+      ]
+    },
+    {
+      "suite": "web-chain",
+      "cwd": "web",
+      "command": "npx --no-install tsc -b && npm test && npm run build",
+      "exit_code": 0,
+      "duration_seconds": 79.931,
+      "logs": [
+        "/tmp/opencode/m7-logs/web-chain.log",
+        "/tmp/opencode/m7-logs/web-tsc.log",
+        "/tmp/opencode/m7-logs/web-npm-test.log",
+        "/tmp/opencode/m7-logs/web-npm-build.log"
+      ]
+    },
+    {
+      "suite": "web-targeted",
+      "cwd": "web",
+      "command": "npx --no-install vitest run src/lib/pagoPayload.test.ts src/lib/fuentesDots.test.ts src/lib/subtotal.test.ts src/lib/settingsFallback.test.ts src/lib/filtrosUrl.test.ts --reporter=verbose",
+      "exit_code": 0,
+      "logs": ["/tmp/opencode/m7-logs/web-targeted.log"]
+    }
+  ],
+  "suite_counts": {
+    "go_packages_ok": 6,
+    "go_tests_pass_named": 40,
+    "go_skips": 0,
+    "web_test_files": 15,
+    "web_tests": 173,
+    "web_targeted_files": 5,
+    "web_targeted_tests": 52,
+    "playwright_functional_checks": 15,
+    "playwright_functional_passed": 15,
+    "aa_combinations": 16,
+    "aa_combinations_passed": 16,
+    "aa_nested_keyboard": "PASS",
+    "acs_total": 17,
+    "acs_passed": 17
+  },
+  "pass_fail": {
+    "acs": { "pass": 17, "fail": 0 },
+    "functional_playwright": { "pass": 15, "fail": 0 },
+    "aa_hard_gate": { "pass": 17, "fail": 0, "detail": "16 combinations + nested keyboard sequence" },
+    "web_unit": { "pass": 173, "fail": 0 },
+    "web_targeted_unit": { "pass": 52, "fail": 0 },
+    "go": { "pass": 40, "fail": 0, "skipped": 0 }
+  },
+  "failing_acs": [],
+  "failing_checks": [],
+  "checks": [
+    {
+      "id": "AC1",
+      "verdict": "PASS",
+      "detail": "url=/registrar; form clean; toast=\"Pago registrado Pago #9001 creado correctamente.\""
+    },
+    {
+      "id": "AC9",
+      "verdict": "PASS",
+      "detail": "payload keys=fuente_id,fecha_pago,metodo_pago,notas,dias_trabajados; dias_trabajados[0].monto_enteros=15000; no modo field"
+    },
+    {
+      "id": "AC2-retry",
+      "verdict": "PASS",
+      "detail": "url_fallo=/registrar; url_final=/registrar; POST=1; upload=2; form clean after retry"
+    },
+    {
+      "id": "AC2-volver",
+      "verdict": "PASS",
+      "detail": "url=/registrar; form clean; POST=1; upload=1"
+    },
+    {
+      "id": "AC3",
+      "verdict": "PASS",
+      "detail": "15-nov swatches=rgb(29,78,216),rgb(21,128,61),rgb(185,28,28); sr=\"Fuentes: Athena, Essencia, Malnova\"; total=3"
+    },
+    {
+      "id": "AC4",
+      "verdict": "PASS",
+      "detail": "morado_ausente=true; ambar_12=true; verde_leyenda=true; leyenda_fuentes=true"
+    },
+    {
+      "id": "AC5",
+      "verdict": "PASS",
+      "detail": "titulo=\"Editar pago #101\"; calendario=true; srFuentes=0; swatches=0"
+    },
+    {
+      "id": "AC6",
+      "verdict": "PASS",
+      "detail": "PUTs=transaccion/distribuido then transaccion/detallado; abys-ui replicated; unexpectedWrites=0"
+    },
+    {
+      "id": "AC7",
+      "verdict": "PASS",
+      "detail": "GET /settings/registrar 503 -> metodo_efectivo=true, modo_detallado=true"
+    },
+    {
+      "id": "AC7-redondeo-local",
+      "verdict": "PASS",
+      "detail": "GET /settings/split 503 -> redondeo_local=\"Preciso (centavos)\""
+    },
+    {
+      "id": "AC8",
+      "verdict": "PASS",
+      "detail": "initial QR=true, Distribuido=true, redondeo=\"Enteros (1 Bs)\"; changed to \"Preciso (centavos)\""
+    },
+    {
+      "id": "AC13",
+      "verdict": "PASS",
+      "detail": "fila_general=true; total_backend=true; card=true; filas=3; 220,00 Bs (not 270,00 Bs)"
+    },
+    {
+      "id": "AC10",
+      "verdict": "PASS",
+      "detail": "checkboxes=1; marcados=0; subtotal=\"0,00 Bs\"; realizar=false; unexpectedWrites=0"
+    },
+    {
+      "id": "AC11",
+      "verdict": "PASS",
+      "detail": "marcado=\"150,00 Bs\"; desmarcado=\"0,00 Bs\"; reabierto marcados=0; subtotal=\"0,00 Bs\"; writes=0"
+    },
+    {
+      "id": "AC12",
+      "verdict": "PASS",
+      "detail": "close button 44x44; Escape closes lightbox only; outside click closes lightbox only; dialog survives"
+    }
+  ],
+  "ac_mapping": {
+    "AC1": { "verdict": "PASS", "evidence": ["checks::AC1", "test-results/ajustes-registrar-splits/report.md"] },
+    "AC2": { "verdict": "PASS", "evidence": ["checks::AC2-retry", "checks::AC2-volver", "static grep navigate(/ingresos)=0"] },
+    "AC3": { "verdict": "PASS", "evidence": ["checks::AC3", "web-targeted::fuentesDots.test.ts"] },
+    "AC4": { "verdict": "PASS", "evidence": ["checks::AC4", "static grep bg-violet-500=0"] },
+    "AC5": { "verdict": "PASS", "evidence": ["checks::AC5"] },
+    "AC6": { "verdict": "PASS", "evidence": ["checks::AC6", "go::TestSettingsRegistrarEndpoints", "web-targeted::filtrosUrl.test.ts"] },
+    "AC7": { "verdict": "PASS", "evidence": ["checks::AC7", "checks::AC7-redondeo-local", "web-targeted::settingsFallback.test.ts"] },
+    "AC8": { "verdict": "PASS", "evidence": ["checks::AC8"] },
+    "AC9": { "verdict": "PASS", "evidence": ["checks::AC9", "web-targeted::pagoPayload.test.ts"] },
+    "AC10": { "verdict": "PASS", "evidence": ["checks::AC10"] },
+    "AC11": { "verdict": "PASS", "evidence": ["checks::AC11", "web-targeted::subtotal.test.ts"] },
+    "AC12": { "verdict": "PASS", "evidence": ["checks::AC12", "aa-harness.json::nestedKeyboard"] },
+    "AC13": { "verdict": "PASS", "evidence": ["checks::AC13", "go::TestSplitPendienteExcluyeGeneralHTTP", "go::TestTotalesSplit"] },
+    "AC14": { "verdict": "PASS", "evidence": ["test-results/ajustes-registrar-splits/aa-harness.json", "test-results/ajustes-registrar-splits/metrics.json"] },
+    "AC15": { "verdict": "PASS", "evidence": ["commands[0]", "commands[1]"] },
+    "AC16": { "verdict": "PASS", "evidence": ["artifacts"] },
+    "AC17": { "verdict": "PASS", "evidence": ["git show --stat HEAD", "version 0.4.0 in CHANGELOG/README/web package files", "no tags"] }
+  },
+  "aa_summary": {
+    "overall": "PASS",
+    "combinations": 16,
+    "combinations_passed": 16,
+    "nested_keyboard_passed": true,
+    "hard_failures": [],
+    "focus_contrast": {
+      "threshold": 3,
+      "samples": 324,
+      "min": 3.19,
+      "max": 20.43,
+      "failures": 0
+    },
+    "touch_target_failures_mobile_and_overlays": 0,
+    "map_computation_ms_for_500_pagos": {
+      "input": "500 pagos, 1500 dias, 5 fuentes, 30 fechas",
+      "iterations": 60,
+      "median": 0.8,
+      "p95": 4.5,
+      "max": 6.7
+    },
+    "advisory_ui_boundary_contrast": {
+      "gate": false,
+      "reason": "not listed in policy §5 hard gate",
+      "combinations_with_measurements": 16
+    }
+  },
+  "advisories": [
+    {
+      "id": "A1",
+      "severity": "advisory",
+      "blocking": false,
+      "detail": "guardadoRef stays true after save (RegistrarPage.tsx:379 and :170)"
+    },
+    {
+      "id": "A2",
+      "severity": "advisory",
+      "blocking": false,
+      "detail": "preexisting RealizarTxDialog.tsx:31 fallback cuenta?.es_general ?? transaccion.cuenta_id === 3"
+    },
+    {
+      "id": "A3",
+      "severity": "advisory",
+      "blocking": false,
+      "detail": "UI component boundary contrast measured in 16 AA combinations; reported only, not a policy §5 hard gate"
+    },
+    {
+      "id": "A4",
+      "severity": "observation",
+      "blocking": false,
+      "detail": "An intermediate AA run sampled dialog geometry during Radix open animation (43.1px); harness waited 600ms for animations and final run measured 0 touch failures. No product source changed."
+    }
+  ],
+  "artifacts": [
+    { "path": "test-results/ajustes-registrar-splits/report.md", "exists": true },
+    { "path": "test-results/ajustes-registrar-splits/aa-harness.json", "exists": true },
+    { "path": "test-results/ajustes-registrar-splits/metrics.json", "exists": true },
+    { "path": "test-results/tests/ajustes-registrar-splits.json", "exists": true }
+  ],
+  "git": {
+    "head": "a6f9c81ad28ddd54e3b671fda03c5ca8a893fffd",
+    "tags": [],
+    "working_tree": "only untracked test-results/ajustes-registrar-splits/ and test-results/tests/ajustes-registrar-splits.json",
+    "commit_created": false,
+    "tag_created": false,
+    "pushed": false,
+    "product_source_modified": false,
+    "ai_runtime_state_modified": false,
+    "deployed": false
+  },
+  "coverage": {
+    "collected": false,
+    "threshold": null,
+    "note": "No coverage run or coverage threshold was applied in M7; this report states suite results only."
+  }
+}
