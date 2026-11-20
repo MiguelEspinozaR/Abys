@@ -8,7 +8,7 @@ import { useFiltrosHistorial } from "@/hooks/useFiltrosHistorial"
 import { useAniosConDatos, useCandidatosAnio } from "@/hooks/useHistorial"
 import { formatBs } from "@/lib/format"
 import { useCuentas, useFuentes, useSplits } from "@/services/hooks"
-import type { Cuenta } from "@/services/types"
+import type { Cuenta, Transaccion } from "@/services/types"
 import { CuentaDetalleDialog } from "./CuentaDetalleDialog"
 import { SplitFila } from "./SplitFila"
 
@@ -63,10 +63,24 @@ export default function SplitsPage() {
 
   const splitsPorPago = new Map((splits ?? []).map((s) => [s.pago_id, s]))
 
+  // La cuenta General se identifica por su bandera, nunca por un id fijo (R7.1).
+  const idsGeneral = new Set((cuentas ?? []).filter((c) => c.es_general).map((c) => c.id))
+
+  // Pendientes reales por cuenta, reutilizando los splits ya cargados (sin nuevas llamadas).
+  const pendientesPorCuenta = new Map<number, Transaccion[]>()
+  for (const c of cuentas ?? []) {
+    pendientesPorCuenta.set(
+      c.id,
+      (splits ?? []).flatMap((s) =>
+        s.transacciones.filter((tx) => tx.cuenta_id === c.id && !tx.realizado),
+      ),
+    )
+  }
+
   const pendientePorCuenta = new Map<number, number>()
   for (const s of splits ?? []) {
     for (const tx of s.transacciones) {
-      if (!tx.realizado) {
+      if (!tx.realizado && !idsGeneral.has(tx.cuenta_id)) {
         pendientePorCuenta.set(
           tx.cuenta_id,
           (pendientePorCuenta.get(tx.cuenta_id) ?? 0) + tx.monto_enteros,
@@ -103,6 +117,7 @@ export default function SplitsPage() {
       <PendientePorCuentaCard
         cuentas={cuentas ?? []}
         pendientePorCuenta={pendientePorCuenta}
+        pendientesPorCuenta={pendientesPorCuenta}
         pendienteTotal={pendienteTotal}
       />
 
@@ -146,10 +161,12 @@ export default function SplitsPage() {
 function PendientePorCuentaCard({
   cuentas,
   pendientePorCuenta,
+  pendientesPorCuenta,
   pendienteTotal,
 }: {
   cuentas: Cuenta[]
   pendientePorCuenta: Map<number, number>
+  pendientesPorCuenta: Map<number, Transaccion[]>
   pendienteTotal: number
 }) {
   return (
@@ -158,7 +175,8 @@ function PendientePorCuentaCard({
         <CardTitle className="text-sm font-medium">Pendiente por cuenta</CardTitle>
         <CardDescription>
           Total por transferir agrupado por cuenta de destino. Usa "Ver datos" para el QR y el
-          número de cuenta.
+          número de cuenta. La cuenta General (· reserva) aparece solo a modo informativo: su
+          monto no entra en el Total pendiente.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -187,7 +205,11 @@ function PendientePorCuentaCard({
                 </div>
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-semibold tabular-nums">{formatBs(pendiente)}</p>
-                  <CuentaDetalleDialog cuenta={c} pendiente={pendiente}>
+                  <CuentaDetalleDialog
+                    cuenta={c}
+                    pendiente={pendiente}
+                    transacciones={pendientesPorCuenta.get(c.id) ?? []}
+                  >
                     <Button size="sm" variant="outline">
                       Ver datos
                     </Button>
