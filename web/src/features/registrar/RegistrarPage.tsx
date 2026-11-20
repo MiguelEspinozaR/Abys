@@ -30,6 +30,7 @@ import {
 } from "@/services/hooks"
 import { ApiRequestError } from "@/services/api"
 import { ERRORES_API_REGISTRAR, resolverErrorApi } from "@/lib/api-errors"
+import { construirFuentesPorDia } from "@/lib/fuentesDots"
 import { construirDiasPayload } from "@/lib/pagoPayload"
 import {
   normalizarModoRedondeo,
@@ -112,15 +113,19 @@ export default function RegistrarPage() {
 
   // Pagos ya guardados: solo como referencia visual en el calendario.
   const { data: pagosGuardados } = usePagos({ page_size: 500 })
-  const { yaTrabajados, yaFechasPago } = useMemo(() => {
-    const yaTrabajados = new Set<string>()
-    const yaFechasPago = new Set<string>()
+  const yaFechasPago = useMemo(() => {
+    const fechas = new Set<string>()
     for (const p of pagosGuardados?.data ?? []) {
-      if (p.fecha_pago) yaFechasPago.add(p.fecha_pago)
-      for (const d of p.dias_trabajados ?? []) yaTrabajados.add(d.fecha)
+      if (p.fecha_pago) fechas.add(p.fecha_pago)
     }
-    return { yaTrabajados, yaFechasPago }
+    return fechas
   }, [pagosGuardados])
+
+  /** Puntos por fuente del calendario: mapa puro sobre pagos + fuentes (R2.6). */
+  const fuentesPorDia = useMemo(
+    () => construirFuentesPorDia(pagosGuardados?.data ?? [], fuentes ?? []),
+    [pagosGuardados, fuentes],
+  )
 
   const [herramienta, setHerramienta] = useState<Herramienta>("trabajo")
   const [diasTrabajados, setDiasTrabajados] = useState<Set<string>>(new Set())
@@ -542,8 +547,8 @@ export default function RegistrarPage() {
                   errorId="registrar-dias-error"
                   diasTrabajados={diasTrabajados}
                   fechaPago={fechaPago}
-                  yaTrabajados={yaTrabajados}
                   yaFechasPago={yaFechasPago}
+                  fuentesPorDia={fuentesPorDia}
                   herramienta={herramienta}
                   setHerramienta={setHerramienta}
                   onMarcarDia={marcarDia}
