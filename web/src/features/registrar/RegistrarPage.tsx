@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { FormEvent } from "react"
-import { useBlocker, useNavigate } from "react-router-dom"
+import { useBlocker } from "react-router-dom"
 import { Loader2, Save } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -20,9 +20,22 @@ import { ErrorSummary } from "@/components/form/ErrorSummary"
 import { ConfirmarDescarteDialog } from "@/components/form/ConfirmarDescarteDialog"
 import { useFormErrors } from "@/hooks/useFormErrors"
 import { useFormDirty } from "@/hooks/useFormDirty"
-import { useCrearPago, useFuentes, usePagos, useSubirComprobante } from "@/services/hooks"
+import {
+  useCrearPago,
+  useFuentes,
+  usePagos,
+  useRegistrarSettings,
+  useSplitSettings,
+  useSubirComprobante,
+} from "@/services/hooks"
 import { ApiRequestError } from "@/services/api"
 import { ERRORES_API_REGISTRAR, resolverErrorApi } from "@/lib/api-errors"
+import { construirDiasPayload } from "@/lib/pagoPayload"
+import {
+  normalizarModoRedondeo,
+  normalizarRegistrarSettings,
+} from "@/lib/settingsFallback"
+import { useUiStore } from "@/store/uiStore"
 import { bsToCents, formatBs, formatearFechaEs, METODOS_PAGO, toISODate } from "@/lib/format"
 import {
   MAX_NOTAS,
@@ -33,7 +46,7 @@ import {
   validarMonto,
   validarNotas,
 } from "@/lib/validators"
-import type { DiaTrabajadoInput, MetodoPago } from "@/services/types"
+import type { MetodoPago, ModoRegistro } from "@/services/types"
 import {
   distribuir,
   MODOS_DISTRIBUCION,
@@ -44,9 +57,6 @@ import { ComprobanteDropzone } from "./ComprobanteDropzone"
 
 /** Campos con reglas de validación en /registrar (R2). */
 type Campo = "dias" | "fecha" | "fuente" | "metodo" | "monto" | "notas"
-
-/** Modo de carga de montos: por día o total a distribuir (R4.1/R4.2). */
-type ModoRegistro = "detallado" | "distribuido"
 
 /** id del control (o fieldset) de cada campo, para foco programático (R2.5). */
 const IDS_Campos: Record<Campo, string> = {
@@ -71,10 +81,34 @@ const Obligatorio = () => (
 )
 
 export default function RegistrarPage() {
-  const navigate = useNavigate()
   const { data: fuentes, isLoading: fuentesLoading } = useFuentes()
   const crearPago = useCrearPago()
   const subirComprobante = useSubirComprobante()
+
+  // Defaults resueltos por los hooks (backend si responde, abys-ui si falla).
+  const { data: registrarSettings } = useRegistrarSettings()
+  const { data: splitSettings } = useSplitSettings()
+
+  /**
+   * Init síncrono desde el store persistido (AC8): evita el flash de los
+   * hardcodeados y que el guard de cambios arranque sucio. Normalizamos también
+   * el local para tolerar un localStorage corrupto.
+   */
+  const [defaultsIniciales] = useState(() => {
+    const s = useUiStore.getState()
+    const registrar = normalizarRegistrarSettings(
+      {
+        metodo_default: s.registrarMetodoDefault,
+        modo_default: s.registrarModoDefault,
+      },
+      { metodo_default: "efectivo", modo_default: "detallado" },
+    )
+    return {
+      metodo: registrar.metodo_default,
+      modoRegistro: registrar.modo_default,
+      modoRedondeo: normalizarModoRedondeo(s.splitModoDefault, "preciso"),
+    }
+  })
 
   // Pagos ya guardados: solo como referencia visual en el calendario.
   const { data: pagosGuardados } = usePagos({ page_size: 500 })
@@ -90,13 +124,15 @@ export default function RegistrarPage() {
 
   const [herramienta, setHerramienta] = useState<Herramienta>("trabajo")
   const [diasTrabajados, setDiasTrabajados] = useState<Set<string>>(new Set())
-  const [modoRegistro, setModoRegistro] = useState<ModoRegistro>("detallado")
+  const [modoRegistro, setModoRegistro] = useState<ModoRegistro>(defaultsIniciales.modoRegistro)
   const [montosDia, setMontosDia] = useState<Record<string, string>>({})
   const [totalDistribuidoStr, setTotalDistribuidoStr] = useState("")
-  const [modoRedondeo, setModoRedondeo] = useState<ModoDistribucion>("preciso")
+  const [modoRedondeo, setModoRedondeo] = useState<ModoDistribucion>(
+    defaultsIniciales.modoRedondeo,
+  )
   const [fechaPago, setFechaPago] = useState<string>(toISODate(new Date()))
   const [fuenteId, setFuenteId] = useState<string>("")
-  const [metodo, setMetodo] = useState<MetodoPago>("efectivo")
+  const [metodo, setMetodo] = useState<MetodoPago>(defaultsIniciales.metodo)
   const [notas, setNotas] = useState("")
   const [comprobante, setComprobante] = useState<File | null>(null)
   const [comprobanteError, setComprobanteError] = useState<string | null>(null)
@@ -127,6 +163,46 @@ export default function RegistrarPage() {
   const sucioRef = useRef(sucio)
   sucioRef.current = sucio
   const guardadoRef = useRef(false)
+
+  /** Valores ganadores: backend si respondió; local de `abys-ui` en caso de fallo. */
+  const defaultsResueltos = useMemo(() => {
+    const registrar = normalizarRegistrarSettings(registrarSettings, {
+      metodo_default: defaultsIniciales.metodo,
+      modo_default: defaultsIniciales.modoRegistro,
+    })
+    return {
+      metodo: registrar.metodo_default,
+      modoRegistro: registrar.modo_default,
+      modoRedondeo: normalizarModoRedondeo(
+        splitSettings?.modo_default,
+        defaultsIniciales.modoRedondeo,
+      ),
+    }
+  }, [registrarSettings, splitSettings, defaultsIniciales])
+
+  /**
+   * Aplica una sola vez los defaults ya resueltos y re-baselinea la guardia con
+   * el snapshot resultante. Espera a que ambas queries terminen para que el
+   * valor del backend gane, y se abstiene si el usuario ya editó algo (D5:
+   * `#modo-redondeo` sigue siendo editable y nunca se sobrescribe).
+   */
+  const defaultsAplicadosRef = useRef(false)
+  useEffect(() => {
+    if (defaultsAplicadosRef.current) return
+    if (!registrarSettings || !splitSettings) return
+    defaultsAplicadosRef.current = true
+    if (sucioRef.current) return
+    setMetodo(defaultsResueltos.metodo)
+    setModoRegistro(defaultsResueltos.modoRegistro)
+    setModoRedondeo(defaultsResueltos.modoRedondeo)
+    resetear({
+      ...snapshot,
+      metodo: defaultsResueltos.metodo,
+      modoRegistro: defaultsResueltos.modoRegistro,
+      modoRedondeo: defaultsResueltos.modoRedondeo,
+    })
+  }, [registrarSettings, splitSettings, defaultsResueltos, resetear, snapshot])
+
   const debeBloquear = useCallback(
     () => sucioRef.current && !guardadoRef.current,
     [],
@@ -153,23 +229,18 @@ export default function RegistrarPage() {
     0,
   )
 
-  /** Días con su monto: en distribuido se calcula con `lib/distribuir.ts`. */
-  const diasPayload = useMemo<DiaTrabajadoInput[]>(() => {
-    if (modoRegistro === "distribuido") {
-      if (montosDistribuidos.length !== diasOrdenados.length) return []
-      return diasOrdenados.map((fecha, i) => ({
-        fecha,
-        monto_enteros: montosDistribuidos[i],
-      }))
-    }
-    const out: DiaTrabajadoInput[] = []
-    for (let i = 0; i < diasOrdenados.length; i++) {
-      const cents = montosDetallados[i]
-      if (cents == null) return []
-      out.push({ fecha: diasOrdenados[i], monto_enteros: cents })
-    }
-    return out
-  }, [modoRegistro, diasOrdenados, montosDistribuidos, montosDetallados])
+  /** Días con su monto: helper puro, sin campo de modo (R4.3/AC9). */
+  const diasPayload = useMemo(
+    () =>
+      construirDiasPayload({
+        modoRegistro,
+        diasOrdenados,
+        montosDetallados,
+        totalDistribuidoCents,
+        modoRedondeo,
+      }),
+    [modoRegistro, diasOrdenados, montosDetallados, totalDistribuidoCents, modoRedondeo],
+  )
 
   const totalCents = useMemo(
     () => diasPayload.reduce((acc, d) => acc + d.monto_enteros, 0),
@@ -294,16 +365,47 @@ export default function RegistrarPage() {
     return "No se pudo subir el comprobante. Inténtalo de nuevo."
   }
 
-  /** Limpia la guardia y navega; el pago ya está guardado (R4.6/D16). */
-  const finalizarGuardado = () => {
+  /**
+   * Limpieza completa del formulario sin salir de /registrar (R1.1/R1.2/D1).
+   * El snapshot explícito re-baselinea la guardia con el estado ya vacío: un
+   * `resetear()` sin argumento tomaría el snapshot del último render (lleno).
+   */
+  const limpiarFormulario = () => {
     guardadoRef.current = true
-    resetear()
+    const fechaPagoLimpia = toISODate(new Date())
+    resetear({
+      dias: [],
+      fechaPago: fechaPagoLimpia,
+      fuenteId: "",
+      metodo: defaultsResueltos.metodo,
+      modoRegistro: defaultsResueltos.modoRegistro,
+      montosDia: {},
+      totalDistribuidoStr: "",
+      modoRedondeo: defaultsResueltos.modoRedondeo,
+      notas: "",
+      comprobante: "",
+    })
     validacion.limpiar()
+    setDiasTrabajados(new Set())
+    setMontosDia({})
+    setFuenteId("")
+    setNotas("")
+    setComprobante(null)
+    setComprobanteError(null)
+    setTotalDistribuidoStr("")
+    setHerramienta("trabajo")
+    setFechaPago(fechaPagoLimpia)
     pagoIdRef.current = null
     setPagoGuardado(false)
-    setComprobanteError(null)
     enviandoRef.current = false
-    navigate("/ingresos")
+    setMetodo(defaultsResueltos.metodo)
+    setModoRegistro(defaultsResueltos.modoRegistro)
+    setModoRedondeo(defaultsResueltos.modoRedondeo)
+  }
+
+  /** El pago ya está guardado: se limpia y se permanece en la misma vista. */
+  const finalizarGuardado = () => {
+    limpiarFormulario()
   }
 
   /** Sube solo el comprobante del pago ya creado; nunca reenvía el pago (D16). */
@@ -384,16 +486,12 @@ export default function RegistrarPage() {
     if (subido) finalizarGuardado()
   }
 
-  /** Salida explícita tras un fallo de comprobante: no bloquea por cambios (D16). */
-  const irAIngresos = () => {
-    guardadoRef.current = true
-    resetear()
-    validacion.limpiar()
-    pagoIdRef.current = null
-    setPagoGuardado(false)
-    setComprobanteError(null)
-    enviandoRef.current = false
-    navigate("/ingresos")
+  /**
+   * Salida de la ruta de fallo de comprobante (R1.3/D16): misma vista, sin
+   * navegación a /ingresos y con el formulario listo para otro pago.
+   */
+  const volverARegistrar = () => {
+    limpiarFormulario()
   }
 
   const enviando = crearPago.isPending || subirComprobante.isPending
@@ -792,7 +890,7 @@ export default function RegistrarPage() {
                   errorSubida={comprobanteError}
                 />
                 {/* Con el pago creado solo quedan estas salidas: reintentar el
-                    comprobante (nunca re-POST /pagos) o ir a ingresos (D16). */}
+                    comprobante (nunca re-POST /pagos) o volver a registrar (D16). */}
                 {pagoGuardado && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Button
@@ -807,8 +905,13 @@ export default function RegistrarPage() {
                       ) : null}
                       Reintentar comprobante
                     </Button>
-                    <Button type="button" size="sm" variant="outline" onClick={irAIngresos}>
-                      Ir a ingresos
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={volverARegistrar}
+                    >
+                      Volver a registrar
                     </Button>
                   </div>
                 )}

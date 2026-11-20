@@ -50,6 +50,15 @@ export interface Cuenta {
 
 export type MetodoPago = "efectivo" | "qr" | "transaccion"
 
+/** Modo de carga de montos en /registrar (R3.1/R4.2). */
+export type ModoRegistro = "detallado" | "distribuido"
+
+/** Defaults globales de registro (GET/PUT /settings/registrar). */
+export interface RegistrarSettings {
+  metodo_default: MetodoPago
+  modo_default: ModoRegistro
+}
+
 export interface DiaTrabajado {
   id: number
   pago_id: number

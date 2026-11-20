@@ -1,6 +1,11 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { sincronizarThemeColor } from "@/lib/themeColor"
+import type {
+  MetodoPago,
+  ModoRegistro,
+  SplitSettings,
+} from "@/services/types"
 
 export type Tema = "light" | "dark"
 
@@ -13,6 +18,14 @@ interface UiState {
   tema: Tema
   setTema: (t: Tema) => void
   toggleTema: () => void
+  /** Defaults de /registrar replicados desde el backend (D4); fallback local. */
+  registrarMetodoDefault: MetodoPago
+  setRegistrarMetodoDefault: (v: MetodoPago) => void
+  registrarModoDefault: ModoRegistro
+  setRegistrarModoDefault: (v: ModoRegistro) => void
+  /** Modo por defecto de splits: inicializa el redondeo en /registrar (D5). */
+  splitModoDefault: SplitSettings["modo_default"]
+  setSplitModoDefault: (v: SplitSettings["modo_default"]) => void
 }
 
 function aplicarTema(tema: Tema) {
@@ -40,10 +53,23 @@ export const useUiStore = create<UiState>()(
         aplicarTema(nuevo)
         set({ tema: nuevo })
       },
+
+      registrarMetodoDefault: "efectivo",
+      setRegistrarMetodoDefault: (v) => set({ registrarMetodoDefault: v }),
+      registrarModoDefault: "detallado",
+      setRegistrarModoDefault: (v) => set({ registrarModoDefault: v }),
+      splitModoDefault: "preciso",
+      setSplitModoDefault: (v) => set({ splitModoDefault: v }),
     }),
     {
       name: "abys-ui",
-      partialize: (s) => ({ sidebarColapsado: s.sidebarColapsado, tema: s.tema }),
+      partialize: (s) => ({
+        sidebarColapsado: s.sidebarColapsado,
+        tema: s.tema,
+        registrarMetodoDefault: s.registrarMetodoDefault,
+        registrarModoDefault: s.registrarModoDefault,
+        splitModoDefault: s.splitModoDefault,
+      }),
       onRehydrateStorage: () => (state) => {
         aplicarTema(state?.tema ?? "dark")
       },

@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import {
+  normalizarModoRedondeo,
+  normalizarRegistrarSettings,
+} from "@/lib/settingsFallback"
+import { useUiStore } from "@/store/uiStore"
 import { api } from "./api"
 import type {
   CambiarTasaPayload,
@@ -19,6 +24,7 @@ import type {
   Pago,
   PagoPayload,
   PagosMeta,
+  RegistrarSettings,
   Split,
   SplitSettings,
   Transaccion,
@@ -34,6 +40,7 @@ export const queryKeys = {
   split: (pagoId: number) => ["split", pagoId] as const,
   splits: ["splits"] as const,
   splitSettings: ["settings", "split"] as const,
+  registrarSettings: ["settings", "registrar"] as const,
   summary: ["dashboard", "summary"] as const,
   history: ["dashboard", "history"] as const,
   weekly: (fecha: string) => ["dashboard", "weekly", fecha] as const,
@@ -161,10 +168,57 @@ export function useSplits() {
   })
 }
 
+/**
+ * Settings con fallback local (D4). Precedencia: **backend manda si responde**;
+ * el valor de `abys-ui` se usa solo si la petición falla (5xx, red caída o
+ * `NETWORK_ERROR`) o si el cuerpo es inválido. Por eso el `queryFn` atrapa el
+ * error y devuelve el local en vez de propagarlo como `isError` (AC7).
+ * La respuesta válida se replica al store persistido para la próxima sesión.
+ */
+export function useRegistrarSettings() {
+  return useQuery({
+    queryKey: queryKeys.registrarSettings,
+    queryFn: async (): Promise<RegistrarSettings> => {
+      const state = useUiStore.getState()
+      const local: RegistrarSettings = {
+        metodo_default: state.registrarMetodoDefault,
+        modo_default: state.registrarModoDefault,
+      }
+      try {
+        const crudo = await api.get<RegistrarSettings>("/settings/registrar")
+        const valor = normalizarRegistrarSettings(crudo, local)
+        useUiStore.setState({
+          registrarMetodoDefault: valor.metodo_default,
+          registrarModoDefault: valor.modo_default,
+        })
+        return valor
+      } catch {
+        return local
+      }
+    },
+    staleTime: 60_000,
+  })
+}
+
+/** Mismo patrón de fallback/replicación que `useRegistrarSettings` (R4.1). */
 export function useSplitSettings() {
   return useQuery({
     queryKey: queryKeys.splitSettings,
-    queryFn: () => api.get<SplitSettings>("/settings/split"),
+    queryFn: async (): Promise<SplitSettings> => {
+      const local: SplitSettings = {
+        modo_default: useUiStore.getState().splitModoDefault,
+      }
+      try {
+        const crudo = await api.get<SplitSettings>("/settings/split")
+        const valor: SplitSettings = {
+          modo_default: normalizarModoRedondeo(crudo?.modo_default, local.modo_default),
+        }
+        useUiStore.setState({ splitModoDefault: valor.modo_default })
+        return valor
+      } catch {
+        return local
+      }
+    },
     staleTime: 60_000,
   })
 }
@@ -541,8 +595,60 @@ export function useActualizarSplitSettings() {
     mutationFn: (payload: SplitSettings) =>
       api.put<SplitSettings>("/settings/split", payload),
     onSuccess: (res) => {
+      // El valor confirmado por el backend pasa a ser el local (D4).
+      useUiStore.setState({
+        splitModoDefault: normalizarModoRedondeo(
+          res?.modo_default,
+          useUiStore.getState().splitModoDefault,
+        ),
+      })
       toast.success(`Modo por defecto: ${res.modo_default}`)
       qc.invalidateQueries({ queryKey: queryKeys.splitSettings })
+    },
+  })
+}
+
+/**
+ * Escritura optimista de los defaults de registro (R3.5): se refleja de inmediato
+ * en `abys-ui`, se envía el PUT y, si falla, se revierte al valor previo, se
+ * notifica con `toast.error` y se relanza para que el select del configurador
+ * también revierta. El éxito replica la respuesta y recarga la query.
+ */
+export function useActualizarRegistrarSettings() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (payload: RegistrarSettings) =>
+      api.put<RegistrarSettings>("/settings/registrar", payload),
+    onMutate: (payload) => {
+      const previo = {
+        registrarMetodoDefault: useUiStore.getState().registrarMetodoDefault,
+        registrarModoDefault: useUiStore.getState().registrarModoDefault,
+      }
+      useUiStore.setState({
+        registrarMetodoDefault: payload.metodo_default,
+        registrarModoDefault: payload.modo_default,
+      })
+      return previo
+    },
+    onError: (error, _payload, previo) => {
+      if (previo) useUiStore.setState(previo)
+      toast.error(
+        error.message.trim() || "No se pudieron guardar los defaults de registro.",
+      )
+      // El configurador (M4) revierte su select en el onError de este mutate.
+      throw error
+    },
+    onSuccess: (res) => {
+      const local: RegistrarSettings = {
+        metodo_default: useUiStore.getState().registrarMetodoDefault,
+        modo_default: useUiStore.getState().registrarModoDefault,
+      }
+      const valor = normalizarRegistrarSettings(res, local)
+      useUiStore.setState({
+        registrarMetodoDefault: valor.metodo_default,
+        registrarModoDefault: valor.modo_default,
+      })
+      qc.invalidateQueries({ queryKey: queryKeys.registrarSettings })
     },
   })
 }
