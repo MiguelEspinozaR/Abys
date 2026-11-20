@@ -1,8 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { SplitSquareHorizontal, WalletCards } from "lucide-react"
+import { ClipboardList, SplitSquareHorizontal, WalletCards } from "lucide-react"
 import { useTabUrl } from "@/hooks/useTabUrl"
 import { FuentesTab } from "./FuentesTab"
 import { CuentasTab } from "./CuentasTab"
+import { RegistrarTab } from "./RegistrarTab"
 import { SplitsTab } from "./SplitsTab"
 
 export default function ConfiguracionPage() {
@@ -24,6 +25,10 @@ export default function ConfiguracionPage() {
             Cuentas
           </TabsTrigger>
           <TabsTrigger value="fuentes">Fuentes</TabsTrigger>
+          <TabsTrigger value="registro">
+            <ClipboardList className="mr-1.5 size-4" aria-hidden />
+            Registro
+          </TabsTrigger>
           <TabsTrigger value="splits">
             <SplitSquareHorizontal className="mr-1.5 size-4" aria-hidden />
             Splits
@@ -34,6 +39,9 @@ export default function ConfiguracionPage() {
         </TabsContent>
         <TabsContent value="fuentes" className="mt-4">
           <FuentesTab />
+        </TabsContent>
+        <TabsContent value="registro" className="mt-4">
+          <RegistrarTab />
         </TabsContent>
         <TabsContent value="splits" className="mt-4">
           <SplitsTab />

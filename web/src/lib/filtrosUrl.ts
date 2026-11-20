@@ -16,7 +16,7 @@ import type { RangoPreset } from "./rango"
 export const RANGOS = ["ytd", "365", "anio", "custom"] as const
 
 export const TAB_DEFAULT = "cuentas" as const
-export const TABS = ["cuentas", "fuentes", "splits"] as const
+export const TABS = ["cuentas", "fuentes", "registro", "splits"] as const
 export type TabConfiguracion = (typeof TABS)[number]
 
 const METODOS = ["efectivo", "qr", "transaccion"] as const

@@ -173,19 +173,28 @@ describe("leerTab / serializarTab", () => {
 
   it("lee tabs válidos", () => {
     expect(leerTab("?tab=fuentes")).toBe("fuentes")
+    expect(leerTab("?tab=registro")).toBe("registro")
     expect(leerTab("?tab=splits")).toBe("splits")
   })
 
   it("serializa el tab canónico y degrada inválidos", () => {
     expect(serializarTab("cuentas")).toBe("tab=cuentas")
+    expect(serializarTab("registro")).toBe("tab=registro")
     expect(serializarTab("splits")).toBe("tab=splits")
     expect(serializarTab("otro")).toBe("tab=cuentas")
+    expect(serializarTab("truncado")).toBe("tab=cuentas")
+  })
+
+  it("canoniza un tab inválido al default al leer", () => {
+    expect(leerTab("?tab=otro")).toBe("cuentas")
+    expect(leerTab("?tab=truncado")).toBe("cuentas")
+    expect(leerTab("?tab=REGISTRO")).toBe("cuentas")
   })
 })
 
 describe("constantes de contrato", () => {
   it("RANGOS y TABS coinciden con la SPEC", () => {
     expect(RANGOS).toEqual(["ytd", "365", "anio", "custom"])
-    expect(TABS).toEqual(["cuentas", "fuentes", "splits"])
+    expect(TABS).toEqual(["cuentas", "fuentes", "registro", "splits"])
   })
 })
