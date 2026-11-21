@@ -6,6 +6,16 @@ y este proyecto sigue [SemVer](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+## [0.4.1] - 2026-11-20
+
+### Corregido
+- **Ver datos** en `/splits` ahora permite desplazarse por listas largas de pendientes y mantiene visibles el subtotal y el conteo de la selección mediante un pie fijo.
+
+### Añadido
+- Botón **Realizar (N)** con confirmación en dos pasos: marca como realizadas las transferencias seleccionadas reutilizando `PUT /transacciones/:id/realizar`, con notificación agregada, reintento de los ids con fallo parcial y cuenta General deshabilitada por ser informativa.
+
+> La versión 0.4.1 quedó preparada **sin tag ni release en GitHub** y sin deploy a test3 (requiere aprobación).
+
 ## [0.4.0] - 2026-11-20
 
 ### Añadido
