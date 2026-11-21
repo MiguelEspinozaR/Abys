@@ -62,7 +62,7 @@ Scripts sobre systemd; ver [`backlog/despliegue.md`](backlog/despliegue.md).
 ## Versión
 
 0.4.1 — ver [`CHANGELOG.md`](CHANGELOG.md).
-0.4.0 sigue desplegada en `test3`; 0.4.1 queda preparada sin deploy, tag ni release.
+0.4.1 desplegada a `test3` el 2026-11-20; sin tag ni release creado.
 
 ## Documentación
 

@@ -14,7 +14,7 @@ y este proyecto sigue [SemVer](https://semver.org/lang/es/).
 ### Añadido
 - Botón **Realizar (N)** con confirmación en dos pasos: marca como realizadas las transferencias seleccionadas reutilizando `PUT /transacciones/:id/realizar`, con notificación agregada, reintento de los ids con fallo parcial y cuenta General deshabilitada por ser informativa.
 
-> La versión 0.4.1 quedó preparada **sin tag ni release en GitHub** y sin deploy a test3 (requiere aprobación).
+> La versión `0.4.1` fue desplegada a `test3` el 2026-11-20 y verificada health-check (reinicio manual de `abys-backend`/`abys-frontend`, asset `index-BZ0T-5qR.js`, 21 splits con General excluida) **sin tag ni release en GitHub**.
 
 ## [0.4.0] - 2026-11-20
 
