@@ -1,0 +1,69 @@
+{
+  "task_id": "splits-ver-datos-realizar",
+  "branch": "fix/splits-ver-datos-realizar",
+  "commit_range": "194841c..759d4d9",
+  "scan_timestamp": "2026-11-20T22:08:00Z",
+  "tools": {
+    "gitleaks": {
+      "available": true,
+      "version": "1.25.1",
+      "scan_type": "git --log-opts \"194841c..759d4d9\"",
+      "findings": {
+        "total": 0,
+        "by_severity": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0,
+          "informational": 0
+        },
+        "details": [],
+        "caveats": "Scanned 2 commits from range 194841c..759d4d9; no gitleaks protect findings. Does not scan runtime secrets or production stores."
+      }
+    },
+    "semgrep": {
+      "available": false,
+      "tool_missing": true,
+      "note": "Required by security-scanning priority 2; unavailable. Scan incomplete without SAST analysis."
+    },
+    "bandit": {
+      "available": false,
+      "tool_missing": true,
+      "note": "Python SAST tool; unavailable. This project is Go/TypeScript, so bandit would not apply directly."
+    },
+    "npm_audit": {
+      "available": false,
+      "tool_missing": true,
+      "note": "npm audit not available; dependency vulnerability check incomplete."
+    },
+    "go_audit": {
+      "available": false,
+      "tool_missing": true,
+      "note": "Go dependency audit not available; incomplete."
+    }
+  },
+  "findings_summary": {
+    "secrets": {
+      "scanned_commits": 2,
+      "secrets_found": 0,
+      "files_scanned": []
+    },
+    "sast": {
+      "note": "No project-configured SAST tools available. Code review performed manually.",
+      "manual_review": {
+        "new_files_security": "New frontend files (realizarSeleccionados.ts, confirmacionRealizar.ts, hooks.ts, CuentaDetalleDialog.tsx) contain no hardcoded secrets, API keys, or production credentials. All strings are literals or props.",
+        "api_usage": "hooks.ts uses api.put() to /transacciones/:id/realizar - no passwords or secrets in URL. endpoint is existing, no new credentials.",
+        "env_file": ".env file exists at backend/.env with DB credentials but was NOT modified in this diff range."
+      }
+    },
+    "dependencies": {
+      "note": "Cannot run automated dependency audit without npm-audit or go-audit tools. New frontend modules (realizarSeleccionados, confirmacionRealizar, hooks, subtotal) are pure functions with no new external dependencies."
+    },
+    "configuration_supply_chain": {
+      "note": "No configuration or supply-chain changes in this diff. package.json and package-lock.json version bump from 0.4.0 to 0.4.1 is a version patch, not a dependency change."
+    }
+  },
+  "overall_assessment": "scan_dirty",
+  "scan_status": "complete_partial",
+  "notes": "Gitleaks found no exposed secrets in commits 194841c..759d4d9. Project-configured SAST tools (semgrep, bandit) unavailable per check - recorded as tool_missing. Dependency audit incomplete without npm-audit/go-audit. Manual code review of new files found no hardcoded secrets. No secret values printed per security-scanning rules. Version bump 0.4.0->0.4.1 is cosmetic only, no new dependency risk."
+}
