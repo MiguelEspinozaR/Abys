@@ -25,7 +25,7 @@ y este proyecto sigue [SemVer](https://semver.org/lang/es/).
 
 - **General excluida de los pendientes:** `SplitsPage` y `splitJSON().total_pendiente` ya no suman las transacciones de la cuenta General (reserva); se resuelve por `es_general` / `cuenta_repo.GetGeneral`, sin id fijo, sin cambio de esquema y sin reescribir transacciones históricas. La fila de General sigue visible con valor informativo.
 
-> La versión `0.4.0` se prepara **sin tag ni release en GitHub**.
+> La versión `0.4.0` fue desplegada a `test3` el 2026-11-20 y verificada health-check (migración `000007`, defaults `/settings/registrar`, exclusión General verificada en 21 splits) **sin tag ni release en GitHub**.
 
 ## [0.3.0] - 2026-11-17
 
@@ -58,7 +58,7 @@ y este proyecto sigue [SemVer](https://semver.org/lang/es/).
 
 - Doble scroll anidado en `/dashboard` y `/registrar`: ambos usan un único scroll del documento.
 
-> La versión `0.3.0` se prepara **sin tag ni release en GitHub**; el despliegue a `test3` queda pendiente de aprobación.
+> La versión `0.3.0` fue desplegada a `test3` por reinicio manual de `abys-backend`/`abys-frontend` y verificada **sin tag ni release en GitHub**.
 
 ## [0.2.0] - 2026-11-17
 
