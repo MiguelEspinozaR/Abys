@@ -1,0 +1,69 @@
+{
+  "version": "0.4.1",
+  "source_commit": "98f45d1",
+  "restart_mode": "manual_human",
+  "deploy_result": "build_succeeded_restart_succeeded",
+  "timestamp": "2026-11-21T00:55:00-04:00",
+  "health_check_passed": true,
+  "pre_health_checks": {
+    "backend_active": true,
+    "spa_active": true,
+    "backend_url": "http://localhost:8081/api/v1/health/db",
+    "spa_url": "http://localhost:5178/",
+    "public_health": "not_verified_pre_restart",
+    "splits_total": 21,
+    "splits_general_exclusion": 12,
+    "splits_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33],
+    "backend_pid_exe": "/home/miky/Documentos/finanzasMikyGoRef/backend/server",
+    "frontend_asset_hash_previous": "CkiqbA2O"
+  },
+  "post_health_checks": {
+    "backend_active": true,
+    "spa_active": true,
+    "backend_url": "http://localhost:8081/api/v1/health/db",
+    "spa_url": "http://localhost:5178/",
+    "public_health": "https://test3.mikylab.com/health",
+    "splits_total": 21,
+    "splits_general_exclusion": 12,
+    "frontend_asset_hash": "BZ0T-5qR",
+    "frontend_asset_differs_from_previous": true,
+    "backend_pid_exe_valid": true,
+    "backend_pid_exe_path": "/home/miky/Documentos/finanzasMikyGoRef/backend/server",
+    "backend_no_deleted": true
+  },
+  "endpoint_checks": {
+    "backend_health_db": {
+      "url": "http://localhost:8081/api/v1/health/db",
+      "status": "OK",
+      "response": {"conexion":"ok","latencia_ms":0.835,"version_pg":"19.0 (Ubuntu 19.0-2.pgdg26.04+1)","tamano_db":"8695 kB","tablas":[{"nombre":"fuentes","registros":3},{"nombre":"pagos","registros":214},{"nombre":"dias_trabajados","registros":442},{"nombre":"cuentas","registros":3},{"nombre":"historial_tasas","registros":3},{"nombre":"splits","registros":21},{"nombre":"transacciones","registros":63}]}
+    },
+    "spa_root": {
+      "url": "http://localhost:5178/",
+      "status": "OK",
+      "ACTIVE": true
+    },
+    "public_health": {
+      "url": "https://test3.mikylab.com/health",
+      "status": "OK",
+      "response": {"status":"ok","time":"/api/v1/health"}
+    },
+    "settings_registrar": {
+      "url": "https://test3.mikylab.com/settings/registrar",
+      "status": "OK"
+    },
+    "splits_api": {
+      "url": "http://localhost:8081/api/v1/splits",
+      "status": "OK",
+      "total_splits": 21,
+      "general_exclusion_count": 12
+    }
+  },
+  "built_artifacts": {
+    "backend_binary": "/home/miky/Documentos/finanzasMikyGoRef/backend/server",
+    "frontend_dist": "/home/miky/Documentos/finanzasMikyGoRef/web/dist",
+    "backend_build_success": true,
+    "frontend_build_success": true
+  },
+  "rollback_required": false,
+  "notes": "All services running version 0.4.1 after manual restart. Frontend asset hash BZ0T-5qR differs from previous CkiqbA2O. 21 splits with 12 General exclusions consistent. No secrets printed."
+}
