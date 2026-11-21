@@ -1,0 +1,84 @@
+{
+  "release": "0.4.0",
+  "commit": "f70d1436bf506ab552fc1aec52ce1998cdb08bde",
+  "environment": "test3",
+  "branch": "feat/ajustes-registrar-splits",
+  "timestamp_start": "2026-11-20T00:00:00-04:00",
+  "timestamp_end": "2026-11-20T23:59:59-04:00",
+  "migration": {
+    "id": "000007_add_registrar_settings",
+    "applied": true,
+    "idempotent": true,
+    "schema_migrations": [5, 6, 7],
+    "down_not_run": true
+  },
+  "deploy_steps": {
+    "prerequisites_checked": true,
+    "backend_built": true,
+    "frontend_built": true,
+    "systemd_units_restarted": true,
+    "systemd_units_restarted_note": "manual_por_humano",
+    "health_checks_passed": true
+  },
+  "health_checks": {
+    "backend_service": {
+      "status": "pass",
+      "url": "systemd:abys-backend",
+      "response": "active, MainPID 4078786, User miky, Restart=always; executable /home/miky/Documentos/finanzasMikyGoRef/backend/server (no (deleted))"
+    },
+    "frontend_service": {
+      "status": "pass",
+      "url": "systemd:abys-frontend",
+      "response": "active, MainPID 4078797"
+    },
+    "health_db": {
+      "status": "pass",
+      "url": "http://localhost:8081/api/v1/health/db",
+      "response": "{\"data\":{\"conexion\":\"ok\",\"latencia_ms\":0.385,\"version_pg\":\"19.0 ...\",\"tamano_db\":\"8695 kB\",...},\"status\":\"ok\"}"
+    },
+    "spa_load": {
+      "status": "pass",
+      "url": "http://localhost:5178/",
+      "response": "HTTP 200, asset index-CkiqbA2O.js (matches fresh build)"
+    },
+    "registrar_settings": {
+      "status": "pass",
+      "url": "http://localhost:8081/api/v1/settings/registrar",
+      "response": "{\"data\":{\"metodo_default\":\"efectivo\",\"modo_default\":\"detallado\"}}"
+    },
+    "dashboard_summary": {
+      "status": "pass",
+      "url": "http://localhost:8081/api/v1/dashboard/summary",
+      "response": "{\"data\":{\"total_30d_centavos\":309550,\"total_historico_centavos\":12460699}}"
+    },
+    "public_health_test3": {
+      "status": "pass",
+      "url": "https://test3.mikylab.com/health",
+      "response": "{\"status\":\"ok\",\"time\":\"/api/v1/health\"}"
+    },
+    "splits_verification": {
+      "status": "pass",
+      "description": "GET /api/v1/splits: 21 splits; for every split total_pendiente equals the sum of !realizado transactions excluding the account with es_general=true (id 3); 0 discrepancies; 21 General transactions remain visible in transacciones with their amounts"
+    }
+  },
+  "deployed_version": {
+    "backend": "abys-server (go build)",
+    "frontend": "Vite build (React 19 + TypeScript)",
+    "commit": "f70d143 (feat/ajustes-registrar-splits branch)"
+  },
+  "rollback": {
+    "note": "last healthy 0.3.0 at 5760312; do NOT run down migration",
+    "reference_commit": "5760312",
+    "down_migration_not_run": true
+  },
+  "git_mutations": {
+    "committed": false,
+    "tagged": false,
+    "pushed": false,
+    "note": "No Git history mutations performed. Only read-only inspection."
+  },
+  "evidence": {
+    "deployment_report": "test-results/deployments/ajustes-registrar-splits.json",
+    "note": "Structured deployment evidence recorded for ajustes-registrar-splits release 0.4.0"
+  }
+}
