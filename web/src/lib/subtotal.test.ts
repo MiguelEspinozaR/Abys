@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { formatBs } from "./format"
 import type { Transaccion } from "@/services/types"
 import { sumaMontosSeleccionados } from "./subtotal"
 
@@ -49,5 +50,14 @@ describe("sumaMontosSeleccionados", () => {
 
   it("ignora ids seleccionados que no están en la lista", () => {
     expect(sumaMontosSeleccionados([tx(1, 500)], new Set([1, 999]))).toBe(500)
+  })
+
+  it("suma 30 filas seleccionadas con formato es-BO (AC4)", () => {
+    const txs = Array.from({ length: 30 }, (_, indice) => tx(indice + 1, (indice + 1) * 100))
+    const total = sumaMontosSeleccionados(txs, new Set(txs.map((fila) => fila.id)))
+
+    expect(txs).toHaveLength(30)
+    expect(total).toBe(46500)
+    expect(formatBs(total)).toBe("465,00 Bs")
   })
 })

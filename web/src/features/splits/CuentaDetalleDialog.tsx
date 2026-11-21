@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { ImageOff, X } from "lucide-react"
+import { ImageOff, Loader2, X } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -9,12 +9,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { assetUrl } from "@/services/api"
 import { formatBs, formatTasaBps } from "@/lib/format"
 import { sumaMontosSeleccionados } from "@/lib/subtotal"
+import { useMarcarRealizadas } from "@/services/hooks"
+import {
+  idsParaReintento,
+  puedeRealizar,
+  textoConfirmacion,
+} from "./confirmacionRealizar"
 import type { Cuenta, Transaccion } from "@/services/types"
+
+type Paso = "seleccion" | "confirmar"
 
 interface Props {
   cuenta: Cuenta
@@ -22,6 +31,13 @@ interface Props {
   transacciones: Transaccion[]
   children: React.ReactNode
 }
+
+const AYUDA_GENERAL =
+  "La cuenta General es informativa (reserva de redondeo): no se pueden marcar transferencias desde aquí."
+
+/** Evita el `opacity-50` global del botón deshabilitado (contraste AA §5). */
+const DESHABILITADO_LEGIBLE =
+  "disabled:opacity-100 disabled:bg-muted disabled:text-muted-foreground"
 
 function fechaEs(iso: string): string {
   const fecha = new Date(iso)
@@ -32,38 +48,73 @@ function fechaEs(iso: string): string {
 export function CuentaDetalleDialog({ cuenta, pendiente, transacciones, children }: Props) {
   const qrUrl = assetUrl(cuenta.qr_ruta)
   const titulo = cuenta.es_general ? `${cuenta.alias} · reserva` : cuenta.alias
+  const ayudaGeneralId = `ayuda-general-${cuenta.id}`
 
   const [abierto, setAbierto] = useState(false)
   const [seleccionadas, setSeleccionadas] = useState<ReadonlySet<number>>(() => new Set())
   const [zoom, setZoom] = useState(false)
+  const [paso, setPaso] = useState<Paso>("seleccion")
+  const [mensaje, setMensaje] = useState<string | null>(null)
+  const marcar = useMarcarRealizadas()
+
   const botonQrRef = useRef<HTMLButtonElement>(null)
   const cerrarZoomRef = useRef<HTMLButtonElement>(null)
+  const botonRealizarRef = useRef<HTMLButtonElement>(null)
+  const botonConfirmarRef = useRef<HTMLButtonElement>(null)
+  const enfocarRealizarRef = useRef(false)
 
-  // D6: cada apertura empieza sin filas marcadas y sin lightbox.
+  // D6: cada apertura empieza sin filas marcadas, sin lightbox y en el paso inicial.
   const alCambiarApertura = (siguiente: boolean) => {
     setAbierto(siguiente)
     setSeleccionadas(new Set())
     setZoom(false)
+    setPaso("seleccion")
+    setMensaje(null)
+    enfocarRealizarRef.current = false
   }
+
+  // Un único listener en captura con prioridad: lightbox → confirmación → Radix.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return
+      if (zoom) {
+        event.preventDefault()
+        event.stopPropagation()
+        setZoom(false)
+        return
+      }
+      if (paso === "confirmar") {
+        event.preventDefault()
+        event.stopPropagation()
+        // Pendiente: se absorbe Escape para no cerrar ni reenviar a mitad del PUT.
+        if (!marcar.isPending) setPaso("seleccion")
+      }
+    }
+    window.addEventListener("keydown", onKey, true)
+    return () => window.removeEventListener("keydown", onKey, true)
+  }, [zoom, paso, marcar.isPending])
 
   useEffect(() => {
     if (!zoom) return
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return
-      // Captura en window: cierra el lightbox antes de que Radix cierre el Dialog.
-      event.preventDefault()
-      event.stopPropagation()
-      setZoom(false)
-    }
-    window.addEventListener("keydown", onKey, true)
     cerrarZoomRef.current?.focus()
     return () => {
-      window.removeEventListener("keydown", onKey, true)
       botonQrRef.current?.focus()
     }
   }, [zoom])
 
+  // Foco de la confirmación inline: al Confirmar al entrar, al Realizar al volver.
+  useEffect(() => {
+    if (zoom) return
+    if (paso === "confirmar") {
+      botonConfirmarRef.current?.focus()
+    } else if (enfocarRealizarRef.current) {
+      enfocarRealizarRef.current = false
+      botonRealizarRef.current?.focus()
+    }
+  }, [paso, zoom])
+
   const subtotal = sumaMontosSeleccionados(transacciones, seleccionadas)
+  const habilitado = puedeRealizar(cuenta, seleccionadas)
 
   const alternar = (id: number, marcado: boolean) => {
     setSeleccionadas((anterior) => {
@@ -74,10 +125,49 @@ export function CuentaDetalleDialog({ cuenta, pendiente, transacciones, children
     })
   }
 
+  const irAConfirmar = () => {
+    setZoom(false)
+    setMensaje(null)
+    setPaso("confirmar")
+  }
+
+  const volver = () => {
+    setMensaje(null)
+    enfocarRealizarRef.current = true
+    setPaso("seleccion")
+  }
+
+  const confirmar = async () => {
+    const ids = Array.from(seleccionadas)
+    setMensaje(null)
+    try {
+      const resultado = await marcar.mutateAsync(ids)
+      if (resultado.fallidos.length === 0) {
+        alCambiarApertura(false)
+        return
+      }
+      // El endpoint es idempotente: solo se reenvían los ids que fallaron.
+      setSeleccionadas(new Set(idsParaReintento(resultado)))
+      setPaso("confirmar")
+      setMensaje(
+        `No se pudieron marcar: ${resultado.fallidos
+          .map((fallido) => `#${fallido.id}`)
+          .join(", ")}. Vuelve a confirmar para reintentar.`,
+      )
+    } catch (error) {
+      setMensaje(
+        `No se pudo completar la operación: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
+  }
+
   return (
     <Dialog open={abierto} onOpenChange={alCambiarApertura}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent showCloseButton={!zoom}>
+      <DialogContent
+        showCloseButton={!zoom}
+        className="max-h-[90dvh] overflow-y-auto overscroll-contain"
+      >
         <DialogHeader>
           <DialogTitle>{titulo}</DialogTitle>
           <DialogDescription>
@@ -116,7 +206,7 @@ export function CuentaDetalleDialog({ cuenta, pendiente, transacciones, children
                 type="button"
                 onClick={() => setZoom(true)}
                 aria-label={`Ampliar QR de la cuenta ${cuenta.alias}`}
-                className="flex max-md:min-h-11 max-md:min-w-11 items-center justify-center rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="flex max-md:min-h-11 max-md:min-w-11 items-center justify-center rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background max-md:focus-visible:ring-3 motion-reduce:transition-none"
               >
                 <img
                   src={qrUrl}
@@ -175,16 +265,82 @@ export function CuentaDetalleDialog({ cuenta, pendiente, transacciones, children
                 })}
               </ul>
             )}
-            {transacciones.length > 0 && (
-              <div className="flex items-center justify-between border-t pt-3 text-sm">
-                <span className="text-muted-foreground">Subtotal seleccionado</span>
-                <span className="font-semibold tabular-nums" aria-live="polite">
-                  {formatBs(subtotal)}
-                </span>
-              </div>
-            )}
           </section>
         </div>
+
+        <footer
+          className="sticky bottom-0 z-10 -mx-4 -mb-4 mt-auto border-t bg-popover px-4 py-3"
+          inert={zoom}
+          aria-busy={marcar.isPending}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-sm">
+            <div className="flex items-baseline gap-2" aria-live="polite">
+              <span className="text-muted-foreground">{seleccionadas.size} seleccionadas</span>
+              <span className="font-semibold tabular-nums">{formatBs(subtotal)}</span>
+            </div>
+
+            {paso === "seleccion" ? (
+              <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+                {cuenta.es_general && (
+                  <p id={ayudaGeneralId} className="w-full text-xs text-muted-foreground">
+                    {AYUDA_GENERAL}
+                  </p>
+                )}
+                <Button
+                  variant="outline"
+                  className={`max-md:min-w-11 ${DESHABILITADO_LEGIBLE}`}
+                  onClick={() => alCambiarApertura(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  ref={botonRealizarRef}
+                  className={`max-md:min-w-11 ${DESHABILITADO_LEGIBLE}`}
+                  onClick={irAConfirmar}
+                  disabled={!habilitado}
+                  aria-label={`Realizar ${seleccionadas.size} transferencias seleccionadas`}
+                  aria-describedby={cuenta.es_general ? ayudaGeneralId : undefined}
+                >
+                  Realizar ({seleccionadas.size})
+                </Button>
+              </div>
+            ) : (
+              <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+                <p className="w-full text-xs text-muted-foreground">
+                  {textoConfirmacion(seleccionadas.size, subtotal)}
+                </p>
+                <Button
+                  variant="outline"
+                  className={`max-md:min-w-11 ${DESHABILITADO_LEGIBLE}`}
+                  onClick={volver}
+                  disabled={marcar.isPending}
+                >
+                  Volver
+                </Button>
+                <Button
+                  ref={botonConfirmarRef}
+                  className={`max-md:min-w-11 ${DESHABILITADO_LEGIBLE}`}
+                  onClick={confirmar}
+                  disabled={marcar.isPending}
+                >
+                  {marcar.isPending && (
+                    <Loader2
+                      className="mr-2 size-4 animate-spin motion-reduce:animate-none"
+                      aria-hidden
+                    />
+                  )}
+                  Confirmar
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {mensaje && (
+            <p role="status" aria-live="polite" className="mt-2 text-xs text-muted-foreground">
+              {mensaje}
+            </p>
+          )}
+        </footer>
 
         {zoom && qrUrl && (
           <div

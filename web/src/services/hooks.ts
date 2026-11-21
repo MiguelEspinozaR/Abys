@@ -5,6 +5,7 @@ import {
   normalizarRegistrarSettings,
 } from "@/lib/settingsFallback"
 import { useUiStore } from "@/store/uiStore"
+import { realizarSeleccionados } from "@/features/splits/realizarSeleccionados"
 import { api } from "./api"
 import type {
   CambiarTasaPayload,
@@ -424,6 +425,35 @@ export function useMarcarRealizada() {
       invalidarHistorial(qc)
     },
     onError: (e: Error) => toast.error(e.message),
+  })
+}
+
+/**
+ * Realización múltiple sin endpoint bulk: un `PUT` por id con `Promise.allSettled`
+ * y un único bloque de efectos (una notificación + una ronda de invalidaciones).
+ * No llama a `useMarcarRealizada()`, que conserva sus efectos por transacción.
+ */
+export function useMarcarRealizadas() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (ids: number[]) =>
+      realizarSeleccionados(ids, (id) => api.put<Transaccion>(`/transacciones/${id}/realizar`)),
+    onSuccess: (resultado, ids) => {
+      const { ok, fallidos } = resultado
+      if (fallidos.length === 0) {
+        toast.success(`${ok.length} transacciones marcadas como realizadas`)
+      } else {
+        toast.error(
+          `${ok.length} de ${ids.length} transacciones marcadas como realizadas. Fallaron: ${fallidos
+            .map((fallido) => `#${fallido.id}`)
+            .join(", ")}.`,
+        )
+      }
+      qc.invalidateQueries({ queryKey: queryKeys.splits })
+      qc.invalidateQueries({ queryKey: ["split"] })
+      qc.invalidateQueries({ queryKey: queryKeys.pagos })
+      invalidarHistorial(qc)
+    },
   })
 }
 
