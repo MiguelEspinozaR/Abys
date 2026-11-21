@@ -48,6 +48,10 @@ Lista de funcionalidades, su estado actual y el plan a futuro.
 - [ ] App móvil (Flutter) — fuera de alcance por ahora.
 - [ ] Multi-idioma — fuera de alcance por ahora (UI en español).
 - [ ] A5: menú de acciones secundarias en `/ingresos` para recuperar densidad móvil (requiere SPEC aparte).
+- [ ] guardadoRef se mantiene true después del save, suprimiendo el bloqueador de cambios sin cambios para ediciones posteriores en la misma sesión (comportamiento prescrito por D1/R1.2; no afecta AC)
+- [ ] Fallback preexistente en RealizarTxDialog.tsx:31 usa `cuenta_id === 3` en lugar de `es_general` (identificado en revisión; nuevas rutas usan `es_general`/`GetGeneral`; no bloqueante)
+- [ ] Contraste de borde UI: elevar a ≥3:1 como endurecimiento design system (no gate actual §5; verificado en 16 combinaciones AA)
+- [ ] Seguir semgrep y npm-audit cuando estén disponibles como endurecimiento de seguimiento (_backlog_), sin condicionar este release
 
 ## Notas operativas
 
