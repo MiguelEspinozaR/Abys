@@ -1,0 +1,130 @@
+{
+  "task_id": "splits-ver-datos-realizar",
+  "commit": "83afd2f4655e4509e841b25ac89e8c91ae7928d9",
+  "policy": ".ai/policies/project-policy.md §5 (gate duro)",
+  "spec": [".ai/specs/splits-ver-datos-realizar/spec.md R4 / AC13–AC17"],
+  "harness": {
+    "channel": "chrome",
+    "viewport": ["1280x720 (desktop)", "375x812 (mobile)"],
+    "themes": ["light", "dark"],
+    "color_resolution": "computed CSS colors resolved to sRGB via canvas getImageData; translucent backgrounds composited over ancestors",
+    "source": "test-results/splits-ver-datos-realizar/harness/results/08-aa.json"
+  },
+  "gate_result": "PASS",
+  "checks": [
+    {
+      "id": "AA-1",
+      "policy": "§5.1 Touch targets ≥44×44 px CSS en móvil",
+      "status": "PASS",
+      "measurements_px": {
+        "qr": [176, 176],
+        "cancelar": [81.8, 44],
+        "realizar_deshabilitado": [98.6, 44],
+        "realizar_habilitado": [98.3, 44],
+        "checkbox": [44, 44],
+        "volver": [64.7, 44],
+        "confirmar": [89.4, 44],
+        "cerrar_lightbox": [44, 44]
+      },
+      "evidence": "P14 / harness/results/06-mobile.json"
+    },
+    {
+      "id": "AA-2",
+      "policy": "§5.2 Contraste de texto AA (4.5:1 normal, 3:1 grande) en light y dark",
+      "status": "PASS",
+      "threshold_applied": "4.5:1 for normal enabled text; inactive controls exempt under WCAG 1.4.3 (see advisory ADV-1)",
+      "ratios": {
+        "light": {
+          "conteo_sobre_popover": 4.742,
+          "subtotal_sobre_popover": 19.798,
+          "cancelar_sobre_background": 19.798,
+          "realizar_habilitado_sobre_primary": 17.176,
+          "realizar_deshabilitado_sobre_muted": 4.349,
+          "ayuda_general_sobre_popover": 4.742,
+          "texto_confirmacion_sobre_popover": 4.742
+        },
+        "dark": {
+          "conteo_sobre_popover": 6.939,
+          "subtotal_sobre_popover": 17.176,
+          "cancelar_sobre_background": 15.427,
+          "realizar_habilitado_sobre_primary": 14.232,
+          "realizar_deshabilitado_sobre_muted": 5.857,
+          "ayuda_general_sobre_popover": 6.939,
+          "texto_confirmacion_sobre_popover": 6.939
+        }
+      },
+      "evidence": "P16 / harness/results/08-aa.json"
+    },
+    {
+      "id": "AA-3",
+      "policy": "§5.3 Foco visible con contraste ≥3:1 (WCAG 1.4.11)",
+      "status": "PASS",
+      "threshold_applied": "3:1",
+      "measurement": {
+        "element": "button Realizar (1)",
+        "focus_visible_matches": true,
+        "ring_layer": "oklch(0.556 0 0) 0px 0px 0px 3px",
+        "light": { "adjacent": "oklch(1 0 0)", "ratio": 4.742 },
+        "dark": { "adjacent": "oklch(0.205 0 0)", "ratio": 3.781 },
+        "note": "Measured after the button's 100ms box-shadow transition settled; :focus-visible confirmed."
+      },
+      "evidence": "P16 / harness/results/08-aa.json + harness/results/08d-ring-settled.cjs"
+    },
+    {
+      "id": "AA-4",
+      "policy": "§5.4 Navegación completa por teclado, orden lógico, sin trampas",
+      "status": "PASS",
+      "selection_step_tab_order": "30 checkboxes → Cancelar → Realizar → Close → QR → (wrap)",
+      "confirm_step_tab_order": "30 checkboxes → Volver → Confirmar → Close → QR → (wrap)",
+      "focus_on_confirm_entry": "Confirmar",
+      "escape_priority": {
+        "lightbox": "Escape closes only the lightbox; background body/footer inert; second Escape closes the dialog; outside click closes the lightbox",
+        "confirmation": "Escape returns to selection; while isPending Escape is absorbed (aria-busy=true)",
+        "dialog": "third Escape closes Radix dialog"
+      },
+      "evidence": "P13/P15 / harness/results/07-lightbox-keyboard.json + 07b-taborder.json"
+    },
+    {
+      "id": "AA-5",
+      "policy": "§5.5 Nombre accesible en todo control icon-only y campo",
+      "status": "PASS",
+      "names": {
+        "qr": "Ampliar QR de la cuenta Cuenta Principal",
+        "realizar": "Realizar N transferencias seleccionadas",
+        "cerrar_lightbox": "Cerrar",
+        "checkboxes": "Label htmlFor=<id> (30/30); ariaSnapshot exposes 'checkbox'",
+        "ayuda_general": "aria-describedby=ayuda-general-3",
+        "resultado": "role=status aria-live=polite",
+        "subtotal": "aria-live=polite"
+      },
+      "aria_snapshot_selection": "- contentinfo:\n  - text: 0 seleccionadas 0,00 Bs\n  - button \"Cancelar\"\n  - button \"Realizar 0 transferencias seleccionadas\" [disabled]: Realizar (0)",
+      "aria_snapshot_confirm": "- contentinfo:\n  - text: 1 seleccionadas 155,00 Bs\n  - paragraph: Marcar 1 transferencias por 155,00 Bs?\n  - button \"Volver\"\n  - button \"Confirmar\"",
+      "evidence": "P15 / harness/results/07-lightbox-keyboard.json + 07b-taborder.json"
+    },
+    {
+      "id": "AA-6",
+      "policy": "§5.6 prefers-reduced-motion respetado por animaciones y transiciones no esenciales",
+      "status": "PASS",
+      "measurement": {
+        "media_query_matches": true,
+        "spinner_animation_name": "none",
+        "qr_transition_property": "none",
+        "qr_transition_duration": "1e-05s",
+        "dialog_animation_name": "enter",
+        "dialog_animation_duration": "1e-05s",
+        "interpretation": "Spinner and QR transition are explicitly disabled; the inherited dialog 'enter' animation has an effectively zero duration (1e-05s)."
+      },
+      "evidence": "P17 / harness/results/08-aa.json"
+    }
+  ],
+  "advisories": [
+    {
+      "id": "ADV-1",
+      "severity": "advisory",
+      "detail": "Realizar deshabilitado en light mide 4.349:1 sobre bg-muted (4.5:1 estricto no alcanzado). WCAG 1.4.3 exime controles inactivos; coincide con REVIEW A1 y con la pareja de tokens prescrita por PLAN M4/§8. No bloquea el gate §5."
+    }
+  ],
+  "coverage": {
+    "note": "No coverage threshold was invented or applied; no coverage instrumentation is configured by project policy for this cycle."
+  }
+}

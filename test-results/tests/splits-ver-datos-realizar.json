@@ -1,0 +1,139 @@
+{
+  "task_id": "splits-ver-datos-realizar",
+  "cycle": "0.4.1",
+  "status": "PASS",
+  "head_commit": "83afd2f4655e4509e841b25ac89e8c91ae7928d9",
+  "branch": "fix/splits-ver-datos-realizar",
+  "role": "tester",
+  "generated_at": "2026-11-20T22:41:00-04:00",
+  "source_of_truth": {
+    "spec": ".ai/specs/splits-ver-datos-realizar/spec.md",
+    "plan": ".ai/plans/splits-ver-datos-realizar/plan.md",
+    "policy": ".ai/policies/project-policy.md"
+  },
+  "pass_fail_counts": {
+    "acceptance_criteria": { "pass": 18, "fail": 0, "total": 18 },
+    "playwright_checks": { "pass": 18, "fail": 0, "total": 18, "ids": ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17", "P18"] },
+    "canonical_commands": { "pass": 4, "fail": 0, "total": 4 },
+    "aa_gate_checks": { "pass": 6, "fail": 0, "total": 6 }
+  },
+  "test_counts": {
+    "frontend": {
+      "command": "npm test",
+      "test_files": { "passed": 18, "failed": 0, "total": 18 },
+      "tests": { "passed": 187, "failed": 0, "total": 187 },
+      "duration_ms_reported": 13180
+    },
+    "typecheck_and_build": {
+      "typecheck": "PASS",
+      "build": "PASS",
+      "duration_ms_reported": 20780,
+      "warnings": ["Pre-existing Vite chunk-size warning (>500 kB): index 516.95 kB, DashboardPage 451.55 kB; unrelated to this diff."]
+    },
+    "backend_regression": {
+      "command": "go test ./...",
+      "packages_ok": 6,
+      "packages_no_test_files": 6,
+      "packages_failed": 0,
+      "detail": "abys/internal/database, handler, repository, router, service, splitcalc => ok; cmd/server, docs, apperr, config, middleware, model => no test files."
+    },
+    "browser_e2e": {
+      "harness": "playwright-cli via npx --no-install playwright cli",
+      "channel": "chrome",
+      "api_interception": "page.route('**/*') fulfilled every /api/v1 GET/PUT and /uploads/* locally; all cross-origin requests aborted; zero real backend requests and zero PostgreSQL connections",
+      "checks": { "passed": 18, "failed": 0 }
+    }
+  },
+  "commands": [
+    {
+      "command": "cd web && npx --no-install tsc -b && npm test && npm run build",
+      "status": "PASS",
+      "summary": "tsc -b: 0 diagnostics. Vitest: 18 files, 187 tests passed. vite build: dist/ generated; only pre-existing chunk-size warnings."
+    },
+    {
+      "command": "cd backend && go test ./...",
+      "status": "PASS",
+      "summary": "Regression PASS; no package failures."
+    },
+    {
+      "command": "npx --no-install playwright cli open --browser=chrome",
+      "status": "PASS",
+      "summary": "HeadlessChrome/158 session opened; no new dependency installed."
+    },
+    {
+      "command": "nohup npx --no-install vite preview --host 127.0.0.1 --port 5178 --strictPort > ../test-results/splits-ver-datos-realizar/logs/preview.log 2>&1 &",
+      "status": "PASS",
+      "summary": "Built SPA served from web/dist/; GET /splits => HTTP 200."
+    }
+  ],
+  "ac_results": [
+    { "id": "AC1", "status": "PASS", "evidence": "P1", "detail": "30 filas; scrollHeight 2444 > clientHeight 648; scrollTop 0→1796 (máximo); última fila visible dentro del diálogo." },
+    { "id": "AC2", "status": "PASS", "evidence": "P2", "detail": "375×812: diálogo {x:16,y:40.6,w:343,h:730.8} dentro del viewport; PageDown×3→1848; End→2385=máximo." },
+    { "id": "AC3", "status": "PASS", "evidence": "P3", "detail": "Footer sticky visible tras scroll; gap inferior 16 px; '3 seleccionadas 465,00 Bs'; aria-live=polite." },
+    { "id": "AC4", "status": "PASS", "evidence": "U4 + P4", "detail": "Subtotal recalculado: 3→465,00 Bs, 2→310,00 Bs, 3→465,00 Bs; formato es-BO y live region." },
+    { "id": "AC5", "status": "PASS", "evidence": "U2 + P5", "detail": "0 seleccionadas → Realizar (0) disabled, aria-label con conteo 0." },
+    { "id": "AC6", "status": "PASS", "evidence": "U2 + P6", "detail": "3 seleccionadas → Realizar (3) enabled, aria-label 'Realizar 3 transferencias seleccionadas'." },
+    { "id": "AC7", "status": "PASS", "evidence": "U2 + P7", "detail": "Confirmación 'Marcar 3 transferencias por 465,00 Bs?'; 0 PUT y 0 toasts antes de Confirmar." },
+    { "id": "AC8", "status": "PASS", "evidence": "U1/U3 + P8", "detail": "PUTs exactos [1001,1002,1003], una vez por id; sin bulk/duplicados." },
+    { "id": "AC9", "status": "PASS", "evidence": "U3 + P9", "detail": "1 toast; una sola ronda de invalidación (splits/pagos/historial): +1 GET por query activa, estable tras 900 ms; sin segunda ronda." },
+    { "id": "AC10", "status": "PASS", "evidence": "U2 + P10", "detail": "General: Realizar disabled, ayuda con aria-describedby=ayuda-general-3, 0 PUT tras click programático." },
+    { "id": "AC11", "status": "PASS", "evidence": "P11", "detail": "Tras éxito, reabrir muestra 0 seleccionadas, Realizar disabled y 27 filas refrescadas." },
+    { "id": "AC12", "status": "PASS", "evidence": "U1/U3 + P12", "detail": "500 forzado en #1002: diálogo abierto, id en status aria-live, reintento solo [1002], cierre tras éxito." },
+    { "id": "AC13", "status": "PASS", "evidence": "P13", "detail": "Lightbox aria-modal, body/footer inert, Escape con prioridad y absorción bajo aria-busy, clic fuera cierra lightbox." },
+    { "id": "AC14", "status": "PASS", "evidence": "P14", "detail": "Todos los targets táctiles 44–176 px en ambos ejes a 375 px." },
+    { "id": "AC15", "status": "PASS", "evidence": "P15", "detail": "Orden Tab lógico y sin trampa; foco inicial en Confirmar; nombres accesibles y ariaSnapshot correctos." },
+    { "id": "AC16", "status": "PASS", "evidence": "P16 + aa-harness.json", "detail": "Contraste AA light/dark y foco ≥3:1. ADV-1: texto deshabilitado light 4,349:1, exento por WCAG 1.4.3 y ya registrado en REVIEW A1." },
+    { "id": "AC17", "status": "PASS", "evidence": "P17", "detail": "prefers-reduced-motion: spinner animation none, QR transition none, duración de animación del diálogo 1e-05s." },
+    { "id": "AC18", "status": "PASS", "evidence": "script §5", "detail": "0.4.1 en package.json:4, package-lock.json:3/:9, README.md:64 y CHANGELOG.md:9; 0 tags." }
+  ],
+  "aa_gate": {
+    "policy": ".ai/policies/project-policy.md §5",
+    "status": "PASS",
+    "checks_passed": 6,
+    "checks_failed": 0,
+    "themes": ["light", "dark"],
+    "viewports": ["1280x720", "375x812"],
+    "focus_contrast_ratio": { "light": 4.742, "dark": 3.781, "minimum_required": 3.0 },
+    "advisories": [
+      {
+        "id": "ADV-1",
+        "severity": "advisory",
+        "blocking": false,
+        "detail": "Realizar deshabilitado en light: 4.349:1 sobre bg-muted. Inactive-control exemption (WCAG 1.4.3); matches REVIEW A1 and prescribed token pair."
+      }
+    ]
+  },
+  "version_and_tag_verification": {
+    "package_json": "web/package.json:4 => 0.4.1",
+    "package_lock": "web/package-lock.json:3 and :9 => 0.4.1",
+    "readme": "README.md:64 => 0.4.1 — ver CHANGELOG.md",
+    "changelog": "CHANGELOG.md:9 => [0.4.1] - 2026-11-20",
+    "tags": "0 tags. git tag -l blocked by tool permission; verified with git for-each-ref --format='%(refname)' refs/tags and git show-ref --tags (both empty), plus empty .git/refs/tags and no refs/tags in packed-refs."
+  },
+  "failures": [],
+  "coverage": {
+    "status": "not_applicable",
+    "note": "No coverage threshold was invented or applied. Project policy defines no coverage instrumentation gate for this cycle."
+  },
+  "release_ready": true,
+  "release_actions_taken": [],
+  "git_mutations": [],
+  "artifacts_uncommitted": true,
+  "evidence_paths": [
+    "test-results/splits-ver-datos-realizar/report.md",
+    "test-results/splits-ver-datos-realizar/aa-harness.json",
+    "test-results/splits-ver-datos-realizar/metrics.json",
+    "test-results/splits-ver-datos-realizar/01-lista-larga-subtotal.png",
+    "test-results/splits-ver-datos-realizar/02-confirmacion.png",
+    "test-results/splits-ver-datos-realizar/03-movil.png",
+    "test-results/splits-ver-datos-realizar/harness/results/02-desktop.json",
+    "test-results/splits-ver-datos-realizar/harness/results/03-confirm.json",
+    "test-results/splits-ver-datos-realizar/harness/results/04-partial.json",
+    "test-results/splits-ver-datos-realizar/harness/results/05-general.json",
+    "test-results/splits-ver-datos-realizar/harness/results/06-mobile.json",
+    "test-results/splits-ver-datos-realizar/harness/results/07-lightbox-keyboard.json",
+    "test-results/splits-ver-datos-realizar/harness/results/07b-taborder.json",
+    "test-results/splits-ver-datos-realizar/harness/results/08-aa.json",
+    "test-results/splits-ver-datos-realizar/logs/preview.log"
+  ]
+}

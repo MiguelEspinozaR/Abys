@@ -1,0 +1,113 @@
+{
+  "task_id": "splits-ver-datos-realizar",
+  "cycle": "0.4.1",
+  "commit": "83afd2f4655e4509e841b25ac89e8c91ae7928d9",
+  "branch": "fix/splits-ver-datos-realizar",
+  "generated_at": "2026-11-20T22:39:00-04:00",
+  "browser": {
+    "harness": "playwright-cli via npx --no-install playwright cli",
+    "channel": "chrome",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.0.0 Safari/537.36",
+    "spa_url": "http://127.0.0.1:5178/splits?rango=ytd",
+    "spa_server": "npx --no-install vite preview --host 127.0.0.1 --port 5178 --strictPort (built dist/)",
+    "api_interception": "page.route('**/*') — all /api/v1 GET/PUT fulfilled locally; /uploads/* fulfilled with a 1x1 PNG; every other cross-origin request aborted; zero PostgreSQL connections and zero real backend requests",
+    "run_window_local": "2026-11-20T22:37:40-04:00 .. 2026-11-20T22:38:57-04:00"
+  },
+  "mock_fixture": {
+    "cuentas": 2,
+    "cuenta_principal_id": 11,
+    "cuenta_general_id": 3,
+    "pendientes_principal": 30,
+    "pendientes_general": 2,
+    "monto_por_transaccion_centavos": 15500
+  },
+  "scroll": {
+    "desktop_1280x720": {
+      "rows": 30,
+      "scrollHeight": 2444,
+      "clientHeight": 648,
+      "scrollTop_before": 0,
+      "scrollTop_after_scrollIntoViewIfNeeded": 1796,
+      "maxScrollTop": 1796,
+      "last_row_visible": true,
+      "last_row_within_dialog": true
+    },
+    "mobile_375x812": {
+      "viewport": { "width": 375, "height": 812 },
+      "dialog_box": { "x": 16, "y": 40.6015625, "width": 343, "height": 730.796875 },
+      "within_viewport": true,
+      "scrollHeight": 3116,
+      "clientHeight": 731,
+      "scrollTop_initial": 0,
+      "scrollTop_after_3x_PageDown": 1848,
+      "scrollTop_after_End": 2385,
+      "maxScrollTop": 2385,
+      "last_row_visible": true
+    }
+  },
+  "sticky_footer_after_scroll": {
+    "dialog_box": { "x": 448, "y": 36, "width": 384, "height": 648 },
+    "footer_box": { "x": 448, "y": 583, "width": 384, "height": 85 },
+    "footer_bottom_gap_to_dialog_bottom_px": 16,
+    "footer_visible": true,
+    "subtotal_visible": true,
+    "count_visible": true,
+    "subtotal_text": "3 seleccionadas 465,00 Bs",
+    "aria_live": "polite"
+  },
+  "touch_targets_mobile_375x812_px": {
+    "qr_boton": { "w": 176, "h": 176 },
+    "cancelar": { "w": 81.8, "h": 44 },
+    "realizar_deshabilitado": { "w": 98.6, "h": 44 },
+    "realizar_habilitado": { "w": 98.3, "h": 44 },
+    "checkbox": { "w": 44, "h": 44 },
+    "volver": { "w": 64.7, "h": 44 },
+    "confirmar": { "w": 89.4, "h": 44 },
+    "cerrar_lightbox": { "w": 44, "h": 44 },
+    "all_at_least_44x44": true
+  },
+  "requests": {
+    "scenario_01_desktop": { "requests": 6, "gets": 5, "puts": 0, "getByPath": { "/api/v1/fuentes": 1, "/api/v1/dashboard/history": 1, "/api/v1/pagos": 1, "/api/v1/splits": 1, "/api/v1/cuentas": 1 } },
+    "scenario_02_confirm_success": {
+      "requests": 11, "gets": 7, "puts": 3, "putIds": [1001, 1002, 1003],
+      "getByPath": { "/api/v1/fuentes": 1, "/api/v1/dashboard/history": 1, "/api/v1/pagos": 2, "/api/v1/splits": 2, "/api/v1/cuentas": 1 },
+      "toasts": 1, "toast_text": "3 transacciones marcadas como realizadas",
+      "gets_before_confirm": { "/api/v1/fuentes": 1, "/api/v1/dashboard/history": 1, "/api/v1/pagos": 1, "/api/v1/splits": 1, "/api/v1/cuentas": 1 },
+      "gets_after_confirm": { "/api/v1/fuentes": 1, "/api/v1/dashboard/history": 1, "/api/v1/pagos": 2, "/api/v1/splits": 2, "/api/v1/cuentas": 1 },
+      "gets_settled_900ms_later": { "/api/v1/fuentes": 1, "/api/v1/dashboard/history": 1, "/api/v1/pagos": 2, "/api/v1/splits": 2, "/api/v1/cuentas": 1 },
+      "second_get_round_observed": false,
+      "console_errors": 0, "page_errors": 0
+    },
+    "scenario_03_partial_failure": {
+      "requests": 14, "gets": 9, "puts": 4,
+      "first_round_put_ids": [1001, 1002, 1003],
+      "retry_put_ids": [1002],
+      "toast_with_failed_id": "2 de 3 transacciones marcadas como realizadas. Fallaron: #1002.",
+      "expected_console_error_for_forced_500": 1,
+      "page_errors": 0
+    },
+    "scenario_04_general": { "requests": 6, "gets": 5, "puts": 0, "toasts": 0 },
+    "scenario_05_mobile": { "requests": 6, "gets": 5, "puts": 0 }
+  },
+  "timings": {
+    "canonical_frontend_ms_reported": { "vitest": 13180, "vite_build": 20780 },
+    "backend_go_test_s": { "database": 0.304, "handler": 0.132 },
+    "browser_harness_elapsed_s_approx": 77,
+    "note": "Browser timings are wall-clock window from captured evidence timestamps; no synthetic performance thresholds were applied."
+  },
+  "screenshots": [
+    "test-results/splits-ver-datos-realizar/01-lista-larga-subtotal.png",
+    "test-results/splits-ver-datos-realizar/02-confirmacion.png",
+    "test-results/splits-ver-datos-realizar/03-movil.png"
+  ],
+  "raw_results": [
+    "test-results/splits-ver-datos-realizar/harness/results/02-desktop.json",
+    "test-results/splits-ver-datos-realizar/harness/results/03-confirm.json",
+    "test-results/splits-ver-datos-realizar/harness/results/04-partial.json",
+    "test-results/splits-ver-datos-realizar/harness/results/05-general.json",
+    "test-results/splits-ver-datos-realizar/harness/results/06-mobile.json",
+    "test-results/splits-ver-datos-realizar/harness/results/07-lightbox-keyboard.json",
+    "test-results/splits-ver-datos-realizar/harness/results/07b-taborder.json",
+    "test-results/splits-ver-datos-realizar/harness/results/08-aa.json"
+  ]
+}
