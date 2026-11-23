@@ -37,8 +37,6 @@ export const queryKeys = {
   fuentes: ["fuentes"] as const,
   cuentas: ["cuentas"] as const,
   pagos: ["pagos"] as const,
-  pago: (id: number) => ["pagos", id] as const,
-  split: (pagoId: number) => ["split", pagoId] as const,
   splits: ["splits"] as const,
   splitSettings: ["settings", "split"] as const,
   registrarSettings: ["settings", "registrar"] as const,
@@ -82,7 +80,15 @@ export function clavePagosPagina(filtros: PagosFiltros = {}) {
   return ["historial", "pagos", serializarFiltrosPagos(filtros)] as const
 }
 
-/** GET de una página de pagos reutilizable por `usePagosPagina` y el histórico. */
+/**
+ * GET de una página de pagos.
+ *
+ * El hook de página fue purgado, pero este helper (con `clavePagosPagina` y
+ * `serializarFiltrosPagos`) se conserva: `useHistorial`
+ * (`web/src/hooks/useHistorial.ts`) lo usa directamente para los conteos por
+ * año y las páginas expandidas. Es el único punto de construcción de la query
+ * paginada.
+ */
 export function fetchPagosPagina(filtros: PagosFiltros = {}) {
   const params = serializarFiltrosPagos(filtros)
   return api.getRaw<{ data: Pago[]; meta: PagosMeta }>(`/pagos?${params}`)
@@ -122,42 +128,6 @@ export function usePagos(filtros: PagosFiltros = {}) {
     queryFn: () =>
       api.getRaw<{ data: Pago[]; meta: PagosMeta }>(`/pagos?${params.toString()}`),
     staleTime: 30_000,
-  })
-}
-
-/**
- * Página de pagos para el histórico agrupado.
- *
- * Key propia (`["historial", "pagos", params]`) y `enabled` para no consultar
- * años colapsados. No usa `useInfiniteQuery` ni altera `usePagos`.
- */
-export function usePagosPagina(
-  filtros: PagosFiltros = {},
-  opciones: { enabled?: boolean } = {},
-) {
-  return useQuery({
-    queryKey: clavePagosPagina(filtros),
-    queryFn: () => fetchPagosPagina(filtros),
-    staleTime: 30_000,
-    enabled: opciones.enabled ?? true,
-  })
-}
-
-export function usePagoDetalle(id: number | null) {
-  return useQuery({
-    queryKey: queryKeys.pago(id ?? 0),
-    queryFn: () => api.get<Pago>(`/pagos/${id}`),
-    enabled: id != null,
-    staleTime: 30_000,
-  })
-}
-
-export function useSplitDetalle(pagoId: number | null) {
-  return useQuery({
-    queryKey: queryKeys.split(pagoId ?? 0),
-    queryFn: () => api.get<Split | null>(`/pagos/${pagoId}/split`),
-    enabled: pagoId != null,
-    staleTime: 15_000,
   })
 }
 

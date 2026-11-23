@@ -42,17 +42,3 @@ func NewConflict(msg string) *Error      { return &Error{Kind: KindConflict, Mes
 func NewImmutable(msg string) *Error     { return &Error{Kind: KindImmutable, Message: msg} }
 func NewUnprocessable(msg string) *Error { return &Error{Kind: KindUnprocessable, Message: msg} }
 func NewInternal(msg string) *Error      { return &Error{Kind: KindInternal, Message: msg} }
-
-// WithDetails adjunta detalles estructurados al error.
-func (e *Error) WithDetails(d any) *Error { e.Details = d; return e }
-
-// AsError convierte cualquier error en *Error tipado.
-func AsError(err error) *Error {
-	if err == nil {
-		return nil
-	}
-	if e, ok := err.(*Error); ok {
-		return e
-	}
-	return NewInternal(err.Error())
-}
