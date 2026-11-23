@@ -13,13 +13,10 @@
  * en los días restantes: se conserva Σ === total y último >= 0.
  */
 
-export const MODOS_DISTRIBUCION = [
-  { value: "redondeado", label: "Redondeado (1 Bs)" },
-  { value: "enteros", label: "Enteros (1 Bs)" },
-  { value: "preciso", label: "Preciso (centavos)" },
-] as const
+import type { ModoDistribucion } from "./dominio"
 
-export type ModoDistribucion = (typeof MODOS_DISTRIBUCION)[number]["value"]
+// Reexportados para consumidores y tests existentes; la definición única está en dominio.ts.
+export { MODOS_DISTRIBUCION, type ModoDistribucion } from "./dominio"
 
 /** Aplica el modo de redondeo de `splitcalc` a un monto en centavos. */
 export function aplicarModo(raw: number, modo: ModoDistribucion): number {

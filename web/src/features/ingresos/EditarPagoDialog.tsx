@@ -32,7 +32,8 @@ import { useFormDirty } from "@/hooks/useFormDirty"
 import { useActualizarPago, useFuentes } from "@/services/hooks"
 import { ApiRequestError } from "@/services/api"
 import { ERRORES_API_EDITAR_PAGO, resolverErrorApi } from "@/lib/api-errors"
-import { bsToCents, formatBs, formatearFechaEs, METODOS_PAGO } from "@/lib/format"
+import { bsToCents, formatBs, formatearFechaEs } from "@/lib/format"
+import { METODOS_PAGO } from "@/lib/dominio"
 import {
   MAX_NOTAS,
   validarDiasTrabajados,

@@ -37,7 +37,7 @@ import {
   normalizarRegistrarSettings,
 } from "@/lib/settingsFallback"
 import { useUiStore } from "@/store/uiStore"
-import { bsToCents, formatBs, formatearFechaEs, METODOS_PAGO, toISODate } from "@/lib/format"
+import { bsToCents, formatBs, formatearFechaEs, toISODate } from "@/lib/format"
 import {
   MAX_NOTAS,
   validarDiasTrabajados,
@@ -47,12 +47,15 @@ import {
   validarMonto,
   validarNotas,
 } from "@/lib/validators"
-import type { MetodoPago, ModoRegistro } from "@/services/types"
 import {
-  distribuir,
+  METODOS_PAGO,
   MODOS_DISTRIBUCION,
+  MODOS_REGISTRO,
+  type MetodoPago,
   type ModoDistribucion,
-} from "@/lib/distribuir"
+  type ModoRegistro,
+} from "@/lib/dominio"
+import { distribuir } from "@/lib/distribuir"
 import { CalendarioDias, type Herramienta } from "./CalendarioDias"
 import { ComprobanteDropzone } from "./ComprobanteDropzone"
 
@@ -68,11 +71,6 @@ const IDS_Campos: Record<Campo, string> = {
   monto: "registrar-montos",
   notas: "notas",
 }
-
-const MODOS_REGISTRO: { valor: ModoRegistro; label: string }[] = [
-  { valor: "detallado", label: "Detallado" },
-  { valor: "distribuido", label: "Distribuido" },
-]
 
 /** Marca visual de obligatorio (D12): `*` aria-hidden; la semántica va en aria-required. */
 const Obligatorio = () => (
@@ -671,15 +669,15 @@ export default function RegistrarPage() {
                   >
                     {MODOS_REGISTRO.map((m) => (
                       <Button
-                        key={m.valor}
+                        key={m.value}
                         type="button"
                         variant="ghost"
                         size="sm"
-                        onClick={() => setModoRegistro(m.valor)}
+                        onClick={() => setModoRegistro(m.value)}
                         disabled={pagoGuardado}
-                        aria-pressed={modoRegistro === m.valor}
+                        aria-pressed={modoRegistro === m.value}
                         className={
-                          modoRegistro === m.valor
+                          modoRegistro === m.value
                             ? "bg-background text-foreground shadow-sm"
                             : "text-muted-foreground"
                         }

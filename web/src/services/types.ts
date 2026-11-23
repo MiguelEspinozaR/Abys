@@ -3,6 +3,11 @@
  * (verificados por curl contra http://localhost:8080/api/v1).
  */
 
+import type { MetodoPago, ModoDistribucion, ModoRegistro } from "@/lib/dominio"
+
+// La definición única está en dominio.ts; se reexportan para no romper imports existentes.
+export type { MetodoPago, ModoDistribucion, ModoRegistro } from "@/lib/dominio"
+
 export interface PagosMeta {
   page: number
   page_size: number
@@ -40,11 +45,6 @@ export interface Cuenta {
   created_at: string
   updated_at: string
 }
-
-export type MetodoPago = "efectivo" | "qr" | "transaccion"
-
-/** Modo de carga de montos en /registrar (R3.1/R4.2). */
-export type ModoRegistro = "detallado" | "distribuido"
 
 /** Defaults globales de registro (GET/PUT /settings/registrar). */
 export interface RegistrarSettings {
@@ -236,11 +236,11 @@ export interface FuentePayload {
   color: string
   logo_ruta?: string | null
   split_auto: boolean
-  split_auto_modo?: "redondeado" | "enteros" | "preciso" | null
+  split_auto_modo?: ModoDistribucion | null
 }
 
 export interface SplitSettings {
-  modo_default: "redondeado" | "enteros" | "preciso"
+  modo_default: ModoDistribucion
 }
 
 export interface CuentaPayload {
@@ -251,7 +251,7 @@ export interface CuentaPayload {
 
 export interface GenerarSplitPayload {
   pago_id: number
-  modo_calculo: "redondeado" | "enteros" | "preciso"
+  modo_calculo: ModoDistribucion
 }
 
 export interface CambiarTasaPayload {

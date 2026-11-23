@@ -63,7 +63,15 @@ export interface PagosFiltros {
   page_size?: number
 }
 
-/** Serializa los filtros de pagos en la query canónica (sin `?`). */
+/**
+ * Único punto de serialización de la query de `/pagos` (SPEC R5.3).
+ *
+ * Contrato de la API: solo se envían filtros con valor y siempre se añaden
+ * `page` y `page_size` (defaults 1/20) en ese orden. El histórico paginado y
+ * `usePagos` deben producir exactamente la misma cadena para que la clave de
+ * caché y la URL coincidan; duplicar este código permitiría divergencias
+ * silenciosas entre ambas consultas.
+ */
 export function serializarFiltrosPagos(filtros: PagosFiltros = {}): string {
   const params = new URLSearchParams()
   if (filtros.fecha_inicio) params.set("fecha_inicio", filtros.fecha_inicio)
@@ -115,13 +123,7 @@ export function useCuentas() {
 }
 
 export function usePagos(filtros: PagosFiltros = {}) {
-  const params = new URLSearchParams()
-  if (filtros.fecha_inicio) params.set("fecha_inicio", filtros.fecha_inicio)
-  if (filtros.fecha_fin) params.set("fecha_fin", filtros.fecha_fin)
-  if (filtros.fuente_id) params.set("fuente_id", String(filtros.fuente_id))
-  if (filtros.metodo_pago) params.set("metodo_pago", filtros.metodo_pago)
-  params.set("page", String(filtros.page ?? 1))
-  params.set("page_size", String(filtros.page_size ?? 20))
+  const params = serializarFiltrosPagos(filtros)
 
   return useQuery({
     queryKey: [queryKeys.pagos, params.toString()],
@@ -276,6 +278,9 @@ export function useHistorialTasas(cuentaId: number | null) {
 /**
  * Invalida el histórico agrupado (`["historial", "pagos", params]`) junto con
  * las invalidaciones de pagos existentes, sin tocar `usePagos` ni sus claves.
+ * Por qué existe: `clavePagosPagina` vive en el namespace `["historial"]`, no
+ * en `queryKeys.pagos`; invalidar solo pagos dejaría cachés obsoletas tras
+ * mutar pagos, fuentes o splits.
  */
 function invalidarHistorial(qc: ReturnType<typeof useQueryClient>) {
   qc.invalidateQueries({ queryKey: ["historial"] })

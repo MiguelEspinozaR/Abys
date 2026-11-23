@@ -5,8 +5,9 @@
  * objeto enviado. Cada día lleva exclusivamente `fecha` y `monto_enteros`.
  */
 
-import type { DiaTrabajadoInput, ModoRegistro } from "@/services/types"
-import { distribuir, type ModoDistribucion } from "./distribuir"
+import type { DiaTrabajadoInput } from "@/services/types"
+import type { ModoDistribucion, ModoRegistro } from "@/lib/dominio"
+import { distribuir } from "./distribuir"
 
 export interface ConstruirDiasPayloadArgs {
   modoRegistro: ModoRegistro

@@ -14,14 +14,20 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { SplitSquareHorizontal } from "lucide-react"
 import { ApiRequestError } from "@/services/api"
 import { useFuentes, useSplitSettings, useActualizarSplitSettings } from "@/services/hooks"
+import type { ModoDistribucion } from "@/lib/dominio"
 
+/**
+ * Copy descriptivo propio de Configuración (labels largos y orden preciso
+ * primero), distinto de la tabla de labels de /registrar en dominio.ts.
+ * Se conserva aquí para no alterar lo que ve el usuario (política §4).
+ */
 const MODOS = [
   { value: "preciso", label: "preciso (truncado al centavo)" },
   { value: "redondeado", label: "redondeado (half-up a 1 Bs)" },
   { value: "enteros", label: "enteros (truncado a 1 Bs)" },
-] as const
+] as const satisfies ReadonlyArray<{ value: ModoDistribucion; label: string }>
 
-type ModoDefault = (typeof MODOS)[number]["value"]
+type ModoDefault = ModoDistribucion
 
 export function SplitsTab() {
   const { data: settings, isLoading } = useSplitSettings()

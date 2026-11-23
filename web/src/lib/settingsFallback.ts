@@ -6,54 +6,18 @@
  * dominio. Las funciones son puras: no leen localStorage ni hacen requests.
  */
 
-import type {
-  MetodoPago,
-  ModoRegistro,
-  RegistrarSettings,
-  SplitSettings,
-} from "@/services/types"
+import { esMetodoPago, esModoRedondeo, esModoRegistro } from "@/lib/dominio"
+import type { RegistrarSettings, SplitSettings } from "@/services/types"
 
-/** Dominio exacto de `metodo_default` (espejo de la whitelist del backend). */
-export const METODOS_PAGO_VALIDOS: readonly MetodoPago[] = [
-  "efectivo",
-  "qr",
-  "transaccion",
-]
-
-/** Dominio exacto de `modo_default` de registro (sin "truncado", R4.4). */
-export const MODOS_REGISTRO_VALIDOS: readonly ModoRegistro[] = [
-  "detallado",
-  "distribuido",
-]
-
-/** Dominio exacto del modo de redondeo de splits (R4.4). */
-export const MODOS_REDONDEO_VALIDOS: readonly SplitSettings["modo_default"][] = [
-  "redondeado",
-  "enteros",
-  "preciso",
-]
-
-function esUnoDe<T extends string>(
-  valor: unknown,
-  dominio: readonly T[],
-): valor is T {
-  return typeof valor === "string" && dominio.includes(valor as T)
-}
-
-/** true si `raw` pertenece al dominio de métodos de pago. */
-export function esMetodoPago(raw: unknown): raw is MetodoPago {
-  return esUnoDe(raw, METODOS_PAGO_VALIDOS)
-}
-
-/** true si `raw` pertenece al dominio de modos de registro. */
-export function esModoRegistro(raw: unknown): raw is ModoRegistro {
-  return esUnoDe(raw, MODOS_REGISTRO_VALIDOS)
-}
-
-/** true si `raw` pertenece al dominio de modos de redondeo. */
-export function esModoRedondeo(raw: unknown): raw is SplitSettings["modo_default"] {
-  return esUnoDe(raw, MODOS_REDONDEO_VALIDOS)
-}
+// Reexportados para los tests y consumidores existentes; la definición única está en dominio.ts.
+export {
+  METODOS_PAGO_VALIDOS,
+  MODOS_REDONDEO_VALIDOS,
+  MODOS_REGISTRO_VALIDOS,
+  esMetodoPago,
+  esModoRedondeo,
+  esModoRegistro,
+} from "@/lib/dominio"
 
 /**
  * Valida campo por campo: un valor inválido se sustituye solo por su homólogo

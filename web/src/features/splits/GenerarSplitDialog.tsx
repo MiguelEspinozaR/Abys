@@ -26,13 +26,18 @@ import { useGenerarSplit } from "@/services/hooks"
 import { ApiRequestError } from "@/services/api"
 import { ERRORES_API_GENERAR_SPLIT, resolverErrorApi } from "@/lib/api-errors"
 import { validarModoSplit } from "@/lib/validators"
+import type { ModoSplit } from "@/lib/dominio"
 import type { Pago } from "@/services/types"
 
+/**
+ * Descriptions largas y orden preciso-first propios de este diálogo: no son los
+ * labels de dominio (dominio.ts) y se conservan para no cambiar copy (política §4).
+ */
 const MODOS = [
   { value: "preciso", desc: "Preciso — reparte centavos exactos, residuo a General" },
   { value: "redondeado", desc: "Redondeado — montos redondeados al entero" },
   { value: "enteros", desc: "Enteros — distribuye solo montos enteros" },
-]
+] as const satisfies ReadonlyArray<{ value: ModoSplit; desc: string }>
 
 interface Props {
   pago: Pago
@@ -49,7 +54,7 @@ const Obligatorio = () => (
 export function GenerarSplitDialog({ pago, children }: Props) {
   const generar = useGenerarSplit()
   const [abierto, setAbierto] = useState(false)
-  const [modo, setModo] = useState("preciso")
+  const [modo, setModo] = useState<ModoSplit>("preciso")
   const validacion = useFormErrors<"modo">()
 
   const cerrar = () => {
@@ -60,7 +65,7 @@ export function GenerarSplitDialog({ pago, children }: Props) {
   const confirmar = async () => {
     if (generar.isPending) return
     try {
-      await generar.mutateAsync({ pago_id: pago.id, modo_calculo: modo as "preciso" })
+      await generar.mutateAsync({ pago_id: pago.id, modo_calculo: modo })
       cerrar()
     } catch (e) {
       // R3.4: el diálogo permanece abierto y conserva los datos.
@@ -129,7 +134,7 @@ export function GenerarSplitDialog({ pago, children }: Props) {
             <Select
               value={modo}
               onValueChange={(v) => {
-                setModo(v)
+                setModo(v as ModoSplit)
                 validacion.validarChange("modo", () => validarModoSplit(v))
               }}
             >

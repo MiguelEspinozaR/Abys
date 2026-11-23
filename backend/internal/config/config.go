@@ -20,7 +20,6 @@ type Config struct {
 	UploadDir     string
 	MaxUploadSize int64 // en MB
 	CORSOrigins   []string
-	TimeZone      string
 }
 
 // Load lee .env (si existe) y las variables de entorno, aplicando defaults.
@@ -36,7 +35,6 @@ func Load() (*Config, error) {
 		DBPassword:    os.Getenv("DB_PASSWORD"),
 		UploadDir:     getEnv("UPLOAD_DIR", "./uploads"),
 		MaxUploadSize: 10, // MB
-		TimeZone:      getEnv("TIMEZONE", "America/La_Paz"),
 	}
 
 	if v := os.Getenv("MAX_UPLOAD_SIZE"); v != "" {

@@ -101,15 +101,8 @@ export const MESES_ABREV = [
   "jul", "ago", "sep", "oct", "nov", "dic",
 ]
 
-export const METODOS_PAGO: { value: string; label: string }[] = [
-  { value: "efectivo", label: "Efectivo" },
-  { value: "qr", label: "QR" },
-  { value: "transaccion", label: "Transacción" },
-]
-
-export function labelMetodo(metodo: string): string {
-  return METODOS_PAGO.find((m) => m.value === metodo)?.label ?? metodo
-}
+// Tabla y lookup reexportados desde el módulo de dominio (definición única allí).
+export { METODOS_PAGO, labelMetodo } from "@/lib/dominio"
 
 /** Convierte un Date local a "YYYY-MM-DD" sin shifts de zona horaria. */
 export function toISODate(d: Date): string {

@@ -10,6 +10,7 @@
  *   cuando tienen valor. Orden fijo: rango, desde, hasta, fuente, metodo.
  */
 
+import { esMetodoPago, type MetodoPago } from "./dominio"
 import { esFechaISOValida } from "./validators"
 import type { RangoPreset } from "./rango"
 
@@ -19,8 +20,8 @@ export const TAB_DEFAULT = "cuentas" as const
 export const TABS = ["cuentas", "fuentes", "registro", "splits"] as const
 export type TabConfiguracion = (typeof TABS)[number]
 
-const METODOS = ["efectivo", "qr", "transaccion"] as const
-export type MetodoFiltro = (typeof METODOS)[number]
+/** El filtro `metodo` de la URL comparte dominio con los métodos de pago (SPEC historial-a11y). */
+export type MetodoFiltro = MetodoPago
 
 export interface FiltrosUrl {
   rango: RangoPreset
@@ -46,7 +47,7 @@ function esRango(valor: string | null): valor is RangoPreset {
 }
 
 function esMetodo(valor: string | null): valor is MetodoFiltro {
-  return valor !== null && (METODOS as readonly string[]).includes(valor)
+  return esMetodoPago(valor)
 }
 
 function esTab(valor: string | null): valor is TabConfiguracion {

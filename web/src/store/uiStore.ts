@@ -1,11 +1,8 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { sincronizarThemeColor } from "@/lib/themeColor"
-import type {
-  MetodoPago,
-  ModoRegistro,
-  SplitSettings,
-} from "@/services/types"
+import type { MetodoPago, ModoRegistro } from "@/lib/dominio"
+import type { SplitSettings } from "@/services/types"
 
 export type Tema = "light" | "dark"
 

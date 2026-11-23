@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
-import { METODOS_PAGO } from "@/lib/format"
+import { METODOS_PAGO } from "@/lib/dominio"
 import type { ErroresFiltros, FiltrosUrl } from "@/lib/filtrosUrl"
 import type { RangoPreset } from "@/lib/rango"
 import type { Fuente } from "@/services/types"

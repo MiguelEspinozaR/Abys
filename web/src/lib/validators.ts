@@ -5,13 +5,14 @@
  * El parser de monto (`bsToCents`) no se modifica (D19).
  */
 
-import { bsToCents, METODOS_PAGO } from "./format"
+import { bsToCents } from "./format"
+import { esMetodoPago, esModoSplit } from "./dominio"
+
+// Reexportados para consumidores existentes; la definición única está en dominio.ts.
+export { MODOS_SPLIT, type ModoSplit } from "./dominio"
 
 /** Límite de producto para notas; se aplica solo en el cliente (D9/R2.8). */
 export const MAX_NOTAS = 500
-
-export const MODOS_SPLIT = ["preciso", "redondeado", "enteros"] as const
-export type ModoSplit = (typeof MODOS_SPLIT)[number]
 
 /** "YYYY-MM-DD" con fecha real (mes/día existentes); fechas futuras permitidas (R2). */
 export function esFechaISOValida(fecha: string): boolean {
@@ -59,7 +60,7 @@ export function validarDiasTrabajados(dias: Iterable<string>): string | null {
 
 /** método: uno de `efectivo`, `qr`, `transaccion` (R2). */
 export function validarMetodoPago(metodo: string): string | null {
-  if (!METODOS_PAGO.some((m) => m.value === metodo)) return "Selecciona un método de pago"
+  if (!esMetodoPago(metodo)) return "Selecciona un método de pago"
   return null
 }
 
@@ -94,7 +95,7 @@ export function validarTasa(tasa: string): string | null {
 
 /** modo de split (Generar split): uno de `preciso`, `redondeado`, `enteros` (R2). */
 export function validarModoSplit(modo: string): string | null {
-  if (!MODOS_SPLIT.includes(modo as ModoSplit)) return "Selecciona un modo de cálculo"
+  if (!esModoSplit(modo)) return "Selecciona un modo de cálculo"
   return null
 }
 

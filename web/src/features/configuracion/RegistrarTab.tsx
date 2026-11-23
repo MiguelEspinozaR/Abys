@@ -13,18 +13,13 @@ import { ClipboardList } from "lucide-react"
 import { toast } from "sonner"
 import { ApiRequestError } from "@/services/api"
 import { useActualizarRegistrarSettings, useRegistrarSettings } from "@/services/hooks"
-import type { MetodoPago, ModoRegistro, RegistrarSettings } from "@/services/types"
-
-const METODOS = [
-  { value: "efectivo", label: "Efectivo" },
-  { value: "qr", label: "QR" },
-  { value: "transaccion", label: "Transacción" },
-] as const satisfies ReadonlyArray<{ value: MetodoPago; label: string }>
-
-const MODOS = [
-  { value: "detallado", label: "Detallado" },
-  { value: "distribuido", label: "Distribuido" },
-] as const satisfies ReadonlyArray<{ value: ModoRegistro; label: string }>
+import type { RegistrarSettings } from "@/services/types"
+import {
+  METODOS_PAGO,
+  MODOS_REGISTRO,
+  type MetodoPago,
+  type ModoRegistro,
+} from "@/lib/dominio"
 
 export function RegistrarTab() {
   const { data: settings, isLoading } = useRegistrarSettings()
@@ -123,7 +118,7 @@ export function RegistrarTab() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {METODOS.map((m) => (
+                  {METODOS_PAGO.map((m) => (
                     <SelectItem key={m.value} value={m.value}>
                       {m.label}
                     </SelectItem>
@@ -148,7 +143,7 @@ export function RegistrarTab() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {MODOS.map((m) => (
+                  {MODOS_REGISTRO.map((m) => (
                     <SelectItem key={m.value} value={m.value}>
                       {m.label}
                     </SelectItem>
