@@ -3,13 +3,6 @@
  * (verificados por curl contra http://localhost:8080/api/v1).
  */
 
-/** Envoltorio genérico de respuestas de la API: { data, meta?, status? }. */
-export interface ApiEnvelope<T> {
-  data: T
-  status?: string
-  meta?: PagosMeta
-}
-
 export interface PagosMeta {
   page: number
   page_size: number
