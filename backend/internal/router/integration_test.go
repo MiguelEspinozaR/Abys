@@ -270,6 +270,79 @@ func TestIntegrationAPI(t *testing.T) {
 	}
 }
 
+// TestValidacionEntradasHTTP complementa el test unitario de handler con
+// respuestas HTTP reales (400/201/200) sobre abys_test, incluido un pago con
+// la forma del dato migrado. No toca la base de datos de producción.
+func TestValidacionEntradasHTTP(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	cfg, pool := testConfigYPostgres(t)
+	r := router.Setup(cfg, pool)
+
+	// Cuenta con alias sobredimensionado → 400 (tope del esquema SQL).
+	rec := doReq(t, r, http.MethodPost, "/api/v1/cuentas",
+		`{"alias":"`+strings.Repeat("a", 101)+`"}`, "")
+	if rec.Code != http.StatusBadRequest || !hasCode(t, rec, "VALIDATION_ERROR") {
+		t.Errorf("alias sobredimensionado -> %d, se esperaba 400 VALIDATION_ERROR: %s", rec.Code, rec.Body.String())
+	}
+
+	// Cuenta válida en el tope exacto y cuenta con forma legacy → 201.
+	for _, body := range []string{
+		`{"alias":"` + strings.Repeat("a", 100) + `","numero":"` + strings.Repeat("9", 50) + `","banco":"` + strings.Repeat("B", 100) + `"}`,
+		`{"alias":"Business","numero":"1016387238","banco":"BMSC"}`,
+	} {
+		rec = doReq(t, r, http.MethodPost, "/api/v1/cuentas", body, "")
+		if rec.Code != http.StatusCreated {
+			t.Fatalf("POST cuenta válida -> %d: %s", rec.Code, rec.Body.String())
+		}
+		var creada struct {
+			Data struct {
+				ID int64 `json:"id"`
+			} `json:"data"`
+		}
+		if err := json.Unmarshal(rec.Body.Bytes(), &creada); err != nil {
+			t.Fatalf("json cuenta: %v", err)
+		}
+		if creada.Data.ID <= 0 {
+			t.Fatalf("id de cuenta inválido: %s", rec.Body.String())
+		}
+		defer cleanupCuenta(t, pool, creada.Data.ID)
+	}
+
+	// Pago con la forma del dato migrado (fecha 2023, método qr, sin notas) → 201.
+	rec = doReq(t, r, http.MethodPost, "/api/v1/pagos", `{
+		"fuente_id":1,"fecha_pago":"2023-04-17","metodo_pago":"qr",
+		"dias_trabajados":[{"fecha":"2023-04-17","monto_enteros":59100}]}`, "")
+	if rec.Code != http.StatusCreated {
+		t.Fatalf("POST pago legacy -> %d: %s", rec.Code, rec.Body.String())
+	}
+	var pago struct {
+		Data struct {
+			ID int64 `json:"id"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &pago); err != nil {
+		t.Fatalf("json pago: %v", err)
+	}
+	defer cleanup(t, pool, pago.Data.ID)
+
+	// Configuración: la whitelist sigue rechazando valores no listados (400)
+	// y la lectura del recurso válido sigue respondiendo 200.
+	rec = doReq(t, r, http.MethodPut, "/api/v1/settings/split", `{"modo_default":"*"}`, "")
+	if rec.Code != http.StatusBadRequest || !hasCode(t, rec, "VALIDATION_ERROR") {
+		t.Errorf("modo de split inválido -> %d, se esperaba 400: %s", rec.Code, rec.Body.String())
+	}
+	rec = doReq(t, r, http.MethodGet, "/api/v1/settings/split", "", "")
+	if rec.Code != http.StatusOK {
+		t.Errorf("GET settings/split -> %d: %s", rec.Code, rec.Body.String())
+	}
+}
+
+// cleanupCuenta borra solo la cuenta creada por el test (no toca datos migrados).
+func cleanupCuenta(t *testing.T, pool *pgxpool.Pool, id int64) {
+	t.Helper()
+	_, _ = pool.Exec(context.Background(), `DELETE FROM cuentas WHERE id = $1`, id)
+}
+
 // txidDe encuentra el id de la transacción por alias dentro de un split.
 func txidDe(t *testing.T, r http.Handler, splitID int64, alias string) int64 {
 	t.Helper()

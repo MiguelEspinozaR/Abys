@@ -9,6 +9,11 @@ import (
 	"abys/internal/model"
 )
 
+// El dominio de pago ya está cubierto por estas funciones (monto, fecha real,
+// método y días). No se añaden reglas nuevas: los límites de longitud son
+// constraints del esquema SQL y se validan en el boundary HTTP (CuentaRequest),
+// sin rechazar datos históricos que la propia BD ya mantenía dentro de ellos.
+//
 // Métodos de pago permitidos (BR-007).
 var MetodosPago = []string{"efectivo", "qr", "transaccion"}
 

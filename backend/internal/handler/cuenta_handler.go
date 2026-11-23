@@ -21,10 +21,14 @@ func NewCuentaHandler(svc *service.CuentaService, tasaSvc *service.TasaService, 
 }
 
 // CuentaRequest es el body de crear/actualizar cuenta.
+// Los topes de longitud reproducen los VARCHAR de la tabla cuentas definidos en
+// 000001_create_schema.up.sql (alias 100, numero 50, banco 100): así un valor
+// sobredimensionado se rechaza con 400 antes de llegar a la BD. Ningún dato
+// histórico puede superarlos porque la propia columna ya lo impedía.
 type CuentaRequest struct {
-	Alias  string  `json:"alias" binding:"required"`
-	Numero *string `json:"numero"`
-	Banco  *string `json:"banco"`
+	Alias  string  `json:"alias" binding:"required,max=100"`
+	Numero *string `json:"numero" binding:"omitempty,max=50"`
+	Banco  *string `json:"banco" binding:"omitempty,max=100"`
 }
 
 // TasaRequest es el body de PUT /cuentas/:id/tasa.

@@ -23,6 +23,9 @@ type SplitSettingsRequest struct {
 	ModoDefault string `json:"modo_default" binding:"required"`
 }
 
+// Las whitelists de método y modo son la regla de negocio de estos endpoints y
+// se conservan sin cambios. app_settings.valor es TEXT en el esquema (000005):
+// no hay una longitud máxima documentada que justifique añadir un `max` al binding.
 var registrarMetodosValidos = []string{"efectivo", "qr", "transaccion"}
 var registrarModosValidos = []string{"detallado", "distribuido"}
 

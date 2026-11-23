@@ -2,13 +2,17 @@ package middleware
 
 import (
 	"slices"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 // CORS permite múltiples orígenes separados por coma (CORS_ORIGIN).
 // Responde al preflight y refleja el Origin solo si está permitido.
+//
+// Política de producción: CORS_ORIGIN debe enumerar orígenes explícitos
+// (p. ej. https://app.ejemplo.com). El comodín '*' está prohibido en producción:
+// reflejar un origen arbitrario junto con credenciales expondría los datos de
+// la app. El '*' solo se conserva como comportamiento heredado de desarrollo.
 func CORS(origins []string) gin.HandlerFunc {
 	allowAll := slices.Contains(origins, "*")
 	return func(c *gin.Context) {
@@ -33,5 +37,3 @@ func CORS(origins []string) gin.HandlerFunc {
 		c.Next()
 	}
 }
-
-var _ = strings.TrimSpace

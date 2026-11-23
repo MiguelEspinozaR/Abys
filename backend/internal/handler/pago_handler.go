@@ -20,6 +20,12 @@ func NewPagoHandler(svc *service.PagoService, up *Uploader) *PagoHandler {
 	return &PagoHandler{svc: svc, up: up}
 }
 
+// Los bodies de pago conservan el binding existente: monto ≥ 0, fecha real,
+// método de la whitelist y días únicos ya se validan en service/validations.go
+// (BR-001..BR-007). No se añaden constraints nuevos para no duplicar esas
+// reglas ni rechazar datos históricos; `notas` es TEXT en el esquema y no hay
+// ninguna BR que defina una longitud máxima.
+//
 // DiaInput es un día trabajado con su monto en centavos.
 type DiaInput struct {
 	Fecha        string `json:"fecha" binding:"required"`
