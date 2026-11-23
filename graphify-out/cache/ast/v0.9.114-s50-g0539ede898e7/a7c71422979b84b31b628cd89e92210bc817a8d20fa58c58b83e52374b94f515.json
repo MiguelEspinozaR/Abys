@@ -1,0 +1,1 @@
+{"nodes": [{"id": "$graphify-root$_backend_migrations_000003_migrate_legacy_data_up_sql", "label": "000003_migrate_legacy_data.up.sql", "file_type": "code", "source_file": "backend/migrations/000003_migrate_legacy_data.up.sql", "source_location": null}], "edges": []}
