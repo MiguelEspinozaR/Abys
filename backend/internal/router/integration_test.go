@@ -275,6 +275,9 @@ func TestIntegrationAPI(t *testing.T) {
 // la forma del dato migrado. No toca la base de datos de producción.
 func TestValidacionEntradasHTTP(t *testing.T) {
 	gin.SetMode(gin.TestMode)
+	if os.Getenv("ABYS_SKIP_INTEGRATION") == "1" {
+		t.Skip("integración desactivada")
+	}
 	cfg, pool := testConfigYPostgres(t)
 	r := router.Setup(cfg, pool)
 
