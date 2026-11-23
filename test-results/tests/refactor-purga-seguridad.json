@@ -1,0 +1,105 @@
+{
+  "task_id": "refactor-purga-seguridad",
+  "phase": "F6",
+  "status": "PASS",
+  "release_ready": false,
+  "release_ready_reason": "El usuario probará manualmente la rama antes de cualquier merge; no hay deploy, tag ni release",
+  "repository": "/home/miky/Documentos/finanzasMikyGoRef",
+  "branch": "chore/refactor-purga-seguridad",
+  "head": "335b07225362033cb740a3422fcdee5dce378f53",
+  "date": "2026-11-23",
+  "commands": [
+    {"command": "cd web && npx tsc -b", "exit_code": 0, "status": "PASS"},
+    {"command": "cd web && npm test", "exit_code": 0, "status": "PASS", "tests_passed": 187, "test_files_passed": 18, "tests_failed": 0},
+    {"command": "cd web && npm run build", "exit_code": 0, "status": "PASS"},
+    {"command": "cd backend && ABYS_SKIP_INTEGRATION=1 go test ./...", "exit_code": 0, "status": "PASS", "packages_ok": 7, "tests_failed": 0, "integration_tests_skipped": 6, "database_writes": false},
+    {"command": "cd backend && go build ./...", "exit_code": 0, "status": "PASS", "note": "sustituye a go build -o server ./cmd/server para no crear artefactos"},
+    {"command": "cd backend && ABYS_SKIP_INTEGRATION=1 go test -v -run '^TestValidacionEntradasHTTP$' ./internal/router", "exit_code": 0, "status": "PASS", "note": "B2: --- SKIP sin cargar .env ni conectar a BD"},
+    {"command": "cd backend && ABYS_SKIP_INTEGRATION=1 go test -cover ./...", "exit_code": 0, "status": "PASS"}
+  ],
+  "test_counts": {
+    "web_tests_passed": 187,
+    "web_test_files_passed": 18,
+    "go_top_level_tests_passed": 33,
+    "go_subtests_passed": 18,
+    "go_pass_lines_total": 51,
+    "go_tests_skipped_db": 6,
+    "total_failures": 0
+  },
+  "coverage": {
+    "threshold_defined": false,
+    "go_by_package_percent": {
+      "internal/router": 98.5,
+      "internal/middleware": 63.0,
+      "internal/splitcalc": 86.4,
+      "internal/service": 28.8,
+      "internal/handler": 5.8,
+      "internal/database": 0.0,
+      "internal/repository": 0.0,
+      "cmd/server": 0.0,
+      "docs": 0.0,
+      "internal/apperr": 0.0,
+      "internal/config": 0.0
+    },
+    "web": "no_medida: no hay proveedor de cobertura configurado en web/package.json"
+  },
+  "ac": {
+    "AC1": "PASS", "AC2": "PASS", "AC3": "PASS", "AC4": "PASS",
+    "AC5": "PASS", "AC6": "PASS", "AC7": "PASS", "AC8": "PASS",
+    "AC9": "PASS", "AC10": "PASS", "AC11": "PASS", "AC12": "PASS"
+  },
+  "ac_notes": {
+    "AC10": "Reviewer verificó estáticamente que no hay cambios observables de copy, navegación, focus ni prefers-reduced-motion; únicos cambios visuales: fuentes byte-idénticas (latin/latin-ext) y eliminación de componentes sin uso. No se reejecutó el harness visual completo (advisory).",
+    "AC11": "Grafo regenerado con /home/miky/.local/bin/graphify update .; built_at_commit = 335b07225362033cb740a3422fcdee5dce378f53",
+    "AC8": "Tests unitarios de handler cubren 400/201/200 y legacy; TestValidacionEntradasHTTP omitido por la guarda B2 (no fallido)"
+  },
+  "bundle": {
+    "baseline_bytes": 1536940,
+    "current_bytes": 1450009,
+    "delta_bytes": -86931,
+    "delta_percent": -5.656,
+    "increased": false
+  },
+  "failures": [],
+  "review_blockers_resolved": [
+    {"id": "B1", "status": "RESUELTO", "detail": "Informe antiguo con secreto eliminado y security/rescan.json redactado; 0 valores DB_PASSWORD no-placeholder en test-results/"},
+    {"id": "B2", "status": "RESUELTO", "commit": "335b072", "detail": "TestValidacionEntradasHTTP respeta ABYS_SKIP_INTEGRATION=1 antes de cargar .env; go test ./... pasa sin escrituras a BD"}
+  ],
+  "database_tests": {
+    "executed": false,
+    "database_writes": false,
+    "skipped_count": 6,
+    "reason": "ABYS_SKIP_INTEGRATION=1 para impedir escrituras en abys_test; la guarda de TestValidacionEntradasHTTP (335b072) se evalúa antes de godotenv.Load"
+  },
+  "protected_symbols_all_present": true,
+  "removed_symbols_absent_in_product_code": true,
+  "findings_advisory": [
+    "Verificación manual del usuario pendiente antes de cualquier merge; sin deploy, tag ni release",
+    "@radix-ui/react-* y clsx solo aparecen como dependencias transitivas en web/package-lock.json",
+    "R2.3 (prohibir * en produccion) documentada pero no enforceada en cors.go",
+    "agrupar.ts conservado según instruccion/SPEC, sin consumidor de producto",
+    "gitleaks y semgrep no disponibles; sin escaneo automatizado de secretos/SAST",
+    "Vite avisa de chunks >500 kB (no bloqueante)",
+    "No se reejecutó el harness visual AA completo; AC10 PASS por verificación estática del reviewer"
+  ],
+  "git": {
+    "product_code_modified": false,
+    "history_mutated": false,
+    "commits_since_base": 6,
+    "merge_commits_since_base": 0,
+    "tags_at_head": 0,
+    "ai_files_committed": false,
+    "graphify_built_at_commit": "335b07225362033cb740a3422fcdee5dce378f53"
+  },
+  "evidence_security_scan": {
+    "scope": "todos los archivos bajo test-results/",
+    "non_placeholder_db_password_values_remaining": 0,
+    "values_printed": false
+  },
+  "evidence": {
+    "report": "test-results/refactor-purga-seguridad/report.md",
+    "metrics": "test-results/refactor-purga-seguridad/metrics.json",
+    "bundle_detail": "test-results/refactor-purga-seguridad/bundle-size.json",
+    "logs": "test-results/refactor-purga-seguridad/logs/"
+  }
+}

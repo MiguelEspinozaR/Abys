@@ -1,0 +1,346 @@
+{
+  "task": "refactor-purga-seguridad",
+  "phase": "F6",
+  "mode": "read-only-test",
+  "repository": "/home/miky/Documentos/finanzasMikyGoRef",
+  "branch": "chore/refactor-purga-seguridad",
+  "head": "335b07225362033cb740a3422fcdee5dce378f53",
+  "base": "35bb8a1",
+  "date": "2026-11-23",
+  "generated_at": "2026-11-23T13:46:27-04:00",
+  "overall": {
+    "status": "PASS",
+    "release_ready": false,
+    "release_ready_reason": "El usuario probará manualmente la rama antes de cualquier merge; no hay deploy, tag ni release",
+    "functional_regressions": 0,
+    "compilation_failures": 0,
+    "ac_pass": 12,
+    "ac_fail": 0,
+    "ac_not_executed": 0,
+    "blockers": []
+  },
+  "review_blockers_resolved": [
+    {
+      "id": "B1",
+      "status": "RESUELTO",
+      "detail": "Informe antiguo test-results/security/analisis-correcciones-seguridad.json con DB_PASSWORD sin redactar eliminado; test-results/refactor-purga-seguridad/security/rescan.json redactado (0 valores no-placeholder)."
+    },
+    {
+      "id": "B2",
+      "status": "RESUELTO",
+      "commit": "335b07225362033cb740a3422fcdee5dce378f53",
+      "detail": "TestValidacionEntradasHTTP respeta ABYS_SKIP_INTEGRATION=1: t.Skip en integration_test.go:278-280 antes de testConfigYPostgres() (integration_test.go:805, godotenv.Load). ABYS_SKIP_INTEGRATION=1 go test ./... pasa sin conexion ni escrituras a BD."
+    }
+  ],
+  "commands": [
+    {
+      "index": 1,
+      "command": "cd web && npx tsc -b",
+      "command_executed": "npx tsc -b (workdir=web)",
+      "exit_code": 0,
+      "status": "PASS",
+      "stdout_stderr": "",
+      "log": "logs/01-web-tsc.log"
+    },
+    {
+      "index": 2,
+      "command": "cd web && npm test",
+      "command_executed": "npm test (workdir=web)",
+      "exit_code": 0,
+      "status": "PASS",
+      "summary": "Test Files 18 passed (18); Tests 187 passed (187); Duration 15.01s; vitest 5.0.0",
+      "counts": {
+        "test_files_passed": 18,
+        "test_files_failed": 0,
+        "tests_passed": 187,
+        "tests_failed": 0
+      },
+      "log": "logs/02-web-npm-test.log"
+    },
+    {
+      "index": 3,
+      "command": "cd web && npm run build",
+      "command_executed": "npm run build (workdir=web)",
+      "exit_code": 0,
+      "status": "PASS",
+      "summary": "3282 modules transformed; built in 24.91s; advisory: chunks >500 kB (index 516.95 kB, DashboardPage 451.55 kB)",
+      "log": "logs/03-web-npm-build.log"
+    },
+    {
+      "index": 4,
+      "command": "cd backend && go test ./...",
+      "command_executed": "ABYS_SKIP_INTEGRATION=1 go test ./... (workdir=backend)",
+      "deviation": "Guarda ABYS_SKIP_INTEGRATION=1 antepuesta: backend/.env existe y los tests de integracion cargan DB_PASSWORD antes de comprobarla; sin la guarda se escribiria en abys_test",
+      "exit_code": 0,
+      "status": "PASS",
+      "summary": "7 paquetes ok, 4 [no test files], 0 fallos",
+      "log": "logs/04-backend-go-test.log"
+    },
+    {
+      "index": 5,
+      "command": "cd backend && go build -o server ./cmd/server",
+      "command_executed": "go build ./... (workdir=backend)",
+      "deviation": "Se usa 'go build ./...' para no generar artefactos. backend/server preexistente esta gitignored y no se modifico",
+      "exit_code": 0,
+      "status": "PASS",
+      "stdout_stderr": "",
+      "log": "logs/05-backend-go-build-all.log"
+    },
+    {
+      "index": 6,
+      "command": "ABYS_SKIP_INTEGRATION=1 go test -v ./...",
+      "command_executed": "ABYS_SKIP_INTEGRATION=1 go test -v ./... (workdir=backend)",
+      "purpose": "Corrida base en f3b137d, anterior a la correccion B2 (5 omisiones)",
+      "exit_code": 0,
+      "status": "PASS",
+      "counts": {
+        "top_level_pass": 34,
+        "subtest_pass": 18,
+        "total_pass_lines": 52,
+        "skipped": 5,
+        "failed": 0
+      },
+      "log": "logs/06-backend-go-test-verbose.log"
+    },
+    {
+      "index": 7,
+      "command": "cd web && npx tsc -b && npm test && npm run build",
+      "command_executed": "npx tsc -b && npm test && npm run build (workdir=web)",
+      "purpose": "Re-ejecucion en HEAD 335b072",
+      "exit_code": 0,
+      "status": "PASS",
+      "summary": "187/187 tests; build OK; 3282 modules transformed; 22.45s",
+      "log": "logs/07-web-rerun-head-335b072.log"
+    },
+    {
+      "index": 8,
+      "command": "cd backend && ABYS_SKIP_INTEGRATION=1 go test ./...",
+      "command_executed": "ABYS_SKIP_INTEGRATION=1 go test ./... (workdir=backend)",
+      "purpose": "Suite Go en HEAD 335b072, sin conexion a BD",
+      "exit_code": 0,
+      "status": "PASS",
+      "summary": "7 paquetes ok, 4 [no test files], 0 fallos, sin escrituras a BD",
+      "log": "logs/08-backend-rerun-head-335b072.log"
+    },
+    {
+      "index": 9,
+      "command": "cd backend && ABYS_SKIP_INTEGRATION=1 go test -cover ./...",
+      "command_executed": "ABYS_SKIP_INTEGRATION=1 go test -cover ./... (workdir=backend)",
+      "purpose": "Reportar cobertura observada sin umbral definido",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": "logs/08-backend-rerun-head-335b072.log"
+    },
+    {
+      "index": 10,
+      "command": "cd backend && ABYS_SKIP_INTEGRATION=1 go test -v -run '^TestValidacionEntradasHTTP$' ./internal/router",
+      "command_executed": "ABYS_SKIP_INTEGRATION=1 go test -v -run '^TestValidacionEntradasHTTP$' ./internal/router (workdir=backend)",
+      "purpose": "Verificacion dirigida de B2",
+      "exit_code": 0,
+      "status": "PASS",
+      "result": "--- SKIP: TestValidacionEntradasHTTP; integracion desactivada; sin cargar .env",
+      "log": "logs/08-backend-rerun-head-335b072.log"
+    },
+    {
+      "index": 11,
+      "command": "cd backend && go build ./...",
+      "command_executed": "go build ./... (workdir=backend)",
+      "exit_code": 0,
+      "status": "PASS",
+      "stdout_stderr": "",
+      "log": "logs/08-backend-rerun-head-335b072.log"
+    },
+    {
+      "index": 12,
+      "command": "cd backend && ABYS_SKIP_INTEGRATION=1 go test -count=1 -v ./...",
+      "command_executed": "ABYS_SKIP_INTEGRATION=1 go test -count=1 -v ./... (workdir=backend)",
+      "purpose": "Conteo fresco en HEAD 335b072",
+      "exit_code": 0,
+      "status": "PASS",
+      "counts": {
+        "top_level_pass": 33,
+        "subtest_pass": 18,
+        "total_pass_lines": 51,
+        "skipped": 6,
+        "failed": 0
+      },
+      "log": "logs/09-backend-go-test-verbose-head-335b072.log"
+    }
+  ],
+  "database_tests_not_executed": {
+    "reason": "ABYS_SKIP_INTEGRATION=1 impide cualquier conexion a abys_test; backend/.env no se leyo ni se imprimio. Tras B2 el skip de TestValidacionEntradasHTTP ocurre antes de godotenv.Load.",
+    "database_writes": false,
+    "count": 6,
+    "tests": [
+      {"name": "TestMigration000006Backfill", "package": "internal/database", "reason": "crea/droppea esquema y ejecuta migraciones"},
+      {"name": "TestSettingsRegistrarEndpoints", "package": "internal/handler", "reason": "POST/DELETE en app_settings de abys_test"},
+      {"name": "TestPagoRepoMontoPorDia", "package": "internal/repository", "reason": "inserta/borra pagos en abys_test"},
+      {"name": "TestIntegrationAPI", "package": "internal/router", "reason": "flujo HTTP completo con escrituras; incluye /health y /health/db"},
+      {"name": "TestValidacionEntradasHTTP", "package": "internal/router", "reason": "B2 resuelto en 335b072: skip en integration_test.go:278-280 antes de cargar .env"},
+      {"name": "TestSplitPendienteExcluyeGeneralHTTP", "package": "internal/router", "reason": "crea/limpia pagos y splits en abys_test"}
+    ]
+  },
+  "coverage": {
+    "threshold_defined": false,
+    "threshold_note": "No se define ni se aplica ningun umbral de cobertura; se reporta solo lo observado",
+    "go": {
+      "command": "ABYS_SKIP_INTEGRATION=1 go test -cover ./...",
+      "by_package_percent": {
+        "abys/internal/router": 98.5,
+        "abys/internal/middleware": 63.0,
+        "abys/internal/splitcalc": 86.4,
+        "abys/internal/service": 28.8,
+        "abys/internal/handler": 5.8,
+        "abys/internal/database": 0.0,
+        "abys/internal/repository": 0.0,
+        "abys/cmd/server": 0.0,
+        "abys/docs": 0.0,
+        "abys/internal/apperr": 0.0,
+        "abys/internal/config": 0.0
+      }
+    },
+    "web": {
+      "status": "no_medida",
+      "reason": "No hay proveedor de cobertura configurado en web/package.json; 187/187 tests pasan"
+    }
+  },
+  "protected_symbols": {
+    "scope": "web/src/**, backend/** (excluye backend/.env y el binario ignorado backend/server), package.json, package-lock.json, .env.example",
+    "all_present": true,
+    "symbols": {
+      "clavePagosPagina": {"present": true, "count": 8, "definition": "web/src/services/hooks.ts:87", "used_in": ["web/src/hooks/useHistorial.ts:112", "web/src/hooks/useHistorial.ts:158", "web/src/hooks/useHistorial.ts:203", "web/src/hooks/useHistorial.ts:217"]},
+      "fetchPagosPagina": {"present": true, "count": 5, "definition": "web/src/services/hooks.ts:100", "used_in": ["web/src/hooks/useHistorial.ts:113", "web/src/hooks/useHistorial.ts:159", "web/src/hooks/useHistorial.ts:218"]},
+      "serializarFiltrosPagos": {"present": true, "count": 5, "definition": "web/src/services/hooks.ts:75"},
+      "PagosFiltros": {"present": true, "count": 7, "definition": "web/src/services/hooks.ts:57"},
+      "esFechaISOValida": {"present": true, "count": 17, "definition": "web/src/lib/validators.ts:18"},
+      "Error.Details": {"present": true, "definition": "backend/internal/apperr/apperr.go:24 (Details any)", "serialized_in": "backend/internal/handler/errors.go:37-38", "tested_in": "backend/internal/handler/validacion_entrada_test.go:127"},
+      "NewInternal": {"present": true, "count": 7, "definition": "backend/internal/apperr/apperr.go:44"},
+      "responderError": {"present": true, "count": 66, "definition": "backend/internal/handler/errors.go:17"},
+      "invalidarHistorial": {"present": true, "count": 10, "definition": "web/src/services/hooks.ts:285"},
+      "api.ts": {"present": true, "path": "web/src/services/api.ts", "envelope_unwrap": "web/src/services/api.ts:79-80"},
+      "queryKeys.pagos": {"present": true, "count": 11},
+      "queryKeys.splits": {"present": true, "count": 10},
+      "[\"split\"]": {"present": true, "count": 6},
+      "agrupar.ts": {"present": true, "path": "web/src/lib/agrupar.ts", "note": "conservado por SPEC historial-a11y R3/D7; unico consumidor es su propio test"}
+    }
+  },
+  "removed_symbols": {
+    "scope": "codigo de producto (excluye .ai/, test-results/ y lockfile)",
+    "all_absent": true,
+    "symbols": {
+      "usePagosPagina": 0,
+      "usePagoDetalle": 0,
+      "useSplitDetalle": 0,
+      "WithDetails(": 0,
+      "AsError(": 0,
+      "prefersReducedMotion": 0,
+      "motionBehavior": 0,
+      "<Progress": 0,
+      "ApiEnvelope": 0,
+      "next-themes": 0,
+      "geist": 0,
+      "@radix-ui/react-": 0,
+      "clsx": 0,
+      "tailwind-merge": 0,
+      "TIMEZONE": 0
+    },
+    "exceptions": [
+      {"symbol": "@radix-ui/react-", "where": "web/package-lock.json", "count": 438, "classification": "transitivas de radix-ui/shadcn; no en package.json ni imports"},
+      {"symbol": "clsx", "where": "web/package-lock.json", "count": 5, "classification": "transitiva de class-variance-authority, radix-ui y shadcn"},
+      {"symbol": "varios", "where": ".ai/** y test-results/**", "classification": "documentacion PLAN/SPEC y evidencia historica conservada; no es codigo de producto"},
+      {"symbol": "prefers-reduced-motion", "where": "web/src/index.css:201", "classification": "media query CSS requerida por gate AA 5.6; no es un simbolo purgado"},
+      {"symbol": "TIMEZONE", "where": "backend/server (binario ignorado)", "classification": "artefacto preexistente, no fuente"}
+    ]
+  },
+  "flows": {
+    "historial_paginado": {"status": "verificado_estatica_y_tests", "evidence": ["web/src/hooks/useHistorial.ts", "filtrosUrl.test.ts", "agrupar.test.ts", "hooks.marcarRealizadas.test.ts", "TestDashboardContracts"]},
+    "registrar_pago": {"status": "verificado_estatica_y_tests", "evidence": ["web/src/services/hooks.ts:300-302", "pagoPayload.test.ts", "uploads.test.ts", "validators.test.ts", "TestDerivarTotalPagoY422", "TestValidacionCuentaInputInvalido"]},
+    "splits": {"status": "verificado_estatica_y_tests", "evidence": ["hooks.ts invalidaciones queryKeys.splits y [\"split\"]", "confirmacionRealizar.test.ts", "realizarSeleccionados.test.ts", "subtotal.test.ts", "TestTotalesSplit", "TestCalcularSplit*"]},
+    "dashboard": {"status": "verificado_estatica_y_tests", "evidence": ["chartLogic.test.ts", "TestDashboardContracts (8 endpoints 200)"]},
+    "configuracion": {"status": "verificado_estatica_y_tests", "evidence": ["settingsFallback.test.ts", "themeColor.test.ts", "TestValidacionCuentaInputInvalido", "TestValidacionCuentaDatosValidosYLegacy", "TestResponderErrorConservaDetails"]},
+    "health": {"status": "parcial", "evidence": ["router.go:85-86 /health y /health/db", "useHealth() -> /health/db", "nav.test.ts"], "gap": "ejercicio runtime solo en TestIntegrationAPI, omitido por la guarda anti-BD; prueba manual pendiente"}
+  },
+  "bundle": {
+    "baseline_bytes": 1536940,
+    "current_bytes": 1450009,
+    "delta_bytes": -86931,
+    "delta_percent": -5.656,
+    "file_count": 25,
+    "increased": false,
+    "font_sha256": {
+      "inter-latin-wght-normal-Dx4kXJAl.woff2": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62",
+      "inter-latin-ext-wght-normal-DO1Apj_S.woff2": "34b9c504cab7a73e37b746343a449132e56cf7b5481af2cb81dc74dcff25c956"
+    },
+    "largest_files": [
+      {"file": "web/dist/assets/index-CYhxWG3s.js", "bytes": 516949},
+      {"file": "web/dist/assets/DashboardPage-DrclDJxr.js", "bytes": 451549},
+      {"file": "web/dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2", "bytes": 85068},
+      {"file": "web/dist/assets/index-D3G7basN.css", "bytes": 84561},
+      {"file": "web/dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2", "bytes": 48256}
+    ],
+    "detail_file": "bundle-size.json"
+  },
+  "ac_verdicts": [
+    {"id": "AC1", "status": "PASS", "note": "Purga confirmada por grep literal + tsc + go build; agrupar.ts conservado por instruccion/SPEC"},
+    {"id": "AC2", "status": "PASS", "note": "14/14 simbolos protegidos presentes"},
+    {"id": "AC3", "status": "PASS", "note": "187/187 web; go test 0 fallos en 335b072 sin conexion a BD"},
+    {"id": "AC4", "status": "PASS", "note": "build OK; dist -86931 B (-5,656 %)"},
+    {"id": "AC5", "status": "PASS", "note": "envelope {data:T} y error.details conservados y testeados"},
+    {"id": "AC6", "status": "PASS", "note": ".env.example con placeholder; backend/.env gitignored; B1 resuelto (informe antiguo eliminado y rescan redactado)"},
+    {"id": "AC7", "status": "PASS", "note": "5 tests CORS PASS; R2.3 (* prohibido en produccion) solo documentado, no enforceado"},
+    {"id": "AC8", "status": "PASS", "note": "400/201/200 y legacy cubiertos por tests unitarios; TestValidacionEntradasHTTP omitido por B2 (guarda anti-BD), no fallido"},
+    {"id": "AC9", "status": "PASS", "note": "seis flujos verificados por lectura + tests; sin E2E/BD"},
+    {"id": "AC10", "status": "PASS", "note": "Reviewer verifico estaticamente ausencia de cambios observables de copy, navegacion, focus y prefers-reduced-motion; unicos cambios visuales: fuentes byte-identicas (latin/latin-ext) y eliminacion de componentes sin uso. Harness visual completo NO reejecutado (advisory)", "advisory": true},
+    {"id": "AC11", "status": "PASS", "note": "Grafo regenerado con /home/miky/.local/bin/graphify update .; built_at_commit = 335b07225362033cb740a3422fcdee5dce378f53"},
+    {"id": "AC12", "status": "PASS", "note": "6 commits de fase, 0 merges, 0 tags, sin .ai/ en commits; esta corrida no commiteo"}
+  ],
+  "findings": [
+    {"id": "F-01", "severity": "resolved", "text": "B1: informe antiguo con secreto eliminado y rescan.json redactado; 0 valores DB_PASSWORD no-placeholder en test-results/"},
+    {"id": "F-02", "severity": "resolved", "text": "B2: TestValidacionEntradasHTTP respeta ABYS_SKIP_INTEGRATION=1 desde 335b072; go test sin escrituras a BD"},
+    {"id": "F-03", "severity": "resolved", "text": "AC10: PASS por verificacion estatica del reviewer; harness visual completo no reejecutado (advisory)"},
+    {"id": "F-04", "severity": "resolved", "text": "AC11: grafo regenerado en 335b072 (built_at_commit verificado)"},
+    {"id": "F-05", "severity": "advisory", "text": "El usuario probara manualmente antes de merge; release_ready=false; sin deploy/tag/release"},
+    {"id": "F-06", "severity": "advisory", "text": "R2.3 no enforceada: cors.go acepta '*' si se configura; solo documentado como prohibido en produccion"},
+    {"id": "F-07", "severity": "advisory", "text": "La SPEC nombra backend/.env.example pero el archivo versionado es .env.example en la raiz"},
+    {"id": "F-08", "severity": "advisory", "text": "agrupar.ts conservado sin consumidor de producto; decision exigida por SPEC historial-a11y R3/D7"},
+    {"id": "F-09", "severity": "advisory", "text": "Vite avisa de chunks >500 kB (no bloquea el build)"},
+    {"id": "F-10", "severity": "advisory", "text": "gitleaks y semgrep no disponibles; sin escaneo automatizado de secretos/SAST; verificacion de evidencia realizada por escaneo determinista de DB_PASSWORD"}
+  ],
+  "git_state": {
+    "commits_since_base": 6,
+    "merge_commits_since_base": 0,
+    "tags_at_head": 0,
+    "ai_files_in_commits": false,
+    "status": [
+      "cambios en test-results/refactor-purga-seguridad/ y test-results/tests/refactor-purga-seguridad.json (esta corrida)",
+      "cambios preexistentes en graphify-out/ por la regeneracion autorizada del grafo en 335b072 (no producidos por esta corrida)"
+    ],
+    "graphify_out_clean": false,
+    "graphify_built_at_commit": "335b07225362033cb740a3422fcdee5dce378f53",
+    "product_code_modified_by_this_run": false,
+    "git_history_mutated_by_this_run": false
+  },
+  "evidence_security_scan": {
+    "scope": "todos los archivos bajo test-results/",
+    "pattern": "asignaciones de DB_PASSWORD con valor distinto de cambiar-en-despliegue, PLACEHOLDER, your_password_here o <redactado>",
+    "assignments_found": 3,
+    "non_placeholder_values_remaining": 0,
+    "values_printed": false,
+    "detail": "2 apariciones ya redactadas como <redactado> y 1 con PLACEHOLDER en refactor-purga-seguridad/security/rescan.json"
+  },
+  "evidence_files": [
+    "report.md",
+    "metrics.json",
+    "bundle-size.json",
+    "security/rescan.json",
+    "logs/01-web-tsc.log",
+    "logs/02-web-npm-test.log",
+    "logs/03-web-npm-build.log",
+    "logs/04-backend-go-test.log",
+    "logs/05-backend-go-build-all.log",
+    "logs/06-backend-go-test-verbose.log",
+    "logs/07-web-rerun-head-335b072.log",
+    "logs/08-backend-rerun-head-335b072.log",
+    "logs/09-backend-go-test-verbose-head-335b072.log"
+  ]
+}

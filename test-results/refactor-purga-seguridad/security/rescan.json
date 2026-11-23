@@ -1,0 +1,173 @@
+{
+  "task_id": "refactor-purga-seguridad-rescan",
+  "timestamp": "2026-11-23T14:30:00Z",
+  "scope": "secretos en .env/.env.example, CORS, validaciones de inputs, contrato de errores, Semgrep",
+  "project": "finanzasMikyGoRef (Go + Gin + pgx, PostgreSQL)",
+  "branch": "chore/refactor-purga-seguridad",
+  "gitleaks_status": "partial_tool_missing",
+  "gitleaks_note": "gitleaks no disponible en el entorno; se usado escaneo regex como fallback. Hallazgo relevante: backend/.env contiene DB_PASSWORD=<redactado> pero está gitignored y no se comiteó nunca. .env.example usa placeholder cambiar-en-despliegue.",
+  "findings": [
+    {
+      "category": "secretos_en_env",
+      "severity": "medium",
+      "affected_files": [
+        {
+          "path": "backend/.env",
+          "lines": [
+            6
+          ],
+          "evidencia": "DB_PASSWORD=<redactado> es un valor codificado en .env (archivo gitignored). Si este archivo llegara a commitearse o exponerse, comprometería la base de datos.",
+          "accion": "Mover DB_PASSWORD a variables de entorno del sistema o gestor de secretos; .env.example debe mantener DB_PASSWORD=PLACEHOLDER como indicador claro de que no es un valor real."
+        }
+      ],
+      "comportamiento_observable": "El archivo .env está en .gitignore y nunca se ha comiteado. La contraseña real se inyecta por variables de entorno en el despliegue. Riesgo bajo gracias a la protección de gitignore.",
+      "pasos_tests_a_refuerzar": [
+        "Verificar que .env esté en .gitignore y nunca se comite",
+        "Probar que la aplicación falla gracefully si DB_PASSWORD no está definida",
+        "Validar que .env.example no contiene valores reales sensibles"
+      ]
+    },
+    {
+      "category": "cors",
+      "severity": "low",
+      "affected_files": [
+        {
+          "path": "backend/internal/middleware/cors.go",
+          "lines": [
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23
+          ],
+          "evidencia": "La función CORS refleja el Origin si está en la lista permitida (configurable vía CORS_ORIGIN en .env). La lista actual es http://localhost:5173. El middleware comprueba allowAll := slices.Contains(origins, \"*\"). No hay '*' en la configuración actual.",
+          "accion": "Mantener lista explícita de orígenes; en producción reemplazar cualquier '*' por una lista delimitada por comma de orígenes reales. Verificar que el preflight OPTIONS funcione correctamente para los orígenes permitidos."
+        }
+      ],
+      "comportamiento_observable": "Las peticiones desde http://localhost:5173 (frontend de dev) pueden acceder a la API. Orígenes no listados son rechazados (sin Access-Control-Allow-Origin). El comodín '*' no está en la configuración actual, satisfaciendo el requisito de prohibición en producción.",
+      "pasos_tests_a_refuerzar": [
+        "Probar peticiones CORS desde el origen del frontend (localhost:5173)",
+        "Probar que orígenes no listados son rechazados",
+        "Verificar preflight OPTIONS responses"
+      ]
+    },
+    {
+      "category": "validacion_de_inputs",
+      "severity": "low",
+      "affected_files": [
+        {
+          "path": "backend/internal/handler/cuenta_handler.go",
+          "lines": [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32
+          ],
+          "evidencia": "CuentaRequest: alias con binding:\"required\"; numero y banco son *string (opcionales) con max=50/max=100. Validaciones retrocompatibles con los VARCHAR de la base de datos.",
+          "accion": "Las validaciones actuales son adecuadas. No añadir validaciones que rompan compatibilidad con datos históricos."
+        },
+        {
+          "path": "backend/internal/handler/pago_handler.go",
+          "lines": [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38
+          ],
+          "evidencia": "CreatePagoRequest y UpdatePagoRequest validan monto_enteros >= 0 (binding:\"gte=0\") y formato de fecha. DiaInput también tiene gte=0. Validaciones retrocompatibles.",
+          "accion": "Las validaciones actuales son adecuadas. Revisar que validarTotalCliente en pago_service.go rechine totales inconsistentes."
+        },
+        {
+          "path": "backend/internal/handler/settings_handler.go",
+          "lines": [
+            29,
+            30,
+            121,
+            122,
+            123,
+            124,
+            125,
+            126,
+            127
+          ],
+          "evidencia": "Whitelists definidas en código: registrarMetodosValidos = [\"efectivo\", \"qr\", \"transaccion\"] y registrarModosValidos = [\"detallado\", \"distribuido\"]. Validación con slices.Contains. Modos válidos desde splitcalc.ModosValidos.",
+          "accion": "Las validaciones están correctamente implementadas. Los métodos y modos permitidos están definidos como variables de paquete y verificadas con slices.Contains."
+        }
+      ],
+      "comportamiento_observable": "Inputs inválidos (fechas erróneas, montos negativos, métodos no permitidos) son rechazados con 400 Bad Request. Las validaciones existentes son restrictivas suficiente para seguridad sin romper compatibilidad con datos ya persistidos."
+    },
+    {
+      "category": "contrato_errores",
+      "severity": "info",
+      "affected_files": [
+        {
+          "path": "backend/internal/handler/errors.go",
+          "lines": [
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41
+          ],
+          "evidencia": "La función responderError escribe JSON consistente: {\"error\":{\"code\":\"INTERNAL_ERROR\",\"message\":\"...\",\"details\"?}}. El campo details se incluye cuando se.Details != nil en el error apperr. El contrato error.details está intacto y se conserva en todas las rutas.",
+          "accion": "No modificar. El contrato HTTP {data:...} y la serialización de errores con details se conservan tal como quedó en el commit f3b137d."
+        }
+      ],
+      "comportamiento_observable": "Input inválido → 400 con contrato de error; válido → 200/201. Datos legacy siguen siendo aceptados. El campo error.details está disponible cuando las capas de servicio/repositorio lo proveen."
+    }
+  ],
+  "semgrep_status": "unavailable",
+  "semgrep_note": "semgrep no disponible en el entorno; se reporta limitación. No se pudo ejecutar el escaneo de reglas de seguridad para Go/TypeScript.",
+  "tests_check": {
+    "secrets_en_tests": "No detectados - los archivos de test no contienen credenciales ni valores codificados. Los tests que requieren DB_PASSWORD hacen skip condicional si no está definido el env var.",
+    "escritura_bd_produccion": "No aplicado - las tests de integración usan base de datos `abys_test` y se saltan si DB_PASSWORD no está definida. Ningún test nuevo escribe a la BD de producción.",
+    "observation": "Los tests de integración referencian `abys_test` como nombre de BD de integración; no hay escrituras en la BD de producción."
+  },
+  "veredicto": "Sin hard blocks críticos. Hallazgos de severidad media/baja todos mitigados o con controles existentes. Los principales puntos de atención son: (1) .env con contraseña debe permanecer gitignored y la contraseña real debe inyectarse solo en entorno de despliegue, (2) CORS mantiene lista explícita sin '*', (3) validaciones retrocompatibles intactas, (4) contrato error.details sin alteraciones. El refactor-purga-seguridad cumple los criterios de aceptación AC6-AC11 sin riesgos de bloqueo duro.",
+  "recomendaciones_compatibilidad": [
+    "Mover DB_PASSWORD de .env a variables de entorno del sistema de despliegue; actualizar .env.example para que no muestre valor real (usa PLACEHOLDER).",
+    "Mantener http://localhost:5173 en la lista CORS para desarrollo; en producción usar lista delimitada por comma de orígenes reales.",
+    "Mantener validaciones actuales y añadir solo si hay requerimiento de formato específico; evitar validaciones que rompan compatibilidad con datos existentes.",
+    "Ejecutar `go test ./...` y `npm test` después de cambios para asegurar que no haya regresiones.",
+    "Verificar que CORS preflight OPTIONS aún funciona correctamente después de cambios de configuración."
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "root": "web/dist",
+  "total_bytes": 1450009,
+  "baseline_bytes": 1536940,
+  "delta_bytes": -86931,
+  "delta_pct": -5.656,
+  "file_count": 25,
+  "files": [
+    {
+      "path": "web/dist/assets/index-CYhxWG3s.js",
+      "bytes": 516949
+    },
+    {
+      "path": "web/dist/assets/DashboardPage-DrclDJxr.js",
+      "bytes": 451549
+    },
+    {
+      "path": "web/dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2",
+      "bytes": 85068
+    },
+    {
+      "path": "web/dist/assets/index-D3G7basN.css",
+      "bytes": 84561
+    },
+    {
+      "path": "web/dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2",
+      "bytes": 48256
+    },
+    {
+      "path": "web/dist/assets/ConfiguracionPage-DKJZnRsc.js",
+      "bytes": 46798
+    },
+    {
+      "path": "web/dist/assets/CalendarioDias-C7v3JzHz.js",
+      "bytes": 42809
+    },
+    {
+      "path": "web/dist/assets/validators-BWPQ3efC.js",
+      "bytes": 39442
+    },
+    {
+      "path": "web/dist/assets/button-B2a_2z6i.js",
+      "bytes": 30314
+    },
+    {
+      "path": "web/dist/assets/IngresosPage-CYAm4gyt.js",
+      "bytes": 20906
+    },
+    {
+      "path": "web/dist/assets/SplitsPage-C-Nw9DiK.js",
+      "bytes": 20905
+    },
+    {
+      "path": "web/dist/assets/RegistrarPage-BeByPtl7.js",
+      "bytes": 18792
+    },
+    {
+      "path": "web/dist/assets/useFiltrosHistorial-CZoFscBp.js",
+      "bytes": 15459
+    },
+    {
+      "path": "web/dist/assets/dialog-CI87tga6.js",
+      "bytes": 5466
+    },
+    {
+      "path": "web/dist/assets/HealthPage-VxUmHhJJ.js",
+      "bytes": 5262
+    },
+    {
+      "path": "web/dist/assets/checkbox-_MhmSSfT.js",
+      "bytes": 4926
+    },
+    {
+      "path": "web/dist/assets/api-errors-aJJ1fczc.js",
+      "bytes": 4668
+    },
+    {
+      "path": "web/dist/assets/alert-s6jDwYS7.js",
+      "bytes": 2072
+    },
+    {
+      "path": "web/dist/assets/format-C7PZdO2S.js",
+      "bytes": 1630
+    },
+    {
+      "path": "web/dist/assets/badge-DlCQwLVi.js",
+      "bytes": 1390
+    },
+    {
+      "path": "web/dist/assets/table-D7xV-lHU.js",
+      "bytes": 1143
+    },
+    {
+      "path": "web/dist/index.html",
+      "bytes": 742
+    },
+    {
+      "path": "web/dist/assets/eraser-pPfWUjWw.js",
+      "bytes": 442
+    },
+    {
+      "path": "web/dist/assets/uploads-CiipHLG-.js",
+      "bytes": 265
+    },
+    {
+      "path": "web/dist/assets/skeleton-B4nQt47f.js",
+      "bytes": 195
+    }
+  ]
+}
