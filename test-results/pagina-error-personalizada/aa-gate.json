@@ -1,0 +1,144 @@
+{
+  "feature": "pagina-error-personalizada",
+  "milestone": "M3",
+  "commit": "a0384dcddf6b10f5f05ee5d674dc4db3e31d8a52",
+  "date": "2026-11-24",
+  "generated_at": "2026-11-24T00:35:13-04:00",
+  "policy": ".ai/policies/project-policy.md §5",
+  "method": {
+    "browser": "playwright-cli 1.65.0 (npx --no-install playwright cli), Chromium headless",
+    "server": "servidor Vite local preexistente en http://127.0.0.1:5178 (vite preview sirviendo web/dist); no se inició ni detuvo ningún servidor",
+    "forced_error": "route 404 sobre **/assets/DashboardPage-*.js y **/assets/RegistrarPage-*.js para provocar 'Failed to fetch dynamically imported module' real en el navegador",
+    "routes_verified_runtime": ["/", "/registrar"],
+    "viewports": [{ "name": "desktop", "width": 1280, "height": 720 }, { "name": "mobile", "width": 390, "height": 844 }],
+    "themes": ["light", "dark"],
+    "screenshots": [
+      "screenshots/error-desktop-dark.png",
+      "screenshots/error-mobile-dark.png"
+    ]
+  },
+  "gate_aa": {
+    "result": "6/6 PASS",
+    "criteria": [
+      {
+        "id": "5.1",
+        "name": "Touch targets ≥44×44 px en móvil",
+        "status": "PASS",
+        "evidence": "390×844: Reintentar 310×44 px; Ir al inicio 310×44 px; controles icon-only de la barra superior 44×44 px"
+      },
+      {
+        "id": "5.2",
+        "name": "Contraste de texto AA en light y dark",
+        "status": "PASS",
+        "evidence": "mínimo observado 4.54:1 (descripción en light, 14px con alpha 0.9 compuesto sobre blanco); resto 4.74–19.8:1; ver contrasts"
+      },
+      {
+        "id": "5.3",
+        "name": "Foco visible con contraste ≥3:1",
+        "status": "PASS",
+        "evidence": "anillo focus-visible de 3px (oklch(0.556 0 0) → rgb 115,115,115): dark 3.76:1 sobre botón y 3.07:1 sobre enlace; light 3.78:1 y 4.74:1"
+      },
+      {
+        "id": "5.4",
+        "name": "Navegación completa por teclado sin trampas",
+        "status": "PASS",
+        "evidence": "Tab alcanza Reintentar → Ir al inicio → fin del documento; Shift+Tab retrocede al enlace; Enter en el enlace provoca navegación completa; ver keyboard"
+      },
+      {
+        "id": "5.5",
+        "name": "Nombre accesible",
+        "status": "PASS",
+        "evidence": "snapshot accesible expone heading level 1 'No se pudo cargar esta sección', button 'Reintentar' y link 'Ir al inicio' con href '/'; sin controles icon-only nuevos"
+      },
+      {
+        "id": "5.6",
+        "name": "prefers-reduced-motion respetado",
+        "status": "PASS",
+        "evidence": "con reduced-motion: reduce, animation-name 'none' y duraciones de animación/transición 1e-05s en h1 y ambos controles"
+      }
+    ]
+  },
+  "contrasts": {
+    "light": {
+      "themeClass": "",
+      "heading_16px_600": 4.77,
+      "description_14px_alpha_0.9": 4.54,
+      "retry_button": 17.18,
+      "home_link": 19.8
+    },
+    "dark": {
+      "themeClass": "dark",
+      "heading_16px_600": 6.21,
+      "description_14px_alpha_0.9": 5.23,
+      "retry_button": 14.23,
+      "home_link": 13.94
+    },
+    "note": "Ratios calculados con el color resuelto por el navegador (oklch/oklab convertidos a RGB mediante canvas) compuesto sobre el fondo efectivo; alpha del copy de descripción incluido."
+  },
+  "touch_targets_mobile_px": {
+    "Reintentar": { "w": 310, "h": 44 },
+    "Ir al inicio": { "w": 310, "h": 44 },
+    "Abrir navegación": { "w": 44, "h": 44 },
+    "Cambiar a modo claro/oscuro": { "w": 44, "h": 44 }
+  },
+  "focus_ring": [
+    {
+      "theme": "dark",
+      "control": "Reintentar",
+      "adjacent_bg_rgb": [229, 229, 229],
+      "ring_rgb": [115, 115, 115],
+      "spread_px": 3,
+      "ratio": 3.76
+    },
+    {
+      "theme": "dark",
+      "control": "Ir al inicio",
+      "adjacent_bg_rgb": [41, 41, 41],
+      "ring_rgb": [115, 115, 115],
+      "spread_px": 3,
+      "ratio": 3.07
+    },
+    {
+      "theme": "light",
+      "control": "Reintentar",
+      "adjacent_bg_rgb": [23, 23, 23],
+      "ring_rgb": [115, 115, 115],
+      "spread_px": 3,
+      "ratio": 3.78
+    },
+    {
+      "theme": "light",
+      "control": "Ir al inicio",
+      "adjacent_bg_rgb": [255, 255, 255],
+      "ring_rgb": [115, 115, 115],
+      "spread_px": 3,
+      "ratio": 4.74
+    }
+  ],
+  "keyboard": {
+    "sequence_forward": ["h1 (foco programático al montar, tabIndex=-1)", "Reintentar", "Ir al inicio", "fin del documento"],
+    "sequence_backward": ["Ir al inicio", "Reintentar", "control de la barra lateral/ superior"],
+    "focus_trap": false,
+    "enter_on_home_link": {
+      "focused_before_enter": "Ir al inicio",
+      "marker_cleared_after_navigation": true,
+      "pathname": "/"
+    },
+    "advisory": "El h1 recibe foco al montar pero no es tabulable (tabIndex=-1) y su outline es 'none'; los controles tabulables sí presentan anillo visible de 3px. WCAG 2.4.7 aplica a componentes enfocables por teclado."
+  },
+  "functional": {
+    "forced_chunk_error_visible_copy": "No se pudo cargar esta sección / Es posible que la aplicación se haya actualizado mientras esta pestaña estaba abierta. Vuelve a intentarlo.",
+    "app_layout_preserved": true,
+    "stack_or_chunk_url_in_dom": false,
+    "retry_full_reload": {
+      "marker_persisted_after_click": false,
+      "error_reappeared_while_route_blocked": true
+    },
+    "home_link": {
+      "href": "/",
+      "marker_persisted_after_click": false,
+      "pathname_after_click": "/"
+    },
+    "second_lazy_route": "/registrar con route 404 sobre RegistrarPage → misma ErrorPage dentro de main"
+  }
+}

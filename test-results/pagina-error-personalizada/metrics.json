@@ -1,0 +1,176 @@
+{
+  "feature": "pagina-error-personalizada",
+  "milestone": "M3",
+  "task": "m3-evidencia-y-validacion",
+  "repository": "/home/miky/Documentos/finanzasMikyGoRef",
+  "branch": "fix/pagina-error-personalizada",
+  "head": "a0384dcddf6b10f5f05ee5d674dc4db3e31d8a52",
+  "head_short": "a0384dc",
+  "date": "2026-11-24",
+  "generated_at": "2026-11-24T00:35:13-04:00",
+  "overall": {
+    "status": "PASS",
+    "release_ready": false,
+    "release_ready_reason": "No hay deploy ni merge autorizados; M4 (seguridad/review) y M5 (entrega) pendientes",
+    "ac_pass": 7,
+    "ac_fail": 0,
+    "ac_not_verifiable": 0,
+    "aa_gate": "6/6 PASS",
+    "blockers": [],
+    "advisories": [
+      "Vite avisa de chunks >500 kB tras minificación; el build termina con exit 0",
+      "El h1 con foco programático no muestra outline (no es tabulable); los controles tabulables sí tienen anillo visible >=3:1",
+      "No se pudo usar graphify query: CLI no disponible; se usaron lecturas focalizadas y graphify-out/ no fue tocado"
+    ]
+  },
+  "commands": [
+    {
+      "index": 1,
+      "command": "cd web && npx tsc -b",
+      "exit_code": 0,
+      "status": "PASS",
+      "result": "Sin salida (compilación limpia)",
+      "log": "logs/01-web-tsc.log"
+    },
+    {
+      "index": 2,
+      "command": "cd web && npm test",
+      "exit_code": 0,
+      "status": "PASS",
+      "result": "Test Files 19 passed (19); Tests 197 passed (197); Duration 14.31s; vitest 5.0.0",
+      "counts": {
+        "test_files_passed": 19,
+        "test_files_failed": 0,
+        "tests_passed": 197,
+        "tests_failed": 0
+      },
+      "log": "logs/02-web-npm-test.log"
+    },
+    {
+      "index": 3,
+      "command": "cd web && npm run build",
+      "exit_code": 0,
+      "status": "PASS",
+      "result": "3285 modules transformed; built in 22.11s; aviso no bloqueante de chunks >500 kB",
+      "largest_chunk": {
+        "file": "dist/assets/index-DhXJHeAm.js",
+        "size_kb": 526.65,
+        "gzip_kb": 168.62
+      },
+      "other_chunk_kb": {
+        "dist/assets/DashboardPage-CZUIAnt7.js": 451.55
+      },
+      "log": "logs/03-web-npm-build.log"
+    },
+    {
+      "index": 4,
+      "command": "cd web && npx vitest run src/lib/errorChunk.test.ts",
+      "purpose": "Targeted AC3",
+      "exit_code": 0,
+      "status": "PASS",
+      "result": "Test Files 1 passed (1); Tests 10 passed (10); Duration 860ms",
+      "log": "logs/04-errorChunk-targeted.log"
+    }
+  ],
+  "coverage": {
+    "measured": false,
+    "reason": "web/package.json no define proveedor ni script de cobertura",
+    "threshold_defined": false,
+    "threshold_note": "No se inventa ni aplica umbral de cobertura; solo se reportan 197/197 tests passed",
+    "tests_passed": 197
+  },
+  "ac_verdicts": [
+    {
+      "id": "AC1",
+      "status": "PASS",
+      "note": "router.tsx: conError() envuelve conSuspense() y añade errorElement a las 6 rutas lazy dentro de AppLayout; RouteErrorPage usa useRouteError() y pasa el error a ErrorPage; raíz y wildcard intactos. Runtime confirmado en / y /registrar con route 404."
+    },
+    {
+      "id": "AC2",
+      "status": "PASS",
+      "note": "App.tsx envuelve RouterProvider con AppErrorBoundary; class component con getDerivedStateFromError/componentDidCatch y render de ErrorPage sin hooks de router. Verificación estática (no se inyectó error de render artificial por prohibición de modificar código)."
+    },
+    {
+      "id": "AC3",
+      "status": "PASS",
+      "note": "errorChunk.ts clasifica los 3 patrones y el mensaje real del incidente sin stack ni URL; errorChunk.test.ts lo cubre (10/10 targeted); 197/197 en suite completa."
+    },
+    {
+      "id": "AC4",
+      "status": "PASS",
+      "note": "Reintentar usa window.location.reload() por defecto; prueba con marcador confirma recarga completa; <a href=\"/\"> con clic y Enter hacia '/'; targets móviles max-md:min-h-11/min-w-11."
+    },
+    {
+      "id": "AC5",
+      "status": "PASS",
+      "note": "Gate AA §5 6/6 en light, dark y móvil; detalles y mediciones en aa-gate.json."
+    },
+    {
+      "id": "AC6",
+      "status": "PASS",
+      "note": "3 comandos canónicos PASS; sin dependencias nuevas declaradas ni imports de Playwright en producto; sin cambios de deploy/caché ni secretos en archivos implicados. Verificación estática: estaba prohibido ejecutar Git/diff."
+    },
+    {
+      "id": "AC7",
+      "status": "PASS",
+      "note": "report.md, metrics.json, aa-gate.json, 4 logs y 2 capturas en test-results/pagina-error-personalizada/; resumen en test-results/tests/pagina-error-personalizada-m3.json."
+    }
+  ],
+  "aa_gate": {
+    "policy": ".ai/policies/project-policy.md §5",
+    "result": "6/6 PASS",
+    "light": true,
+    "dark": true,
+    "mobile": true,
+    "criteria": [
+      { "id": 1, "name": "touch_targets_44x44", "status": "PASS", "min_observed_px": { "w": 310, "h": 44 } },
+      { "id": 2, "name": "contrast_AA", "status": "PASS", "min_ratio": 4.54 },
+      { "id": 3, "name": "focus_visible_3to1", "status": "PASS", "min_ratio": 3.07, "ring_spread_px": 3 },
+      { "id": 4, "name": "keyboard_no_trap", "status": "PASS" },
+      { "id": 5, "name": "accessible_name", "status": "PASS" },
+      { "id": 6, "name": "prefers_reduced_motion", "status": "PASS" }
+    ],
+    "not_verifiable": [],
+    "detail_file": "aa-gate.json"
+  },
+  "non_blocking_warning": {
+    "type": "vite_chunk_size",
+    "blocking": false,
+    "detail": "Vite: 'Some chunks are larger than 500 kB after minification'; index-DhXJHeAm.js = 526.65 kB (gzip 168.62 kB); build exit 0; sin cambios de configuración de bundle."
+  },
+  "browser_verification": {
+    "tool": "playwright-cli 1.65.0 via npx --no-install playwright cli (Chromium headless)",
+    "server": "Vite local preexistente en http://127.0.0.1:5178; no se inició ni detuvo servidor",
+    "production_or_test3_contacted": false,
+    "error_forcing": "route 404 sobre **/assets/DashboardPage-*.js y **/assets/RegistrarPage-*.js",
+    "routes": ["/", "/registrar"],
+    "viewports": ["1280x720", "390x844"],
+    "screenshots": [
+      "test-results/pagina-error-personalizada/screenshots/error-desktop-dark.png",
+      "test-results/pagina-error-personalizada/screenshots/error-mobile-dark.png"
+    ]
+  },
+  "constraints": {
+    "git_operations": false,
+    "deploy": false,
+    "database_writes": false,
+    "source_code_modified": false,
+    "ai_dir_touched": false,
+    "gitattributes_touched": false,
+    "graphify_out_touched": false,
+    "test3_or_production_touched": false,
+    "new_dependencies": false
+  },
+  "evidence_files": [
+    "report.md",
+    "metrics.json",
+    "aa-gate.json",
+    "logs/01-web-tsc.log",
+    "logs/02-web-npm-test.log",
+    "logs/03-web-npm-build.log",
+    "logs/04-errorChunk-targeted.log",
+    "screenshots/error-desktop-dark.png",
+    "screenshots/error-mobile-dark.png",
+    "test-results/tests/pagina-error-personalizada-m3.json"
+  ]
+}

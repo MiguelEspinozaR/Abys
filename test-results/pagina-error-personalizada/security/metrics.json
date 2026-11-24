@@ -1,0 +1,70 @@
+{
+  "security_scanning": {
+    "date": "2026-11-24",
+    "repository": "/home/miky/Documentos/finanzasMikyGoRef",
+    "branch": "fix/pagina-error-personalizada",
+    "head": "a0384dc",
+    "tools": {
+      "gitleaks": "missing",
+      "semgrep": "missing",
+      "npm_audit": "available",
+      "go_govulncheck": "missing (no Go code in scope)"
+    },
+    "findings": {
+      "exposed_secrets": {
+        "count": 0,
+        "hard_block": false,
+        "details": "No secret patterns detected in the 6 source files via regex advisory scan. Gitleaks not available."
+      },
+      "npm_vulnerabilities": {
+        "total": 20,
+        "by_severity": {
+          "critical": 1,
+          "high": 9,
+          "moderate": 7,
+          "low": 3
+        },
+        "packages_affected": [
+          "@modelcontextprotocol/sdk",
+          "body-parser",
+          "brace-expansion",
+          "source-map-js",
+          "systeminformation",
+          "shadcn",
+          "undici",
+          "vite",
+          "zod",
+          "@hono/node-server",
+          "fast-uri",
+          "hono",
+          "ip-address",
+          "minimatch",
+          "proxy-addr",
+          "qs",
+          "ts-morph",
+          "vitest"
+        ]
+      },
+      "sast": {
+        "semgrep": "missing (tool not available)",
+        "sast_findings": 0
+      },
+      "supply_chain": {
+        "new_dependencies": false,
+        "dependency_modifications": "none in changed files"
+      },
+      "configuration_checks": {
+        "console_logs_with_secrets": false,
+        "insecure_links": false,
+        "deploy_config_changes": false,
+        "cache_config_changes": false
+      }
+    },
+    "recommendations_count": 5,
+    "summary": {
+      "overall_status": "information_gathered",
+      "hard_blocks": false,
+      "release_blocking": false
+    }
+  }
+}

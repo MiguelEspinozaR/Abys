@@ -1,0 +1,51 @@
+{
+  "task_id": "pagina-error-personalizada-m3",
+  "feature": "pagina-error-personalizada",
+  "milestone": "M3",
+  "executor": "tester",
+  "status": "PASS",
+  "commit": "a0384dcddf6b10f5f05ee5d674dc4db3e31d8a52",
+  "branch": "fix/pagina-error-personalizada",
+  "date": "2026-11-24",
+  "generated_at": "2026-11-24T00:35:13-04:00",
+  "summary": "Comandos canónicos y targeted PASS; AC1–AC7 PASS; gate AA §5 6/6 PASS en light, dark y móvil; aviso no bloqueante de chunks >500 kB; release_ready=false.",
+  "canonical_commands": [
+    { "command": "cd web && npx tsc -b", "exit_code": 0, "status": "PASS" },
+    { "command": "cd web && npm test", "exit_code": 0, "status": "PASS", "tests_passed": 197, "test_files_passed": 19 },
+    { "command": "cd web && npm run build", "exit_code": 0, "status": "PASS", "warning": "chunks >500 kB (no bloqueante)" },
+    { "command": "cd web && npx vitest run src/lib/errorChunk.test.ts", "exit_code": 0, "status": "PASS", "tests_passed": 10, "targeted_for": "AC3" }
+  ],
+  "ac_verdicts": [
+    { "id": "AC1", "status": "PASS" },
+    { "id": "AC2", "status": "PASS", "mode": "static" },
+    { "id": "AC3", "status": "PASS" },
+    { "id": "AC4", "status": "PASS", "mode": "static_and_functional" },
+    { "id": "AC5", "status": "PASS", "aa_gate": "6/6" },
+    { "id": "AC6", "status": "PASS", "mode": "static", "note": "Git/diff prohibidos en esta corrida" },
+    { "id": "AC7", "status": "PASS" }
+  ],
+  "aa_gate": { "result": "6/6 PASS", "light": true, "dark": true, "mobile": true, "not_verifiable": 0 },
+  "coverage": { "measured": false, "threshold_defined": false, "note": "Sin proveedor de cobertura en web/package.json; no se inventa umbral" },
+  "release_ready": false,
+  "release_ready_reason": "Sin deploy ni merge autorizados; M4 y M5 pendientes",
+  "artifacts": [
+    "test-results/pagina-error-personalizada/report.md",
+    "test-results/pagina-error-personalizada/metrics.json",
+    "test-results/pagina-error-personalizada/aa-gate.json",
+    "test-results/pagina-error-personalizada/logs/01-web-tsc.log",
+    "test-results/pagina-error-personalizada/logs/02-web-npm-test.log",
+    "test-results/pagina-error-personalizada/logs/03-web-npm-build.log",
+    "test-results/pagina-error-personalizada/logs/04-errorChunk-targeted.log",
+    "test-results/pagina-error-personalizada/screenshots/error-desktop-dark.png",
+    "test-results/pagina-error-personalizada/screenshots/error-mobile-dark.png"
+  ],
+  "constraints": {
+    "git_operations": false,
+    "deploy": false,
+    "database_writes": false,
+    "source_code_modified": false,
+    "ai_dir_touched": false,
+    "gitattributes_touched": false,
+    "graphify_out_touched": false
+  }
+}
