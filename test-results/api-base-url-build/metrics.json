@@ -1,0 +1,173 @@
+{
+  "task_id": "api-base-url-build-m2",
+  "feature": "api-base-url-build",
+  "milestone": "M2 — Evidencia y revisión (parte tester)",
+  "date": "2026-11-24",
+  "recorded_at_local": "2026-11-24T01:11:19-04:00",
+  "repo": "/home/miky/Documentos/finanzasMikyGoRef",
+  "branch": "fix/pagina-error-personalizada",
+  "base_commit": {
+    "short": "5e427c0",
+    "full": "5e427c02301d620fa4a9a00576be22ea04dab49b",
+    "source": ".ai/specs/api-base-url-build/spec.md y .ai/plans/api-base-url-build/plan.md"
+  },
+  "environment": {
+    "shell_cwd": "/home/miky/Documentos/finanzasMikyGoRef",
+    "vite_api_url_env": "<unset>",
+    "node_tools": "vitest 5.0.0, vite 6.4.3",
+    "server_started": false,
+    "network_calls_made": false,
+    "database_writes": false
+  },
+  "commands": [
+    {
+      "command": "cd web && npx tsc -b",
+      "workdir": "web",
+      "exit_code": 0,
+      "output_summary": "Sin salida; compilación limpia."
+    },
+    {
+      "command": "cd web && npm test",
+      "workdir": "web",
+      "exit_code": 0,
+      "output_summary": "Test Files 19 passed (19); Tests 197 passed (197); Duration 13.36s; Vitest 5.0.0.",
+      "test_files_passed": 19,
+      "tests_passed": 197,
+      "tests_failed": 0
+    },
+    {
+      "command": "cd web && npm run build",
+      "workdir": "web",
+      "exit_code": 0,
+      "output_summary": "3285 modules transformed; built in 21.91s; aviso no bloqueante de chunks >500 kB.",
+      "main_asset": "dist/assets/index-CpDLBCX2.js",
+      "chunk_warning": "(!) Some chunks are larger than 500 kB after minification"
+    },
+    {
+      "command": "bounded string search in web/dist/assets/*.js",
+      "workdir": "repo root",
+      "exit_code": 0,
+      "method": "Grep tool + python3 count over web/dist/assets/*.js (22 JS files); rg no disponible en el entorno",
+      "needles": [
+        {
+          "value": "/api/v1",
+          "files": ["hooks-DaBvzlIc.js"],
+          "occurrences": 2,
+          "evidence": [
+            "const Re=\"/api/v1\".replace(/\\/+$/,\"\")  [base de fetch]",
+            "`${\"/api/v1\".replace(/\\/api\\/v1\\/?$/,\"\")}${...}`  [assetUrl]"
+          ]
+        },
+        {
+          "value": "http://localhost:8080/api/v1",
+          "files": [],
+          "occurrences": 0
+        },
+        {
+          "value": "localhost:8080",
+          "files": ["HealthPage-CGmnf6hL.js"],
+          "occurrences": 1,
+          "evidence": "Texto informativo aceptado: 'Verifica que el backend esté corriendo en http://localhost:8080.'"
+        }
+      ]
+    },
+    {
+      "command": "git check-ignore -v web/.env.production",
+      "workdir": "repo root",
+      "exit_code": 0,
+      "stdout": ".gitignore:5:!web/.env.production\tweb/.env.production",
+      "interpretation": "Regla negativa activa en .gitignore:5; el archivo es rastreable. Único comando Git ejecutado (solo lectura, solicitado explícitamente)."
+    }
+  ],
+  "ac_matrix": [
+    {
+      "id": "AC1",
+      "status": "PASS",
+      "summary": "npm run build sin VITE_API_URL incrusta /api/v1 (2 ocurrencias en hooks-DaBvzlIc.js) y 0 ocurrencias de http://localhost:8080/api/v1 en web/dist/assets."
+    },
+    {
+      "id": "AC2",
+      "status": "PASS",
+      "summary": "Revisión estática: api.ts mantiene el default localhost:8080/api/v1; Vite 6.4.3 construye .env.${mode} y el modo dev es development; vite.config.ts no fuerza production."
+    },
+    {
+      "id": "AC3",
+      "status": "PASS",
+      "summary": ".gitignore conserva .env, .env.*, !.env.example y solo añade !web/.env.production; 0 secretos; deploy.sh/units intactos (verificación estática, sin git diff)."
+    },
+    {
+      "id": "AC4",
+      "status": "PASS",
+      "summary": "Evidencia en test-results/api-base-url-build/report.md y metrics.json con comandos, cadenas y health checks 200 ya observados en M0."
+    },
+    {
+      "id": "AC5",
+      "status": "PENDING_REVIEW",
+      "summary": "Aprobación de reviewer pendiente; el tester NO la marca PASS.",
+      "reviewer": "",
+      "review_date": "",
+      "decision": ""
+    }
+  ],
+  "health_checks_already_observed": {
+    "re_executed_in_m2": false,
+    "source": ".ai/plans/api-base-url-build/plan.md (M0) y .ai/specs/api-base-url-build/spec.md (contexto/aprobación)",
+    "items": [
+      {
+        "endpoint": "http://localhost:5178",
+        "status": 200,
+        "note": "SPA local; servidor Vite preexistente, no iniciado ni detenido en M2"
+      },
+      {
+        "endpoint": "https://test3.mikylab.com/api/v1/health/db",
+        "status": 200,
+        "note": "connexion=ok; BD sana observada en M0"
+      },
+      {
+        "endpoint": "https://test3.mikylab.com/health",
+        "status": 200,
+        "note": "Observado en M0"
+      }
+    ]
+  },
+  "coverage": {
+    "measured": false,
+    "provider": null,
+    "threshold": null,
+    "note": "web/package.json no define script/proveedor de cobertura y la política no fija umbral para esta feature; no se inventa ningún umbral."
+  },
+  "secret_scan": {
+    "scope": "web/.env.production, .gitignore y artefactos generados en esta corrida",
+    "findings": 0,
+    "note": "Solo configuración pública VITE_API_URL=/api/v1; ningún valor sensible impreso o persistido."
+  },
+  "restrictions": {
+    "git_operations": "Solo git check-ignore -v web/.env.production (lectura solicitada); sin add/commit/push/diff/status/tag",
+    "deploy": false,
+    "service_restart": false,
+    "database_writes": false,
+    "source_code_modified": false,
+    "ai_dir_touched": false,
+    "gitattributes_touched": false,
+    "graphify_out_touched": false,
+    "screenshots": false,
+    "writes": [
+      "test-results/api-base-url-build/report.md",
+      "test-results/api-base-url-build/metrics.json",
+      "test-results/tests/api-base-url-build-m2.json",
+      "web/dist/* (artefactos derivados regenerados por npm run build)"
+    ]
+  },
+  "artifacts": [
+    "test-results/api-base-url-build/report.md",
+    "test-results/api-base-url-build/metrics.json",
+    "test-results/tests/api-base-url-build-m2.json"
+  ],
+  "verdict": {
+    "overall": "EVIDENCE_COMPLETE_PENDING_REVIEW",
+    "ac_pass": 4,
+    "ac_fail": 0,
+    "ac_pending_review": 1,
+    "release_ready": false
+  }
+}

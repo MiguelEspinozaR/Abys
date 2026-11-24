@@ -1,0 +1,41 @@
+{
+  "task_id": "api-base-url-build-m2",
+  "feature": "api-base-url-build",
+  "milestone": "M2",
+  "date": "2026-11-24",
+  "base_commit": "5e427c0",
+  "branch": "fix/pagina-error-personalizada",
+  "executor": "tester",
+  "commands": [
+    { "command": "cd web && npx tsc -b", "exit_code": 0, "result": "clean" },
+    { "command": "cd web && npm test", "exit_code": 0, "result": "19 files / 197 tests passed" },
+    { "command": "cd web && npm run build", "exit_code": 0, "result": "index-CpDLBCX2.js; chunk-size warning only" },
+    { "command": "bounded search web/dist/assets/*.js", "exit_code": 0, "result": "/api/v1 x2; http://localhost:8080/api/v1 x0" },
+    { "command": "git check-ignore -v web/.env.production", "exit_code": 0, "result": ".gitignore:5:!web/.env.production" }
+  ],
+  "ac_status": {
+    "AC1": "PASS",
+    "AC2": "PASS",
+    "AC3": "PASS",
+    "AC4": "PASS",
+    "AC5": "PENDING_REVIEW"
+  },
+  "coverage": { "measured": false, "threshold_reported": null },
+  "release_ready": false,
+  "artifacts": [
+    "test-results/api-base-url-build/report.md",
+    "test-results/api-base-url-build/metrics.json",
+    "test-results/tests/api-base-url-build-m2.json"
+  ],
+  "restrictions_confirmed": {
+    "git_operations_other_than_requested_check_ignore": false,
+    "deploy": false,
+    "service_restart": false,
+    "database_writes": false,
+    "source_code_modified": false,
+    "ai_dir_modified": false,
+    "gitattributes_modified": false,
+    "graphify_out_modified": false,
+    "screenshots": false
+  }
+}
