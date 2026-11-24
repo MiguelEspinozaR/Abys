@@ -1,6 +1,11 @@
 import { RouterProvider } from "react-router-dom"
+import { AppErrorBoundary } from "@/components/layout/AppErrorBoundary"
 import { router } from "@/router"
 
 export function App() {
-  return <RouterProvider router={router} />
+  return (
+    <AppErrorBoundary>
+      <RouterProvider router={router} />
+    </AppErrorBoundary>
+  )
 }
