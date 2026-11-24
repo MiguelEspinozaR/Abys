@@ -803,9 +803,9 @@
     "semantic_hash": "4309401ded0527ef65581f5ae99855a6"
   },
   "web/package.json": {
-    "mtime": 1795452665.650018,
-    "seen": 1795455727.9642615,
-    "ast_hash": "c74720b725e6b3eda7cfb64df237586d",
+    "mtime": 1795497910.5118427,
+    "seen": 1795498340.6367543,
+    "ast_hash": "ed1752959e2ec4440ec88bcd030d3adb",
     "semantic_hash": ""
   },
   "web/src/App.tsx": {
@@ -1613,15 +1613,15 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1795236800.5558174,
-    "seen": 1795455727.965267,
-    "ast_hash": "e40e2c4b588e67a8e9010e54b7fd7718",
+    "mtime": 1795497963.8792539,
+    "seen": 1795498340.6373944,
+    "ast_hash": "8312422bff9dcdf978a412b3cd8e41f8",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1795236800.5568173,
-    "seen": 1795455727.9652789,
-    "ast_hash": "39ba2bdb3ff57180b64cd56358f71529",
+    "mtime": 1795497911.3588653,
+    "seen": 1795498340.6374004,
+    "ast_hash": "1016d417c6dc42fd53a687eae10039bd",
     "semantic_hash": ""
   },
   "backlog/README.md": {
@@ -2368,10 +2368,22 @@
     "ast_hash": "33609f506d65e8b6a10c6c2907b2fd37",
     "semantic_hash": ""
   },
+  "test-results/release-1.0.0/metrics.json": {
+    "mtime": 1795498171.437742,
+    "seen": 1795498340.6363647,
+    "ast_hash": "c3b96082109a2ebbc7789e307aa7aa64",
+    "semantic_hash": ""
+  },
+  "test-results/release-1.0.0/report.md": {
+    "mtime": 1795498160.3294482,
+    "seen": 1795498340.637584,
+    "ast_hash": "c6151b192111286f17b80dbd21aedb9d",
+    "semantic_hash": ""
+  },
   "web/package-lock.json": {
-    "mtime": 1795452665.647018,
-    "seen": 1795455727.9660597,
-    "ast_hash": "730919b927c109a8b6abe99362260089",
+    "mtime": 1795497926.9982786,
+    "seen": 1795498340.6380196,
+    "ast_hash": "1cb6af11d88809da8e926037c6948612",
     "semantic_hash": ""
   }
 }
