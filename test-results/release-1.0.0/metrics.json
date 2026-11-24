@@ -1,0 +1,83 @@
+{
+  "date": "2026-11-24",
+  "repo": "/home/miky/Documentos/finanzasMikyGoRef",
+  "branch": "fix/pagina-error-personalizada",
+  "base_commit": "004c588e04be5dc8ea7055fe06a79d72ea9c61d9",
+  "base_commit_short": "004c588",
+  "base_commit_subject": "chore: actualiza grafo tras guard de API",
+  "uncommitted_version_doc_changes": [
+    "CHANGELOG.md",
+    "README.md",
+    "web/package-lock.json",
+    "web/package.json"
+  ],
+  "uncommitted_other_untracked": [
+    ".gitattributes"
+  ],
+  "commands": {
+    "tsc": {
+      "command": "cd web && npx tsc -b",
+      "status": "pass",
+      "exit_observed": 0
+    },
+    "test": {
+      "command": "cd web && npm test",
+      "status": "pass",
+      "test_files_passed": 19,
+      "test_files_total": 19,
+      "tests_passed": 197,
+      "tests_total": 197,
+      "duration_s": 26.97
+    },
+    "build": {
+      "command": "cd web && npm run build",
+      "status": "pass",
+      "duration_s": 21.48,
+      "warnings": [
+        "Some chunks are larger than 500 kB after minification (non-blocking)"
+      ]
+    }
+  },
+  "checks": {
+    "package_json_version": {
+      "expected": "1.0.0",
+      "observed": "1.0.0",
+      "pass": true
+    },
+    "package_lock_version_line3": {
+      "expected": "1.0.0",
+      "observed": "1.0.0",
+      "pass": true
+    },
+    "package_lock_packages_root_version_line9": {
+      "expected": "1.0.0",
+      "observed": "1.0.0",
+      "pass": true
+    },
+    "package_lock_dependencies_intact": {
+      "pass": true,
+      "detail": "Diff shows only version changes at lines 3 and 9; lockfileVersion 3 unchanged"
+    },
+    "readme_version_section_coherent": {
+      "pass": true,
+      "observed": "1.0.0 — ver [CHANGELOG.md](CHANGELOG.md). Tag 1.0.0 creado el 2026-11-24 tras el merge a main, sin deploy.sh en este ciclo."
+    },
+    "changelog_1_0_0_entry": {
+      "pass": true,
+      "has_es_bo": true,
+      "has_release_note_as_quote": true,
+      "date": "2026-11-24",
+      "sections": ["Añadido", "Cambiado", "Corregido", "Seguridad"]
+    },
+    "dist_api_base_url": {
+      "pass": true,
+      "expected_absent": "localhost:8080/api/v1",
+      "localhost_8080_api_v1_matches": 0,
+      "api_v1_base_found": "web/dist/assets/hooks-DaBvzlIc.js: const Re=\"/api/v1\".replace(/\\/+$/ ,\"\")",
+      "localhost_8080_matches": 1,
+      "localhost_8080_note": "web/dist/assets/HealthPage-CGmnf6hL.js contains informational UI text 'http://localhost:8080'; not an API base URL configuration"
+    }
+  },
+  "release_ready": false,
+  "release_ready_reason": "Pending Git Manager merge/tag; no Git history mutations performed by this verification."
+}

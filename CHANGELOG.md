@@ -6,6 +6,22 @@ y este proyecto sigue [SemVer](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+## [1.0.0] - 2026-11-24
+
+### Añadido
+- pantalla de error personalizada para fallos de carga de módulos (Reintentar + Ir al inicio, copy es-BO, AA 6/6); guard `web/.env.production` que fija `VITE_API_URL=/api/v1` en builds de producción.
+
+### Cambiado
+- refactorización/purga de hooks, helpers, módulos sin consumidores y dependencias del frontend; versión del frontend a 1.0.0.
+
+### Corregido
+- reemplazo del overlay "Unexpected Application Error!" ante `Failed to fetch dynamically imported module`; regresión por la que un build sin `VITE_API_URL` volvía a apuntar a `localhost:8080`.
+
+### Seguridad
+- CORS, secretos y validaciones de entrada reforzados en la purga; sin secretos expuestos; npm audit advisories preexistentes no introducidos por este release.
+
+> Merge a `main` y tag `1.0.0`; no se ejecutó `deploy.sh` en este ciclo; BD verificada sana (`health/db` 200).
+
 ## [0.4.1] - 2026-11-20
 
 ### Corregido
