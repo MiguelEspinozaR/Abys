@@ -197,6 +197,17 @@ class DashboardViewModel @Inject constructor(
             initialValue = DashboardUiState(),
         )
 
+    init {
+        // Primera apertura sin datos (instalación nueva): pedir una sincronización completa
+        // para que los gráficos se llenen sin esperar al trabajo periódico.
+        viewModelScope.launch {
+            val estado = uiState.first { !it.cargando }
+            if (estado.resumen?.totalHistorico?.centavos == 0L) {
+                syncStatusRepository.sincronizarAhora()
+            }
+        }
+    }
+
     fun semanaAnterior() {
         semanaInicio.value = semanaInicio.value.minusWeeks(1)
     }
@@ -271,6 +282,11 @@ class DashboardViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    /** Fuerza una sincronización completa (push + pull) desde el dashboard. */
+    fun sincronizarAhora() {
+        viewModelScope.launch { syncStatusRepository.sincronizarAhora() }
     }
 
     private fun limpiarServidor() {

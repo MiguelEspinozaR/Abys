@@ -172,6 +172,45 @@ fun DashboardScreen(
             }
         }
 
+        // Sin datos locales: explicar por qué los gráficos están vacíos y ofrecer sincronizar.
+        if (!state.cargando && state.resumen?.totalHistorico?.centavos == 0L) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    ),
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Text(
+                            text = "No hay pagos en este dispositivo",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                        Text(
+                            text = if (state.errorSync != null) {
+                                "No se pudo descargar nada del servidor: ${state.errorSync}"
+                            } else {
+                                "Sincroniza para descargar los pagos del backend."
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            TextButton(onClick = viewModel::sincronizarAhora) {
+                                Text("Sincronizar ahora")
+                            }
+                            TextButton(onClick = viewModel::refrescar) {
+                                Text("Contrastar con el servidor")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Cards resumen: sólo 30 días e histórico (R2), sin mes/año.
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

@@ -1,0 +1,20 @@
+# Artefactos generados y dependencias: no indexar
+graphify-out/
+.git/
+.gradle/
+.idea/
+.kotlin/
+build/
+app/build/
+node_modules/
+Abys/web/node_modules/
+Abys/web/dist/
+*.log
+*.iml
+*.apk
+*.aab
+*.ap_
+*.png
+*.jpg
+*.jpeg
+*.webp

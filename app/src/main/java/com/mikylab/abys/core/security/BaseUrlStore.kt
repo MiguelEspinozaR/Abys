@@ -8,10 +8,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Base URL del backend, configurable **en runtime** (pantalla de Ajustes) y persistida **cifrada**.
+ * Base URL del backend, configurable **en runtime** (Configuración → App) y persistida cifrada.
  *
- * - Default de build: `http://10.0.2.2:8080/api/v1` (emulador → `localhost` del host).
- * - Producción: `https://test3.mikylab.com/api/v1`.
+ * - Default de build: `https://test3.mikylab.com/api/v1` (backend público).
+ * - Preset de desarrollo: `http://10.0.2.2:8080/api/v1` (emulador → `localhost` del host).
  *
  * No hay secretos aquí: solo la URL del backend.
  */
@@ -36,11 +36,23 @@ class BaseUrlStore @Inject constructor(
         return true
     }
 
-    /** Restaura la URL de build por defecto. */
+    /** Restaura la URL de build por defecto (backend público). */
     fun reset() {
         secureStore.remove(KEY_BASE_URL)
         _baseUrl.value = BuildConfig.DEFAULT_BASE_URL
     }
+
+    /** Preset: backend público. */
+    fun usarProduccion(): Boolean = update(BuildConfig.PRODUCTION_BASE_URL)
+
+    /** Preset: backend local del emulador (`10.0.2.2` → host). */
+    fun usarEmulador(): Boolean = update(BuildConfig.EMULATOR_BASE_URL)
+
+    /** URL del preset de emulador (para mostrarla en la UI). */
+    fun emulatorUrl(): String = BuildConfig.EMULATOR_BASE_URL
+
+    /** URL del backend público (para mostrarla en la UI). */
+    fun productionUrl(): String = BuildConfig.PRODUCTION_BASE_URL
 
     /**
      * Base raíz (sin `/api/v1`) para resolver los estáticos `/uploads/...`.

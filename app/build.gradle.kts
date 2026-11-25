@@ -21,11 +21,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // URL por defecto del emulador (10.0.2.2 apunta al host) y URL pública.
+        // URL por defecto: el backend **público**, para que la app funcione al instalarla en
+        // cualquier dispositivo. El backend local del emulador (10.0.2.2 apunta al host) sigue
+        // disponible como preset en Configuración → App.
         // Son valores de BuildConfig, NO secretos: la URL real es editable en Ajustes
         // y se persiste cifrada (EncryptedSharedPreferences).
-        buildConfigField("String", "DEFAULT_BASE_URL", "\"http://10.0.2.2:8080/api/v1\"")
+        buildConfigField("String", "DEFAULT_BASE_URL", "\"https://test3.mikylab.com/api/v1\"")
         buildConfigField("String", "PRODUCTION_BASE_URL", "\"https://test3.mikylab.com/api/v1\"")
+        buildConfigField("String", "EMULATOR_BASE_URL", "\"http://10.0.2.2:8080/api/v1\"")
     }
 
     buildTypes {

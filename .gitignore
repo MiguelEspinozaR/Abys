@@ -24,6 +24,11 @@ local.properties
 # Logs
 *.log
 
+# Graphify (knowledge graph generado)
+# Se versiona a propósito para consultar el grafo en cualquier máquina (ver docs/graphify.md).
+# Los artefactos de build grandes se regeneran con `graphify update .`.
+graphify-out/cache/
+
 # Secrets: nunca versionar
 keystore.properties
 *.jks

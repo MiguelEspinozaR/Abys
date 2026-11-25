@@ -8,6 +8,24 @@
   "instructions": [
     ".opencode/instructions/android.md"
   ],
+  "mcp": {
+    "servers": {
+      "graphify": {
+        "type": "local",
+        "command": [
+          "python",
+          "-m",
+          "graphify.serve",
+          "--graph",
+          "graphify-out/graph.json"
+        ],
+        "cwd": ".",
+        "timeout": {
+          "startup": 60000
+        }
+      }
+    }
+  },
   "agents": {
     "android": {
       "description": "Agente principal Android (Kotlin/Compose/Gradle/ADB): replica Abys web usando el mismo backend, con control total",
