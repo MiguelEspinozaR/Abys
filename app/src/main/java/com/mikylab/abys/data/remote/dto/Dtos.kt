@@ -139,6 +139,13 @@ data class SplitSettingsDto(
     @SerialName("modo_default") val modoDefault: String = "preciso",
 )
 
+/** `GET /settings/registrar` (v0.4.0). */
+@Serializable
+data class RegistrarSettingsDto(
+    @SerialName("metodo_default") val metodoDefault: String = "efectivo",
+    @SerialName("modo_default") val modoDefault: String = "detallado",
+)
+
 @Serializable
 data class HealthPingDto(
     val status: String = "ok",

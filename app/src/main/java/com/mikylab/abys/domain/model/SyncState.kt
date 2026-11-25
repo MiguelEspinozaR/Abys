@@ -51,6 +51,26 @@ enum class ModoCalculo(val wire: String, val label: String) {
 }
 
 /**
+ * Modo de carga de montos al registrar (`GET/PUT /settings/registrar`, v0.4.0):
+ * - **Detallado**: el usuario ingresa el monto de cada día; el total se calcula solo.
+ * - **Distribuido**: el usuario ingresa el total y el sistema lo reparte entre los días.
+ *
+ * Vive en `domain` porque forma parte del contrato con el backend (whitelist
+ * `detallado|distribuido`, ver `Abys/backend/internal/handler/settings_handler.go`).
+ */
+enum class ModoRegistro(val wire: String, val label: String) {
+    DETALLADO("detallado", "Detallado"),
+    DISTRIBUIDO("distribuido", "Distribuido");
+
+    companion object {
+        val DEFAULT = DETALLADO
+
+        fun fromWire(value: String?): ModoRegistro =
+            entries.firstOrNull { it.wire == value } ?: DEFAULT
+    }
+}
+
+/**
  * Modo de redondeo de la **distribución equitativa** de un total entre días
  * (`web/src/lib/distribuir.ts`, espeja `splitcalc`): el sobrante se asigna al último día.
  */

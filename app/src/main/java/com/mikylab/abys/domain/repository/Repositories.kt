@@ -11,9 +11,13 @@ import com.mikylab.abys.domain.model.FiltroPagos
 import com.mikylab.abys.domain.model.Fuente
 import com.mikylab.abys.domain.model.HealthInfo
 import com.mikylab.abys.domain.model.HistorialTasa
+import com.mikylab.abys.domain.model.MetodoPago
+import com.mikylab.abys.domain.model.ModoCalculo
+import com.mikylab.abys.domain.model.ModoRegistro
 import com.mikylab.abys.domain.model.Pago
 import com.mikylab.abys.domain.model.PagoDraft
 import com.mikylab.abys.domain.model.PuntoHistorial
+import com.mikylab.abys.domain.model.RegistrarSettings
 import com.mikylab.abys.domain.model.Split
 import com.mikylab.abys.domain.model.SplitSettings
 import com.mikylab.abys.domain.model.Transaccion
@@ -92,10 +96,20 @@ interface SplitRepository {
 interface SettingsRepository {
     fun observeSplitSettings(): Flow<SplitSettings>
     suspend fun setModoDefault(modo: String): AppResult<Unit>
+
+    /** Defaults de registro (`GET/PUT /settings/registrar`, v0.4.0). */
+    fun observeRegistrarSettings(): Flow<RegistrarSettings>
+    suspend fun setRegistrarSettings(metodo: MetodoPago, modo: ModoRegistro): AppResult<Unit>
 }
 
 interface HealthRepository {
     suspend fun consultarHealth(): AppResult<HealthInfo>
+
+    /**
+     * Ping al backend (`GET /health`): comprueba que la **base URL** configurada responde,
+     * sin depender de la base de datos. Se usa en Configuración → App → "Probar conexión".
+     */
+    suspend fun consultarPing(): AppResult<Unit>
 }
 
 /**

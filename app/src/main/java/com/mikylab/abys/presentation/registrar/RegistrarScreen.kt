@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
@@ -49,6 +50,10 @@ import com.mikylab.abys.core.money.Money
 import com.mikylab.abys.core.time.DateFormats
 import com.mikylab.abys.domain.model.MetodoPago
 import com.mikylab.abys.domain.model.ModoDistribucion
+import com.mikylab.abys.domain.model.ModoRegistro
+import com.mikylab.abys.domain.registrar.FuentesPorDia
+import com.mikylab.abys.domain.registrar.fuentesParaLeyenda
+import com.mikylab.abys.domain.registrar.top3Fuentes
 import com.mikylab.abys.presentation.components.ErrorState
 import com.mikylab.abys.presentation.theme.AbysColors
 import java.time.LocalDate
@@ -61,10 +66,13 @@ import java.time.YearMonth
  * modo Detallado (monto por día) o Distribuido (total repartido equitativamente).
  * Sin OCR: el comprobante no extrae datos (R: v0.3.0 sin OCR); la subida es una mejora posterior.
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    androidx.compose.foundation.layout.ExperimentalLayoutApi::class,
+)
 @Composable
-fun RegistrarScreen(
-    modifier: Modifier = Modifier,
+fun RegistrarScreen(    modifier: Modifier = Modifier,
     viewModel: RegistrarViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -112,6 +120,8 @@ fun RegistrarScreen(
                     mes = state.mesCalendario,
                     diasTrabajados = state.diasTrabajados,
                     fechaPago = state.fechaPago,
+                    yaFechasPago = state.yaFechasPago,
+                    fuentesPorDia = state.fuentesPorDia,
                     onMarcar = viewModel::marcarDia,
                     onQuitar = viewModel::quitarDia,
                     onFechaPago = viewModel::cambiarFechaPago,
@@ -120,7 +130,41 @@ fun RegistrarScreen(
                 // Leyenda y contador (CalendarioDias del web).
                 Column(modifier = Modifier.padding(top = 8.dp)) {
                     LeyendaCalendario(AbysColors.DiaNuevo, "día trabajado (nuevo)")
-                    LeyendaCalendario(AbysColors.FechaPago, "fecha de pago")
+                    LeyendaCalendario(AbysColors.FechaPago, "fecha de pago ya registrada")
+                    val fuentesLeyenda = fuentesParaLeyenda(state.fuentesPorDia)
+                    if (fuentesLeyenda.isNotEmpty()) {
+                        FlowRow(
+                            modifier = Modifier.padding(top = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            Text(
+                                text = "Fuentes",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            fuentesLeyenda.forEach { fuente ->
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(end = 4.dp)
+                                            .size(8.dp)
+                                            .background(
+                                                com.mikylab.abys.presentation.theme
+                                                    .colorDesdeHex(fuente.color, Color.Gray),
+                                                CircleShape,
+                                            ),
+                                    )
+                                    Text(
+                                        text = fuente.alias,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
                 Text(
                     text = "${state.diasTrabajados.size} día(s) · " +
@@ -433,6 +477,9 @@ private fun LeyendaCalendario(color: Color, texto: String) {
 /**
  * Calendario mensual con las 3 herramientas del web:
  * toque corto = trabajo/pago según la herramienta, toque largo = quitar.
+ *
+ * v0.4.0: puntos por día (verde = día nuevo, ámbar = fecha de pago ya registrada y hasta
+ * 3 fuentes del día cuando no es un día seleccionado).
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -440,6 +487,8 @@ private fun CalendarioMes(
     mes: YearMonth,
     diasTrabajados: Set<LocalDate>,
     fechaPago: LocalDate,
+    yaFechasPago: Set<LocalDate>,
+    fuentesPorDia: FuentesPorDia,
     onMarcar: (LocalDate) -> Unit,
     onQuitar: (LocalDate) -> Unit,
     onFechaPago: (LocalDate) -> Unit,
@@ -479,37 +528,66 @@ private fun CalendarioMes(
                         if (fecha != null) {
                             val esTrabajado = fecha in diasTrabajados
                             val esPago = fecha == fechaPago
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .background(
-                                        color = when {
-                                            esPago -> MaterialTheme.colorScheme.primary
-                                            esTrabajado -> AbysColors.DiaNuevo.copy(alpha = 0.25f)
-                                            else -> Color.Transparent
-                                        },
-                                        shape = CircleShape,
-                                    )
-                                    .combinedClickable(
-                                        onClick = { onMarcar(fecha) },
-                                        onLongClick = { onQuitar(fecha) },
-                                    ),
-                                contentAlignment = Alignment.Center,
+                            val esYaPago = fecha in yaFechasPago
+                            // El límite de 3 es solo de fuentes; verde/ámbar se añaden por su regla.
+                            val fuentesDelDia = if (esTrabajado) {
+                                emptyList()
+                            } else {
+                                top3Fuentes(fuentesPorDia, fecha)
+                            }
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(1.dp),
                             ) {
-                                Text(
-                                    text = fecha.dayOfMonth.toString(),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontWeight = if (esPago || esTrabajado) {
-                                        FontWeight.Bold
-                                    } else {
-                                        FontWeight.Normal
-                                    },
-                                    color = if (esPago) {
-                                        MaterialTheme.colorScheme.onPrimary
-                                    } else {
-                                        MaterialTheme.colorScheme.onSurface
-                                    },
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .background(
+                                            color = when {
+                                                esPago -> MaterialTheme.colorScheme.primary
+                                                esTrabajado ->
+                                                    AbysColors.DiaNuevo.copy(alpha = 0.25f)
+
+                                                esYaPago ->
+                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)
+
+                                                else -> Color.Transparent
+                                            },
+                                            shape = CircleShape,
+                                        )
+                                        .combinedClickable(
+                                            onClick = { onMarcar(fecha) },
+                                            onLongClick = { onQuitar(fecha) },
+                                        ),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = fecha.dayOfMonth.toString(),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontWeight = if (esPago || esTrabajado) {
+                                            FontWeight.Bold
+                                        } else {
+                                            FontWeight.Normal
+                                        },
+                                        color = if (esPago) {
+                                            MaterialTheme.colorScheme.onPrimary
+                                        } else {
+                                            MaterialTheme.colorScheme.onSurface
+                                        },
+                                    )
+                                }
+                                if (esTrabajado || esYaPago || fuentesDelDia.isNotEmpty()) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                                        if (esTrabajado) PuntoCalendario(AbysColors.DiaNuevo)
+                                        if (esYaPago) PuntoCalendario(AbysColors.FechaPago)
+                                        fuentesDelDia.forEach { fuente ->
+                                            PuntoCalendario(
+                                                com.mikylab.abys.presentation.theme
+                                                    .colorDesdeHex(fuente.color, Color.Gray),
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -517,4 +595,13 @@ private fun CalendarioMes(
             }
         }
     }
+}
+
+@Composable
+private fun PuntoCalendario(color: Color) {
+    Box(
+        modifier = Modifier
+            .size(4.dp)
+            .background(color, CircleShape),
+    )
 }

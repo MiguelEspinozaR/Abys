@@ -1,5 +1,6 @@
 package com.mikylab.abys.data.sync
 
+import com.mikylab.abys.core.security.BaseUrlStore
 import com.mikylab.abys.core.time.DateFormats
 import com.mikylab.abys.data.local.dao.CuentaDao
 import com.mikylab.abys.data.local.dao.FuenteDao
@@ -13,6 +14,7 @@ import com.mikylab.abys.data.remote.AbysApi
 import com.mikylab.abys.data.remote.AbysApiProvider
 import com.mikylab.abys.data.remote.mapper.RemoteMappers
 import com.mikylab.abys.data.remote.mapper.RemoteMappers.toEntity
+import com.mikylab.abys.domain.model.SettingsKeys
 import com.mikylab.abys.domain.model.SyncState
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,6 +40,7 @@ class PullProcessor @Inject constructor(
     private val syncStateDao: SyncStateDao,
     private val generalRateHelper: GeneralRateHelper,
     private val splitTransactionsSync: SplitTransactionsSync,
+    private val baseUrlStore: BaseUrlStore,
 ) {
 
     suspend fun pull(): SyncOutcome {
@@ -62,11 +65,14 @@ class PullProcessor @Inject constructor(
             SyncOutcome.OK
         } catch (e: retrofit2.HttpException) {
             android.util.Log.e(TAG, "Pull falló con HTTP ${e.code()}", e)
-            registrarEstado(error = "Error HTTP ${e.code()}")
+            registrarEstado(error = "Error HTTP ${e.code()} en ${baseUrlStore.current()}")
             SyncOutcome.RETRY
         } catch (e: java.io.IOException) {
             android.util.Log.e(TAG, "Pull falló: sin conexión", e)
-            registrarEstado(error = "Sin conexión con el servidor")
+            registrarEstado(
+                error = "Sin conexión con ${baseUrlStore.current()} " +
+                    "(revisa la URL en Configuración → App)",
+            )
             SyncOutcome.RETRY
         } catch (e: Throwable) {
             android.util.Log.e(TAG, "Pull falló", e)
@@ -240,14 +246,42 @@ class PullProcessor @Inject constructor(
     }
 
     private suspend fun pullSettings(api: AbysApi) {
-        val remoto = api.obtenerSplitSettings().data ?: return
-        val existente = settingDao.get(CLAVE_MODO_DEFAULT)
-        if (existente != null && existente.syncState.isPending) return
+        val splitRemoto = api.obtenerSplitSettings().data
+        if (splitRemoto != null) {
+            val existente = settingDao.get(SettingsKeys.SPLIT_MODO_DEFAULT)
+            if (existente == null || !existente.syncState.isPending) {
+                settingDao.upsert(
+                    AppSettingEntity(
+                        clave = SettingsKeys.SPLIT_MODO_DEFAULT,
+                        valor = splitRemoto.modoDefault,
+                        updatedAt = System.currentTimeMillis(),
+                        syncState = SyncState.SYNCED,
+                    ),
+                )
+            }
+        }
+
+        // v0.4.0: defaults de registro. Si el usuario los cambió en local y están
+        // pendientes de push, gana el cambio local (igual que en el split).
+        val registrarRemoto = api.obtenerRegistrarSettings().data ?: return
+        val metodoLocal = settingDao.get(SettingsKeys.REGISTRAR_METODO_DEFAULT)
+        val modoLocal = settingDao.get(SettingsKeys.REGISTRAR_MODO_DEFAULT)
+        val pendiente = metodoLocal?.syncState?.isPending == true || modoLocal?.syncState?.isPending == true
+        if (pendiente) return
+        val ahora = System.currentTimeMillis()
         settingDao.upsert(
             AppSettingEntity(
-                clave = CLAVE_MODO_DEFAULT,
-                valor = remoto.modoDefault,
-                updatedAt = System.currentTimeMillis(),
+                clave = SettingsKeys.REGISTRAR_METODO_DEFAULT,
+                valor = registrarRemoto.metodoDefault,
+                updatedAt = ahora,
+                syncState = SyncState.SYNCED,
+            ),
+        )
+        settingDao.upsert(
+            AppSettingEntity(
+                clave = SettingsKeys.REGISTRAR_MODO_DEFAULT,
+                valor = registrarRemoto.modoDefault,
+                updatedAt = ahora,
                 syncState = SyncState.SYNCED,
             ),
         )
@@ -267,7 +301,7 @@ class PullProcessor @Inject constructor(
     }
 
     companion object {
-        const val CLAVE_MODO_DEFAULT = "split_modo_default"
+        const val CLAVE_MODO_DEFAULT = SettingsKeys.SPLIT_MODO_DEFAULT
 
         /** Máximo de pagos que se descargan en un pull (el backend admite hasta 100 por página). */
         const val PAGINA_MAXIMA = 500

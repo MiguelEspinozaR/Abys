@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -24,18 +26,22 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mikylab.abys.core.money.formatTasaBps
+import com.mikylab.abys.domain.model.MetodoPago
 import com.mikylab.abys.domain.model.ModoCalculo
+import com.mikylab.abys.domain.model.ModoRegistro
 import com.mikylab.abys.presentation.components.EstadoVacio
 
 /**
  * Pantalla "Configuración" (equivalente a `/configuracion` del web) con las pestañas
- * Cuentas · Fuentes · Splits, más la sección **Ajustes de la app** (URL del backend y sync).
+ * Cuentas · Fuentes · Splits · Registro, más la pestaña **App** (URL del backend, prueba
+ * de conexión y sincronización manual).
  */
 @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
@@ -52,7 +58,6 @@ fun ConfiguracionScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-
             Text(
                 text = "Administra fuentes de ingreso, cuentas de distribución y splits.",
                 style = MaterialTheme.typography.bodySmall,
@@ -62,7 +67,7 @@ fun ConfiguracionScreen(
 
         item {
             TabRow(selectedTabIndex = tab) {
-                listOf("Cuentas", "Fuentes", "Splits").forEachIndexed { index, titulo ->
+                listOf("Cuentas", "Fuentes", "Splits", "Registro", "App").forEachIndexed { index, titulo ->
                     Tab(
                         selected = tab == index,
                         onClick = { tab = index },
@@ -129,7 +134,7 @@ fun ConfiguracionScreen(
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                 }
-                                Column(horizontalAlignment = androidx.compose.ui.Alignment.End) {
+                                Column(horizontalAlignment = Alignment.End) {
                                     Text(
                                         text = cuenta.tasa.bps.formatTasaBps(),
                                         style = MaterialTheme.typography.titleSmall,
@@ -160,7 +165,7 @@ fun ConfiguracionScreen(
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(12.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Column {
                                 Text(fuente.alias, style = MaterialTheme.typography.titleSmall)
@@ -187,7 +192,7 @@ fun ConfiguracionScreen(
                 }
             }
 
-            else -> {
+            2 -> {
                 item {
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(
@@ -220,14 +225,89 @@ fun ConfiguracionScreen(
                         }
                     }
                 }
+            }
 
+            3 -> {
                 item {
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(
                             modifier = Modifier.padding(12.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            Text("Ajustes de la app", style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                text = "Defaults al registrar ingresos",
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                            Text(
+                                text = "Se aplican al abrir el formulario de registro. " +
+                                    "Puedes cambiarlos en cada pago.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+
+                            Text(
+                                text = "Método de pago por defecto",
+                                style = MaterialTheme.typography.labelMedium,
+                            )
+                            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                MetodoPago.entries.forEach { metodo ->
+                                    FilterChip(
+                                        selected = state.registrarSettings.metodo == metodo,
+                                        onClick = { viewModel.cambiarMetodoRegistrar(metodo) },
+                                        enabled = !state.guardandoRegistrar,
+                                        label = { Text(metodo.label) },
+                                    )
+                                }
+                            }
+
+                            Text(
+                                text = "Modo de registro por defecto",
+                                style = MaterialTheme.typography.labelMedium,
+                            )
+                            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                ModoRegistro.entries.forEach { modo ->
+                                    FilterChip(
+                                        selected = state.registrarSettings.modo == modo,
+                                        onClick = { viewModel.cambiarModoRegistrar(modo) },
+                                        enabled = !state.guardandoRegistrar,
+                                        label = { Text(modo.label) },
+                                    )
+                                }
+                            }
+
+                            if (state.registrarSettings.syncState.isPending) {
+                                Text(
+                                    text = "Se sincronizará con el servidor cuando haya conexión.",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+
+                            state.errorRegistrar?.let { error ->
+                                Text(
+                                    text = error,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                item {
+                    Card(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Text("Servidor", style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                text = "La app guarda todo en el dispositivo y sincroniza con este backend.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                             OutlinedTextField(
                                 value = urlTexto,
                                 onValueChange = { urlTexto = it },
@@ -237,19 +317,73 @@ fun ConfiguracionScreen(
                                 modifier = Modifier.fillMaxWidth(),
                             )
                             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                TextButton(onClick = { viewModel.actualizarBaseUrl(urlTexto) }) {
+                                TextButton(
+                                    onClick = { viewModel.actualizarBaseUrl(urlTexto) },
+                                    enabled = urlTexto.trim() != state.baseUrl,
+                                ) {
                                     Text("Guardar URL")
                                 }
-                                TextButton(onClick = {
-                                    viewModel.restaurarBaseUrl()
-                                    urlTexto = state.baseUrl
-                                }) {
-                                    Text("Restaurar")
+                                TextButton(onClick = viewModel::probarConexion) {
+                                    Text("Probar conexión")
                                 }
-                                TextButton(onClick = viewModel::sincronizarAhora) { Text("Sincronizar ahora") }
+                                TextButton(onClick = viewModel::sincronizarAhora) {
+                                    Text("Sincronizar ahora")
+                                }
                             }
                             Text(
-                                text = "Pendientes de sincronizar: ${state.pendientesSync}",
+                                text = "Presets",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                AssistChip(
+                                    onClick = viewModel::usarProduccion,
+                                    label = { Text("Público (test3.mikylab.com)") },
+                                )
+                                AssistChip(
+                                    onClick = viewModel::usarEmulador,
+                                    label = { Text("Emulador (10.0.2.2:8080)") },
+                                )
+                            }
+                            if (state.probandoConexion) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(16.dp),
+                                        strokeWidth = 2.dp,
+                                    )
+                                    Text(
+                                        text = "Comprobando conexión…",
+                                        style = MaterialTheme.typography.bodySmall,
+                                    )
+                                }
+                            }
+                            state.pruebaConexion?.let { prueba ->
+                                Text(
+                                    text = if (prueba.ok) "✓ ${prueba.mensaje}" else "✗ ${prueba.mensaje}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = if (prueba.ok) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.error
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+
+                item {
+                    Card(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.padding(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
+                            Text("Sincronización", style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                text = "Pendientes de subir: ${state.pendientesSync}",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -259,7 +393,16 @@ fun ConfiguracionScreen(
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.error,
                                 )
-                            }
+                            } ?: Text(
+                                text = "Sin errores en el último intento.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Text(
+                                text = "Automática cada 15/30 min, al abrir la app y al recuperar la conexión.",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                         }
                     }
                 }

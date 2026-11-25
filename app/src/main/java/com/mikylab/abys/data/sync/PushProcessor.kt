@@ -18,12 +18,15 @@ import com.mikylab.abys.data.remote.dto.CrearFuenteRequest
 import com.mikylab.abys.data.remote.dto.CrearPagoRequest
 import com.mikylab.abys.data.remote.dto.DiaInputRequest
 import com.mikylab.abys.data.remote.dto.GenerarSplitRequest
+import com.mikylab.abys.data.remote.dto.RegistrarSettingsRequest
 import com.mikylab.abys.data.remote.dto.SplitSettingsRequest
+import com.mikylab.abys.domain.model.SettingsKeys
 import com.mikylab.abys.domain.model.SyncState
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -520,13 +523,53 @@ class PushProcessor @Inject constructor(
     }
 
     private suspend fun ejecutarSettings(api: AbysApi, op: PendingOperationEntity): OpResult {
-        val modo = op.payloadJson?.let { leerPayload(it) } ?: return OpResult.Fatal("Modo no especificado")
+        val raw = op.payloadJson ?: return OpResult.Fatal("Payload de settings ausente")
+        val elemento = runCatching { json.parseToJsonElement(raw) }.getOrNull()
+            ?: return OpResult.Fatal("Payload de settings inválido")
+
+        // v0.4.0: `PUT /settings/registrar` viaja como objeto con los dos defaults.
+        if (elemento is JsonObject) {
+            val metodo = elemento[SettingsKeys.PAYLOAD_METODO]?.jsonPrimitive?.contentOrNull
+            val modo = elemento[SettingsKeys.PAYLOAD_MODO]?.jsonPrimitive?.contentOrNull
+            if (metodo == null || modo == null) {
+                return OpResult.Fatal("Defaults de registro incompletos")
+            }
+            return when (
+                val res = call { api.actualizarRegistrarSettings(RegistrarSettingsRequest(metodo, modo)) }
+            ) {
+                is CallResult.Error -> classify(res.error)
+                is CallResult.Ok -> {
+                    val dto = res.value.data
+                    val ahora = System.currentTimeMillis()
+                    settingDao.upsert(
+                        com.mikylab.abys.data.local.entity.AppSettingEntity(
+                            clave = SettingsKeys.REGISTRAR_METODO_DEFAULT,
+                            valor = dto?.metodoDefault ?: metodo,
+                            updatedAt = ahora,
+                            syncState = SyncState.SYNCED,
+                        ),
+                    )
+                    settingDao.upsert(
+                        com.mikylab.abys.data.local.entity.AppSettingEntity(
+                            clave = SettingsKeys.REGISTRAR_MODO_DEFAULT,
+                            valor = dto?.modoDefault ?: modo,
+                            updatedAt = ahora,
+                            syncState = SyncState.SYNCED,
+                        ),
+                    )
+                    OpResult.Done
+                }
+            }
+        }
+
+        val modo = runCatching { elemento.jsonPrimitive.content }.getOrNull()
+            ?: return OpResult.Fatal("Modo no especificado")
         return when (val res = call { api.actualizarSplitSettings(SplitSettingsRequest(modo)) }) {
             is CallResult.Error -> classify(res.error)
             is CallResult.Ok -> {
                 settingDao.upsert(
                     com.mikylab.abys.data.local.entity.AppSettingEntity(
-                        clave = CLAVE_MODO_DEFAULT,
+                        clave = SettingsKeys.SPLIT_MODO_DEFAULT,
                         valor = modo,
                         updatedAt = System.currentTimeMillis(),
                         syncState = SyncState.SYNCED,
@@ -614,6 +657,6 @@ class PushProcessor @Inject constructor(
         runCatching { json.parseToJsonElement(payload) as? JsonObject }.getOrNull()
 
     companion object {
-        const val CLAVE_MODO_DEFAULT = "split_modo_default"
+        const val CLAVE_MODO_DEFAULT = SettingsKeys.SPLIT_MODO_DEFAULT
     }
 }

@@ -12,7 +12,7 @@
 |---|---|---|
 | Módulos Gradle | **Uno solo** (`:app`) con paquetes por capa | Build simple y rápido; el aislamiento para paralelizar se garantiza por **paquete**, no por módulo |
 | Paquete raíz | `com.mikylab.abys` | Nombre de dominio propio del proyecto (cambiable antes de publicar) |
-| Kotlin / AGP | Kotlin 2.2.20 · AGP 8.13.1 · Gradle 8.14.x · KSP 2.2.20-2.0.x | Estable y compatible (KGP 2.2.x soporta Gradle ≤ 8.14) |
+| Kotlin / AGP | Kotlin 2.2.20 · AGP **9.5.1** · Gradle **9.6.0** · KSP 2.3.6 | Actualizado en `252790f`; compila y pasa tests/lint con este combo |
 | SDK | `compileSdk/targetSdk = 36`, `minSdk = 26` | Android 8.0+; evita duplicados de WorkManager legacy |
 | JDK | Toolchain 17 (compila con el JDK instalado, p. ej. JDK 23) | Portabilidad |
 | UI | Jetpack Compose + Material 3 (`compose-bom`) | Requisito del proyecto |
@@ -29,9 +29,9 @@
 ### 1.1 Versiones de dependencias (propuesta inicial, ajustar si el repo no resuelve)
 
 ```toml
-agp = "8.13.1"
+agp = "9.5.1"
 kotlin = "2.2.20"
-ksp = "2.2.20-2.0.4"
+ksp = "2.3.6"
 hilt = "2.57.1"            # hilt-android + hilt-compiler (KSP)
 room = "2.7.2"             # room-runtime, room-ktx, room-compiler (KSP)
 retrofit = "2.11.0"
@@ -41,7 +41,7 @@ compose-bom = "2025.06.00"
 navigation-compose = "2.9.0"
 lifecycle = "2.9.1"
 workmanager = "2.10.1"
-security-crypto = "1.1.0-alpha06"
+security-crypto = "1.1.0"
 coil = "2.7.0"
 ```
 
@@ -553,3 +553,112 @@ Propagación a Android de los commits del web/backend `75095f3` (M1–M2), `984d
 **Pendiente por feature**: comprobante con Photo Picker + multipart y zoom, recalcular split desde
 Splits, tooltips de gráficos y marcas de `yaTrabajados`/`yaFechasPago` en el calendario de
 Registrar. La validación E2E contra backend real sigue bloqueada (§7.3).
+
+---
+
+## 14. Pasada "Backend por defecto + diagnóstico de conexión" — 2026-11-19
+
+Síntoma reportado: **"error de conexión y no carga ningún chart"**. Diagnóstico: la build
+apuntaba por defecto a `http://10.0.2.2:8080/api/v1` (backend local del host), que **no estaba
+corriendo**; sin pull, Room queda vacío y el dashboard solo puede mostrar estados vacíos. El
+backend público sí responde (verificado `GET /health`, `/fuentes`, `/cuentas`, `/pagos`,
+`/splits`, `/settings/split` y `/dashboard/summary` → `200` con contrato 0.3.0).
+
+### 14.1 Cambios
+
+| Fichero | Cambio |
+|---|---|
+| `app/build.gradle.kts` | `DEFAULT_BASE_URL` = **`https://test3.mikylab.com/api/v1`**; nuevo `EMULATOR_BASE_URL` (`10.0.2.2:8080`) como preset |
+| `core/security/BaseUrlStore.kt` | `reset()` vuelve al backend público; presets `usarProduccion()`, `usarEmulador()`, `productionUrl()`, `emulatorUrl()` |
+| `presentation/configuracion/*` | **Nueva pestaña "App"**: URL editable, presets, **Probar conexión** (`GET /health`), sincronizar ahora y estado de la cola; al guardar/cambiar URL se lanza ping + sincronización completa |
+| `domain/repository/Repositories.kt` + `SettingsRepositoryImpl.kt` | `HealthRepository.consultarPing()` (`GET /health`, sin pasar por PostgreSQL) |
+| `presentation/dashboard/DashboardViewModel.kt` | `sincronizarAhora()` y sincronización automática en la primera apertura si no hay datos locales |
+| `presentation/dashboard/DashboardScreen.kt` | Tarjeta **"No hay pagos en este dispositivo"** con acciones de sync |
+| `data/sync/PullProcessor.kt` | Los errores incluyen la URL en uso: `Sin conexión con {url} (revisa la URL en Configuración → App)` / `Error HTTP {code} en {url}` |
+
+### 14.2 Verificación
+
+```powershell
+.\gradlew.bat :app:compileDebugKotlin
+.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug
+.\gradlew.bat :app:lintDebug
+```
+
+- `BuildConfig.DEFAULT_BASE_URL` generado = `https://test3.mikylab.com/api/v1`.
+- **74 tests** en verde, APK debug regenerado, 0 errores de lint.
+- Prueba manual sugerida: instalar el APK → Configuración → App → "Probar conexión" debe mostrar
+  "✓ Conectado a https://test3.mikylab.com/api/v1" y el dashboard llenarse tras el pull.
+
+---
+
+## 15. Pasada "Web 0.4.0–0.4.1" — 2026-11-24
+
+Propagación de los cambios de comportamiento del web (`f03ccba`…`0.4.1`): **defaults de registro**,
+**permanecer en Registrar tras guardar**, **puntos de fuentes en el calendario**, **exclusión de la
+cuenta General del pendiente** y **realizar masivo** de transferencias.
+
+> `f03ccba` (scroll único en la página) es un arreglo exclusivo del layout web; **N/A** en Android
+> (la pantalla ya usa un solo `LazyColumn`/scroll vertical).
+
+### 15.1 Contrato
+
+| Cambio | Detalle |
+|---|---|
+| `GET /settings/registrar` | `{ data: { metodo_default, modo_default } }`; defaults `efectivo` / `detallado` |
+| `PUT /settings/registrar` | Exige **ambos** campos; valores inválidos → `400` con el campo en `details` |
+| `total_pendiente` | El backend lo calcula **excluyendo** las transacciones de la cuenta General (`split_handler.go` → `totalesSplit`); `transacciones[]` **no** se filtra |
+| Realizar masivo | Sin endpoint bulk: un `PUT /transacciones/{id}/realizar` por id |
+
+### 15.2 Dominio (`domain/**`)
+
+| Fichero | Cambio |
+|---|---|
+| `model/SyncState.kt` | `ModoRegistro` (DETALLADO/DISTRIBUIDO, `wire` + `fromWire`) movido desde presentación |
+| `model/Models.kt` | `RegistrarSettings(metodo, modo, syncState)` |
+| `model/SettingsKeys.kt` (nuevo) | Claves locales `split_modo_default`, `registrar_metodo_default`, `registrar_modo_default` |
+| `repository/Repositories.kt` | `observeRegistrarSettings()` / `setRegistrarSettings(metodo, modo)` |
+| `registrar/FuentesDots.kt` (nuevo) | Lógica pura de puntos: `construirFuentesPorDia`, `top3Fuentes`, `fuentesParaLeyenda`, `esColorHex`, `COLOR_FUENTE_FALLBACK` |
+
+### 15.3 Datos (`data/**`)
+
+| Fichero | Cambio |
+|---|---|
+| `remote/dto/Dtos.kt` / `Requests.kt` | `RegistrarSettingsDto`, `RegistrarSettingsRequest` |
+| `remote/AbysApi.kt` | `GET`/`PUT settings/registrar` |
+| `repository/SettingsRepositoryImpl.kt` | Upsert de **dos** filas + **una** operación de cola con payload JSON `{"metodo_default","modo_default"}` |
+| `repository/SplitRepositoryImpl.kt` | `observeSplits` / `observeSplitPorPago` recalculan `totalPendiente`/`totalRealizado` desde las transacciones **excluyendo General** |
+| `sync/PushProcessor.kt` | `ejecutarSettings` acepta objeto JSON (registrar) y string legacy (split) |
+| `sync/PullProcessor.kt` | Descarga split + registrar; **no pisa** filas pendientes |
+
+### 15.4 Presentación (`presentation/**`)
+
+| Fichero | Cambio |
+|---|---|
+| `registrar/RegistrarViewModel.kt` | Defaults de registro/redondeo aplicados **una sola vez** (respeta edición del usuario); `fuentesPorDia` / `yaFechasPago` desde Room; tras guardar limpia y **permanece** en Registrar |
+| `registrar/RegistrarScreen.kt` | Puntos de hasta 3 fuentes por día (verde = día nuevo, ámbar = fecha ya registrada) + leyenda "Fuentes"; import de `ModoRegistro` |
+| `configuracion/ConfiguracionViewModel.kt` | `registrarSettings`, `guardandoRegistrar`, `errorRegistrar`, cambios optimistas con reversión |
+| `configuracion/ConfiguracionScreen.kt` | Nueva pestaña **"Registro"** (5 tabs) con chips de método/modo, aviso de pendiente y error inline |
+| `splits/SplitsViewModel.kt` | `cuentasGenerales`, `pendientePorCuenta` (sin General), `pendientesDe(cuenta)`, `marcarRealizadas(ids, onResultado)` |
+| `components/SplitDialogs.kt` | `ResultadoMasivo` + `CuentaDetalleDialog` con selección múltiple, subtotal en vivo, confirmación inline, reintento de fallidos, QR ampliable y bloqueo si `esGeneral` |
+| `splits/SplitsScreen.kt` | Estado `resultadoMasivo` y paso de transacciones/callbacks al diálogo |
+
+### 15.5 Tests añadidos
+
+| Test | Casos |
+|---|---|
+| `domain/registrar/FuentesDotsTest` (nuevo) | 5: acumulación por fuente/día, orden top-3 (total desc, id asc), color inválido → gris, leyenda deduplicada, validación `#RRGGBB` |
+| `presentation/splits/SplitsUiStateTest` | +1: el pendiente por cuenta **excluye** la cuenta General |
+| `data/repository/SplitRepositoryImplTest` | +2 asserts: `totalPendiente` persistido excluye General |
+
+### 15.6 Verificación
+
+```powershell
+.\gradlew.bat :app:compileDebugKotlin
+.\gradlew.bat :app:testDebugUnitTest
+.\gradlew.bat :app:assembleDebug :app:lintDebug
+```
+
+- **80 tests** en verde (11 suites).
+- Sin cambios de esquema Room: la versión sigue siendo **2** (los settings caben en `app_settings`).
+- Grafo reindexado en modo **code-only** (`graphify-out/` ahora versionado).
+

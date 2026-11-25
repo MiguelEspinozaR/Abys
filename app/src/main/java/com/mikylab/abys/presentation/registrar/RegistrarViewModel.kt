@@ -7,34 +7,31 @@ import com.mikylab.abys.core.money.parseBsToCents
 import com.mikylab.abys.core.result.AppResult
 import com.mikylab.abys.core.time.LaPaz
 import com.mikylab.abys.domain.model.DiaTrabajadoDraft
+import com.mikylab.abys.domain.model.FiltroPagos
 import com.mikylab.abys.domain.model.Fuente
 import com.mikylab.abys.domain.model.MetodoPago
 import com.mikylab.abys.domain.model.ModoDistribucion
+import com.mikylab.abys.domain.model.ModoRegistro
 import com.mikylab.abys.domain.model.PagoDraft
+import com.mikylab.abys.domain.model.RegistrarSettings
+import com.mikylab.abys.domain.registrar.FuentesPorDia
+import com.mikylab.abys.domain.registrar.construirFuentesPorDia
 import com.mikylab.abys.domain.repository.FuenteRepository
 import com.mikylab.abys.domain.repository.PagoRepository
+import com.mikylab.abys.domain.repository.SettingsRepository
 import com.mikylab.abys.domain.usecase.DistribuirUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
-
-/**
- * Modo de carga de montos (R4.1/R4.2 del web):
- * - **Detallado**: el usuario ingresa el monto de cada día; el total se calcula solo.
- * - **Distribuido**: el usuario ingresa el total y el sistema lo reparte entre los días.
- */
-enum class ModoRegistro(val label: String) {
-    DETALLADO("Detallado"),
-    DISTRIBUIDO("Distribuido"),
-}
 
 /** Estado unidireccional del formulario de registro de pago (v0.3.0). */
 data class RegistrarUiState(
@@ -51,6 +48,10 @@ data class RegistrarUiState(
     val fechaPago: LocalDate = LaPaz.hoy(),
     val diasTrabajados: Set<LocalDate> = emptySet(),
     val mesCalendario: YearMonth = YearMonth.from(LaPaz.hoy()),
+    /** Puntos por fuente del calendario (v0.4.0). */
+    val fuentesPorDia: FuentesPorDia = emptyMap(),
+    /** Fechas de pago ya registradas (ámbar en el calendario). */
+    val yaFechasPago: Set<LocalDate> = emptySet(),
     val guardando: Boolean = false,
     val error: String? = null,
     val exito: String? = null,
@@ -145,6 +146,7 @@ data class RegistrarUiState(
 class RegistrarViewModel @Inject constructor(
     private val pagoRepository: PagoRepository,
     private val fuenteRepository: FuenteRepository,
+    private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegistrarUiState())
@@ -152,6 +154,14 @@ class RegistrarViewModel @Inject constructor(
 
     val fuentes: StateFlow<List<Fuente>> = fuenteRepository.observeFuentes()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    /** Defaults vigentes (backend/Room), reaplicados tras cada guardado. */
+    private var defaults: RegistrarSettings = RegistrarSettings()
+    private var defaultsRedondeo: ModoDistribucion = ModoDistribucion.DEFAULT
+    private var defaultsAplicados = false
+
+    /** El usuario ya tocó el formulario: los defaults no deben pisar su edición. */
+    private var usuarioEdito = false
 
     init {
         viewModelScope.launch {
@@ -165,29 +175,82 @@ class RegistrarViewModel @Inject constructor(
                 }
             }
         }
+
+        // v0.4.0: defaults de registro (`metodo`/`modo`) y modo de redondeo del split.
+        // Se aplican una sola vez; si el usuario ya editó algo, se respeta su elección.
+        viewModelScope.launch {
+            combine(
+                settingsRepository.observeRegistrarSettings(),
+                settingsRepository.observeSplitSettings(),
+            ) { registrar, split -> registrar to split }
+                .collect { (registrar, split) ->
+                    defaults = registrar
+                    defaultsRedondeo = ModoDistribucion.fromWire(split.modoDefault.wire)
+                    if (defaultsAplicados) return@collect
+                    defaultsAplicados = true
+                    if (usuarioEdito) return@collect
+                    _uiState.update {
+                        it.copy(
+                            metodoPago = registrar.metodo,
+                            modoRegistro = registrar.modo,
+                            modoRedondeo = defaultsRedondeo,
+                        )
+                    }
+                }
+        }
+
+        // Puntos por fuente y fechas de pago ya registradas (solo referencia visual).
+        viewModelScope.launch {
+            combine(
+                pagoRepository.observePagos(FiltroPagos(pageSize = 500)),
+                fuenteRepository.observeFuentes(),
+            ) { pagos, listaFuentes ->
+                construirFuentesPorDia(pagos, listaFuentes) to
+                    pagos.map { it.fechaPago }.toSet()
+            }.collect { (mapa, fechas) ->
+                _uiState.update { it.copy(fuentesPorDia = mapa, yaFechasPago = fechas) }
+            }
+        }
     }
 
-    fun seleccionarFuente(localId: String) = _uiState.update { it.copy(fuenteLocalId = localId) }
+    fun seleccionarFuente(localId: String) {
+        usuarioEdito = true
+        _uiState.update { it.copy(fuenteLocalId = localId) }
+    }
 
-    fun seleccionarMetodo(metodo: MetodoPago) = _uiState.update { it.copy(metodoPago = metodo) }
+    fun seleccionarMetodo(metodo: MetodoPago) {
+        usuarioEdito = true
+        _uiState.update { it.copy(metodoPago = metodo) }
+    }
 
-    fun seleccionarModoRegistro(modo: ModoRegistro) =
+    fun seleccionarModoRegistro(modo: ModoRegistro) {
+        usuarioEdito = true
         _uiState.update { it.copy(modoRegistro = modo) }
-
-    fun cambiarMontoDia(fecha: LocalDate, texto: String) = _uiState.update { estado ->
-        estado.copy(montosDia = estado.montosDia + (fecha to texto))
     }
 
-    fun cambiarTotalDistribuido(texto: String) =
+    fun cambiarMontoDia(fecha: LocalDate, texto: String) {
+        usuarioEdito = true
+        _uiState.update { estado -> estado.copy(montosDia = estado.montosDia + (fecha to texto)) }
+    }
+
+    fun cambiarTotalDistribuido(texto: String) {
+        usuarioEdito = true
         _uiState.update { it.copy(totalDistribuidoTexto = texto) }
+    }
 
-    fun cambiarModoRedondeo(modo: ModoDistribucion) =
+    fun cambiarModoRedondeo(modo: ModoDistribucion) {
+        usuarioEdito = true
         _uiState.update { it.copy(modoRedondeo = modo) }
+    }
 
-    fun cambiarNotas(notas: String) = _uiState.update { it.copy(notas = notas) }
+    fun cambiarNotas(notas: String) {
+        usuarioEdito = true
+        _uiState.update { it.copy(notas = notas) }
+    }
 
-    fun cambiarFechaPago(fecha: LocalDate) = _uiState.update {
-        it.copy(fechaPago = fecha, mesCalendario = YearMonth.from(fecha))
+    fun cambiarFechaPago(fecha: LocalDate) {
+        usuarioEdito = true
+        _uiState.update { it.copy(fechaPago = fecha, mesCalendario = YearMonth.from(fecha)) }
     }
 
     fun cambiarMes(delta: Int) = _uiState.update { estado ->
@@ -195,23 +258,29 @@ class RegistrarViewModel @Inject constructor(
     }
 
     /** Herramienta "Trabajo": alterna el día trabajado (y su monto en modo detallado). */
-    fun marcarDia(fecha: LocalDate) = _uiState.update { estado ->
-        val nuevos = estado.diasTrabajados.toMutableSet()
-        val montos = estado.montosDia.toMutableMap()
-        if (!nuevos.add(fecha)) {
-            nuevos.remove(fecha)
-            montos.remove(fecha)
+    fun marcarDia(fecha: LocalDate) {
+        usuarioEdito = true
+        _uiState.update { estado ->
+            val nuevos = estado.diasTrabajados.toMutableSet()
+            val montos = estado.montosDia.toMutableMap()
+            if (!nuevos.add(fecha)) {
+                nuevos.remove(fecha)
+                montos.remove(fecha)
+            }
+            estado.copy(diasTrabajados = nuevos, montosDia = montos)
         }
-        estado.copy(diasTrabajados = nuevos, montosDia = montos)
     }
 
     /** Herramienta "Quitar": elimina el día (y limpia la fecha de pago si coincidía). */
-    fun quitarDia(fecha: LocalDate) = _uiState.update { estado ->
-        estado.copy(
-            diasTrabajados = estado.diasTrabajados - fecha,
-            montosDia = estado.montosDia - fecha,
-            fechaPago = if (estado.fechaPago == fecha) LocalDate.MIN else estado.fechaPago,
-        )
+    fun quitarDia(fecha: LocalDate) {
+        usuarioEdito = true
+        _uiState.update { estado ->
+            estado.copy(
+                diasTrabajados = estado.diasTrabajados - fecha,
+                montosDia = estado.montosDia - fecha,
+                fechaPago = if (estado.fechaPago == fecha) LocalDate.MIN else estado.fechaPago,
+            )
+        }
     }
 
     fun limpiarMensajes() = _uiState.update { it.copy(error = null, exito = null) }
@@ -232,16 +301,27 @@ class RegistrarViewModel @Inject constructor(
                 diasTrabajados = dias,
             )
             when (val resultado = pagoRepository.crearPago(draft)) {
-                is AppResult.Success -> _uiState.update {
-                    it.copy(
-                        guardando = false,
-                        exito = "Pago registrado. Se sincronizará cuando haya conexión.",
-                        notas = "",
-                        diasTrabajados = emptySet(),
-                        montosDia = emptyMap(),
-                        totalDistribuidoTexto = "",
-                    )
+                is AppResult.Success -> {
+                    // v0.4.1: se limpia el formulario y se permanece en Registrar,
+                    // con los defaults aplicados (fecha = hoy, fuente reiniciada).
+                    _uiState.update { actual ->
+                        actual.copy(
+                            guardando = false,
+                            exito = "Pago registrado. Puedes registrar otro.",
+                            fuenteLocalId = null,
+                            metodoPago = defaults.metodo,
+                            modoRegistro = defaults.modo,
+                            modoRedondeo = defaultsRedondeo,
+                            montosDia = emptyMap(),
+                            totalDistribuidoTexto = "",
+                            notas = "",
+                            fechaPago = LaPaz.hoy(),
+                            diasTrabajados = emptySet(),
+                            mesCalendario = YearMonth.from(LaPaz.hoy()),
+                        )
+                    }
                 }
+
                 is AppResult.Failure -> _uiState.update {
                     it.copy(guardando = false, error = resultado.error.message)
                 }

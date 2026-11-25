@@ -97,6 +97,9 @@ sobre Room** con la semántica del backend v0.3.0 (`DashboardDao`), agrupando po
 | Layout | 2 columnas (calendario \| formulario) | Columna con scroll: calendario arriba y formulario abajo (móvil) |
 | Calendario | 3 herramientas: **Trabajo**, **Pago**, **Quitar** | Toque corto = marcar día trabajado; toque largo = quitar (adaptación móvil) |
 | Marcadores | verde = día trabajado, ámbar = fecha de pago | `Box` con color + leyenda |
+| **Puntos de fuentes (v0.4.0)** | Hasta 3 puntos por día con el color de cada fuente que tuvo días trabajados ese día (orden: total desc, `fuente_id` asc); leyenda "Fuentes"; verde/ámbar no cuentan para el límite | `domain/registrar/FuentesDots.kt` + puntos de 4 dp en `CalendarioMes`; leyenda `FlowRow` |
+| **Defaults de registro (v0.4.0)** | `metodo_default` y `modo_default` de `GET /settings/registrar`; se aplican **una vez** al abrir el formulario, salvo que el usuario ya haya editado | `RegistrarViewModel` combina settings de registro + split (redondeo) y aplica una sola vez |
+| **Tras guardar (v0.4.1)** | Limpia el formulario y **permanece** en Registrar: fecha = hoy, fuente sin seleccionar, método/modo/redondeo a defaults, mensaje de éxito | idem (`exito = "Pago registrado. Puedes registrar otro."`) |
 | Fuente | Select con punto de color + alias | `ExposedDropdownMenuBox` |
 | Método de pago | Segmentado de 3: Efectivo / QR / Transacción | `FilterChip`s |
 | **Modo de montos** | **Detallado** (monto por día) o **Distribuido** (total repartido equitativamente) | Chips `ModoRegistro.DETALLADO / DISTRIBUIDO` |
@@ -153,14 +156,15 @@ No se implementa en Android; la captura de imagen queda como mejora posterior co
 |---|---|---|
 | Título | "Splits" + "Distribución de cada pago entre cuentas según sus tasas. Los splits pendientes se congelan al marcar cada transferencia como realizada." | idem |
 | StatCards | "Splits generados", "Pendiente total", "Realizado total" | `Row` de 3 `KpiCard` |
-| "Pendiente por cuenta" | Una fila por cuenta: alias (+ "· reserva" si General), `"{banco} · {numero}"`, monto pendiente y botón "Ver datos"; pie "Total pendiente". Vacío: "No hay cuentas configuradas." | idem |
+| "Pendiente por cuenta" | Una fila por cuenta: alias (+ "· reserva" si General), `"{banco} · {numero}"`, monto pendiente y botón "Ver datos"; pie "Total pendiente". Vacío: "No hay cuentas configuradas." | idem; **el pendiente excluye la cuenta General** (reserva de redondeo) |
 | Lista de pagos con split | "Pago #{id} · {fuente}", "{fecha} · {n} día(s)", monto, badge "Completo" (emerald) o "{Bs} pend." | idem |
 | Detalle del split | badge "modo {modo}", "Pendiente: {Bs}" · "Realizado: {Bs}", botón "Eliminar split" (deshabilitado si hay realizadas, tooltip "No se puede eliminar un split con transacciones realizadas") | idem |
 | Fila de transacción | alias snapshot, "{tasa} %" (+ "· reserva" si General), monto, badge "Realizada"/"Pendiente", botón "Realizar" | idem |
 | Warning 0 Bs | borde ámbar + "0 Bs en cuenta no General" (tooltip "Transacción de 0 Bs en una cuenta que no es General: revisa la distribución.") | idem (BR-013) |
 | Diálogo generar split | "Generar split — pago #{id}", "Crea un split para repartir {monto} Bs entre las cuentas con las tasas vigentes.", select "Modo de cálculo" con 3 textos completos, "Cancelar"/"Generar split" | `ModalBottomSheet` |
 | Diálogo realizar | "Transferir a {alias}", "Confirma la transferencia realizada desde tu banca para congelar la transacción.", caja con banco/número, "Tasa aplicada (snapshot)", **QR 160×160** + "Escanea el QR desde tu app bancaria y transfiere exactamente {Bs}." / "Esta cuenta no tiene QR cargado. Transfiere con los datos del banco." | idem |
-| Diálogo cuenta | "{alias}" (+ "· reserva"), "Cuenta General usada para la reserva de redondeo." / "Datos de la cuenta para transferir el monto pendiente.", filas Banco / Número de cuenta / Tasa vigente / Pendiente, QR 176×176 | idem |
+| Diálogo cuenta | "{alias}" (+ "· reserva"), "Cuenta General usada para la reserva de redondeo." / "Datos de la cuenta para transferir el monto pendiente.", filas Banco / Número de cuenta / Tasa vigente / Pendiente, QR 176×176, **"Transferencias pendientes"** con checkbox por transacción, subtotal en vivo y **Realizar masivo** | idem (`CuentaDetalleDialog`), QR ampliable a pantalla completa |
+| **Realizar masivo (v0.4.1)** | "Realizar ({n})" → confirmación inline `Marcar {n} transferencias por {Bs}?`; un `PUT /transacciones/{id}/realizar` por id con `allSettled`; reintento **solo** de fallidos; la acción no existe si `es_general = true` | `SplitsViewModel.marcarRealizadas` (secuencial, local-first) + reintento con `ResultadoMasivo` |
 
 **Endpoints**: `GET /pagos?page_size=500`, `GET /splits`, `GET /cuentas`, `POST /splits`, `DELETE /splits/{id}`, `PUT /transacciones/{id}/realizar`.
 
@@ -183,7 +187,7 @@ General (como `FilaTransaccion` del web).
 
 ## 6. Configuración — `/configuracion`
 
-Tabs: **Cuentas** (default) · **Fuentes** · **Splits**.
+Tabs: **Cuentas** (default) · **Fuentes** · **Splits** · **Registro** · **App** (extra Android).
 
 ### 6.1 Cuentas
 | Elemento | Web | Android |
@@ -214,7 +218,32 @@ Tabs: **Cuentas** (default) · **Fuentes** · **Splits**.
 |---|---|---|
 | Card 1 | "Modo de cálculo por defecto" + "Se usa al generar un split cuando la fuente no define un modo propio.", select con "preciso (truncado al centavo)", "redondeado (half-up a 1 Bs)", "enteros (truncado a 1 Bs)" | idem |
 | Card 2 | "Fuentes con split automático ({n})" + "Configura el split automático de cada fuente en la pestaña Fuentes."; vacío → alerta "Sin fuentes en automático" + "Activa \"Split automático\" en una fuente para que sus pagos generen el split al registrarse." | idem |
-| **Ajustes Android (extra)** | — | Sección propia: **URL del backend** (editable, cifrada), **Sincronizar ahora**, **Estado de la cola de pendientes**, **Modo claro/oscuro** |
+
+### 6.4 Registro (v0.4.0)
+| Elemento | Web | Android |
+|---|---|---|
+| Card | "Defaults al registrar ingresos" + "Se aplican al abrir el formulario de registro. Puedes cambiarlos en cada pago." | `Card` con el mismo texto |
+| Método por defecto | Select `Efectivo` / `QR` / `Transacción` | `FilterChip`s de `MetodoPago` |
+| Modo por defecto | Select `Detallado` / `Distribuido` | `FilterChip`s de `ModoRegistro` |
+| Persistencia | `PUT /settings/registrar` (ambos campos obligatorios); optimista con reversión si falla | Room-first + cola; reversión local + error inline |
+| Pendiente | — | "Se sincronizará con el servidor cuando haya conexión." si `syncState.isPending` |
+
+### 6.5 App (extra Android) — conexión y sincronización
+
+| Elemento | Comportamiento |
+|---|---|
+| Base URL por defecto | **`https://test3.mikylab.com/api/v1`** (backend real) — la app funciona al instalarla en cualquier dispositivo, sin configurar nada |
+| Campo URL | Editable y persistida cifrada (`EncryptedSharedPreferences`); se normaliza a `/api/v1` y valida `http(s)://` |
+| Presets | **Público (test3.mikylab.com)** y **Emulador (10.0.2.2:8080)** en un toque |
+| Probar conexión | `GET /health` con la URL actual → "✓ Conectado a {url}" / "✗ {mensaje} · {url}" |
+| Al cambiar la URL | Ping + sincronización completa automática (no hay que buscar el botón) |
+| Sincronizar ahora | Encola push + pull (`SyncAllWorker`) |
+| Estado | Pendientes de subir, último error de sincronización y periodicidad (15/30 min, al abrir, al recuperar red) |
+| Error de red | El estado de sync muestra **la URL en uso**: `Sin conexión con {url} (revisa la URL en Configuración → App)` |
+
+> El dashboard, si no hay datos locales, muestra una tarjeta **"No hay pagos en este dispositivo"**
+> con acciones "Sincronizar ahora" / "Contrastar con el servidor" y pide una sincronización
+> automáticamente en la primera apertura.
 
 ---
 
@@ -248,6 +277,7 @@ Tabs: **Cuentas** (default) · **Fuentes** · **Splits**.
 | **Split** | `Room` + transacciones | `Room` + `PENDING_*` | `POST /splits`, `PUT /splits/{id}`, `DELETE /splits/{id}` | `GET /splits` | Tras el push, el split local se **reemplaza** por el del servidor; no borrar con realizadas |
 | **Transacción** | `Room` `Flow` | marcar `realizado` local | `PUT /transacciones/{id}/realizar` | `GET /splits` (embebidas) | Irreversible; `alias_snapshot` y `tasa_bps` congelados |
 | **Settings (split)** | `Room` | `Room` | `PUT /settings/split` | `GET /settings/split` | — |
+| **Settings (registrar)** | `Room` | `Room` (2 filas) | `PUT /settings/registrar` (payload JSON con ambos campos) | `GET /settings/registrar` | No pisar filas pendientes al hacer pull |
 | **Health** | **no cacheado** | — | — | `GET /health/db` en cada carga | Es una lectura "en vivo" del servidor |
 
 ### 8.2 Reglas de sincronización
@@ -291,10 +321,10 @@ Los strings marcados como **literales** deben reproducirse tal cual (son la fuen
 | Grupos | "Finanzas", "Sistema" |
 | App | "Abys", "ingresos" |
 | Tema | "Modo claro", "Modo oscuro" |
-| Registrar | "Registrar pago", "Marca los días trabajados en el calendario y elige cómo cargar los montos.", "Calendario", "Datos del pago", "Modo de registro", "Detallado", "Distribuido", "Monto por día (Bs)", "Total a distribuir (Bs)", "Redondeo", "Redondeado (1 Bs)", "Enteros (1 Bs)", "Preciso (centavos)", "VISTA PREVIA", "Total del pago", "Usa coma decimal y punto para miles: 1.234,56.", "Guardar pago" |
+| Registrar | "Registrar pago", "Marca los días trabajados en el calendario y elige cómo cargar los montos.", "Calendario", "Datos del pago", "Modo de registro", "Detallado", "Distribuido", "Monto por día (Bs)", "Total a distribuir (Bs)", "Redondeo", "Redondeado (1 Bs)", "Enteros (1 Bs)", "Preciso (centavos)", "VISTA PREVIA", "Total del pago", "Usa coma decimal y punto para miles: 1.234,56.", "Guardar pago", "día trabajado (nuevo)", "fecha de pago ya registrada", "Fuentes", "Pago registrado. Puedes registrar otro." |
 | Ingresos | "Ingresos", "{n} pagos registrados", "Filtros", "Desde", "Hasta", "Fuente", "Todas", "Método", "Todos", "Aplicar", "Limpiar", "Días trabajados ({n})", "Comprobante", "Sin comprobante", "ID #{id}", "Editar pago #{id}", "Guardar cambios", "¿Eliminar pago #{id}?" |
-| Splits | "Splits", "Splits generados", "Pendiente total", "Realizado total", "Pendiente por cuenta", "Total pendiente", "Ver datos", "No hay splits generados.", "Complet[o]", "{Bs} pend.", "Eliminar split", "¿Eliminar el split del pago #{id}?", "Transferir a {alias}", "Marcar realizada", "Tasa aplicada (snapshot)", "Realizada", "Pendiente", "0 Bs en cuenta no General" |
-| Configuración | "Configuración", "Administra fuentes de ingreso, cuentas de distribución y splits.", "Cuentas", "Fuentes", "Splits", "Nueva cuenta", "Nueva fuente", "Historial de tasas — {alias}", "Modo de cálculo por defecto", "Modo por defecto", "Aplicar a transacciones pendientes", "Residual (derivada)", "= 100% − otras · no configurable" |
+| Splits | "Splits", "Splits generados", "Pendiente total", "Realizado total", "Pendiente por cuenta", "Total pendiente", "Ver datos", "No hay splits generados.", "Complet[o]", "{Bs} pend.", "Eliminar split", "¿Eliminar el split del pago #{id}?", "Transferir a {alias}", "Marcar realizada", "Tasa aplicada (snapshot)", "Realizada", "Pendiente", "0 Bs en cuenta no General", "Transferencias pendientes", "Esta cuenta no tiene transferencias pendientes.", "{n} seleccionadas", "Realizar ({n})", "Marcar {n} transferencias por {Bs}?", "Confirmar", "Volver" |
+| Configuración | "Configuración", "Administra fuentes de ingreso, cuentas de distribución y splits.", "Cuentas", "Fuentes", "Splits", "Registro", "App", "Nueva cuenta", "Nueva fuente", "Historial de tasas — {alias}", "Modo de cálculo por defecto", "Modo por defecto", "Aplicar a transacciones pendientes", "Residual (derivada)", "= 100% − otras · no configurable", "Defaults al registrar ingresos", "Se aplican al abrir el formulario de registro. Puedes cambiarlos en cada pago.", "Método de pago por defecto", "Modo de registro por defecto", "Defaults de registro actualizados", "Se sincronizará con el servidor cuando haya conexión." |
 | Health | "Salud del sistema", "Métricas en vivo de la base de datos del backend.", "Refrescar", "Conexión", "Latencia", "Versión PostgreSQL", "Tamaño de la DB", "Tablas ({n})" |
 | Modos de split | "preciso (truncado al centavo)", "redondeado (half-up a 1 Bs)", "enteros (truncado a 1 Bs)", "Preciso — reparte centavos exactos, residuo a General", "Redondeado — montos redondeados al entero", "Enteros — distribuye solo montos enteros" |
 

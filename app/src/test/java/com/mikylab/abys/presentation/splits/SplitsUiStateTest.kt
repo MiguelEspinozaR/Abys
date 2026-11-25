@@ -53,6 +53,29 @@ class SplitsUiStateTest {
     }
 
     @Test
+    fun `el pendiente por cuenta excluye la cuenta General`() {
+        val state = SplitsUiState(
+            cuentas = listOf(
+                CuentaConQr(cuenta("cuenta-a"), null),
+                CuentaConQr(cuenta("general", esGeneral = true), null),
+            ),
+            splits = listOf(
+                splitCon(
+                    transaccion("cuenta-a", 10_000L, realizado = false),
+                    transaccion("general", 300L, realizado = false),
+                ),
+            ),
+        )
+
+        assertEquals(10_000L, state.pendientePorCuenta["cuenta-a"])
+        assertNull(state.pendientePorCuenta["general"])
+        assertEquals(
+            listOf("cuenta-a"),
+            state.pendientesDe("cuenta-a").map { it.cuentaLocalId },
+        )
+    }
+
+    @Test
     fun `cuentaDe devuelve null si la transaccion no tiene cuenta`() {
         val state = SplitsUiState(
             cuentas = listOf(CuentaConQr(cuenta("cuenta-a"), null)),
@@ -89,14 +112,14 @@ class SplitsUiStateTest {
         fechaRealizacion = null,
     )
 
-    private fun cuenta(localId: String) = Cuenta(
+    private fun cuenta(localId: String, esGeneral: Boolean = false) = Cuenta(
         localId = localId,
         serverId = null,
         alias = localId,
         numero = null,
         banco = null,
         qrRuta = null,
-        esGeneral = false,
+        esGeneral = esGeneral,
         tasa = Percent(2_000L),
     )
 }

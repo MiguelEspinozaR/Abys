@@ -52,6 +52,7 @@ import com.mikylab.abys.presentation.components.EstadoVacio
 import com.mikylab.abys.presentation.components.GenerarSplitDialog
 import com.mikylab.abys.presentation.components.KpiCard
 import com.mikylab.abys.presentation.components.RealizarTransaccionDialog
+import com.mikylab.abys.presentation.components.ResultadoMasivo
 
 /**
  * Pantalla "Splits" (equivalente a `/splits` del web):
@@ -70,6 +71,8 @@ fun SplitsScreen(
     var transaccionARealizar by remember { mutableStateOf<Transaccion?>(null) }
     /** Cuenta de la que se quiere ver los datos. */
     var cuentaAVer by remember { mutableStateOf<Pair<com.mikylab.abys.domain.model.Cuenta, Long>?>(null) }
+    /** Resultado del último "Realizar masivo" (para reintentar solo los fallidos). */
+    var resultadoMasivo by remember { mutableStateOf<ResultadoMasivo?>(null) }
     /** Pago pendiente de generar split. */
     var pagoParaSplit by remember { mutableStateOf<Pago?>(null) }
 
@@ -446,7 +449,29 @@ fun SplitsScreen(
             cuenta = aVer.first,
             pendiente = aVer.second,
             qrUrl = cuentaConQr?.qrUrl,
-            onDismiss = { cuentaAVer = null },
+            transacciones = state.pendientesDe(aVer.first.localId),
+            resultado = resultadoMasivo,
+            onConfirmar = { ids ->
+                viewModel.marcarRealizadas(ids) { ok, fallidos ->
+                    resultadoMasivo = if (fallidos.isEmpty()) {
+                        ResultadoMasivo(
+                            fallidos = emptyList(),
+                            mensaje = "${ok.size} transacciones marcadas como realizadas.",
+                        )
+                    } else {
+                        ResultadoMasivo(
+                            fallidos = fallidos,
+                            mensaje = "${ok.size} de ${ids.size} marcadas. " +
+                                "Revisa las ${fallidos.size} restantes y reintenta.",
+                        )
+                    }
+                }
+            },
+            onLimpiarResultado = { resultadoMasivo = null },
+            onDismiss = {
+                cuentaAVer = null
+                resultadoMasivo = null
+            },
         )
     }
 

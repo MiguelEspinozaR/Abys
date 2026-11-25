@@ -25,6 +25,8 @@ import com.mikylab.abys.data.remote.dto.HistorialTasaDto
 import com.mikylab.abys.data.remote.dto.LogoResponse
 import com.mikylab.abys.data.remote.dto.PagoDto
 import com.mikylab.abys.data.remote.dto.QrResponse
+import com.mikylab.abys.data.remote.dto.RegistrarSettingsDto
+import com.mikylab.abys.data.remote.dto.RegistrarSettingsRequest
 import com.mikylab.abys.data.remote.dto.SplitDto
 import com.mikylab.abys.data.remote.dto.SplitSettingsDto
 import com.mikylab.abys.data.remote.dto.SplitSettingsRequest
@@ -199,6 +201,14 @@ interface AbysApi {
     suspend fun actualizarSplitSettings(
         @Body body: SplitSettingsRequest,
     ): ApiEnvelope<SplitSettingsDto>
+
+    @GET("settings/registrar")
+    suspend fun obtenerRegistrarSettings(): ApiEnvelope<RegistrarSettingsDto>
+
+    @PUT("settings/registrar")
+    suspend fun actualizarRegistrarSettings(
+        @Body body: RegistrarSettingsRequest,
+    ): ApiEnvelope<RegistrarSettingsDto>
 
     // ── Dashboard ───────────────────────────────────────────────────────────
 

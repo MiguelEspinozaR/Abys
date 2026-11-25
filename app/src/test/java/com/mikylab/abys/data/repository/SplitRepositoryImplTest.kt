@@ -147,6 +147,9 @@ class SplitRepositoryImplTest {
         assertEquals(21_200L, slotTxs.captured.first { it.cuentaLocalId == "cuenta-general" }.montoEnteros)
         // Invariante BR-081: Σ transacciones = monto del pago.
         assertEquals(pago.montoEnteros, slotTxs.captured.sumOf { it.montoEnteros })
+        // v0.4.0: el pendiente persistido excluye la cuenta General (reserva de redondeo).
+        assertEquals(5_300L, slotSplit.captured.totalPendiente)
+        assertEquals(0L, slotSplit.captured.totalRealizado)
         coVerify {
             pendingWriter.encolar(
                 Operations.TIPO_SPLIT,

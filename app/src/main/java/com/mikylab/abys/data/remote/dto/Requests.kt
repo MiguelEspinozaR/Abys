@@ -77,6 +77,13 @@ data class SplitSettingsRequest(
     @SerialName("modo_default") val modoDefault: String,
 )
 
+/** Body de `PUT /settings/registrar` (v0.4.0): ambos campos son obligatorios. */
+@Serializable
+data class RegistrarSettingsRequest(
+    @SerialName("metodo_default") val metodoDefault: String,
+    @SerialName("modo_default") val modoDefault: String,
+)
+
 /** Body de `POST /pagos/:id/dias` (v0.3.0: día con monto en centavos). */
 @Serializable
 data class AgregarDiaRequest(

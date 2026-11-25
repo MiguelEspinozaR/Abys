@@ -382,6 +382,10 @@ Respuesta: `{ "data": { "eliminado": true, "id": 42 } }`
 Congela monto y datos; registra `fecha_realizacion`. **No es reversible** por la API v1.
 Respuesta → `{ "data": Transaccion }` (la transacción ya actualizada).
 
+**Realizar masivo (v0.4.1, solo UI)**: no existe endpoint bulk. La app envía un
+`PUT /transacciones/{id}/realizar` **por cada id seleccionado** (en local-first encola uno
+por transacción) y reintenta solo los que fallaron.
+
 ### 4.7 `GET /api/v1/transacciones` — Listar (200)
 
 Query params opcionales: `split_id` (int), `cuenta_id` (int), `realizado` (`true|false`).
@@ -395,7 +399,7 @@ Respuesta → `{ "data": Transaccion[] }`.
   "created_at": "…", "updated_at": "…",
   "transacciones": [ /* Transaccion[] */ ],
   "total_realizado": 29550,   // Σ montos realizadas
-  "total_pendiente": 29550 }  // Σ montos pendientes
+  "total_pendiente": 29550 }  // Σ montos NO realizadas, EXCLUYE la cuenta General
 
 // Transaccion
 { "id": 700, "split_id": 42, "cuenta_id": 1,      // cuenta_id puede ser null
@@ -480,9 +484,18 @@ Si la DB no responde → **503**:
 |---|---|---|---|
 | `GET` | `/settings/split` | — | `{ "data": { "modo_default": "preciso" } }` |
 | `PUT` | `/settings/split` | `{ "modo_default": "redondeado" }` | `{ "data": { "modo_default": "redondeado" } }` |
+| `GET` | `/settings/registrar` | — | `{ "data": { "metodo_default": "efectivo", "modo_default": "detallado" } }` |
+| `PUT` | `/settings/registrar` | `{ "metodo_default": "qr", "modo_default": "distribuido" }` | `{ "data": { "metodo_default": "qr", "modo_default": "distribuido" } }` |
 
-- Modo por defecto: `redondeado` \| `enteros` \| `preciso`. Valor inicial en BD: `preciso`.
-- `PUT` con modo inválido → `400` (`"modo de split inválido: …"`).
+- Modo de split por defecto: `redondeado` \| `enteros` \| `preciso`. Valor inicial en BD: `preciso`.
+- `PUT /settings/split` con modo inválido → `400` (`"modo de split inválido: …"`).
+- **Defaults de registro (v0.4.0)**: `metodo_default` ∈ `efectivo|qr|transaccion` y
+  `modo_default` ∈ `detallado|distribuido`. El `PUT` exige **ambos** campos (obligatorios);
+  valor inválido → `400` con el campo en `details`. El backend los devuelve con defaults
+  `efectivo`/`detallado` si la fila no existe.
+- La app guarda ambos defaults en la tabla local `app_settings` y encola **una sola**
+  operación con payload `{"metodo_default","modo_default"}`; el push tolera también el
+  payload string antiguo de `/settings/split` (`"preciso"`).
 
 ---
 

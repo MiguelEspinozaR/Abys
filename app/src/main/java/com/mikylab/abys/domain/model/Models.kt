@@ -138,6 +138,18 @@ data class SplitSettings(
     val syncState: SyncState = SyncState.SYNCED,
 )
 
+/**
+ * Defaults globales de registro (`GET/PUT /settings/registrar`, v0.4.0).
+ *
+ * Se aplican **una sola vez** al abrir el formulario de Registrar; el usuario puede
+ * cambiarlos en cada pago sin modificar la configuración global.
+ */
+data class RegistrarSettings(
+    val metodo: MetodoPago = MetodoPago.EFECTIVO,
+    val modo: ModoRegistro = ModoRegistro.DETALLADO,
+    val syncState: SyncState = SyncState.SYNCED,
+)
+
 /** Estado de salud del backend. */
 data class HealthInfo(
     val conexion: String,

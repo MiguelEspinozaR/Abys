@@ -36,7 +36,7 @@
 | `historial_tasas` | `HistorialTasaEntity` | `localId` (TEXT) | `cuentaId → cuentas.localId` | `tasaBps`, `aplicadaDesde` |
 | `splits` | `SplitEntity` | `localId` (TEXT) | `pagoId → pagos.localId` | 0..1 por pago; `modoCalculo` |
 | `transacciones` | `TransaccionEntity` | `localId` (TEXT) | `splitId → splits.localId`, `cuentaId → cuentas.localId?` | `aliasSnapshot`, `tasaBps` congelados |
-| `app_settings` | `AppSettingEntity` | `clave` (TEXT) | — | `split_modo_default` |
+| `app_settings` | `AppSettingEntity` | `clave` (TEXT) | — | `split_modo_default`, `registrar_metodo_default`, `registrar_modo_default` |
 | — (local) | `PendingOperationEntity` | `id` (autoinc) | — | cola de operaciones pendientes |
 | — (local) | `SyncStateEntity` | `id` = 1 (singleton) | — | metadatos del sync (último sync, error) |
 
@@ -204,7 +204,8 @@ data class SplitEntity(
     val serverId: Long?,
     val pagoLocalId: String,
     val modoCalculo: String,            // "redondeado" | "enteros" | "preciso"
-    val totalPendiente: Long,           // cacheado del servidor
+    val totalPendiente: Long,           // cacheado; para la UI se recalcula desde las
+                                        // transacciones excluyendo la cuenta General (v0.4.0)
     val totalRealizado: Long,
     val createdAt: Long,
     val updatedAt: Long,
@@ -243,7 +244,8 @@ data class TransaccionEntity(
 // ─────────────────────── settings (clave/valor) ───────────────────────
 @Entity(tableName = "app_settings")
 data class AppSettingEntity(
-    @PrimaryKey val clave: String,      // "split_modo_default"
+    @PrimaryKey val clave: String,      // SettingsKeys: split_modo_default |
+                                        // registrar_metodo_default | registrar_modo_default
     val valor: String,
     val updatedAt: Long,
     val syncState: SyncState,
@@ -425,6 +427,23 @@ Reglas que **debe** respetar (idénticas al backend):
 > como tests unitarios Kotlin (`app/src/test/.../SplitCalculatorTest.kt`) para garantizar que el
 > cálculo offline coincide byte a byte con el del servidor.
 
+### 6.1 Agregados de la UI (v0.4.0)
+
+- **Pendiente total y pendiente por cuenta**: se calculan desde las transacciones
+  (`realizado = false`) **excluyendo** las de la cuenta `esGeneral = true`. El backend hace lo
+  mismo en `totalesSplit` (`total_pendiente`); la lista `transacciones[]` **no** se filtra (la
+  General sigue visible, solo no cuenta como pendiente). Nunca se identifica General por un id
+  fijo: siempre por `esGeneral`.
+- `SplitRepositoryImpl.observeSplits` / `observeSplitPorPago` recalculan
+  `totalPendiente`/`totalRealizado` desde las transacciones al emitir, para que el valor local
+  coincida con el backend incluso antes del pull.
+- **Puntos del calendario de Registrar** (`domain/registrar/FuentesDots.kt`, puro):
+  `construirFuentesPorDia(pagos, fuentes)` agrupa `diasTrabajados` por fecha y fuente;
+  `top3Fuentes` devuelve hasta 3 ordenadas por total descendente y `fuente_id` ascendente;
+  `fuentesParaLeyenda` deduplica por fuente. El color se valida como `#RRGGBB` y cae a
+  `#9CA3AF` (gris) si es inválido. Verde = día nuevo, ámbar = fecha de pago ya registrada; los
+  puntos de fuente se omiten en días ya seleccionados.
+
 ---
 
 ## 7. Algoritmo de sincronización
@@ -463,9 +482,17 @@ Reglas que **debe** respetar (idénticas al backend):
 | Recalcular split | `PUT /splits/{id}` | |
 | Eliminar split | `DELETE /splits/{id}` | 409 si hay realizadas |
 | Marcar realizada | `PUT /transacciones/{id}/realizar` | Irreversible: al fallar, la UI avisa. La operación se encola por el `localId` de la transacción: en el push se resuelve su `serverId` (puede no existir todavía → reintento tras subir el split) |
-| Modo por defecto | `PUT /settings/split` | |
+| Modo por defecto | `PUT /settings/split` | Payload de cola string (`"preciso"`) |
+| Defaults de registro | `PUT /settings/registrar` | Payload de cola JSON `{"metodo_default","modo_default"}`; una sola operación para ambos campos |
 
 **Orden de push** (respeta dependencias): `fuentes → cuentas → pagos → días → splits → transacciones → settings`.
+
+**Settings de registro (v0.4.0)**: `SettingsRepositoryImpl.setRegistrarSettings(metodo, modo)`
+hace upsert de **dos** filas (`registrar_metodo_default`, `registrar_modo_default`) y encola
+**una** operación `TIPO_SETTINGS` con `entityLocalId = "registrar"`. El push interpreta el
+payload como objeto (registrar) o string (split, compatibilidad con colas antiguas) y, al
+recibir la respuesta, marca ambas filas `SYNCED` con los valores devueltos por el backend.
+`PullProcessor.pullSettings` descarga split + registrar y **no pisa** filas pendientes.
 
 **Respuesta del servidor como autoridad**: tras `POST /splits` o `PUT /splits/:id`, las
 transacciones devueltas por el servidor **reemplazan** a las locales (`SplitTransactionsSync`),
@@ -482,7 +509,7 @@ se degrada a `PENDING_CREATE` (la fila se recrea). Si responde `409`/`422`, la o
 
 ### 7.3 Pull (servidor → Room)
 
-Orden de refresco: `fuentes → cuentas (+historial) → pagos (+días) → splits (+transacciones) → settings`.
+Orden de refresco: `fuentes → cuentas (+historial) → pagos (+días) → splits (+transacciones) → settings (split + registrar)`.
 El dashboard **no** se persiste: se calcula **localmente** sobre Room con la semántica v0.3.0
 (`DashboardDao`: `observeTotalDias`, `observeTotalHistorico`, `observeFilasPorDiaFuente`,
 `observeHistorial`) — todo agrupado por `dias_trabajados.fecha`, montos de

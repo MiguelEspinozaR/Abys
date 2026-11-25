@@ -9,6 +9,7 @@ import com.mikylab.abys.domain.model.FiltroPagos
 import com.mikylab.abys.domain.model.ModoCalculo
 import com.mikylab.abys.domain.model.Pago
 import com.mikylab.abys.domain.model.Split
+import com.mikylab.abys.domain.model.Transaccion
 import com.mikylab.abys.domain.repository.CuentaRepository
 import com.mikylab.abys.domain.repository.PagoRepository
 import com.mikylab.abys.domain.repository.SplitRepository
@@ -41,13 +42,31 @@ data class SplitsUiState(
     val totalPendiente: Long get() = splits.sumOf { it.split.totalPendiente.centavos }
     val totalRealizado: Long get() = splits.sumOf { it.split.totalRealizado.centavos }
 
-    /** Pendiente agregado por cuenta (como en el web). */
+    /** `localId` de las cuentas General (nunca por id fijo, R7.1). */
+    val cuentasGenerales: Set<String>
+        get() = cuentas.filter { it.cuenta.esGeneral }.map { it.cuenta.localId }.toSet()
+
+    /**
+     * Pendiente agregado por cuenta (como en el web v0.4.0).
+     *
+     * Excluye la cuenta General: su monto es una **reserva de redondeo** y no se transfiere,
+     * por lo que tampoco entra en el "Pendiente total".
+     */
     val pendientePorCuenta: Map<String, Long>
-        get() = splits
+        get() {
+            val generales = cuentasGenerales
+            return splits
+                .flatMap { it.split.transacciones }
+                .filter { !it.realizado && it.cuentaLocalId != null && it.cuentaLocalId !in generales }
+                .groupBy { it.cuentaLocalId.orEmpty() }
+                .mapValues { (_, transacciones) -> transacciones.sumOf { it.monto.centavos } }
+        }
+
+    /** Transacciones **pendientes** de una cuenta (para "Realizar masivo"). */
+    fun pendientesDe(cuentaLocalId: String): List<Transaccion> =
+        splits
             .flatMap { it.split.transacciones }
-            .filter { !it.realizado && it.cuentaLocalId != null }
-            .groupBy { it.cuentaLocalId.orEmpty() }
-            .mapValues { (_, transacciones) -> transacciones.sumOf { it.monto.centavos } }
+            .filter { !it.realizado && it.cuentaLocalId == cuentaLocalId }
 
     /** Cuenta destino de una transacción (para el diálogo de transferencia). */
     fun cuentaDe(localId: String?): CuentaConQr? =
@@ -111,6 +130,44 @@ class SplitsViewModel @Inject constructor(
                     it.copy(error = null, mensaje = "Transferencia marcada como realizada")
                 }
             }
+        }
+    }
+
+    /**
+     * Marca varias transacciones como realizadas ("Realizar masivo", v0.4.1).
+     *
+     * Se procesa **una por una** en local-first (el backend no tiene endpoint bulk); cada
+     * `marcarRealizada` encola su `PUT /transacciones/{id}/realizar`. [onResultado] recibe
+     * los `localId` que se marcaron y los que fallaron (para reintentar solo estos).
+     */
+    fun marcarRealizadas(
+        ids: List<String>,
+        onResultado: (ok: List<String>, fallidos: List<String>) -> Unit,
+    ) {
+        if (ids.isEmpty()) return
+        viewModelScope.launch {
+            val ok = mutableListOf<String>()
+            val fallidos = mutableListOf<String>()
+            ids.forEach { id ->
+                when (splitRepository.marcarRealizada(id)) {
+                    is AppResult.Success -> ok += id
+                    is AppResult.Failure -> fallidos += id
+                }
+            }
+            _uiState.update {
+                it.copy(
+                    error = if (fallidos.isEmpty()) null else {
+                        "${ok.size} de ${ids.size} transacciones marcadas. " +
+                            "Fallaron ${fallidos.size}."
+                    },
+                    mensaje = if (fallidos.isEmpty()) {
+                        "${ok.size} transacciones marcadas como realizadas"
+                    } else {
+                        null
+                    },
+                )
+            }
+            onResultado(ok, fallidos)
         }
     }
 

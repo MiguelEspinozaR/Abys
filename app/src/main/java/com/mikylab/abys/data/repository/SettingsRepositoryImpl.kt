@@ -8,17 +8,24 @@ import com.mikylab.abys.data.local.entity.AppSettingEntity
 import com.mikylab.abys.data.remote.AbysApiProvider
 import com.mikylab.abys.data.remote.safeApiCall
 import com.mikylab.abys.data.sync.Operations
+import com.mikylab.abys.domain.model.MetodoPago
 import com.mikylab.abys.domain.model.ModoCalculo
+import com.mikylab.abys.domain.model.ModoRegistro
+import com.mikylab.abys.domain.model.RegistrarSettings
+import com.mikylab.abys.domain.model.SettingsKeys
 import com.mikylab.abys.domain.model.SplitSettings
 import com.mikylab.abys.domain.model.SyncState
 import com.mikylab.abys.domain.repository.HealthRepository
 import com.mikylab.abys.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Configuración global (modo de split por defecto). */
+/** Configuración global (modo de split por defecto y defaults de registro). */
 @Singleton
 class SettingsRepositoryImpl @Inject constructor(
     private val settingDao: SettingDao,
@@ -27,10 +34,30 @@ class SettingsRepositoryImpl @Inject constructor(
 ) : SettingsRepository {
 
     override fun observeSplitSettings(): Flow<SplitSettings> =
-        settingDao.observe(CLAVE_MODO_DEFAULT).map { entity ->
+        settingDao.observe(SettingsKeys.SPLIT_MODO_DEFAULT).map { entity ->
             SplitSettings(
                 modoDefault = entity?.valor?.let { ModoCalculo.fromWire(it) } ?: ModoCalculo.DEFAULT,
                 syncState = entity?.syncState ?: SyncState.SYNCED,
+            )
+        }
+
+    override fun observeRegistrarSettings(): Flow<RegistrarSettings> =
+        combine(
+            settingDao.observe(SettingsKeys.REGISTRAR_METODO_DEFAULT),
+            settingDao.observe(SettingsKeys.REGISTRAR_MODO_DEFAULT),
+        ) { metodo, modo ->
+            RegistrarSettings(
+                metodo = MetodoPago.fromWire(metodo?.valor),
+                modo = ModoRegistro.fromWire(modo?.valor),
+                syncState = when {
+                    metodo?.syncState == SyncState.FAILED || modo?.syncState == SyncState.FAILED ->
+                        SyncState.FAILED
+
+                    metodo?.syncState?.isPending == true || modo?.syncState?.isPending == true ->
+                        SyncState.PENDING_UPDATE
+
+                    else -> SyncState.SYNCED
+                },
             )
         }
 
@@ -39,7 +66,7 @@ class SettingsRepositoryImpl @Inject constructor(
         transactions.run {
             settingDao.upsert(
                 AppSettingEntity(
-                    clave = CLAVE_MODO_DEFAULT,
+                    clave = SettingsKeys.SPLIT_MODO_DEFAULT,
                     valor = modoCalculo.wire,
                     updatedAt = System.currentTimeMillis(),
                     syncState = SyncState.PENDING_UPDATE,
@@ -47,7 +74,7 @@ class SettingsRepositoryImpl @Inject constructor(
             )
             pendingWriter.encolar(
                 Operations.TIPO_SETTINGS,
-                CLAVE_MODO_DEFAULT,
+                SettingsKeys.SPLIT_MODO_DEFAULT,
                 Operations.OP_UPSERT,
                 payloadJson = "\"${modoCalculo.wire}\"",
             )
@@ -55,8 +82,47 @@ class SettingsRepositoryImpl @Inject constructor(
         return AppResult.Success(Unit)
     }
 
+    /**
+     * Guarda **ambos** defaults de registro en una sola operación de red
+     * (`PUT /settings/registrar` exige los dos campos).
+     */
+    override suspend fun setRegistrarSettings(
+        metodo: MetodoPago,
+        modo: ModoRegistro,
+    ): AppResult<Unit> {
+        val ahora = System.currentTimeMillis()
+        transactions.run {
+            settingDao.upsert(
+                AppSettingEntity(
+                    clave = SettingsKeys.REGISTRAR_METODO_DEFAULT,
+                    valor = metodo.wire,
+                    updatedAt = ahora,
+                    syncState = SyncState.PENDING_UPDATE,
+                ),
+            )
+            settingDao.upsert(
+                AppSettingEntity(
+                    clave = SettingsKeys.REGISTRAR_MODO_DEFAULT,
+                    valor = modo.wire,
+                    updatedAt = ahora,
+                    syncState = SyncState.PENDING_UPDATE,
+                ),
+            )
+            pendingWriter.encolar(
+                Operations.TIPO_SETTINGS,
+                SettingsKeys.ENTIDAD_REGISTRAR,
+                Operations.OP_UPSERT,
+                payloadJson = buildJsonObject {
+                    put(SettingsKeys.PAYLOAD_METODO, metodo.wire)
+                    put(SettingsKeys.PAYLOAD_MODO, modo.wire)
+                }.toString(),
+            )
+        }
+        return AppResult.Success(Unit)
+    }
+
     companion object {
-        const val CLAVE_MODO_DEFAULT = "split_modo_default"
+        const val CLAVE_MODO_DEFAULT = SettingsKeys.SPLIT_MODO_DEFAULT
     }
 }
 
@@ -91,4 +157,16 @@ class HealthRepositoryImpl @Inject constructor(
                 },
             )
         }
+
+    /** Ping ligero (`GET /health`): valida la base URL sin tocar PostgreSQL. */
+    override suspend fun consultarPing(): AppResult<Unit> = safeApiCall {
+        val response = apiProvider.api().health()
+        if (!response.status.equals("ok", ignoreCase = true)) {
+            throw com.mikylab.abys.core.result.AppErrorException(
+                code = "HEALTH_ERROR",
+                message = "El servidor respondió '${response.status}'",
+                httpStatus = 503,
+            )
+        }
+    }
 }

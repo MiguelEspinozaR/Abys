@@ -1,32 +1,44 @@
 package com.mikylab.abys.presentation.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.mikylab.abys.core.money.formatBs
 import com.mikylab.abys.core.money.formatTasaBps
@@ -237,12 +249,32 @@ fun RealizarTransaccionDialog(
     )
 }
 
-/** "{alias}": datos de la cuenta (banco, número, tasa) y su QR. */
+/** Resultado de "Realizar masivo" que la pantalla entrega al diálogo para reintentar. */
+data class ResultadoMasivo(
+    val fallidos: List<String>,
+    val mensaje: String?,
+)
+
+/**
+ * "{alias}": datos de la cuenta (banco, número, tasa), QR ampliable y **Realizar masivo**
+ * de las transferencias pendientes (v0.4.1).
+ *
+ * Réplica de `Abys/web/src/features/splits/CuentaDetalleDialog.tsx`:
+ * - selección múltiple con subtotal en vivo,
+ * - confirmación inline (`Marcar N transferencias por Bs X?`),
+ * - una operación por transacción (no hay endpoint bulk),
+ * - reintento **solo** de los ids fallidos,
+ * - la cuenta General es informativa y no permite marcar transferencias.
+ */
 @Composable
 fun CuentaDetalleDialog(
     cuenta: Cuenta,
     pendiente: Long,
     qrUrl: String?,
+    transacciones: List<Transaccion>,
+    resultado: ResultadoMasivo?,
+    onConfirmar: (List<String>) -> Unit,
+    onLimpiarResultado: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val titulo = if (cuenta.esGeneral) "${cuenta.alias} · reserva" else cuenta.alias
@@ -252,11 +284,44 @@ fun CuentaDetalleDialog(
         "Datos de la cuenta para transferir el monto pendiente."
     }
 
+    var seleccionadas by remember(cuenta.localId) { mutableStateOf<Set<String>>(emptySet()) }
+    var paso by remember(cuenta.localId) { mutableStateOf(PasoRealizar.SELECCION) }
+    var zoom by remember(cuenta.localId) { mutableStateOf(false) }
+    var mensaje by remember(cuenta.localId) { mutableStateOf<String?>(null) }
+
+    // Reintento: si quedaron fallidos, se vuelve al paso de confirmación solo con ellos.
+    LaunchedEffect(resultado) {
+        val actual = resultado ?: return@LaunchedEffect
+        if (actual.fallidos.isEmpty()) {
+            onDismiss()
+        } else {
+            seleccionadas = actual.fallidos.toSet()
+            paso = PasoRealizar.CONFIRMAR
+            mensaje = actual.mensaje
+        }
+        onLimpiarResultado()
+    }
+
+    val subtotal = transacciones
+        .filter { it.localId in seleccionadas }
+        .sumOf { it.monto.centavos }
+    val habilitado = seleccionadas.isNotEmpty() && !cuenta.esGeneral
+
+    fun alternar(localId: String, marcado: Boolean) {
+        seleccionadas = if (marcado) seleccionadas + localId else seleccionadas - localId
+        mensaje = null
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(titulo) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(
+                modifier = Modifier
+                    .heightIn(max = 460.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
                 Text(
                     text = descripcion,
                     style = MaterialTheme.typography.bodyMedium,
@@ -276,10 +341,13 @@ fun CuentaDetalleDialog(
                         AsyncImage(
                             model = qrUrl,
                             contentDescription = "QR de la cuenta ${cuenta.alias}",
-                            modifier = Modifier.size(176.dp),
+                            modifier = Modifier
+                                .size(176.dp)
+                                .clickable { zoom = true },
                         )
                         Text(
-                            text = "Escanea el QR desde tu app bancaria.",
+                            text = "Escanea el QR desde tu app bancaria o pulsa la imagen " +
+                                "para ampliarla.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -303,13 +371,149 @@ fun CuentaDetalleDialog(
                         )
                     }
                 }
+
+                Text(
+                    text = "Transferencias pendientes",
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                if (transacciones.isEmpty()) {
+                    Text(
+                        text = "Esta cuenta no tiene transferencias pendientes.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    transacciones.forEach { transaccion ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { alternar(transaccion.localId, transaccion.localId !in seleccionadas) }
+                                .padding(vertical = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Checkbox(
+                                checked = transaccion.localId in seleccionadas,
+                                onCheckedChange = { alternar(transaccion.localId, it) },
+                            )
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = transaccion.aliasSnapshot,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                                Text(
+                                    text = transaccion.serverId?.let { "Transacción #$it" }
+                                        ?: "Pendiente de sincronizar",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            Text(
+                                text = transaccion.monto.centavos.formatBs(),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        }
+                    }
+                }
+
+                if (cuenta.esGeneral) {
+                    Text(
+                        text = "La cuenta General es informativa (reserva de redondeo): " +
+                            "no se pueden marcar transferencias desde aquí.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "${seleccionadas.size} seleccionadas",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = subtotal.formatBs(),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+
+                if (paso == PasoRealizar.SELECCION) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                    ) {
+                        TextButton(onClick = onDismiss) { Text("Cancelar") }
+                        Button(
+                            onClick = { mensaje = null; paso = PasoRealizar.CONFIRMAR },
+                            enabled = habilitado,
+                        ) {
+                            Text("Realizar (${seleccionadas.size})")
+                        }
+                    }
+                } else {
+                    Text(
+                        text = "Marcar ${seleccionadas.size} transferencias por " +
+                            subtotal.formatBs() + "?",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                    ) {
+                        TextButton(onClick = { mensaje = null; paso = PasoRealizar.SELECCION }) {
+                            Text("Volver")
+                        }
+                        Button(
+                            onClick = {
+                                val ids = seleccionadas.toList()
+                                if (ids.isNotEmpty()) onConfirmar(ids)
+                            },
+                            enabled = seleccionadas.isNotEmpty(),
+                        ) {
+                            Text("Confirmar")
+                        }
+                    }
+                }
+
+                mensaje?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         },
-        confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cerrar") }
-        },
+        confirmButton = {},
     )
+
+    // Lightbox del QR (equivalente al zoom del web).
+    if (zoom && qrUrl != null) {
+        Dialog(onDismissRequest = { zoom = false }) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.9f))
+                    .clickable { zoom = false },
+                contentAlignment = Alignment.Center,
+            ) {
+                AsyncImage(
+                    model = qrUrl,
+                    contentDescription = "QR ampliado de la cuenta ${cuenta.alias}",
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                )
+            }
+        }
+    }
 }
+
+private enum class PasoRealizar { SELECCION, CONFIRMAR }
 
 @Composable
 private fun DatoCuenta(etiqueta: String, valor: String, destacado: Boolean = false) {

@@ -47,17 +47,28 @@ class SplitRepositoryImpl @Inject constructor(
 ) : SplitRepository {
 
     override fun observeSplits(): Flow<List<Split>> =
-        combine(splitDao.observeTodos(), splitDao.observeTodasTransacciones()) { splits, txs ->
+        combine(
+            splitDao.observeTodos(),
+            splitDao.observeTodasTransacciones(),
+            cuentaDao.observeActivas(),
+        ) { splits, txs, cuentas ->
+            val generales = cuentas.filter { it.esGeneral }.map { it.localId }.toSet()
             val porSplit = txs.groupBy { it.splitLocalId }
-            splits.map { split -> split.toDomain(porSplit[split.localId].orEmpty()) }
+            splits.map { split ->
+                split.toDomainConTotales(porSplit[split.localId].orEmpty(), generales)
+            }
         }
 
     override fun observeSplitPorPago(pagoLocalId: String): Flow<Split?> =
         combine(
             splitDao.observePorPago(pagoLocalId),
             splitDao.observeTodasTransacciones(),
-        ) { split, txs ->
-            split?.toDomain(txs.filter { it.splitLocalId == split.localId })
+            cuentaDao.observeActivas(),
+        ) { split, txs, cuentas ->
+            split?.let {
+                val generales = cuentas.filter { cuenta -> cuenta.esGeneral }.map { cuenta -> cuenta.localId }.toSet()
+                it.toDomainConTotales(txs.filter { tx -> tx.splitLocalId == it.localId }, generales)
+            }
         }
 
     override fun observeTransacciones(splitLocalId: String): Flow<List<Transaccion>> =
@@ -103,13 +114,17 @@ class SplitRepositoryImpl @Inject constructor(
 
         val localId = UUID.randomUUID().toString()
         val ahora = System.currentTimeMillis()
-        val total = calculo.sumOf { it.montoCents }
+        // v0.4.0: el pendiente excluye la cuenta General (reserva de redondeo), igual que
+        // `totalesSplit` en `Abys/backend/internal/handler/split_handler.go`.
+        val totalPendiente = calculo
+            .filterNot { it.cuentaLocalId == general.localId }
+            .sumOf { it.montoCents }
         val entidad = SplitEntity(
             localId = localId,
             serverId = null,
             pagoLocalId = pagoLocalId,
             modoCalculo = modoCalculo.wire,
-            totalPendiente = total,
+            totalPendiente = totalPendiente,
             totalRealizado = 0L,
             createdAt = ahora,
             updatedAt = ahora,
@@ -192,8 +207,11 @@ class SplitRepositoryImpl @Inject constructor(
                 )
             }
         }
+        val generales = cuentas.values.filter { it.esGeneral }.map { it.localId }.toSet()
         val splitActualizado = split.copy(
-            totalPendiente = actualizadas.filter { !it.realizado }.sumOf { it.montoEnteros },
+            totalPendiente = actualizadas
+                .filter { !it.realizado && it.cuentaLocalId !in generales }
+                .sumOf { it.montoEnteros },
             totalRealizado = actualizadas.filter { it.realizado }.sumOf { it.montoEnteros },
             updatedAt = ahora,
             syncState = SyncState.PENDING_UPDATE,
@@ -280,6 +298,28 @@ class SplitRepositoryImpl @Inject constructor(
                 fechaRealizacion = ahora,
                 syncState = SyncState.PENDING_UPDATE,
             ).toDomain(),
+        )
+    }
+
+    /**
+     * Convierte el split a dominio recalculando los agregados desde las transacciones,
+     * excluyendo la cuenta General del **pendiente** (v0.4.0).
+     *
+     * Es la misma semántica que `totalesSplit` del backend: `realizado` suma todas las
+     * realizadas y `pendiente` excluye las no realizadas de General.
+     */
+    private fun SplitEntity.toDomainConTotales(
+        transacciones: List<TransaccionEntity>,
+        generales: Set<String>,
+    ): Split {
+        val base = toDomain(transacciones)
+        val pendiente = transacciones
+            .filter { !it.realizado && (it.cuentaLocalId == null || it.cuentaLocalId !in generales) }
+            .sumOf { it.montoEnteros }
+        val realizado = transacciones.filter { it.realizado }.sumOf { it.montoEnteros }
+        return base.copy(
+            totalPendiente = com.mikylab.abys.core.money.Money(pendiente),
+            totalRealizado = com.mikylab.abys.core.money.Money(realizado),
         )
     }
 }
