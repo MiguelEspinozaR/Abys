@@ -260,7 +260,7 @@ data class PendingOperationEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val entityType: String,             // "pago" | "dia" | "fuente" | "cuenta" | "tasa" | "split" | "transaccion" | "comprobante" | "logo" | "qr" | "settings"
     val entityLocalId: String,          // "" para operaciones globales
-    val operacion: String,              // "UPSERT" | "DELETE" | "UPLOAD" | "SET_RATE" | "RECALC" | "REALIZE"
+    val operacion: String,              // "UPSERT" | "DELETE" | "UPLOAD" | "DELETE_QR" | "DELETE_LOGO" | "SET_RATE" | "RECALC" | "REALIZE"
     val payloadJson: String?,           // datos de la petición (p. ej. {"tasa":20.5,"aplicar_pendientes":false})
     val serverId: Long?,                // id del servidor cuando ya existe
     val intentos: Int = 0,

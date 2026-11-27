@@ -108,7 +108,7 @@ sobre Room** con la semántica del backend v0.3.0 (`DashboardDao`), agrupando po
 | Total | Card **"Total del pago"** derivado (Σ días) | idem, en tiempo real |
 | Ayuda | `"Usa coma decimal y punto para miles: 1.234,56."` | idem |
 | Notas | Textarea, placeholder "Referencia, período pagado, observaciones…" | idem |
-| Comprobante | Dropzone (sin OCR en v0.3.0) | **pendiente**: Photo Picker + multipart (mejora posterior) |
+| Comprobante | Dropzone (sin OCR en v0.3.0) | Photo Picker (`PickVisualMedia`) → copia a `filesDir/adjuntos` → `UPLOAD` al guardar (máx. 10 MB, PNG/JPG/WEBP/GIF) |
 | Botón | "Guardar pago" (deshabilitado si falta fuente, días, monto o total ≤ 0) | idem |
 
 **Flujo**: `PagoRepository.crearPago` escribe en Room con `syncState = PENDING_CREATE` y encola el
@@ -132,7 +132,7 @@ No se implementa en Android; la captura de imagen queda como mejora posterior co
 | Fila | punto de color + alias de fuente, fecha (`mié 27 ago 2026`) + notas, badge de método, monto (`1.234,56 Bs`), miniatura de comprobante, 3 acciones (split/editar/eliminar) | `Card` con `Row` + `IconButton`s |
 | Acciones de fila | split (generar si no tiene) · editar · eliminar | `Edit`, generar split (`CallSplit`) y eliminar (`Delete`); si ya tiene split se muestra el badge y se oculta el botón de split |
 | **Editar pago (v0.3.0)** | Diálogo fuente/método/fecha/notas + días con `fecha` y `monto_enteros`; total derivado; BR-081 bloquea la edición si el pago tiene split | `EditarPagoDialog` (Room-first, mensaje "Pago actualizado") |
-| Detalle expandido | "Días trabajados (N)" con chips `jueves · 2026-08-27` (+ monto en v0.3.0); "Comprobante" o "Sin comprobante"; "ID #12" (+ " · Split: preciso (#3)") | `FlowRow` de chips con fecha y monto |
+| Detalle expandido | "Días trabajados (N)" con chips `jueves · 2026-08-27` (+ monto en v0.3.0); "Comprobante" o "Sin comprobante"; "ID #12" (+ " · Split: preciso (#3)") | `FlowRow` de chips con fecha y monto; miniatura 120 dp + "Ampliar comprobante" |
 | Badge de split | `pago.split_modo ?? "split"` con tooltip "Este pago ya tiene split" | `AssistChip` |
 | Zoom de comprobante | overlay a pantalla completa, cierre con X y `Escape` | `Dialog` a pantalla completa |
 | Vacío | "No hay pagos que coincidan con los criterios." / "Ajusta los filtros o registra un nuevo pago." | idem |
@@ -200,7 +200,7 @@ Tabs: **Cuentas** (default) · **Fuentes** · **Splits** · **Registro** · **Ap
 | Diálogo tasa | "Actual: {x}. La suma de tasas de cuentas ≠ General no puede superar 100% (lo valida el servidor).", campo "Tasa en %" + "(100% = 10000 bps)", placeholder "Ej: 25", checkbox "Aplicar a transacciones pendientes" + helper "Recalcula los splits con transacciones pendientes usando esta nueva tasa." | idem |
 | Diálogo historial | "Historial de tasas — {alias}", "Cada cambio queda registrado; los splits conservan el snapshot de ese momento.", filas `{bps} %` + fecha/hora, vacío "Sin registros todavía." | idem |
 | QR | miniatura 36×36 o placeholder; subir/quitar **sin confirmación** | idem (Photo Picker) |
-| Diálogo cuenta | "Nueva cuenta" / "Editar cuenta \"{alias}\"", campos Alias (obligatorio), Banco, Número; "Crear cuenta"/"Guardar cambios" | idem |
+| Diálogo cuenta | "Nueva cuenta" / "Editar cuenta \"{alias}\"", campos Alias (obligatorio), Banco, Número; "Crear cuenta"/"Guardar cambios" | idem; límites v1.0.0 en cliente: alias ≤ 100, banco ≤ 100, número ≤ 50 (`ValidarCuentaUseCase`) |
 | Diálogo borrado | "¿Eliminar cuenta \"{alias}\"?" + "La cuenta se desactiva; los snapshots históricos de splits se conservan." | idem |
 
 ### 6.2 Fuentes
@@ -322,7 +322,7 @@ Los strings marcados como **literales** deben reproducirse tal cual (son la fuen
 | App | "Abys", "ingresos" |
 | Tema | "Modo claro", "Modo oscuro" |
 | Registrar | "Registrar pago", "Marca los días trabajados en el calendario y elige cómo cargar los montos.", "Calendario", "Datos del pago", "Modo de registro", "Detallado", "Distribuido", "Monto por día (Bs)", "Total a distribuir (Bs)", "Redondeo", "Redondeado (1 Bs)", "Enteros (1 Bs)", "Preciso (centavos)", "VISTA PREVIA", "Total del pago", "Usa coma decimal y punto para miles: 1.234,56.", "Guardar pago", "día trabajado (nuevo)", "fecha de pago ya registrada", "Fuentes", "Pago registrado. Puedes registrar otro." |
-| Ingresos | "Ingresos", "{n} pagos registrados", "Filtros", "Desde", "Hasta", "Fuente", "Todas", "Método", "Todos", "Aplicar", "Limpiar", "Días trabajados ({n})", "Comprobante", "Sin comprobante", "ID #{id}", "Editar pago #{id}", "Guardar cambios", "¿Eliminar pago #{id}?" |
+| Ingresos | "Ingresos", "{n} pagos registrados", "Filtros", "Desde", "Hasta", "Fuente", "Todas", "Método", "Todos", "Aplicar", "Limpiar", "Días trabajados ({n})", "Comprobante", "Sin comprobante", "Ampliar comprobante", "ID #{id}", "Editar pago #{id}", "Guardar cambios", "¿Eliminar pago #{id}?" |
 | Splits | "Splits", "Splits generados", "Pendiente total", "Realizado total", "Pendiente por cuenta", "Total pendiente", "Ver datos", "No hay splits generados.", "Complet[o]", "{Bs} pend.", "Eliminar split", "¿Eliminar el split del pago #{id}?", "Transferir a {alias}", "Marcar realizada", "Tasa aplicada (snapshot)", "Realizada", "Pendiente", "0 Bs en cuenta no General", "Transferencias pendientes", "Esta cuenta no tiene transferencias pendientes.", "{n} seleccionadas", "Realizar ({n})", "Marcar {n} transferencias por {Bs}?", "Confirmar", "Volver" |
 | Configuración | "Configuración", "Administra fuentes de ingreso, cuentas de distribución y splits.", "Cuentas", "Fuentes", "Splits", "Registro", "App", "Nueva cuenta", "Nueva fuente", "Historial de tasas — {alias}", "Modo de cálculo por defecto", "Modo por defecto", "Aplicar a transacciones pendientes", "Residual (derivada)", "= 100% − otras · no configurable", "Defaults al registrar ingresos", "Se aplican al abrir el formulario de registro. Puedes cambiarlos en cada pago.", "Método de pago por defecto", "Modo de registro por defecto", "Defaults de registro actualizados", "Se sincronizará con el servidor cuando haya conexión." |
 | Health | "Salud del sistema", "Métricas en vivo de la base de datos del backend.", "Refrescar", "Conexión", "Latencia", "Versión PostgreSQL", "Tamaño de la DB", "Tablas ({n})" |
@@ -341,4 +341,4 @@ Los strings marcados como **literales** deben reproducirse tal cual (son la fuen
 | **P1** | Splits (listar, generar, realizar, eliminar) | Flujo financiero核心. |
 | **P2** | Configuración (cuentas/fuentes/splits + ajustes de app) | Configuración + ajustes de URL/sync. |
 | **P2** | Health | Diagnóstico. |
-| **P3** | Comprobante con Photo Picker + multipart, zoom de comprobante, edición de tasas avanzada | Mejoras posteriores (OCR eliminado en v0.3.0). |
+| **P3** | Mejoras posteriores | Comprobante con Photo Picker + multipart y zoom implementados (v1.0.0); queda OCR (eliminado del web en v0.3.0). |

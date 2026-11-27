@@ -276,6 +276,9 @@ Mismo body que crear. Respuesta: `{ "data": { "id": 3, "actualizado": true } }` 
 ```
 
 - `alias` required. `numero`/`banco` opcionales (null).
+- **Límites v1.0.0** (`binding` en `CuentaRequest`): `alias` ≤ **100** caracteres,
+  `numero` ≤ **50**, `banco` ≤ **100**. Superarlos devuelve **400** `VALIDATION_ERROR`.
+  La app valida lo mismo en cliente (`ValidarCuentaUseCase`) antes de encolar.
 - **No** se puede crear una cuenta General por esta vía (`es_general` siempre `FALSE`).
 - Respuesta `{ "data": Cuenta }` (ver 3.3).
 

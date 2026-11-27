@@ -140,11 +140,30 @@ class PushProcessor @Inject constructor(
                 }
             }
 
+            Operations.OP_DELETE_LOGO -> {
+                val serverId = fuente.serverId
+                if (serverId == null) {
+                    fuenteDao.upsert(fuente.copy(logoRuta = null, syncState = SyncState.SYNCED))
+                    return OpResult.Done
+                }
+                when (val res = call { api.eliminarLogo(serverId) }) {
+                    is CallResult.Error -> classify(res.error)
+                    is CallResult.Ok -> {
+                        fuenteDao.upsert(fuente.copy(logoRuta = null, syncState = SyncState.SYNCED))
+                        OpResult.Done
+                    }
+                }
+            }
+
             else -> {
                 val body = CrearFuenteRequest(
                     alias = fuente.alias,
                     color = fuente.color.ifBlank { "#3b82f6" }, // quirk Q2: siempre enviar color
-                    logoRuta = fuente.logoRuta,
+                    // Solo rutas del servidor: un archivo local aún pendiente de subir no debe
+                    // viajar como `logo_ruta`.
+                    logoRuta = fuente.logoRuta?.takeIf {
+                        it.startsWith("/uploads/") || it.startsWith("http://") || it.startsWith("https://")
+                    },
                     splitAuto = fuente.splitAuto,
                     splitAutoModo = fuente.splitAutoModo,
                 )
@@ -213,6 +232,21 @@ class PushProcessor @Inject constructor(
                     is CallResult.Ok -> {
                         val ruta = res.value.data?.qrRuta
                         cuentaDao.upsert(cuenta.copy(qrRuta = ruta, syncState = SyncState.SYNCED))
+                        OpResult.Done
+                    }
+                }
+            }
+
+            Operations.OP_DELETE_QR -> {
+                val serverId = cuenta.serverId
+                if (serverId == null) {
+                    cuentaDao.upsert(cuenta.copy(qrRuta = null, syncState = SyncState.SYNCED))
+                    return OpResult.Done
+                }
+                when (val res = call { api.eliminarQr(serverId) }) {
+                    is CallResult.Error -> classify(res.error)
+                    is CallResult.Ok -> {
+                        cuentaDao.upsert(cuenta.copy(qrRuta = null, syncState = SyncState.SYNCED))
                         OpResult.Done
                     }
                 }

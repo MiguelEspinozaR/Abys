@@ -45,6 +45,8 @@ data class RegistrarUiState(
     val totalDistribuidoTexto: String = "",
     val modoRedondeo: ModoDistribucion = ModoDistribucion.PRECISO,
     val notas: String = "",
+    /** Ruta local del comprobante elegido (se sube al guardar; opcional). */
+    val comprobanteRuta: String? = null,
     val fechaPago: LocalDate = LaPaz.hoy(),
     val diasTrabajados: Set<LocalDate> = emptySet(),
     val mesCalendario: YearMonth = YearMonth.from(LaPaz.hoy()),
@@ -248,6 +250,11 @@ class RegistrarViewModel @Inject constructor(
         _uiState.update { it.copy(notas = notas) }
     }
 
+    /** Comprobante elegido con el Photo Picker (ya copiado al almacenamiento de la app). */
+    fun cambiarComprobante(ruta: String?) {
+        _uiState.update { it.copy(comprobanteRuta = ruta) }
+    }
+
     fun cambiarFechaPago(fecha: LocalDate) {
         usuarioEdito = true
         _uiState.update { it.copy(fechaPago = fecha, mesCalendario = YearMonth.from(fecha)) }
@@ -302,12 +309,30 @@ class RegistrarViewModel @Inject constructor(
             )
             when (val resultado = pagoRepository.crearPago(draft)) {
                 is AppResult.Success -> {
+                    // Comprobante opcional: se asocia al pago recién creado y se sube por la cola.
+                    val comprobante = estado.comprobanteRuta
+                    val errorAdjunto = if (comprobante != null) {
+                        when (val adjunto = pagoRepository.subirComprobante(
+                            resultado.data.localId,
+                            comprobante,
+                        )) {
+                            is AppResult.Failure -> adjunto.error.message.ifBlank {
+                                "No se pudo adjuntar el comprobante."
+                            }
+
+                            is AppResult.Success -> null
+                        }
+                    } else {
+                        null
+                    }
                     // v0.4.1: se limpia el formulario y se permanece en Registrar,
                     // con los defaults aplicados (fecha = hoy, fuente reiniciada).
                     _uiState.update { actual ->
                         actual.copy(
                             guardando = false,
                             exito = "Pago registrado. Puedes registrar otro.",
+                            error = errorAdjunto,
+                            comprobanteRuta = null,
                             fuenteLocalId = null,
                             metodoPago = defaults.metodo,
                             modoRegistro = defaults.modo,

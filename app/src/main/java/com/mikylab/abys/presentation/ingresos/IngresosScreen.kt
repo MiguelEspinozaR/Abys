@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.CallSplit
@@ -38,9 +39,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -316,7 +321,7 @@ fun IngresosScreen(
 private fun FilaPago(
     pago: Pago,
     expandido: Boolean,
-    urlComprobante: String?,
+    urlComprobante: Any?,
     onToggle: () -> Unit,
     onEditar: () -> Unit,
     onGenerarSplit: () -> Unit,
@@ -424,11 +429,38 @@ private fun FilaPago(
                         style = MaterialTheme.typography.labelMedium,
                     )
                     if (urlComprobante != null) {
+                        var zoom by remember { mutableStateOf(false) }
                         AsyncImage(
                             model = urlComprobante,
                             contentDescription = "Comprobante del pago",
-                            modifier = Modifier.size(120.dp),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable { zoom = true },
                         )
+                        TextButton(onClick = { zoom = true }) { Text("Ampliar comprobante") }
+                        if (zoom) {
+                            Dialog(
+                                onDismissRequest = { zoom = false },
+                                properties = DialogProperties(usePlatformDefaultWidth = false),
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(Color.Black)
+                                        .clickable { zoom = false },
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    AsyncImage(
+                                        model = urlComprobante,
+                                        contentDescription = "Comprobante ampliado",
+                                        contentScale = ContentScale.Fit,
+                                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                    )
+                                }
+                            }
+                        }
                     }
                     Text(
                         text = "ID #${pago.serverId ?: "-"}" +

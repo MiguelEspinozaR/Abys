@@ -15,6 +15,8 @@ object Operations {
     const val OP_UPSERT = "UPSERT"
     const val OP_DELETE = "DELETE"
     const val OP_UPLOAD = "UPLOAD"
+    const val OP_DELETE_QR = "DELETE_QR"
+    const val OP_DELETE_LOGO = "DELETE_LOGO"
     const val OP_SET_RATE = "SET_RATE"
     const val OP_REALIZE = "REALIZE"
 

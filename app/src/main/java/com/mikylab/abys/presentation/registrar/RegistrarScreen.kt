@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
@@ -32,20 +33,30 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import com.mikylab.abys.core.files.ArchivosLocales
 import com.mikylab.abys.core.money.Money
 import com.mikylab.abys.core.time.DateFormats
 import com.mikylab.abys.domain.model.MetodoPago
@@ -56,6 +67,10 @@ import com.mikylab.abys.domain.registrar.fuentesParaLeyenda
 import com.mikylab.abys.domain.registrar.top3Fuentes
 import com.mikylab.abys.presentation.components.ErrorState
 import com.mikylab.abys.presentation.theme.AbysColors
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -72,10 +87,33 @@ import java.time.YearMonth
     androidx.compose.foundation.layout.ExperimentalLayoutApi::class,
 )
 @Composable
-fun RegistrarScreen(    modifier: Modifier = Modifier,
+fun RegistrarScreen(
+    modifier: Modifier = Modifier,
     viewModel: RegistrarViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var errorArchivo by remember { mutableStateOf<String?>(null) }
+    val pickerComprobante = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia(),
+    ) { uri ->
+        if (uri != null) {
+            scope.launch {
+                when (val resultado = withContext(Dispatchers.IO) {
+                    ArchivosLocales.copiarArchivo(context, uri, "comprobante")
+                }) {
+                    is ArchivosLocales.Resultado.Ok -> {
+                        errorArchivo = null
+                        viewModel.cambiarComprobante(resultado.ruta)
+                    }
+
+                    is ArchivosLocales.Resultado.Error -> errorArchivo = resultado.mensaje
+                }
+            }
+        }
+    }
 
     Column(
         modifier = modifier
@@ -430,6 +468,77 @@ fun RegistrarScreen(    modifier: Modifier = Modifier,
                     minLines = 2,
                     modifier = Modifier.fillMaxWidth(),
                 )
+
+                // Comprobante (opcional): se sube al guardar el pago.
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            val ruta = state.comprobanteRuta
+                            if (ruta != null) {
+                                AsyncImage(
+                                    model = File(ruta),
+                                    contentDescription = "Comprobante seleccionado",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .clip(RoundedCornerShape(6.dp)),
+                                )
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Comprobante (opcional)",
+                                    style = MaterialTheme.typography.labelMedium,
+                                )
+                                Text(
+                                    text = if (ruta == null) {
+                                        "Adjunta una foto o captura del pago."
+                                    } else {
+                                        "Se subirá al guardar el pago."
+                                    },
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            TextButton(
+                                onClick = {
+                                    pickerComprobante.launch(
+                                        PickVisualMediaRequest(
+                                            ActivityResultContracts.PickVisualMedia.ImageOnly,
+                                        ),
+                                    )
+                                },
+                            ) {
+                                Text(
+                                    if (state.comprobanteRuta == null) {
+                                        "Adjuntar imagen"
+                                    } else {
+                                        "Cambiar imagen"
+                                    },
+                                )
+                            }
+                            if (state.comprobanteRuta != null) {
+                                TextButton(onClick = { viewModel.cambiarComprobante(null) }) {
+                                    Text("Quitar")
+                                }
+                            }
+                        }
+                        errorArchivo?.let { error ->
+                            Text(
+                                text = error,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
+                }
 
                 state.error?.let { mensaje ->
                     ErrorState(mensaje = mensaje)

@@ -216,8 +216,20 @@ class IngresosViewModel @Inject constructor(
         }
     }
 
-    /** URL absoluta del comprobante (`/uploads/...`) para mostrarlo con Coil. */
-    fun urlComprobante(pago: Pago): String? = baseUrlStore.assetUrl(pago.imagenRuta)
+    /**
+     * Modelo para Coil del comprobante: URL absoluta si ya está en `/uploads/...` o
+     * [java.io.File] si es una ruta local aún pendiente de subir.
+     */
+    fun urlComprobante(pago: Pago): Any? {
+        val ruta = pago.imagenRuta ?: return null
+        return if (ruta.startsWith("/uploads/") || ruta.startsWith("http://") ||
+            ruta.startsWith("https://")
+        ) {
+            baseUrlStore.assetUrl(ruta)
+        } else {
+            java.io.File(ruta)
+        }
+    }
 
     fun limpiarError() = _uiState.update { it.copy(error = null) }
 

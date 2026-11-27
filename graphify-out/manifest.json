@@ -12,16 +12,16 @@
     "semantic_hash": "92fca3cafcb2c52cf278c32ad5b278ce"
   },
   "Abys/backend/internal/apperr/apperr.go": {
-    "mtime": 1794979213.6026838,
-    "seen": 1795408002.9996607,
-    "ast_hash": "2e8cdd3421d258fa4ab954773251fb00",
-    "semantic_hash": "2e8cdd3421d258fa4ab954773251fb00"
+    "mtime": 1795584147.2196257,
+    "seen": 1795811414.4880655,
+    "ast_hash": "fe953f177f8e59f7ea661252f7de34e7",
+    "semantic_hash": ""
   },
   "Abys/backend/internal/config/config.go": {
-    "mtime": 1794604908.510776,
-    "seen": 1795408002.9997554,
-    "ast_hash": "6a99de2001f30171b275305e1758c269",
-    "semantic_hash": "6a99de2001f30171b275305e1758c269"
+    "mtime": 1795584147.2196257,
+    "seen": 1795811414.4880676,
+    "ast_hash": "c2cb6363f5a45f8c2d6eadfb9212bf2c",
+    "semantic_hash": ""
   },
   "Abys/backend/internal/database/database.go": {
     "mtime": 1794604908.510776,
@@ -36,10 +36,10 @@
     "semantic_hash": "26ecbbddad42425ab8907dd69792e7d4"
   },
   "Abys/backend/internal/handler/cuenta_handler.go": {
-    "mtime": 1794604908.510776,
-    "seen": 1795408003.000016,
-    "ast_hash": "3890d133f807bc5553b8dee9f9b4b6a5",
-    "semantic_hash": "3890d133f807bc5553b8dee9f9b4b6a5"
+    "mtime": 1795584147.2196257,
+    "seen": 1795811414.4880724,
+    "ast_hash": "f07336f4107eeb3a8b19cb713220f7f0",
+    "semantic_hash": ""
   },
   "Abys/backend/internal/handler/dashboard_handler.go": {
     "mtime": 1794979213.6036835,
@@ -72,16 +72,16 @@
     "semantic_hash": "3766c4eb8d31dbafb1841ea9722f5737"
   },
   "Abys/backend/internal/handler/pago_handler.go": {
-    "mtime": 1794979213.6050432,
-    "seen": 1795408003.000551,
-    "ast_hash": "9178dbcdb2f9d47706b82090586d0647",
-    "semantic_hash": "9178dbcdb2f9d47706b82090586d0647"
+    "mtime": 1795584147.2196257,
+    "seen": 1795811414.48808,
+    "ast_hash": "60baf7d5492f98d1bc2933044caef210",
+    "semantic_hash": ""
   },
   "Abys/backend/internal/handler/settings_handler.go": {
-    "mtime": 1795283535.0169146,
-    "seen": 1795408003.0006473,
-    "ast_hash": "9c3a6e5ce21ac357031b245086df28dc",
-    "semantic_hash": "9c3a6e5ce21ac357031b245086df28dc"
+    "mtime": 1795584147.2196257,
+    "seen": 1795811414.4880815,
+    "ast_hash": "722b7eab9a761905ed8446e7e6ae1ee1",
+    "semantic_hash": ""
   },
   "Abys/backend/internal/handler/settings_handler_test.go": {
     "mtime": 1795283535.0169146,
@@ -108,10 +108,10 @@
     "semantic_hash": "09f5c5b7faca923004f944a62cae6059"
   },
   "Abys/backend/internal/middleware/cors.go": {
-    "mtime": 1794604908.5193048,
-    "seen": 1795408003.0010738,
-    "ast_hash": "e96e99d7bcda9450575833defeaf09f1",
-    "semantic_hash": "e96e99d7bcda9450575833defeaf09f1"
+    "mtime": 1795584147.2257886,
+    "seen": 1795811414.4880896,
+    "ast_hash": "c7eeee6a97d4aa285004375221e1519d",
+    "semantic_hash": ""
   },
   "Abys/backend/internal/middleware/logger.go": {
     "mtime": 1794604908.5193048,
@@ -180,10 +180,10 @@
     "semantic_hash": "d097fcaecdd2f18dd553f9d16ad2e7c1"
   },
   "Abys/backend/internal/router/integration_test.go": {
-    "mtime": 1795283535.0169146,
-    "seen": 1795408003.002072,
-    "ast_hash": "2c1a7530349263705542a4cb9c4041cb",
-    "semantic_hash": "2c1a7530349263705542a4cb9c4041cb"
+    "mtime": 1795584147.2257886,
+    "seen": 1795811414.488106,
+    "ast_hash": "6b1109ee051aa4f0b99c780339b30e69",
+    "semantic_hash": ""
   },
   "Abys/backend/internal/router/router.go": {
     "mtime": 1795283535.0169146,
@@ -234,10 +234,10 @@
     "semantic_hash": "8007ca37dcead62e751fa83ab9161f53"
   },
   "Abys/backend/internal/service/validations.go": {
-    "mtime": 1794979213.6091688,
-    "seen": 1795408003.0028498,
-    "ast_hash": "68768a3e050160a90b7d25074de005e9",
-    "semantic_hash": "68768a3e050160a90b7d25074de005e9"
+    "mtime": 1795584147.2257886,
+    "seen": 1795811414.4881167,
+    "ast_hash": "12103b612f5dac4fa00d62ca35d3392a",
+    "semantic_hash": ""
   },
   "Abys/backend/internal/splitcalc/splitcalc.go": {
     "mtime": 1794604908.5247295,
@@ -887,16 +887,16 @@
     "semantic_hash": "4390347905768b9430321dba2d17490e"
   },
   "Abys/web/package.json": {
-    "mtime": 1795283535.0328078,
-    "seen": 1795408003.0069625,
-    "ast_hash": "ce4963ceecbfe8d93be23de6eb5912a8",
-    "semantic_hash": "ce4963ceecbfe8d93be23de6eb5912a8"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882548,
+    "ast_hash": "404970c42090f8abbb7e7ff98c8a1e44",
+    "semantic_hash": ""
   },
   "Abys/web/src/App.tsx": {
-    "mtime": 1794604908.5359335,
-    "seen": 1795408003.0070431,
-    "ast_hash": "bd6ce526b29b0561cce304e099614003",
-    "semantic_hash": "bd6ce526b29b0561cce304e099614003"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882557,
+    "ast_hash": "f1cc973c9243dd4ee0c33ee097b9a89e",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/form/ConfirmarDescarteDialog.tsx": {
     "mtime": 1794979213.7354276,
@@ -917,10 +917,10 @@
     "semantic_hash": "21365611290017be28de62e18149a40f"
   },
   "Abys/web/src/components/historial/FiltrosRango.tsx": {
-    "mtime": 1794979213.7364268,
-    "seen": 1795408003.007382,
-    "ast_hash": "660361a84c9ad68e083857182b0583ec",
-    "semantic_hash": "660361a84c9ad68e083857182b0583ec"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882605,
+    "ast_hash": "5f4d6e49d6bdf0740e90e1ac2a7db6e5",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/historial/HistorialAgrupado.tsx": {
     "mtime": 1794979213.7374265,
@@ -965,88 +965,82 @@
     "semantic_hash": "856f4d0a378894cf416b6ae6a394d1a3"
   },
   "Abys/web/src/components/ui/alert-dialog.tsx": {
-    "mtime": 1794604908.5359335,
-    "seen": 1795408003.0085895,
-    "ast_hash": "89619751417fabb4976d0fe2876dd1ee",
-    "semantic_hash": "89619751417fabb4976d0fe2876dd1ee"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882727,
+    "ast_hash": "2e198cea682512837076d26dc6ab37ac",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/alert.tsx": {
-    "mtime": 1794604908.5397398,
-    "seen": 1795408003.0087092,
-    "ast_hash": "f19d3ae9f09cc261fd17596ba52fec8f",
-    "semantic_hash": "f19d3ae9f09cc261fd17596ba52fec8f"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882736,
+    "ast_hash": "94e087e3de670781a000bcc091d6da44",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/badge.tsx": {
-    "mtime": 1794979213.7399004,
-    "seen": 1795408003.0088208,
-    "ast_hash": "8cd8f6ffdf65791d0197d22bac77bd73",
-    "semantic_hash": "8cd8f6ffdf65791d0197d22bac77bd73"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882746,
+    "ast_hash": "dd61c2382d06144e158421dc8977b07e",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/button.tsx": {
-    "mtime": 1794979213.7409012,
-    "seen": 1795408003.0089116,
-    "ast_hash": "e6632d69638d381a731a82254af06fea",
-    "semantic_hash": "e6632d69638d381a731a82254af06fea"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882758,
+    "ast_hash": "b00ae523aede79cd461c058530addf04",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/card.tsx": {
-    "mtime": 1794604908.540745,
-    "seen": 1795408003.008998,
-    "ast_hash": "1660b2083f73ae5bc348ae9939baf9db",
-    "semantic_hash": "1660b2083f73ae5bc348ae9939baf9db"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882767,
+    "ast_hash": "150103fe9ab37fba1b2501b11d3fb2b2",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/checkbox.tsx": {
-    "mtime": 1794979213.7409012,
-    "seen": 1795408003.009086,
-    "ast_hash": "91d49a3311fd4b13aafa8fda2b8c2a87",
-    "semantic_hash": "91d49a3311fd4b13aafa8fda2b8c2a87"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882777,
+    "ast_hash": "4b82db792f51cdaecc2c916b1e9df771",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/dialog.tsx": {
-    "mtime": 1794979213.7409012,
-    "seen": 1795408003.0091758,
-    "ast_hash": "077a951bed8eb0a8d7e0dcf53e804e46",
-    "semantic_hash": "077a951bed8eb0a8d7e0dcf53e804e46"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882789,
+    "ast_hash": "778072339634253657955f72dceafe26",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/dropdown-menu.tsx": {
-    "mtime": 1794979213.7423587,
-    "seen": 1795408003.009267,
-    "ast_hash": "e160a1149cbfabb8c58341c47bdc7259",
-    "semantic_hash": "e160a1149cbfabb8c58341c47bdc7259"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882798,
+    "ast_hash": "ca0b212bf57e3f318ae952f3902248d9",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/input.tsx": {
-    "mtime": 1794979213.7423587,
-    "seen": 1795408003.0093656,
-    "ast_hash": "b49e231aa101b893c379c1f66ddbe99d",
-    "semantic_hash": "b49e231aa101b893c379c1f66ddbe99d"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.488281,
+    "ast_hash": "5a484a323b1d84b89c19f1eb2f0e3af8",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/label.tsx": {
-    "mtime": 1794604908.5413208,
-    "seen": 1795408003.0094695,
-    "ast_hash": "b4e2023be2ecbd21c854f8da79eda72d",
-    "semantic_hash": "b4e2023be2ecbd21c854f8da79eda72d"
-  },
-  "Abys/web/src/components/ui/progress.tsx": {
-    "mtime": 1794979213.7437558,
-    "seen": 1795408003.0095723,
-    "ast_hash": "96296c404f84a748ca976c12470178d7",
-    "semantic_hash": "96296c404f84a748ca976c12470178d7"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882822,
+    "ast_hash": "05357e864540e83a285b6dca27af252c",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/select.tsx": {
-    "mtime": 1794979213.7437558,
-    "seen": 1795408003.0096614,
-    "ast_hash": "6432adf5519e8d7c436b73b8da4bca1a",
-    "semantic_hash": "6432adf5519e8d7c436b73b8da4bca1a"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882834,
+    "ast_hash": "5bd950583539a0819176cb36224e1c5d",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/separator.tsx": {
-    "mtime": 1794604908.5413208,
-    "seen": 1795408003.0097477,
-    "ast_hash": "6d5fa8ba91b15606017fbfe6f4509437",
-    "semantic_hash": "6d5fa8ba91b15606017fbfe6f4509437"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882843,
+    "ast_hash": "20020edd87e330a81d5c7ef1d3bbc08c",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/skeleton.tsx": {
-    "mtime": 1794604908.5413208,
-    "seen": 1795408003.0098348,
-    "ast_hash": "7a105ed681702ac03669a94a8e22e442",
-    "semantic_hash": "7a105ed681702ac03669a94a8e22e442"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882858,
+    "ast_hash": "58a45c5aceb0b4cb1c16d06758ea16d6",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/sonner.tsx": {
     "mtime": 1794979213.744763,
@@ -1055,34 +1049,34 @@
     "semantic_hash": "80be01e4b1d328e14aac84e8ed4c621f"
   },
   "Abys/web/src/components/ui/switch.tsx": {
-    "mtime": 1794979213.7457633,
-    "seen": 1795408003.010009,
-    "ast_hash": "7b780ae168844bdab0d9b5c8eca71441",
-    "semantic_hash": "7b780ae168844bdab0d9b5c8eca71441"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.488288,
+    "ast_hash": "f4d7ef815ff4faf1dc6d0d560a30b884",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/table.tsx": {
-    "mtime": 1794604908.5413208,
-    "seen": 1795408003.010101,
-    "ast_hash": "74028cdd4e9ad932ecceee3e8ec5d4e0",
-    "semantic_hash": "74028cdd4e9ad932ecceee3e8ec5d4e0"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.488289,
+    "ast_hash": "4d8099fb51aa8fa712077caef720feee",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/tabs.tsx": {
-    "mtime": 1794979213.7457633,
-    "seen": 1795408003.010189,
-    "ast_hash": "dde2cbb8e0ee3c633f953a92655256b9",
-    "semantic_hash": "dde2cbb8e0ee3c633f953a92655256b9"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882898,
+    "ast_hash": "5c4d3134ef32b83ab9b7fa4504ced586",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/textarea.tsx": {
-    "mtime": 1794979213.7467635,
-    "seen": 1795408003.010276,
-    "ast_hash": "3dcd6820cc3f233c5d0ecf720a4e517b",
-    "semantic_hash": "3dcd6820cc3f233c5d0ecf720a4e517b"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882908,
+    "ast_hash": "1e0646fc21bc4ef5522533ee40fdc501",
+    "semantic_hash": ""
   },
   "Abys/web/src/components/ui/tooltip.tsx": {
-    "mtime": 1794604908.5413208,
-    "seen": 1795408003.0103626,
-    "ast_hash": "32d4b87665f8f862acfccee18e176172",
-    "semantic_hash": "32d4b87665f8f862acfccee18e176172"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882917,
+    "ast_hash": "75e3f056ffa06d84faa8b64d3de37ec5",
+    "semantic_hash": ""
   },
   "Abys/web/src/features/configuracion/ConfiguracionPage.tsx": {
     "mtime": 1795283535.0328078,
@@ -1103,16 +1097,16 @@
     "semantic_hash": "431482450432e0307fb35e5fda511c61"
   },
   "Abys/web/src/features/configuracion/RegistrarTab.tsx": {
-    "mtime": 1795283535.0328078,
-    "seen": 1795408003.0106952,
-    "ast_hash": "381a4e43c6d036beab815b524ee2a6d7",
-    "semantic_hash": "381a4e43c6d036beab815b524ee2a6d7"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.488297,
+    "ast_hash": "aa3e99b8ddde7d74a40fdc68b0429aa9",
+    "semantic_hash": ""
   },
   "Abys/web/src/features/configuracion/SplitsTab.tsx": {
-    "mtime": 1794979213.7491982,
-    "seen": 1795408003.010785,
-    "ast_hash": "a3d51be9d62eebc0d3a0bb8688c65d9a",
-    "semantic_hash": "a3d51be9d62eebc0d3a0bb8688c65d9a"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.488298,
+    "ast_hash": "04bf07b6a219ae0ba24a647b8241058b",
+    "semantic_hash": ""
   },
   "Abys/web/src/features/dashboard/ChartCard.tsx": {
     "mtime": 1794979213.7491982,
@@ -1199,10 +1193,10 @@
     "semantic_hash": "edbb95dcdb96c1ad03d44fe4dbef0d04"
   },
   "Abys/web/src/features/ingresos/EditarPagoDialog.tsx": {
-    "mtime": 1794979213.754712,
-    "seen": 1795408003.0120347,
-    "ast_hash": "7be8d2df8613d6dd5fc05ebae169605b",
-    "semantic_hash": "7be8d2df8613d6dd5fc05ebae169605b"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4883158,
+    "ast_hash": "72b1dace959816bee523c54829f60b5a",
+    "semantic_hash": ""
   },
   "Abys/web/src/features/ingresos/IngresosPage.tsx": {
     "mtime": 1794979213.754712,
@@ -1217,10 +1211,10 @@
     "semantic_hash": "e37b431e946cf060bfad72e49dd21104"
   },
   "Abys/web/src/features/ingresos/PagoFila.tsx": {
-    "mtime": 1794979213.7557187,
-    "seen": 1795408003.0122828,
-    "ast_hash": "357f2a119ac18dc7f794182b56084117",
-    "semantic_hash": "357f2a119ac18dc7f794182b56084117"
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4883196,
+    "ast_hash": "bf7a41bfcdeec0d593a2a665f17d33a8",
+    "semantic_hash": ""
   },
   "Abys/web/src/features/registrar/CalendarioDias.tsx": {
     "mtime": 1795283535.0328078,
@@ -1235,10 +1229,10 @@
     "semantic_hash": "ab7a7d9cd13e5ca8803cf1b327c912b6"
   },
   "Abys/web/src/features/registrar/RegistrarPage.tsx": {
-    "mtime": 1795283535.0328078,
-    "seen": 1795408003.01254,
-    "ast_hash": "1b658894cfd0ceb496d94a358118d6f7",
-    "semantic_hash": "1b658894cfd0ceb496d94a358118d6f7"
+    "mtime": 1795584147.358271,
+    "seen": 1795811414.488323,
+    "ast_hash": "3224951483c923e6feeeebfc192ee474",
+    "semantic_hash": ""
   },
   "Abys/web/src/features/splits/CuentaDetalleDialog.tsx": {
     "mtime": 1795283535.0328078,
@@ -1247,10 +1241,10 @@
     "semantic_hash": "fbec5ead710d0eb33d0414ae37c4c7a1"
   },
   "Abys/web/src/features/splits/GenerarSplitDialog.tsx": {
-    "mtime": 1794979213.7582238,
-    "seen": 1795408003.0127015,
-    "ast_hash": "e1e5cabb3bd259661cfa3d808114e30e",
-    "semantic_hash": "e1e5cabb3bd259661cfa3d808114e30e"
+    "mtime": 1795584147.3587747,
+    "seen": 1795811414.4883254,
+    "ast_hash": "a359d6002643dd2e6273fdd778ccc355",
+    "semantic_hash": ""
   },
   "Abys/web/src/features/splits/RealizarTxDialog.tsx": {
     "mtime": 1794604908.5413208,
@@ -1324,12 +1318,6 @@
     "ast_hash": "b5cb79c4a23561a28f2387a6cf4ea0f5",
     "semantic_hash": "b5cb79c4a23561a28f2387a6cf4ea0f5"
   },
-  "Abys/web/src/lib/a11y.ts": {
-    "mtime": 1794979213.7622118,
-    "seen": 1795408003.0137699,
-    "ast_hash": "45cfe14786e35f89675c12ff4c250e49",
-    "semantic_hash": "45cfe14786e35f89675c12ff4c250e49"
-  },
   "Abys/web/src/lib/agrupar.test.ts": {
     "mtime": 1794979213.7622118,
     "seen": 1795408003.0138693,
@@ -1367,10 +1355,10 @@
     "semantic_hash": "3a55bff47779f9e35e2ea6679fb152de"
   },
   "Abys/web/src/lib/distribuir.ts": {
-    "mtime": 1794979213.7639284,
-    "seen": 1795408003.014344,
-    "ast_hash": "a8a5d8f0c0e0de31956d404b9f2acda2",
-    "semantic_hash": "a8a5d8f0c0e0de31956d404b9f2acda2"
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.4883473,
+    "ast_hash": "2513770659c63417b21746be912ebfc0",
+    "semantic_hash": ""
   },
   "Abys/web/src/lib/filtrosUrl.test.ts": {
     "mtime": 1795283535.0328078,
@@ -1379,10 +1367,10 @@
     "semantic_hash": "ba185c823bab86cae45ec0162884a67e"
   },
   "Abys/web/src/lib/filtrosUrl.ts": {
-    "mtime": 1795283535.0328078,
-    "seen": 1795408003.0144987,
-    "ast_hash": "3614f0dda0658aed497e987c45724f26",
-    "semantic_hash": "3614f0dda0658aed497e987c45724f26"
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.488353,
+    "ast_hash": "b24231921a7bc4167b4ac109b9ac7fee",
+    "semantic_hash": ""
   },
   "Abys/web/src/lib/format.test.ts": {
     "mtime": 1794604908.5413208,
@@ -1391,10 +1379,10 @@
     "semantic_hash": "024cd5ebf2bde9ce0a0943d3893d3007"
   },
   "Abys/web/src/lib/format.ts": {
-    "mtime": 1794604908.5413208,
-    "seen": 1795408003.0146556,
-    "ast_hash": "c29386838406bdfe93a7072f0904e264",
-    "semantic_hash": "c29386838406bdfe93a7072f0904e264"
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.4883556,
+    "ast_hash": "cac56570ff3eae4ce23ff9bc41007d71",
+    "semantic_hash": ""
   },
   "Abys/web/src/lib/fuentesDots.test.ts": {
     "mtime": 1795283535.0487168,
@@ -1427,10 +1415,10 @@
     "semantic_hash": "3c4cfdaebacf3227cb7c03f59d02d8d6"
   },
   "Abys/web/src/lib/pagoPayload.ts": {
-    "mtime": 1795283535.0487168,
-    "seen": 1795408003.0151315,
-    "ast_hash": "c6284bb87f28fd28154e089bd24872ac",
-    "semantic_hash": "c6284bb87f28fd28154e089bd24872ac"
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.4883626,
+    "ast_hash": "99e3de90072b2e703dee76f0459b3885",
+    "semantic_hash": ""
   },
   "Abys/web/src/lib/rango.test.ts": {
     "mtime": 1794979213.765375,
@@ -1451,10 +1439,10 @@
     "semantic_hash": "aec10b3608a769bd82c7a1fc8136a158"
   },
   "Abys/web/src/lib/settingsFallback.ts": {
-    "mtime": 1795283535.0487168,
-    "seen": 1795408003.015459,
-    "ast_hash": "1f79dfc30f16b1ac0f44ce2168adb641",
-    "semantic_hash": "1f79dfc30f16b1ac0f44ce2168adb641"
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.4883673,
+    "ast_hash": "b659629161e38970fa512130f2fc9331",
+    "semantic_hash": ""
   },
   "Abys/web/src/lib/subtotal.test.ts": {
     "mtime": 1795283535.0487168,
@@ -1505,10 +1493,10 @@
     "semantic_hash": "ff2f0f8f7b6a3830d96b1f6010f38d5a"
   },
   "Abys/web/src/lib/validators.ts": {
-    "mtime": 1794979213.7682014,
-    "seen": 1795408003.0161974,
-    "ast_hash": "e82942b7858964e8ed53fd8b5afe5f73",
-    "semantic_hash": "e82942b7858964e8ed53fd8b5afe5f73"
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.488378,
+    "ast_hash": "6f3c74b951965801eb72dbb98f813731",
+    "semantic_hash": ""
   },
   "Abys/web/src/main.tsx": {
     "mtime": 1794604908.5567515,
@@ -1517,10 +1505,10 @@
     "semantic_hash": "ef3a59a8efd687093595712cd1f40642"
   },
   "Abys/web/src/router.tsx": {
-    "mtime": 1794604908.5574005,
-    "seen": 1795408003.0163753,
-    "ast_hash": "c88b3c2d8bfaf2e7b5e504849d378dde",
-    "semantic_hash": "c88b3c2d8bfaf2e7b5e504849d378dde"
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.4883804,
+    "ast_hash": "22b79f5032b8968aced2b6f6e1e873ce",
+    "semantic_hash": ""
   },
   "Abys/web/src/services/api.ts": {
     "mtime": 1794604908.5574005,
@@ -1535,22 +1523,22 @@
     "semantic_hash": "ac03314c16c25845b95fa4ef015a1357"
   },
   "Abys/web/src/services/hooks.ts": {
-    "mtime": 1795283535.0487168,
-    "seen": 1795408003.0166128,
-    "ast_hash": "fcbe3c8d7f2a2a3425eb97d02a6b0474",
-    "semantic_hash": "fcbe3c8d7f2a2a3425eb97d02a6b0474"
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.488384,
+    "ast_hash": "5ff3289ca099ac2acdacb0608e6cc6b9",
+    "semantic_hash": ""
   },
   "Abys/web/src/services/types.ts": {
-    "mtime": 1795283535.0487168,
-    "seen": 1795408003.016691,
-    "ast_hash": "eeb32703551b13d8c3be8bcedfc84c8b",
-    "semantic_hash": "eeb32703551b13d8c3be8bcedfc84c8b"
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.488385,
+    "ast_hash": "ba9f56e9f35096300e5b0915816184a6",
+    "semantic_hash": ""
   },
   "Abys/web/src/store/uiStore.ts": {
-    "mtime": 1795283535.0487168,
-    "seen": 1795408003.0167742,
-    "ast_hash": "70a2fffde36a80675bc6ea78b2acaf33",
-    "semantic_hash": "70a2fffde36a80675bc6ea78b2acaf33"
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.4883864,
+    "ast_hash": "af5c13c597ee63bcaf12c5d7fd87060f",
+    "semantic_hash": ""
   },
   "Abys/web/src/vite-env.d.ts": {
     "mtime": 1794604908.558211,
@@ -1807,10 +1795,10 @@
     "semantic_hash": "55374ee8c2056f7c0b700d03ffef0c44"
   },
   "app/src/main/java/com/mikylab/abys/data/repository/CuentaRepositoryImpl.kt": {
-    "mtime": 1794679313.5461516,
-    "seen": 1795408003.0202935,
-    "ast_hash": "0248f1a1e5802cefae113b377cb732ba",
-    "semantic_hash": "0248f1a1e5802cefae113b377cb732ba"
+    "mtime": 1795811135.1861067,
+    "seen": 1795811414.4884388,
+    "ast_hash": "1419b13cef27f02e44a380434bc15c51",
+    "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/data/repository/DashboardRepositoryImpl.kt": {
     "mtime": 1794980301.0243418,
@@ -1819,10 +1807,10 @@
     "semantic_hash": "3da15581faa987b9bb90b3e806313bfe"
   },
   "app/src/main/java/com/mikylab/abys/data/repository/FuenteRepositoryImpl.kt": {
-    "mtime": 1794679308.0725534,
-    "seen": 1795408003.0204704,
-    "ast_hash": "464d199ec3d03cb5606074805e098311",
-    "semantic_hash": "464d199ec3d03cb5606074805e098311"
+    "mtime": 1795811139.07812,
+    "seen": 1795811414.4884417,
+    "ast_hash": "7280b67da9097fd817714b1a6dd4ebdb",
+    "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/data/repository/PagoRepositoryImpl.kt": {
     "mtime": 1794980198.3242157,
@@ -1867,10 +1855,10 @@
     "semantic_hash": "70345760d0b3b44295b4236e3eb28c73"
   },
   "app/src/main/java/com/mikylab/abys/data/sync/Operations.kt": {
-    "mtime": 1794607546.221486,
-    "seen": 1795408003.021184,
-    "ast_hash": "f521c38e8b6cacb4bdaec6858fe428a7",
-    "semantic_hash": "f521c38e8b6cacb4bdaec6858fe428a7"
+    "mtime": 1795810890.9894688,
+    "seen": 1795811414.4884508,
+    "ast_hash": "368e2a7b14b0d502d5fbccd213da83d8",
+    "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/data/sync/PullProcessor.kt": {
     "mtime": 1795493846.3112898,
@@ -1879,9 +1867,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/data/sync/PushProcessor.kt": {
-    "mtime": 1795493824.789737,
-    "seen": 1795584089.8945923,
-    "ast_hash": "093527cbee742dbd9e03a8456432a5ec",
+    "mtime": 1795810906.0768652,
+    "seen": 1795811414.4884534,
+    "ast_hash": "a637cc46249b3950184e1cb578819a85",
     "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/data/sync/SplitTransactionsSync.kt": {
@@ -1969,15 +1957,15 @@
     "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/presentation/configuracion/ConfiguracionScreen.kt": {
-    "mtime": 1795494083.3010156,
-    "seen": 1795584089.8946137,
-    "ast_hash": "808a88e314aa690599ea436e8b430625",
+    "mtime": 1795811151.825807,
+    "seen": 1795811414.4884765,
+    "ast_hash": "19f40201fdac04b2bbc56afada5ab1ed",
     "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/presentation/configuracion/ConfiguracionViewModel.kt": {
-    "mtime": 1795494073.5250509,
-    "seen": 1795584089.8946147,
-    "ast_hash": "f8e484081c4932123ac32d66aba0a0dc",
+    "mtime": 1795810954.6905975,
+    "seen": 1795811414.4884777,
+    "ast_hash": "9bb9cb756161cbde4d7bba7f129b153b",
     "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/presentation/dashboard/DashboardScreen.kt": {
@@ -2005,16 +1993,16 @@
     "semantic_hash": "5bb92f9c88f5a3c7d553fa6ecdcbdfda"
   },
   "app/src/main/java/com/mikylab/abys/presentation/ingresos/IngresosScreen.kt": {
-    "mtime": 1794980859.9571187,
-    "seen": 1795408003.0231423,
-    "ast_hash": "4f3114f1361beb37c5740a64e8f42f8d",
-    "semantic_hash": "4f3114f1361beb37c5740a64e8f42f8d"
+    "mtime": 1795811291.7394447,
+    "seen": 1795811414.4884834,
+    "ast_hash": "166fa968e41a2a0fff93b50bf102ecf3",
+    "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/presentation/ingresos/IngresosViewModel.kt": {
-    "mtime": 1794980826.1549115,
-    "seen": 1795408003.0232263,
-    "ast_hash": "23f17211c6d380ebb2fb9b43dde08b6a",
-    "semantic_hash": "23f17211c6d380ebb2fb9b43dde08b6a"
+    "mtime": 1795811282.608504,
+    "seen": 1795811414.4884841,
+    "ast_hash": "8a7c68f21f638e87dcb3817983f4ef73",
+    "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/presentation/navigation/AbysNavHost.kt": {
     "mtime": 1794607855.8081357,
@@ -2029,15 +2017,15 @@
     "semantic_hash": "58c01a2222cff25043839624380977d5"
   },
   "app/src/main/java/com/mikylab/abys/presentation/registrar/RegistrarScreen.kt": {
-    "mtime": 1795494140.859367,
-    "seen": 1795584089.8946254,
-    "ast_hash": "2544d6972f55035d01a02287b462e27d",
+    "mtime": 1795811246.262197,
+    "seen": 1795811414.4884877,
+    "ast_hash": "cbd1b02d7102eb2faf95dbd5a1e36b26",
     "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/presentation/registrar/RegistrarViewModel.kt": {
-    "mtime": 1795494140.859367,
-    "seen": 1795584089.8946269,
-    "ast_hash": "370a2379cfb37b0d4824d135fb799222",
+    "mtime": 1795811222.2946692,
+    "seen": 1795811414.4884887,
+    "ast_hash": "f7fc611d15aa219c326928130e9eab65",
     "semantic_hash": ""
   },
   "app/src/main/java/com/mikylab/abys/presentation/splits/SplitsScreen.kt": {
@@ -2155,9 +2143,9 @@
     "semantic_hash": ""
   },
   "Abys/CHANGELOG.md": {
-    "mtime": 1795283535.000865,
-    "seen": 1795411273.8769107,
-    "ast_hash": "4d0870dfd504fea5d72dd6cb0062a6b6",
+    "mtime": 1795584147.2196257,
+    "seen": 1795811414.488516,
+    "ast_hash": "aa92c77569e8849d670a0c627d5f56a5",
     "semantic_hash": ""
   },
   "Abys/PROJECT_MAP.md": {
@@ -2167,9 +2155,9 @@
     "semantic_hash": ""
   },
   "Abys/README.md": {
-    "mtime": 1795283535.0169146,
-    "seen": 1795411273.8769128,
-    "ast_hash": "52322d90a3db9aefb32e6dd3d4e5671b",
+    "mtime": 1795584147.2196257,
+    "seen": 1795811414.4885185,
+    "ast_hash": "91641913e32321adf2eb4e13a1dc2b0d",
     "semantic_hash": ""
   },
   "Abys/backlog/README.md": {
@@ -2431,21 +2419,21 @@
     "semantic_hash": ""
   },
   "docs/api-contract.md": {
-    "mtime": 1795494325.0992954,
-    "seen": 1795584089.8947086,
-    "ast_hash": "651646ea15432f757630efbcd267e0f6",
+    "mtime": 1795584407.0076473,
+    "seen": 1795811414.4885767,
+    "ast_hash": "f6c58182257e21fe7d97fca0c0697f22",
     "semantic_hash": ""
   },
   "docs/data-model.md": {
-    "mtime": 1795494353.7312882,
-    "seen": 1795584089.89471,
-    "ast_hash": "f25479547ad15e505c39ad615af76c4d",
+    "mtime": 1795811316.8315866,
+    "seen": 1795811414.4885778,
+    "ast_hash": "a870d2882d1fadd9db5f04403723c4df",
     "semantic_hash": ""
   },
   "docs/feature-matrix.md": {
-    "mtime": 1795494402.8391595,
-    "seen": 1795584089.8947113,
-    "ast_hash": "1cd7c1bfd3d683ffa9053394b3d750d0",
+    "mtime": 1795811329.7414055,
+    "seen": 1795811414.4885788,
+    "ast_hash": "59cf3caa5ad13993816519ad69e859bc",
     "semantic_hash": ""
   },
   "docs/graphify.md": {
@@ -2478,10 +2466,178 @@
     "ast_hash": "95c8b354bdd79d3d4833fe51f85e3d46",
     "semantic_hash": ""
   },
+  "Abys/backend/internal/handler/validacion_entrada_test.go": {
+    "mtime": 1795584147.2196257,
+    "seen": 1795811414.4880884,
+    "ast_hash": "bfb8652d784bb9b1ee308b4146f8e4d7",
+    "semantic_hash": ""
+  },
+  "Abys/backend/internal/middleware/cors_test.go": {
+    "mtime": 1795584147.2257886,
+    "seen": 1795811414.4880905,
+    "ast_hash": "15a5d6960f1a34ef1589fc379a9019a6",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/api-base-url-build/metrics.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.4881563,
+    "ast_hash": "1eac53ccf11be5ff6fccb45d911ed1ea",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/pagina-error-personalizada/aa-gate.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.4881978,
+    "ast_hash": "926a266b738affca7a55099305bc7890",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/pagina-error-personalizada/metrics.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.488199,
+    "ast_hash": "ed6e2fabd6afcd0be95e4a205a07cdfa",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/pagina-error-personalizada/security/metrics.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.4882002,
+    "ast_hash": "660a245b80553004ad94a4661a0833e8",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/refactor-purga-seguridad/bundle-size.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.4882011,
+    "ast_hash": "5d5345b17e1ace4ebad5f5a3189e38a2",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/refactor-purga-seguridad/metrics.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.4882023,
+    "ast_hash": "02b906ea16b7259447f1925029acb03a",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/refactor-purga-seguridad/security/rescan.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.488203,
+    "ast_hash": "912687488b99b309c3fc4b3dfde8f694",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/release-1.0.0/metrics.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.488204,
+    "ast_hash": "94d271c86c375676267253cce87ebc2c",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/tests/api-base-url-build-m2.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.4882443,
+    "ast_hash": "9327fbdaa887962b38856fa768847785",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/tests/pagina-error-personalizada-m3.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.4882495,
+    "ast_hash": "172e082039ba8eb3b0ef93d586935255",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/tests/refactor-purga-seguridad.json": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.488251,
+    "ast_hash": "f135ab321b98a441d04cb612ef773e4a",
+    "semantic_hash": ""
+  },
+  "Abys/web/src/components/layout/AppErrorBoundary.tsx": {
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.488264,
+    "ast_hash": "2639741464d70102e1f67d2800dc63de",
+    "semantic_hash": ""
+  },
+  "Abys/web/src/components/layout/ErrorPage.tsx": {
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4882667,
+    "ast_hash": "7db7dde3d447a40d7fab543bc821f9c5",
+    "semantic_hash": ""
+  },
+  "Abys/web/src/lib/dominio.ts": {
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.4883487,
+    "ast_hash": "82058516250baf55fbc497aab30a8acb",
+    "semantic_hash": ""
+  },
+  "Abys/web/src/lib/errorChunk.test.ts": {
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.4883497,
+    "ast_hash": "76a3ef478d7c33271150b3e208eb4d3e",
+    "semantic_hash": ""
+  },
+  "Abys/web/src/lib/errorChunk.ts": {
+    "mtime": 1795584147.3603568,
+    "seen": 1795811414.4883506,
+    "ast_hash": "cc6d4ed01c983aa569132252e637fdb2",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/mikylab/abys/core/files/ArchivosLocales.kt": {
+    "mtime": 1795811151.8248086,
+    "seen": 1795811414.4884007,
+    "ast_hash": "318c1f3de39c42ea9f6b7187fa1f4009",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/mikylab/abys/domain/usecase/ValidarCuentaUseCase.kt": {
+    "mtime": 1795584314.8404384,
+    "seen": 1795811414.4884677,
+    "ast_hash": "c51dd353db57b9e2fad704c6f41b00b7",
+    "semantic_hash": ""
+  },
+  "app/src/main/java/com/mikylab/abys/presentation/configuracion/ConfiguracionDialogs.kt": {
+    "mtime": 1795811093.0788293,
+    "seen": 1795811414.488475,
+    "ast_hash": "fdbb4d4e53fe4d29f9f20f702946710e",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/com/mikylab/abys/core/files/ArchivosLocalesTest.kt": {
+    "mtime": 1795810827.8891497,
+    "seen": 1795811414.4884932,
+    "ast_hash": "7664dce8350e8bcd14fe6ed0b10a7ce5",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/com/mikylab/abys/domain/usecase/ValidarCuentaUseCaseTest.kt": {
+    "mtime": 1795584336.7761767,
+    "seen": 1795811414.4885042,
+    "ast_hash": "2d2c12ce5d2bea148f15fc9a2e3ccf7e",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/api-base-url-build/report.md": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.4885356,
+    "ast_hash": "06ed187ac1a95c109299b9ad80846705",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/pagina-error-personalizada/report.md": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.488561,
+    "ast_hash": "2d9e8f544ddcbe5c6c463057e603190e",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/pagina-error-personalizada/security/report.md": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.4885619,
+    "ast_hash": "9097a10149efd55eae4d0e1f3976407f",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/refactor-purga-seguridad/report.md": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.488563,
+    "ast_hash": "18dc11cbceedd784922689f2836cd9c1",
+    "semantic_hash": ""
+  },
+  "Abys/test-results/release-1.0.0/report.md": {
+    "mtime": 1795584147.32599,
+    "seen": 1795811414.488564,
+    "ast_hash": "b4b34c390e4f6dd14de52773d3942975",
+    "semantic_hash": ""
+  },
   "Abys/web/package-lock.json": {
-    "mtime": 1795283535.0328078,
-    "seen": 1795411273.8769608,
-    "ast_hash": "5fb7d301e26a1780a1ca9d32f6160620",
+    "mtime": 1795584147.342314,
+    "seen": 1795811414.4885824,
+    "ast_hash": "022a4088f1a57547e85a9d27c481f867",
     "semantic_hash": ""
   }
 }

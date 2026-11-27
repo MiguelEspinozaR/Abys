@@ -125,7 +125,9 @@ class FuenteRepositoryImpl @Inject constructor(
             fuenteDao.upsert(
                 existente.copy(
                     logoRuta = rutaArchivo,
+                    syncState = SyncState.PENDING_UPDATE,
                     updatedAtLocal = System.currentTimeMillis(),
+                    lastError = null,
                 ),
             )
             pendingWriter.encolar(
@@ -143,11 +145,18 @@ class FuenteRepositoryImpl @Inject constructor(
         val existente = fuenteDao.getPorId(localId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "fuente no encontrada"))
         transactions.run {
-            fuenteDao.upsert(existente.copy(logoRuta = null, updatedAtLocal = System.currentTimeMillis()))
+            fuenteDao.upsert(
+                existente.copy(
+                    logoRuta = null,
+                    syncState = SyncState.PENDING_UPDATE,
+                    updatedAtLocal = System.currentTimeMillis(),
+                    lastError = null,
+                ),
+            )
             pendingWriter.encolar(
                 Operations.TIPO_FUENTE,
                 localId,
-                Operations.OP_UPLOAD,
+                Operations.OP_DELETE_LOGO,
                 serverId = existente.serverId,
             )
         }

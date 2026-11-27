@@ -12,6 +12,7 @@ import com.mikylab.abys.domain.model.Cuenta
 import com.mikylab.abys.domain.model.HistorialTasa
 import com.mikylab.abys.domain.model.SyncState
 import com.mikylab.abys.domain.repository.CuentaRepository
+import com.mikylab.abys.domain.usecase.ValidarCuentaUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -37,10 +38,8 @@ class CuentaRepositoryImpl @Inject constructor(
         cuentaDao.observeHistorial(cuentaLocalId).map { lista -> lista.map { it.toDomain() } }
 
     override suspend fun crearCuenta(alias: String, banco: String?, numero: String?): AppResult<Cuenta> {
-        if (alias.isBlank()) {
-            return AppResult.Failure(
-                AppError(AppError.CODE_VALIDATION, "el alias de la cuenta es obligatorio"),
-            )
+        ValidarCuentaUseCase.validar(alias, banco, numero)?.let { mensaje ->
+            return AppResult.Failure(AppError(AppError.CODE_VALIDATION, mensaje))
         }
         val localId = UUID.randomUUID().toString()
         val ahora = System.currentTimeMillis()
@@ -76,10 +75,8 @@ class CuentaRepositoryImpl @Inject constructor(
     ): AppResult<Unit> {
         val existente = cuentaDao.getPorId(localId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "cuenta no encontrada"))
-        if (alias.isBlank()) {
-            return AppResult.Failure(
-                AppError(AppError.CODE_VALIDATION, "el alias de la cuenta es obligatorio"),
-            )
+        ValidarCuentaUseCase.validar(alias, banco, numero)?.let { mensaje ->
+            return AppResult.Failure(AppError(AppError.CODE_VALIDATION, mensaje))
         }
         val actualizada = existente.copy(
             alias = alias.trim(),
@@ -131,7 +128,12 @@ class CuentaRepositoryImpl @Inject constructor(
         val payload = """{"${Operations.PAYLOAD_ARCHIVO}":"$rutaArchivo"}"""
         transactions.run {
             cuentaDao.upsert(
-                existente.copy(qrRuta = rutaArchivo, updatedAtLocal = System.currentTimeMillis()),
+                existente.copy(
+                    qrRuta = rutaArchivo,
+                    syncState = SyncState.PENDING_UPDATE,
+                    updatedAtLocal = System.currentTimeMillis(),
+                    lastError = null,
+                ),
             )
             pendingWriter.encolar(
                 Operations.TIPO_CUENTA,
@@ -148,11 +150,18 @@ class CuentaRepositoryImpl @Inject constructor(
         val existente = cuentaDao.getPorId(localId)
             ?: return AppResult.Failure(AppError(AppError.CODE_NOT_FOUND, "cuenta no encontrada"))
         transactions.run {
-            cuentaDao.upsert(existente.copy(qrRuta = null, updatedAtLocal = System.currentTimeMillis()))
+            cuentaDao.upsert(
+                existente.copy(
+                    qrRuta = null,
+                    syncState = SyncState.PENDING_UPDATE,
+                    updatedAtLocal = System.currentTimeMillis(),
+                    lastError = null,
+                ),
+            )
             pendingWriter.encolar(
                 Operations.TIPO_CUENTA,
                 localId,
-                Operations.OP_UPLOAD,
+                Operations.OP_DELETE_QR,
                 serverId = existente.serverId,
             )
         }
